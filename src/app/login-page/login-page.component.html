@@ -12,12 +12,12 @@
             </div>
             <form class="mt-2 flex flex-col items-start" [formGroup]="loginForm" fxLayout="column"
                 fxLayoutAlign="center stretch">
-                <label class="font-bold text-lg" for="email">Email</label>
-                <app-input-field-form [name]="'email'" [placeholder]="'Vul hier je email in'"></app-input-field-form>
+                <label class="font-bold text-lg" for="emailId">Email</label>
+                <app-input-field-form id="emailId" formControlName="email" [placeholder]="'Vul hier je email in'"></app-input-field-form>
 
-                <label class="font-bold text-lg" for="wachtwoord">Wachtwoord</label>
+                <label class="font-bold text-lg" for="passwordId">Wachtwoord</label>
                 <div class="relative flex items-center"> <!--Wrapper for input field -->
-                    <app-input-field-form class="" [name]="'password'" [placeholder]="'Vul hier je wachtwoord in'"
+                    <app-input-field-form class="" id="passwordId" formControlName="password "[placeholder]="'Vul hier je wachtwoord in'"
                         [type]="showPassword ? 'text' : 'password'"></app-input-field-form>
                     <button class="absolute right-0 mr-2" (click)="togglePasswordVisibilty()">
                         <div class="mb-2">

@@ -13,20 +13,20 @@
             <form class="mt-2 flex flex-col items-start w-96" [formGroup]="registerForm">
                 <div class="flex flex-row space-x-7">
                     <div class="flex flex-col">
-                        <label class="font-bold text-lg" for="firstName">Voornaam</label>
-                        <app-input-field-form-small [name]="'firstName'" [placeholder]="'Vul hier je voornaam in'"></app-input-field-form-small>
+                        <label class="font-bold text-lg" for="first-name">Voornaam</label>
+                        <app-input-field-form-small id="first-name" formControlName="firstName" [placeholder]="'Vul hier je voornaam in'"></app-input-field-form-small>
                     </div>
                     <div class="flex flex-col">
-                        <label class="font-bold text-lg" for="lastName">Achternaam</label>
-                        <app-input-field-form-small [name]="'lastName'" [placeholder]="'Vul hier je achternaam in'"></app-input-field-form-small>
+                        <label class="font-bold text-lg" for="last-name">Achternaam</label>
+                        <app-input-field-form-small  id="last-name" formControlName="lastName" [placeholder]="'Vul hier je achternaam in'"></app-input-field-form-small>
                     </div>
                 </div>
-                <label class="font-bold text-lg" for="email">Email</label>
-                <app-input-field-form [name]="'email'" [placeholder]="'Vul hier je email in'"></app-input-field-form>
+                <label class="font-bold text-lg" for="emailId">Email</label>
+                <app-input-field-form id="emailId" formControlName="email" [placeholder]="'Vul hier je email in'"></app-input-field-form>
 
-                <label class="font-bold text-lg" for="password">Wachtwoord</label>
+                <label class="font-bold text-lg" for="passwordId">Wachtwoord</label>
                 <div class="relative flex items-center"> <!--Wrapper for input field -->
-                    <app-input-field-form class="" [name]="'password'" [placeholder]="'Vul hier je wachtwoord in'"
+                    <app-input-field-form class="" id="passwordId" formControlName="password" [placeholder]="'Vul hier je wachtwoord in'"
                         [type]="showPassword ? 'text' : 'password'"></app-input-field-form>
                     <button class="absolute right-0 mr-2" (click)="togglePasswordVisibilty()">
                         <div class="mb-2">
@@ -38,9 +38,9 @@
                         </div>
                     </button>
                 </div>
-                <label class="font-bold text-lg" for="secondPassword">Herhaal wachtwoord</label>
+                <label class="font-bold text-lg" for="second-password">Herhaal wachtwoord</label>
                 <div class="relative flex items-center"> <!--Wrapper for input field -->
-                    <app-input-field-form class="" [name]="'secondPassword'" [placeholder]="'Vul hier je wachtwoord nog een keer in'"
+                    <app-input-field-form class="" id="second-password" formControlName="secondPassword" [placeholder]="'Vul hier je wachtwoord nog een keer in'"
                         [type]="showSecondPassword ? 'text' : 'password'"></app-input-field-form>
                     <button class="absolute right-0 mr-2" (click)="toggleSecondPasswordVisitbilty()">
                         <div class="mb-2">

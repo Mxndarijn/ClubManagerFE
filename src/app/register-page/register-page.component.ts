@@ -30,11 +30,11 @@ export class RegisterPageComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = new FormGroup({
-      email: new FormControl('', Validators.compose([Validators.maxLength(255), Validators.required, Validators.email])),
-      password: new FormControl('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
-      secondPassword: new FormControl('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
-      firstName: new FormControl('', Validators.compose([Validators.maxLength(255), Validators.minLength(2), Validators.required])),
-      lastName: new FormControl('', Validators.compose([Validators.maxLength(255), Validators.minLength(2), Validators.required]))
+      email: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.required, Validators.email])),
+      password: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
+      secondPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
+      firstName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(2), Validators.required])),
+      lastName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(2), Validators.required]))
     });
   }
 

@@ -8,6 +8,7 @@ import { InputFieldFormComponent } from '../input-fields/input-field-form-big/in
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import {RouterLink, RouterLinkActive} from "@angular/router";
 
 
 
@@ -18,7 +19,7 @@ import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive],
 })
 export class LoginPageComponent implements OnInit {
   public loginForm!: FormGroup;
