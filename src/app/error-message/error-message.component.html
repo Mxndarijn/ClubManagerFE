@@ -1,0 +1,8 @@
+<div *ngIf="specificError != '' ?  formGroup.controls[controlName].errors?.[errorMessage] : formGroup.controls[controlName].invalid && formGroup.controls[controlName].touched"
+     class="text-red-500 text-xs m-0 p-0">
+  {{errorMessage}}
+</div>
+
+<div>
+  {{ JSON.stringify(formGroup.controls[controlName].errors?.[errorMessage])}}
+</div>

@@ -1,19 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, ValidationErrors, FormControlStatus } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  ValidationErrors,
+  FormControlStatus,
+  ValidatorFn,
+  AbstractControl
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthenticationService } from '../services/authentication.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ConfirmButtonComponent } from '../buttons/confirm-button/confirm-button.component';
 import { InputFieldFormComponent } from '../input-fields/input-field-form-big/input-field-form.component';
 import { InputFieldFormSmallComponent } from '../input-fields/input-field-form-small/input-field-form-small.component';
+import {ErrorMessageComponent} from "../error-message/error-message.component";
+
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import {RouterLink, RouterLinkActive} from "@angular/router";
 
 @Component({
   selector: 'app-register-page',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, InputFieldFormSmallComponent],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, InputFieldFormSmallComponent, ErrorMessageComponent, RouterLink, RouterLinkActive],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css'
 })
@@ -31,11 +42,11 @@ export class RegisterPageComponent implements OnInit {
   ngOnInit() {
     this.registerForm = new FormGroup({
       email: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.required, Validators.email])),
-      password: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
+      password: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required,  this.containsUppercase, this.containsLowercase, this.containsNumber, this.containsSpecialChar])),
       secondPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
       firstName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(2), Validators.required])),
       lastName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(2), Validators.required]))
-    });
+    }, { validators: this.passwordsMatchValidator });
   }
 
   togglePasswordVisibilty(): void {
@@ -49,6 +60,13 @@ export class RegisterPageComponent implements OnInit {
     const uppercasePattern = /[A-Z]/;
     return uppercasePattern.test(control.value) ? null : { 'noUppercase': true };
   }
+
+  passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+    const password = group.get('password')?.value;
+    const secondPassword = group.get('secondPassword')?.value;
+    return password === secondPassword ? null : { 'passwordsMismatch': true };
+  };
+
 
 
   containsLowercase(control: FormControl): ValidationErrors | null {
@@ -88,4 +106,6 @@ export class RegisterPageComponent implements OnInit {
       }
     }
   }
+
+  protected readonly JSON = JSON;
 }

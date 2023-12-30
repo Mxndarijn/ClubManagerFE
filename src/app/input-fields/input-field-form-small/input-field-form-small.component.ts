@@ -28,7 +28,6 @@ export class InputFieldFormSmallComponent implements ControlValueAccessor {
     if (val !== this._value) {
       this._value = val;
       this.onChange(val);
-      this.onTouch(val);
     }
   }
 
