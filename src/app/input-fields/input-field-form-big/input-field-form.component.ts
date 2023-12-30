@@ -10,4 +10,5 @@ import { Component, Input } from '@angular/core';
 export class InputFieldFormComponent {
   @Input() name: string = '';
   @Input() placeholder: string = '';
+  @Input() type: string = '';
 }

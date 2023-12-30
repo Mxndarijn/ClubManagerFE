@@ -11,20 +11,35 @@ export class AuthenticationService {
   constructor(
     private authenticationClient: AuthenticationClient,
     private router: Router
-  ) {}
+  ) { }
 
   public login(email: string, password: string): void {
     this.authenticationClient.login(email, password).subscribe((response) => {
-        // Controleer cookies in de responsheaders
-        console.log(JSON.stringify(response))
-        if(response.loggedIn) {
-          localStorage.setItem(this.tokenKey, response.token)
-          console.log("Ingelogd")
-        }
-      },
+      // Controleer cookies in de responsheaders
+      console.log(JSON.stringify(response))
+      if (response.loggedIn) {
+        localStorage.setItem(this.tokenKey, response.token)
+        console.log("Ingelogd")
+      }
+    },
       (error) => {
         // Handel fouten af
         console.error('Fout bij inloggen', error);
+      });
+  }
+
+  public register(email: string, password: string, firstName: string, lastName: string): void {
+    this.authenticationClient.register(email, password, firstName, lastName).subscribe((response) => {
+      // Controleer cookies in de responsheaders
+      console.log(JSON.stringify(response))
+      if (response.registered) {
+        localStorage.setItem(this.tokenKey, response.token)
+        console.log("Geregistreerd")
+      }
+    },
+      (error) => {
+        // Handel fouten af
+        console.error('Fout bij registreren', error);
       });
   }
 
