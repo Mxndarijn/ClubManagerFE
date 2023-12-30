@@ -88,9 +88,6 @@ export class RegisterPageComponent implements OnInit {
 
 
   public onSubmit() {
-    console.log(this.registerForm.get('firstName')!.value);
-
-    console.log(this.registerForm.status)
     if (this.registerForm.valid) {
       if (this.registerForm.get('password')!.value === this.registerForm.get('secondPassword')!.value) {
         this.authenticationService.register(

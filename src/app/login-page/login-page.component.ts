@@ -9,6 +9,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import {RouterLink, RouterLinkActive} from "@angular/router";
+import {ErrorMessageComponent} from "../error-message/error-message.component";
 
 
 
@@ -19,7 +20,7 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent],
 })
 export class LoginPageComponent implements OnInit {
   public loginForm!: FormGroup;
@@ -32,7 +33,7 @@ export class LoginPageComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = new FormGroup({
-      email: new FormControl('', Validators.email),
+      email: new FormControl('', Validators.compose([Validators.email, Validators.required])),
       password: new FormControl('', Validators.required),
     });
   }
@@ -42,9 +43,11 @@ export class LoginPageComponent implements OnInit {
   }
 
   public onSubmit() {
-    this.authenticationService.login(
-      this.loginForm.get('email')!.value,
-      this.loginForm!.get('password')!.value
-    );
+    if(this.loginForm.valid) {
+      this.authenticationService.login(
+        this.loginForm.get('email')!.value,
+        this.loginForm!.get('password')!.value
+      );
+    }
   }
 }
