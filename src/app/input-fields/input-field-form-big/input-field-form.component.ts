@@ -30,7 +30,6 @@ export class InputFieldFormComponent implements ControlValueAccessor {
     if (val !== this._value) {
       this._value = val;
       this.onChange(val);
-      this.onTouch(val);
     }
   }
 
@@ -51,4 +50,5 @@ export class InputFieldFormComponent implements ControlValueAccessor {
   }
   @Input() placeholder: string = '';
   @Input() type: string = '';
+  protected readonly JSON = JSON;
 }

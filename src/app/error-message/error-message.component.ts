@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import { FormControl, FormGroup,} from '@angular/forms';
 import {NgIf} from "@angular/common";
 
 @Component({
@@ -17,10 +17,24 @@ export class ErrorMessageComponent {
   @Input() formGroup!: FormGroup;
   @Input() specificError: string = '';
 
-  // constructor(errorMessage: string, controlName: string, formGroup: FormGroup) {
-  //   this.errorMessage = errorMessage;
-  //   this.controlName = controlName;
-  //   this.formGroup = formGroup;
-  // }
+
+
+
+  shouldShowError() : boolean  {
+    let formControl = this.formGroup.controls[this.controlName];
+    if(formControl == null || formControl.valid) {
+      return false;
+    }
+    if(!formControl.touched) {
+      return false;
+    }
+
+    if(this.specificError.length > 0) {
+      return formControl.errors?.[this.specificError] != null;
+    }
+
+    return true;
+  }
+
   protected readonly JSON = JSON;
 }

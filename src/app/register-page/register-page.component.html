@@ -62,17 +62,32 @@
           [errorMessage]="'Het wachtwoord moet 8 karakters hebben.'"
           [formGroup]="registerForm"
           [controlName]="'password'"
-          [specificError]="'requiredLength'">
+          [specificError]="'minlength'">
         </app-error-message>
-          <app-error-message
-            [errorMessage]="'Het wachtwoord een hoofdletter bevatten.'"
-            [formGroup]="registerForm"
-            [controlName]="'password'"
-            [specificError]="'noUppercase'">
+        <app-error-message
+          [errorMessage]="'Het wachtwoord moet een hoofdletter bevatten.'"
+          [formGroup]="registerForm"
+          [controlName]="'password'"
+          [specificError]="'noUppercase'">
         </app-error-message>
-<!--        <div>-->
-<!--          {{ JSON.stringify(registerForm.controls['password'].errors)}}-->
-<!--        </div>-->
+        <app-error-message
+          [errorMessage]="'Het wachtwoord moet een kleine letter bevatten.'"
+          [formGroup]="registerForm"
+          [controlName]="'password'"
+          [specificError]="'noLowercase'">
+        </app-error-message>
+        <app-error-message
+          [errorMessage]="'Het wachtwoord moet een getal bevatten.'"
+          [formGroup]="registerForm"
+          [controlName]="'password'"
+          [specificError]="'noNumber'">
+        </app-error-message>
+        <app-error-message
+          [errorMessage]="'Het wachtwoord moet speciaal karakter bevatten.'"
+          [formGroup]="registerForm"
+          [controlName]="'password'"
+          [specificError]="'noSpecialChar'">
+        </app-error-message>
         <label class="font-bold text-lg" for="second-password">Herhaal wachtwoord</label>
         <div class="relative flex items-center"> <!--Wrapper for input field -->
           <app-input-field-form class="" id="second-password" formControlName="secondPassword"
