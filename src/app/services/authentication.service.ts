@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AuthenticationClient } from '../../communication/authentication';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,39 +15,45 @@ export class AuthenticationService {
     private router: Router
   ) { }
 
-  public login(email: string, password: string): void {
-    this.authenticationClient.login(email, password).subscribe((response) => {
-      // Controleer cookies in de responsheaders
-      console.log(JSON.stringify(response))
-      if (response.loggedIn) {
-        localStorage.setItem(this.tokenKey, response.token)
-        console.log("Ingelogd")
-      }
-    },
-      (error) => {
-        // Handel fouten af
-        console.error('Fout bij inloggen', error);
-      });
+  public login(email: string, password: string): Observable<any> {
+    return new Observable(subscriber => {
+      this.authenticationClient.login(email, password).subscribe( {
+        next: (response) => {
+          if(response.success) {
+            localStorage.setItem(this.tokenKey, response.message)
+          }
+          subscriber.next(response);
+          subscriber.complete();
+      },
+        error: (error) => {
+          console.error('Er is een fout opgetreden', error);
+          subscriber.error(error);
+        }
+    });
+  });
   }
 
-  public register(email: string, password: string, firstName: string, lastName: string): void {
-    this.authenticationClient.register(email, password, firstName, lastName).subscribe((response) => {
-      // Controleer cookies in de responsheaders
-      console.log(JSON.stringify(response))
-      if (response.registered) {
-        localStorage.setItem(this.tokenKey, response.token)
-        console.log("Geregistreerd")
-      }
-    },
-      (error) => {
-        // Handel fouten af
-        console.error('Fout bij registreren', error);
+  public register(email: string, password: string, firstName: string, lastName: string): Observable<any> {
+    return new Observable(subscriber => {
+      this.authenticationClient.register(email, password, firstName, lastName).subscribe({
+        next: (response) => {
+          if (response.success) {
+            localStorage.setItem(this.tokenKey, response.message);
+          }
+          subscriber.next(response);
+          subscriber.complete();
+        },
+        error: (error) => {
+          console.error('Fout bij registreren', error);
+          subscriber.error(error);
+        }
       });
+    });
   }
+
 
   public logout() {
     localStorage.removeItem(this.tokenKey);
-    // this.router.navigate(['/login']);
   }
 
   public isLoggedIn(): boolean {

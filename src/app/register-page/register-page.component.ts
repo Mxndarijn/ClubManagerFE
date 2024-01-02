@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -14,17 +14,18 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ConfirmButtonComponent } from '../buttons/confirm-button/confirm-button.component';
 import { InputFieldFormComponent } from '../input-fields/input-field-form-big/input-field-form.component';
 import { InputFieldFormSmallComponent } from '../input-fields/input-field-form-small/input-field-form-small.component';
-import {ErrorMessageComponent} from "../error-message/error-message.component";
+import {ErrorMessageComponent} from "../error-messages/error-message/error-message.component";
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import {RouterLink, RouterLinkActive} from "@angular/router";
+import {ErrorMessageManualComponent} from "../error-messages/error-message-manual/error-message-manual.component";
 
 @Component({
   selector: 'app-register-page',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, InputFieldFormSmallComponent, ErrorMessageComponent, RouterLink, RouterLinkActive],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, InputFieldFormSmallComponent, ErrorMessageComponent, RouterLink, RouterLinkActive, ErrorMessageManualComponent],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css'
 })
@@ -36,6 +37,7 @@ export class RegisterPageComponent implements OnInit {
 
   faEye = faEye;
   faEyeSlash = faEyeSlash
+  @ViewChild('registerErrorMessage', {static: false}) registerErrorMessage!: ErrorMessageManualComponent;
 
   constructor(private authenticationService: AuthenticationService) { }
 
@@ -89,20 +91,31 @@ export class RegisterPageComponent implements OnInit {
 
   public onSubmit() {
     if (this.registerForm.valid) {
-      if (this.registerForm.get('password')!.value === this.registerForm.get('secondPassword')!.value) {
-        this.authenticationService.register(
-          this.registerForm.get('email')!.value,
-          this.registerForm.get('password')!.value,
-          this.registerForm.get('firstName')!.value,
-          this.registerForm.get('lastName')!.value
-        )
-        alert("test")
-      } else {
-        alert("howdy")
-        console.log("First: ", this.registerForm.get('password'), "Second: ", this.registerForm.get('secondPassword'))
+      this.authenticationService.register(
+        this.registerForm.get('email')!.value,
+        this.registerForm.get('password')!.value,
+        this.registerForm.get('firstName')!.value,
+        this.registerForm.get('lastName')!.value
+      ).subscribe({
+        next: (registerRequest) => {
+        if(!registerRequest.success) {
+          if (typeof registerRequest.error === 'string') {
+            switch (registerRequest.error) {
+              case "account-validation-error":
+                this.registerErrorMessage.showErrorMessage("Er is een fout opgetreden tijdens het valideren van de gegevens.");
+                break;
+              case "email-already-used":
+                this.registerErrorMessage.showErrorMessage("Er is al een account met dit emailadres");
+                break;
+            }
+          } else {
+            this.registerErrorMessage.showErrorMessage("Er is een fout opgetreden.")
+          }
+        } else {
+          this.registerErrorMessage.hideErrorMessage();
+        }
       }
+      })
     }
   }
-
-  protected readonly JSON = JSON;
 }

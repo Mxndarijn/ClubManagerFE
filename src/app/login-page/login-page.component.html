@@ -39,6 +39,7 @@
                 [formGroup]="loginForm"
                 [controlName]="'password'">
               </app-error-message>
+              <app-error-message-manual  #loginErrorMessage ></app-error-message-manual>
                 <app-confirm-button class="mt-3" [label]="'Log in'" (onClick)="onSubmit()"></app-confirm-button>
                 <button class=" mt-3 underline text-sm text-sky-900 hover:text-sky-500" routerLink="/register"
                     routerLinkActive="active">
