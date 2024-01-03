@@ -1,10 +1,10 @@
 <nav class="flex flex-col h-screen bg-gray-300 w-48">
-  <h1 class="">{{ environment.companyName }}</h1>
-  <div class="flex flex-col justify-center w-full flex-grow">
+  <h1 class="" >{{ environment.companyName }}</h1>
+  <ul class="flex flex-col justify-center w-full flex-grow">
     <!--              Verander de label naar de vereniging variable -->
     <app-association-name [textLabel]="'Vereniging naam'" ></app-association-name>
     <div class="bg-gray-300 border-b-2 border-b-gray-200 p-3 hover:bg-gray-200 " *ngFor="let i of sidebar_items">
       <app-side-bar-item class="" [item]="i"></app-side-bar-item>
     </div>
-  </div>
+  </ul>
 </nav>
