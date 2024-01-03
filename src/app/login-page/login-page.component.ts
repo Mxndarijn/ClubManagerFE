@@ -69,6 +69,7 @@ export class LoginPageComponent implements OnInit {
             }
           } else {
             this.loginErrorMessage.hideErrorMessage();
+            // navigate to home
           }
         },
         error: (e) => {

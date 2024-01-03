@@ -4,6 +4,10 @@ import {AuthGuard} from './helpers/auth.guard.spec';
 import {HttpClientModule} from '@angular/common/http';
 import {LoginPageComponent} from './login-page/login-page.component';
 import {RegisterPageComponent} from "./register-page/register-page.component";
+import {HomePageComponent} from "./home-page/home-page.component";
+import {ReservationPageComponent} from "./reservation-page/reservation-page.component";
+import {VisitsPageComponent} from "./visits-page/visits-page.component";
+import {CompetitionPageComponent} from "./competition-page/competition-page.component";
 
 export const routes: Routes = [
   {
@@ -18,5 +22,21 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterPageComponent
+  },
+  {
+    path: 'home',
+    component: HomePageComponent
+  },
+  {
+    path: 'reservations',
+    component: ReservationPageComponent
+  },
+  {
+    path: 'visits',
+    component: VisitsPageComponent
+  },
+  {
+    path: 'competition',
+    component: CompetitionPageComponent
   }
 ];
