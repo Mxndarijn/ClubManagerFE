@@ -21,6 +21,7 @@ import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {ErrorMessageManualComponent} from "../error-messages/error-message-manual/error-message-manual.component";
+import {environment} from "../../environment/environment";
 
 @Component({
   selector: 'app-register-page',
@@ -118,4 +119,6 @@ export class RegisterPageComponent implements OnInit {
       })
     }
   }
+
+  protected readonly environment = environment;
 }
