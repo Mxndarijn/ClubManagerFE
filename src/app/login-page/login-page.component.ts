@@ -11,6 +11,7 @@ import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {ErrorMessageComponent} from "../error-messages/error-message/error-message.component";
 import {ErrorMessageManualComponent} from "../error-messages/error-message-manual/error-message-manual.component";
+import {environment} from "../../environment/environment";
 
 
 
@@ -77,4 +78,5 @@ export class LoginPageComponent implements OnInit {
     }
   }
 
+  protected readonly environment = environment;
 }
