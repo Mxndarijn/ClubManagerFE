@@ -28,4 +28,5 @@ export class AuthenticationClient {
       { headers: headers, responseType: 'json' },
     );
   }
-}   
+
+}
