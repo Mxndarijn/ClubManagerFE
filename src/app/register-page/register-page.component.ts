@@ -67,6 +67,9 @@ export class RegisterPageComponent implements OnInit {
   passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     const password = group.get('password')?.value;
     const secondPassword = group.get('secondPassword')?.value;
+    if(secondPassword.length == 0 || password.length == 0) {
+      return null;
+    }
     return password === secondPassword ? null : { 'passwordsMismatch': true };
   };
 
