@@ -1,4 +1,7 @@
 <div class="flex flex-row justify-between">
   <app-side-bar></app-side-bar>
   <app-account-icon class="w-full"></app-account-icon>
+  <div *ngFor="let association of associations">
+    {{ association.name}}
+  </div>
 </div>
