@@ -7,22 +7,22 @@
     <div class="pl-2 flex flex-col w-6/12 justify-center items-center">
         <div class="justify-center space-y-16">
             <div class="flex flex-col ">
-                <h1 class="text-3xl font-bold m-0">Welkom op {{environment.companyName}}</h1>
-                <p class="text-lg">Acces information</p>
+                <h1 class="text-3xl font-bold m-0" translate [translateParams]="{companyName: environment.companyName}">loginPage.titleHeader</h1>
+                <p class="text-lg" translate >loginPage.accessInformation</p>
             </div>
             <form class="mt-2 flex flex-col items-start" [formGroup]="loginForm" fxLayout="column"
                 fxLayoutAlign="center stretch">
-                <label class="font-bold text-lg" for="emailId">Email</label>
-                <app-input-field-form id="emailId" formControlName="email" [placeholder]="'Vul hier je email in'"></app-input-field-form>
+                <label class="font-bold text-lg" for="emailId" translate>loginPage.emailHeader</label>
+                <app-input-field-form id="emailId" formControlName="email" [placeholder]="'loginPage.emailPlaceholder' | translate"></app-input-field-form>
               <app-error-message
-                [errorMessage]="'Je moet een geldig email invullen.'"
+                [errorMessage]="'loginPage.errors.noValidEmail' | translate"
                 [formGroup]="loginForm"
                 [controlName]="'email'">
               </app-error-message>
 
-                <label class="font-bold text-lg" for="passwordId">Wachtwoord</label>
+                <label class="font-bold text-lg" for="passwordId" translate >loginPage.passwordHeader</label>
                 <div class="relative flex items-center"> <!--Wrapper for input field -->
-                    <app-input-field-form class="mb-o" id="passwordId" formControlName="password" [placeholder]="'Vul hier je wachtwoord in'"
+                    <app-input-field-form class="mb-o" id="passwordId" formControlName="password" [placeholder]="'loginPage.passwordPlaceholder' | translate"
                         [type]="showPassword ? 'text' : 'password'"></app-input-field-form>
                     <button class="absolute right-0 mr-2" (click)="togglePasswordVisibility()">
                         <div class="mb-2">
@@ -34,20 +34,20 @@
                         </div>
                     </button>
                 </div>
-              <button class=" mb-2 underline text-sm text-gray-500 hover:text-black-300" routerLink="/wachtwoord-vergeten"
-                      routerLinkActive="active">
-                Wachtwoord vergeten? Klik hier!
+              <button class=" mb-2 underline text-sm text-gray-500 hover:text-black-300" routerLink="/forgot-password"
+                      routerLinkActive="active" translate>
+                loginPage.forgotPassword
               </button>
               <app-error-message
-                [errorMessage]="'Je moet een wachtwoord invullen.'"
+                [errorMessage]="'loginPage.errors.noValidPassword' | translate"
                 [formGroup]="loginForm"
                 [controlName]="'password'">
               </app-error-message>
               <app-error-message-manual  #loginErrorMessage ></app-error-message-manual>
                 <app-confirm-button class="mt-3" [label]="'Log in'" (onClick)="onSubmit()"></app-confirm-button>
                 <button class=" mt-3 underline text-sm text-sky-900 hover:text-sky-500" routerLink="/register"
-                    routerLinkActive="active">
-                    Heb je nog geen account? Maak er hier een aan.
+                    routerLinkActive="active" translate>
+                    loginPage.noAccount
                 </button>
 
             </form>

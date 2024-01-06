@@ -1,0 +1,24 @@
+{
+  "loginPage": {
+    "titleHeader": "Welkom op {{companyName}}",
+    "accessInformation": "Access information",
+    "emailHeader": "Email",
+    "passwordHeader": "Wachtwoord",
+    "loginButton": "Log in",
+    "emailPlaceholder": "Vul hier je email in",
+    "passwordPlaceholder": "Vul hier je wachtwoord in",
+    "forgotPassword": "Wachtwoord vergeten? Klik hier!",
+    "noAccount": "Heb je nog geen account? Maak er hier een aan.",
+    "errors": {
+      "noValidEmail": "Je moet een geldig email invullen.",
+      "noValidPassword": "Je moet een wachtwoord invullen.",
+      "serverResponses": {
+        "account-validation-error": "Er is een fout opgetreden tijdens het valideren van de gegevens.0",
+        "account-bad-credentials": "Email en wachtwoord komen niet overeen.",
+        "otherError": "Er is een fout opgetreden.",
+        "errorDuringLogin": "Er is een fout opgetreden tijdens het inloggen."
+      }
+
+    }
+  }
+}

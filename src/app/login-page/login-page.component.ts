@@ -12,6 +12,7 @@ import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {ErrorMessageComponent} from "../error-messages/error-message/error-message.component";
 import {ErrorMessageManualComponent} from "../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../environment/environment";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 
 
@@ -22,7 +23,7 @@ import {environment} from "../../environment/environment";
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, ErrorMessageComponent, ErrorMessageManualComponent], // Removed RouterLink and RouterLinkActive from imports
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule],
 })
 export class LoginPageComponent implements OnInit {
   public loginForm!: FormGroup;
@@ -31,9 +32,9 @@ export class LoginPageComponent implements OnInit {
   faEye = faEye;
   faEyeSlash = faEyeSlash;
   @ViewChild('loginErrorMessage', {static: false}) loginErrorMessage!: ErrorMessageManualComponent;
-
   constructor(private authenticationService: AuthenticationService,
-              private router: Router) { // Injected Router
+              private router: Router,
+              private translate: TranslateService) {
 
   }
 
@@ -57,16 +58,15 @@ export class LoginPageComponent implements OnInit {
         next: (loginRequest) => {
           if(!loginRequest.success) {
             if (typeof loginRequest.error === 'string') {
-              switch (loginRequest.error) {
-                case "account-validation-error":
-                  this.loginErrorMessage.showErrorMessage("Er is een fout opgetreden tijdens het valideren van de gegevens.");
-                  break;
-                case "account-bad-credentials":
-                  this.loginErrorMessage.showErrorMessage("Email en wachtwoord komen niet overeen.");
-                  break;
-              }
+              this.translate.get('loginPage.errors.serverResponses.' + loginRequest.error).subscribe((res: string) => {
+                  this.loginErrorMessage.showErrorMessage(res);
+                }
+              )
             } else {
-              this.loginErrorMessage.showErrorMessage("Er is een fout opgetreden.")
+              this.translate.get('loginPage.errors.serverResponses.otherError').subscribe((res: string) => {
+                  this.loginErrorMessage.showErrorMessage(res);
+                }
+              )
             }
           } else {
             this.loginErrorMessage.hideErrorMessage();
@@ -76,7 +76,10 @@ export class LoginPageComponent implements OnInit {
           }
         },
         error: (e) => {
-          this.loginErrorMessage.showErrorMessage("Er is een fout opgetreden tijdens het inloggen.");
+          this.translate.get('loginPage.errors.serverResponses.errorDuringLogin').subscribe((res: string) => {
+              this.loginErrorMessage.showErrorMessage(res);
+            }
+          )
         }
       })
     }
