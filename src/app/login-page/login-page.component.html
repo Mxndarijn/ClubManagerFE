@@ -24,7 +24,7 @@
                 <div class="relative flex items-center"> <!--Wrapper for input field -->
                     <app-input-field-form class="mb-o" id="passwordId" formControlName="password" [placeholder]="'Vul hier je wachtwoord in'"
                         [type]="showPassword ? 'text' : 'password'"></app-input-field-form>
-                    <button class="absolute right-0 mr-2" (click)="togglePasswordVisibilty()">
+                    <button class="absolute right-0 mr-2" (click)="togglePasswordVisibility()">
                         <div class="mb-2">
                             <fa-icon *ngIf="showPassword; else eyeSlashIcon" [icon]="faEye"
                                 class="text-gray-500"></fa-icon>

@@ -8,7 +8,7 @@ import { InputFieldFormComponent } from '../input-fields/input-field-form-big/in
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {ErrorMessageComponent} from "../error-messages/error-message/error-message.component";
 import {ErrorMessageManualComponent} from "../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../environment/environment";
@@ -22,7 +22,7 @@ import {environment} from "../../environment/environment";
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, ErrorMessageComponent, ErrorMessageManualComponent], // Removed RouterLink and RouterLinkActive from imports
 })
 export class LoginPageComponent implements OnInit {
   public loginForm!: FormGroup;
@@ -32,7 +32,8 @@ export class LoginPageComponent implements OnInit {
   faEyeSlash = faEyeSlash;
   @ViewChild('loginErrorMessage', {static: false}) loginErrorMessage!: ErrorMessageManualComponent;
 
-  constructor(private authenticationService: AuthenticationService) {
+  constructor(private authenticationService: AuthenticationService,
+              private router: Router) { // Injected Router
 
   }
 
@@ -43,7 +44,7 @@ export class LoginPageComponent implements OnInit {
     });
   }
 
-  togglePasswordVisibilty(): void {
+  togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
@@ -69,7 +70,9 @@ export class LoginPageComponent implements OnInit {
             }
           } else {
             this.loginErrorMessage.hideErrorMessage();
+            this.router.navigate(['/home']);
             // navigate to home
+
           }
         },
         error: (e) => {
