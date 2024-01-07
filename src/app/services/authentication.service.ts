@@ -20,6 +20,7 @@ export class AuthenticationService {
       this.authenticationClient.login(email, password).subscribe( {
         next: (response) => {
           if(response.success) {
+            console.log("new token key: " + response.message)
             localStorage.setItem(this.tokenKey, response.message)
           }
           subscriber.next(response);

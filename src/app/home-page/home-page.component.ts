@@ -23,8 +23,9 @@ export class HomePageComponent {
 
   constructor(graphQLCommunication: GraphQLCommunication) {
     graphQLCommunication.getMyAssociations().subscribe({
-      next: (assocations) => {
-        this.associations = assocations;
+      next: (response) => {
+        console.log(response)
+        this.associations = response.data.getMyAssociations;
       },
       error: (error) => {
         console.log(error);
