@@ -22,7 +22,7 @@ import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {ErrorMessageManualComponent} from "../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../environment/environment";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-register-page',
@@ -41,7 +41,7 @@ export class RegisterPageComponent implements OnInit {
   faEyeSlash = faEyeSlash
   @ViewChild('registerErrorMessage', {static: false}) registerErrorMessage!: ErrorMessageManualComponent;
 
-  constructor(private authenticationService: AuthenticationService) { }
+  constructor(private authenticationService: AuthenticationService, private translate: TranslateService) { }
 
   ngOnInit() {
     this.registerForm = new FormGroup({
@@ -105,16 +105,15 @@ export class RegisterPageComponent implements OnInit {
         next: (registerRequest) => {
         if(!registerRequest.success) {
           if (typeof registerRequest.error === 'string') {
-            switch (registerRequest.error) {
-              case "account-validation-error":
-                this.registerErrorMessage.showErrorMessage("Er is een fout opgetreden tijdens het valideren van de gegevens.");
-                break;
-              case "email-already-used":
-                this.registerErrorMessage.showErrorMessage("Er is al een account met dit emailadres");
-                break;
-            }
+            this.translate.get('registerPage.errors.serverResponses.' + registerRequest.error).subscribe((res: string) => {
+                this.registerErrorMessage.showErrorMessage(res);
+              }
+            )
           } else {
-            this.registerErrorMessage.showErrorMessage("Er is een fout opgetreden.")
+            this.translate.get('registerPage.errors.serverResponses.otherError').subscribe((res: string) => {
+                this.registerErrorMessage.showErrorMessage(res);
+              }
+            )
           }
         } else {
           this.registerErrorMessage.hideErrorMessage();

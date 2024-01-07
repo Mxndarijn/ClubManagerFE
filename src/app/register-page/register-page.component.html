@@ -8,37 +8,37 @@
     <div class="justify-center space-y-16">
       <div class="flex flex-col ">
         <h1 class="text-3xl font-bold m-0" translate [translateParams]="{companyName: environment.companyName}">registerPage.titleHeader</h1>
-        <p class="text-lg">Acces information</p>
+        <p class="text-lg" translate>registerPage.accessInformation</p>
       </div>
       <form class="mt-2 flex flex-col items-start w-96" [formGroup]="registerForm">
         <div class="flex flex-row space-x-7">
           <div class="flex flex-col mb-5">
-            <label class="font-bold text-lg" for="first-name">Voornaam</label>
+            <label class="font-bold text-lg" for="first-name" translate >registerPage.firstNameHeader</label>
             <app-input-field-form-small id="first-name" formControlName="firstName"
-              [placeholder]="'Vul hier je voornaam in'"></app-input-field-form-small>
-            <app-error-message [errorMessage]="'Je moet een voornaam invullen.'" [formGroup]="registerForm"
+              [placeholder]="'registerPage.firstNamePlaceholder' | translate"></app-input-field-form-small>
+            <app-error-message [errorMessage]="'registerPage.errors.noFirstName' | translate" [formGroup]="registerForm"
               [controlName]="'firstName'">
             </app-error-message>
           </div>
           <div class="flex flex-col">
-            <label class="font-bold text-lg" for="last-name">Achternaam</label>
+            <label class="font-bold text-lg" for="last-name" translate>registerPage.lastNameHeader</label>
             <app-input-field-form-small id="last-name" formControlName="lastName"
-              [placeholder]="'Vul hier je achternaam in'"></app-input-field-form-small>
-            <app-error-message [errorMessage]="'Je moet een achternaam invullen.'" [formGroup]="registerForm"
+              [placeholder]="'registerPage.lastNamePlaceholder' | translate"></app-input-field-form-small>
+            <app-error-message [errorMessage]="'registerPage.errors.noLastName' | translate" [formGroup]="registerForm"
               [controlName]="'lastName'">
             </app-error-message>
           </div>
         </div>
-        <label class="font-bold text-lg" for="emailId">Email</label>
+        <label class="font-bold text-lg" for="emailId" translate>registerPage.emailHeader</label>
         <app-input-field-form id="emailId" formControlName="email"
-          [placeholder]="'Vul hier je email in'"></app-input-field-form>
-        <app-error-message [errorMessage]="'Je moet een geldig email invullen.'" [formGroup]="registerForm"
+          [placeholder]="'registerPage.emailPlaceholder' | translate"></app-input-field-form>
+        <app-error-message [errorMessage]="'registerPage.errors.noValidEmail' | translate" [formGroup]="registerForm"
           [controlName]="'email'">
         </app-error-message>
-        <label class="font-bold text-lg" for="passwordId">Wachtwoord</label>
+        <label class="font-bold text-lg" for="passwordId" translate>registerPage.passwordHeader</label>
         <div class="relative flex items-center"> <!--Wrapper for input field -->
           <app-input-field-form class="" id="passwordId" formControlName="password"
-            [placeholder]="'Vul hier je wachtwoord in'"
+            [placeholder]="'registerPage.passwordPlaceholder' | translate"
             [type]="showPassword ? 'text' : 'password'" ></app-input-field-form>
 
           <button class="absolute right-0 mr-2" (click)="togglePasswordVisibilty()">
@@ -51,25 +51,25 @@
           </button>
 
         </div>
-        <app-error-message [errorMessage]="'Het wachtwoord moet 8 karakters hebben.'" [formGroup]="registerForm"
+        <app-error-message [errorMessage]="'registerPage.errors.noChars' | translate" [formGroup]="registerForm"
           [controlName]="'password'" [specificError]="'minlength'">
         </app-error-message>
-        <app-error-message [errorMessage]="'Het wachtwoord moet een hoofdletter bevatten.'" [formGroup]="registerForm"
+        <app-error-message [errorMessage]="'registerPage.errors.noUpperCase' | translate" [formGroup]="registerForm"
           [controlName]="'password'" [specificError]="'noUppercase'">
         </app-error-message>
-        <app-error-message [errorMessage]="'Het wachtwoord moet een kleine letter bevatten.'" [formGroup]="registerForm"
+        <app-error-message [errorMessage]="'registerPage.errors.noLowerCase' | translate" [formGroup]="registerForm"
           [controlName]="'password'" [specificError]="'noLowercase'">
         </app-error-message>
-        <app-error-message [errorMessage]="'Het wachtwoord moet een getal bevatten.'" [formGroup]="registerForm"
+        <app-error-message [errorMessage]="'registerPage.errors.noNumber' | translate" [formGroup]="registerForm"
           [controlName]="'password'" [specificError]="'noNumber'">
         </app-error-message>
-        <app-error-message [errorMessage]="'Het wachtwoord moet speciaal karakter bevatten.'" [formGroup]="registerForm"
+        <app-error-message [errorMessage]="'registerPage.errors.noSpecialChar' | translate" [formGroup]="registerForm"
           [controlName]="'password'" [specificError]="'noSpecialChar'">
         </app-error-message>
-        <label class="font-bold text-lg" for="second-password">Herhaal wachtwoord</label>
+        <label class="font-bold text-lg" for="second-password" translate>registerPage.repeatPasswordHeader</label>
         <div class="relative flex items-center"> <!--Wrapper for input field -->
           <app-input-field-form class="" id="second-password" formControlName="secondPassword"
-            [placeholder]="'Vul hier je wachtwoord nog een keer in'"
+            [placeholder]="'registerPage.repeatPasswordPlaceholder' | translate"
             [type]="showSecondPassword ? 'text' : 'password'"></app-input-field-form>
 
           <button class="absolute right-0 mr-2" (click)="toggleSecondPasswordVisitbilty()">
@@ -82,15 +82,15 @@
           </button>
         </div>
         <app-error-message
-          [errorMessage]="'De wachtwoorden komen niet overeen.'"
+          [errorMessage]="'registerPage.errors.passwordMismatch' | translate"
           [formGroup]="registerForm"
           [specificError]="'passwordsMismatch'">
         </app-error-message>
         <app-error-message-manual  #registerErrorMessage ></app-error-message-manual>
-        <app-confirm-button class="mt-3" [label]="'Registreer'" (onClick)="onSubmit()"></app-confirm-button>
+        <app-confirm-button class="mt-3" [label]="'registerPage.registerButton' | translate" (onClick)="onSubmit()"></app-confirm-button>
         <button class=" mt-3 underline text-sm text-sky-900 hover:text-sky-500" routerLink="/login"
-          routerLinkActive="active">
-          Heb je al een account? Log hier in.
+          routerLinkActive="active" translate>
+          registerPage.alreadyAccount
         </button>
 
       </form>

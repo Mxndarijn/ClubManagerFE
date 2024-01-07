@@ -1,7 +1,7 @@
 {
   "loginPage": {
     "titleHeader": "Welkom op {{companyName}}",
-    "accessInformation": "Access information",
+    "accessInformation": "Inloggen",
     "emailHeader": "Email",
     "passwordHeader": "Wachtwoord",
     "loginButton": "Log in",
@@ -13,12 +13,44 @@
       "noValidEmail": "Je moet een geldig email invullen.",
       "noValidPassword": "Je moet een wachtwoord invullen.",
       "serverResponses": {
-        "account-validation-error": "Er is een fout opgetreden tijdens het valideren van de gegevens.0",
+        "account-validation-error": "Er is een fout opgetreden tijdens het valideren van de gegevens.",
         "account-bad-credentials": "Email en wachtwoord komen niet overeen.",
         "otherError": "Er is een fout opgetreden.",
         "errorDuringLogin": "Er is een fout opgetreden tijdens het inloggen."
       }
 
+    }
+  },
+  "registerPage": {
+    "titleHeader": "Welkom op {{companyName}}",
+    "accessInformation": "Registeren",
+    "firstNameHeader": "Voornaam",
+    "lastNameHeader": "Achternaam",
+    "emailHeader": "Email",
+    "passwordHeader": "Wachtwoord",
+    "repeatPasswordHeader": "Herhaal wachtwoord",
+    "registerButton": "Registreer",
+    "alreadyAccount": "Heb je al een account? Log hier in.",
+    "firstNamePlaceholder": "Vul hier je voornaam in",
+    "lastNamePlaceholder": "Vul hier je achternaam in",
+    "emailPlaceholder": "Vul hier je email in",
+    "passwordPlaceholder": "Vul hier je wachtwoord in",
+    "repeatPasswordPlaceholder": "Vul hier je wachtwoord nog een keer in",
+    "errors": {
+      "noLastName": "Je moet een achternaam invullen.",
+      "noFirstName": "Je moet een voornaam invullen.",
+      "noValidEmail": "Je moet een geldig email invullen",
+      "noChars": "Het wachtwoord moet 8 karakters hebben.",
+      "noUpperCase":  "Het wachtwoord moet een hoofdletter bevatten.",
+      "noLowerCase": "Het wachtwoord moet een kleine letter bevatten.",
+      "noNumber": "Het wachtwoord moet een getal bevatten.",
+      "noSpecialChar": "Het wachtwoord moet speciaal karakter bevatten.",
+      "passwordMismatch": "De wachtwoorden komen niet overeen.",
+      "serverResponses": {
+        "account-validation-error": "Er is een fout opgetreden tijdens het valideren van de gegevens.",
+        "email-already-used": "Er is al een account met dit emailadres",
+        "otherError": "Er is een fout opgetreden."
+        }
     }
   }
 }
