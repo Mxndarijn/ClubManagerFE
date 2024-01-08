@@ -13,6 +13,7 @@ import {ErrorMessageComponent} from "../error-messages/error-message/error-messa
 import {ErrorMessageManualComponent} from "../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {NavbarMinimalComponent} from "../navbar/navbar-minimal/navbar-minimal.component";
 
 
 
@@ -23,7 +24,7 @@ import {TranslateModule, TranslateService} from "@ngx-translate/core";
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent],
 })
 export class LoginPageComponent implements OnInit {
   public loginForm!: FormGroup;
