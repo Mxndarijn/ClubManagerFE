@@ -1,8 +1,7 @@
 <div class="flex row h-screen bg-gray-100">
     <div class="w-6/12 bg-gray-200">
-        <img class="h-full w-full object-cover relative" src="../../assets/4824879.jpg">
+        <img class="h-full w-full object-cover relative" src="../../assets/4824879.jpg" alt="main-image">
         <h1 class="absolute top-0 left-0 text-2xl">Logo</h1>
-
     </div>
     <div class="pl-2 flex flex-col w-6/12 justify-center items-center">
         <div class="justify-center space-y-16">
@@ -10,8 +9,7 @@
                 <h1 class="text-3xl font-bold m-0" translate [translateParams]="{companyName: environment.companyName}">loginPage.titleHeader</h1>
                 <p class="text-lg" translate >loginPage.accessInformation</p>
             </div>
-            <form class="mt-2 flex flex-col items-start" [formGroup]="loginForm" fxLayout="column"
-                fxLayoutAlign="center stretch">
+            <form class="mt-2 flex flex-col items-start" [formGroup]="loginForm">
                 <label class="font-bold text-lg" for="emailId" translate>loginPage.emailHeader</label>
                 <app-input-field-form id="emailId" formControlName="email" [placeholder]="'loginPage.emailPlaceholder' | translate"></app-input-field-form>
               <app-error-message
@@ -49,7 +47,6 @@
                     routerLinkActive="active" translate>
                     loginPage.noAccount
                 </button>
-
             </form>
         </div>
     </div>
