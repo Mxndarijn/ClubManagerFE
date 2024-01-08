@@ -19,10 +19,10 @@ module.exports = {
         "accent": "#0cacd7",
           "neutral": "#12b5d2",
           "base-100": "#e5e7eb",
-          "info": "#0e3ade",
+        "info": "#0e3ade",
           "success": "#22c55e",
           "warning": "#f97316",
-          "error": "#991b1b",
+          "error": "#de0000",
       },
         dark: {
           ...require("daisyui/src/theming/themes")["dark"],
@@ -37,7 +37,7 @@ module.exports = {
           "success": "#22c55e",
           "warning": "#f97316",
           "error": "#d31515",
-          "base-content" : "#bed0d3",
+          "base-content" : "#b4b9b9",
       }
       },
     ],

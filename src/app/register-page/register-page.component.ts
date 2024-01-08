@@ -23,11 +23,12 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
 import {ErrorMessageManualComponent} from "../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {NavbarMinimalComponent} from "../navbar/navbar-minimal/navbar-minimal.component";
 
 @Component({
   selector: 'app-register-page',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, InputFieldFormSmallComponent, ErrorMessageComponent, RouterLink, RouterLinkActive, ErrorMessageManualComponent, TranslateModule],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, InputFieldFormSmallComponent, ErrorMessageComponent, RouterLink, RouterLinkActive, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css'
 })
@@ -48,8 +49,7 @@ export class RegisterPageComponent implements OnInit {
       email: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.required, Validators.email])),
       password: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required,  this.containsUppercase, this.containsLowercase, this.containsNumber, this.containsSpecialChar])),
       secondPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
-      firstName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(2), Validators.required])),
-      lastName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(2), Validators.required]))
+      fullName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(4), Validators.required, this.containsSpace ])),
     }, { validators: this.passwordsMatchValidator });
   }
 
@@ -64,6 +64,12 @@ export class RegisterPageComponent implements OnInit {
     const uppercasePattern = /[A-Z]/;
     return uppercasePattern.test(control.value) ? null : { 'noUppercase': true };
   }
+
+  containsSpace(control: FormControl): ValidationErrors | null {
+    const spacePattern = /\s/;
+    return spacePattern.test(control.value) ? null : { 'noSpace': true };
+  }
+
 
   passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     const password = group.get('password')?.value;
@@ -99,8 +105,7 @@ export class RegisterPageComponent implements OnInit {
       this.authenticationService.register(
         this.registerForm.get('email')!.value,
         this.registerForm.get('password')!.value,
-        this.registerForm.get('firstName')!.value,
-        this.registerForm.get('lastName')!.value
+        this.registerForm.get('fullName')!.value
       ).subscribe({
         next: (registerRequest) => {
         if(!registerRequest.success) {

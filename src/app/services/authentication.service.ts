@@ -34,9 +34,9 @@ export class AuthenticationService {
   });
   }
 
-  public register(email: string, password: string, firstName: string, lastName: string): Observable<any> {
+  public register(email: string, password: string, fullName: string): Observable<any> {
     return new Observable(subscriber => {
-      this.authenticationClient.register(email, password, firstName, lastName).subscribe({
+      this.authenticationClient.register(email, password, fullName).subscribe({
         next: (response) => {
           if (response.success) {
             localStorage.setItem(this.tokenKey, response.message);

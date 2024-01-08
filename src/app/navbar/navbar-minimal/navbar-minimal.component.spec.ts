@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountIconComponent } from './account-icon.component';
+import { NavbarMinimalComponent } from './navbar-minimal.component';
 
-describe('AccountIconComponent', () => {
-  let component: AccountIconComponent;
-  let fixture: ComponentFixture<AccountIconComponent>;
+describe('NavbarMinimalComponent', () => {
+  let component: NavbarMinimalComponent;
+  let fixture: ComponentFixture<NavbarMinimalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountIconComponent]
+      imports: [NavbarMinimalComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AccountIconComponent);
+    fixture = TestBed.createComponent(NavbarMinimalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

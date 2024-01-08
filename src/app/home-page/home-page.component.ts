@@ -1,15 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {SideBarComponent} from "../side-bar/side-bar.component";
-import {AccountIconComponent} from "../account-icon/account-icon.component";
 import {GraphQLCommunication} from "../services/graphql-communication.service";
 import {NgForOf} from "@angular/common";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {TokenInterceptor} from "../helpers/token.interceptor";
+import {environment} from "../../environment/environment";
+import {RouterOutlet} from "@angular/router";
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [SideBarComponent, AccountIconComponent, NgForOf],
+  imports: [SideBarComponent, NgForOf, RouterOutlet],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
   providers: [
@@ -36,4 +37,5 @@ export class HomePageComponent {
   }
 
 
+  protected readonly environment = environment;
 }

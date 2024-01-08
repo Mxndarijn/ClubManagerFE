@@ -19,12 +19,12 @@ export class AuthenticationClient {
       { headers: headers, responseType: 'json' },
     );
   }
-  public register(email: string, password: string, firstName: string, lastName: string): Observable<any> {
+  public register(email: string, password: string, fullName: string): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.http.post(
       environment.apiUrl + '/auth/register',
-      { email, password, firstName, lastName },
+      { email, password, fullName},
       { headers: headers, responseType: 'json' },
     );
   }

@@ -1,10 +1,33 @@
-<nav class="flex flex-col h-screen bg-gray-300 w-48">
-  <h1 class="" >{{ environment.companyName }}</h1>
-  <ul class="flex flex-col justify-center w-full flex-grow">
-    <!--              Verander de label naar de vereniging variable -->
-    <app-association-name [textLabel]="'Vereniging naam'" ></app-association-name>
-    <div class="bg-gray-300 border-b-2 border-b-gray-200 p-3 hover:bg-gray-200 " *ngFor="let i of sidebar_items">
-      <app-side-bar-item class="" [item]="i"></app-side-bar-item>
-    </div>
-  </ul>
-</nav>
+<!--<nav class="flex flex-col h-screen bg-base-300 w-48">-->
+<!--  <h1 class="" >{{ environment.companyName }}</h1>-->
+<!--  <ul class="flex flex-col justify-center w-full flex-grow">-->
+<!--    &lt;!&ndash;              Verander de label naar de vereniging variable &ndash;&gt;-->
+<!--    <app-association-name [textLabel]="'Vereniging naam'" ></app-association-name>-->
+<!--    <div class="border-b-2 b p-3" *ngFor="let i of sidebar_items">-->
+<!--      <app-side-bar-item [item]="i"></app-side-bar-item>-->
+<!--    </div>-->
+<!--  </ul>-->
+<!--</nav>-->
+<div class="drawer lg:drawer-open">
+  <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
+  <div class="drawer-content flex flex-col items-center justify-center">
+    <!-- Page content here -->
+    <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>
+    reserveringenPage
+  </div>
+  <div class="drawer-side">
+    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content flex">
+      <div class="flex flex-row space-x-20 mb-10">
+        <h1 class="">{{ environment.companyName }}</h1>
+        <h1>Logo</h1>
+      </div>
+      <div class="divider"></div>
+      <!-- Sidebar content here -->
+      <div class="p-2" *ngFor="let i of sidebar_items">
+        <app-side-bar-item [item]="i"></app-side-bar-item>
+      </div>
+      <div class="divider"></div>
+    </ul>
+  </div>
+</div>

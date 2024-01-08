@@ -14,6 +14,8 @@ import {ErrorMessageManualComponent} from "../error-messages/error-message-manua
 import {environment} from "../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NavbarMinimalComponent} from "../navbar/navbar-minimal/navbar-minimal.component";
+import {LanguageComponent} from "../navbar/language/language.component";
+import {ThemeControllerComponent} from "../navbar/theme-controller/theme-controller.component";
 
 
 
