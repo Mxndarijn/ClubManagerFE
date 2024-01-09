@@ -24,6 +24,7 @@ import {ErrorMessageManualComponent} from "../error-messages/error-message-manua
 import {environment} from "../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NavbarMinimalComponent} from "../navbar/navbar-minimal/navbar-minimal.component";
+import {SidebarService} from "../services/sidebar.service";
 
 @Component({
   selector: 'app-register-page',
@@ -42,7 +43,7 @@ export class RegisterPageComponent implements OnInit {
   faEyeSlash = faEyeSlash
   @ViewChild('registerErrorMessage', {static: false}) registerErrorMessage!: ErrorMessageManualComponent;
 
-  constructor(private authenticationService: AuthenticationService, private translate: TranslateService) { }
+  constructor(private authenticationService: AuthenticationService, private translate: TranslateService, private sidebarService: SidebarService) { sidebarService.hideSidebar()}
 
   ngOnInit() {
     this.registerForm = new FormGroup({

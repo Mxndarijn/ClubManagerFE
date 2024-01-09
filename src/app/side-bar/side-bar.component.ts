@@ -5,6 +5,7 @@ import {SideBarItemComponent} from '../side-bar-item/side-bar-item.component'
 import {environment} from "../../environment/environment";
 import {AssociationNameComponent} from "../association-name/association-name.component";
 import {ConfirmButtonComponent} from "../buttons/confirm-button/confirm-button.component";
+import {RouterOutlet} from "@angular/router";
 
 //Voeg items to voor nieuwe gegevens in de nav
 const SIDEBAR_ITEMS: SideBarIcon[] = [
@@ -29,7 +30,7 @@ const SIDEBAR_ITEMS: SideBarIcon[] = [
 @Component({
   selector: 'app-side-bar',
   standalone: true,
-  imports: [CommonModule, SideBarItemComponent, AssociationNameComponent, ConfirmButtonComponent],
+  imports: [CommonModule, SideBarItemComponent, AssociationNameComponent, ConfirmButtonComponent, RouterOutlet],
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.css'
 })

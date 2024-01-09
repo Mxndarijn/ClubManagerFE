@@ -16,6 +16,7 @@ import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NavbarMinimalComponent} from "../navbar/navbar-minimal/navbar-minimal.component";
 import {LanguageComponent} from "../navbar/language/language.component";
 import {ThemeControllerComponent} from "../navbar/theme-controller/theme-controller.component";
+import {SidebarService} from "../services/sidebar.service";
 
 
 
@@ -37,7 +38,9 @@ export class LoginPageComponent implements OnInit {
   @ViewChild('loginErrorMessage', {static: false}) loginErrorMessage!: ErrorMessageManualComponent;
   constructor(private authenticationService: AuthenticationService,
               private router: Router,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+              private sidebarService: SidebarService) {
+    this.sidebarService.hideSidebar();
 
   }
 

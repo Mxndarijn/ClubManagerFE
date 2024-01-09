@@ -6,6 +6,7 @@ import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {TokenInterceptor} from "../helpers/token.interceptor";
 import {environment} from "../../environment/environment";
 import {RouterOutlet} from "@angular/router";
+import {SidebarService} from "../services/sidebar.service";
 
 @Component({
   selector: 'app-home-page',
@@ -22,7 +23,8 @@ export class HomePageComponent {
 
   associations: any[] = [];
 
-  constructor(graphQLCommunication: GraphQLCommunication) {
+  constructor(graphQLCommunication: GraphQLCommunication, sidebarService: SidebarService) {
+    sidebarService.showSidebar();
     graphQLCommunication.getMyAssociations().subscribe({
       next: (response) => {
         console.log(response)

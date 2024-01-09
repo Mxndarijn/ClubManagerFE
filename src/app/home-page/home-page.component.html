@@ -1,7 +1,19 @@
 <!--<div class="flex flex-row justify-between">-->
-<!--  <app-side-bar></app-side-bar>-->
-<!--</div>-->
 <!--<div *ngFor="let association of associations">-->
-<!--  {{ association.name}}-->
+<!--  <h1></h1>-->
+<!--  <p></p>-->
+<!--  <img src="{{association.image.encoded}}">-->
 <!--</div>-->
-<h1>hi</h1>
+<!--<h1>hi</h1>-->
+<div *ngFor="let association of associations" class="mx-auto">
+  <div class="hero min-h-screen bg-base-100">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+      <img src="{{association.image.encoded}}" class="max-w-sm rounded-lg shadow-2xl" />
+      <div>
+        <h1 class="text-5xl font-bold">{{ association.name}}!</h1>
+        <p class="py-6">{{ association.welcomeMessage  }}</p>
+        <button class="btn btn-primary">Contact</button>
+      </div>
+    </div>
+  </div>
+</div>
