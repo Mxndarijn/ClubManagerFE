@@ -3,7 +3,8 @@
 # Compiled output
 /dist
 /tmp
-/out-tsc
+
+# out-tsc
 /bazel-out
 
 # Node
@@ -34,9 +35,12 @@ yarn-error.log
 /connect.lock
 /coverage
 /libpeerconnection.log
-testem.log
+#testem.log
 /typings
 
 # System files
 .DS_Store
 Thumbs.db
+
+# Exception for all files in src/assets/i18n directory
+!/src/assets/i18n/*
