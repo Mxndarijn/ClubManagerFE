@@ -13,30 +13,33 @@ export const routes: Routes = [
   {
     path: '',
     component: LoginPageComponent,
-    canActivate: [AuthGuard],
   },
   {
     path: 'login',
-    component: LoginPageComponent
+    component: LoginPageComponent,
   },
   {
     path: 'register',
-    component: RegisterPageComponent
+    component: RegisterPageComponent,
   },
   {
     path: 'home',
-    component: HomePageComponent
+    component: HomePageComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'reservations',
-    component: ReservationPageComponent
+    component: ReservationPageComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'visits',
-    component: VisitsPageComponent
+    component: VisitsPageComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'competition',
-    component: CompetitionPageComponent
+    component: CompetitionPageComponent,
+    canActivate: [AuthGuard],
   }
 ];

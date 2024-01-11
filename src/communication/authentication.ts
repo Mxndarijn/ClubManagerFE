@@ -29,4 +29,13 @@ export class AuthenticationClient {
     );
   }
 
+  validateToken(): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post(
+      environment.apiUrl + '/auth/validateToken',
+      { },
+      { headers: headers, responseType: 'json' },
+    );
+  }
 }

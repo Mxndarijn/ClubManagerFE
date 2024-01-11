@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthenticationClient } from '../../communication/authentication';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {firstValueFrom, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -57,12 +57,20 @@ export class AuthenticationService {
     localStorage.removeItem(this.tokenKey);
   }
 
-  public isLoggedIn(): boolean {
+  public async isLoggedIn(): Promise<boolean> {
     let token = localStorage.getItem(this.tokenKey);
-    return token != null && token.length > 0;
+    if (!token) {
+      return false;
+    }
+    try {
+      const response = await firstValueFrom(this.authenticationClient.validateToken());
+      return response.success;
+    } catch (error) {
+      return false;
+    }
   }
 
   public getToken(): string | null {
-    return this.isLoggedIn() ? localStorage.getItem(this.tokenKey) : null;
+    return localStorage.getItem(this.tokenKey);
   }
 }
