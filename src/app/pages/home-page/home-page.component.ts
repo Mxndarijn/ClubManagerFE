@@ -7,11 +7,12 @@ import {TokenInterceptor} from "../../helpers/token.interceptor";
 import {environment} from "../../../environment/environment";
 import {RouterOutlet} from "@angular/router";
 import {SidebarService} from "../../services/sidebar.service";
+import {NavbarComponent} from "../../navbar/navbar.component";
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [SideBarComponent, NgForOf, RouterOutlet],
+  imports: [SideBarComponent, NgForOf, RouterOutlet, NavbarComponent],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
   providers: [

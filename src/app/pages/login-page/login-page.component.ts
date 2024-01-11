@@ -13,11 +13,9 @@ import {ErrorMessageComponent} from "../../error-messages/error-message/error-me
 import {ErrorMessageManualComponent} from "../../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {NavbarMinimalComponent} from "../../navbar/navbar-minimal/navbar-minimal.component";
-import {LanguageComponent} from "../../navbar/language/language.component";
-import {ThemeControllerComponent} from "../../navbar/theme-controller/theme-controller.component";
 import {SidebarService} from "../../services/sidebar.service";
 import {PermissionService} from "../../services/permission.service";
+import {NavbarMinimalComponent} from "../../navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
 
 
 
@@ -28,7 +26,7 @@ import {PermissionService} from "../../services/permission.service";
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent],
 })
 export class LoginPageComponent implements OnInit {
   public loginForm!: FormGroup;

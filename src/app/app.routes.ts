@@ -41,5 +41,10 @@ export const routes: Routes = [
     path: 'competition',
     component: CompetitionPageComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'settings',
+    component: CompetitionPageComponent,
+    canActivate: [AuthGuard],
   }
 ];

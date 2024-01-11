@@ -71,5 +71,23 @@ export class GraphQLCommunication {
 
   }
 
+  public getMyProfile(): Observable<any> {
+    const query = {
+      query: `
+    {
+      getMyProfile {
+        id
+        image {
+            id,
+            encoded
+        }
+    }
+    }
+  `
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
 
 }

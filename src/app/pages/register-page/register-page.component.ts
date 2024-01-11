@@ -23,13 +23,13 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
 import {ErrorMessageManualComponent} from "../../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {NavbarMinimalComponent} from "../../navbar/navbar-minimal/navbar-minimal.component";
 import {SidebarService} from "../../services/sidebar.service";
+import {NavbarMinimalComponent} from "../../navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
 
 @Component({
   selector: 'app-register-page',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, InputFieldFormSmallComponent, ErrorMessageComponent, RouterLink, RouterLinkActive, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, InputFieldFormComponent, CommonModule, FontAwesomeModule, InputFieldFormSmallComponent, ErrorMessageComponent, RouterLink, RouterLinkActive, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css'
 })
