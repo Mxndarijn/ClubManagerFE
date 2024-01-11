@@ -41,5 +41,35 @@ export class GraphQLCommunication {
 
   }
 
+  public getMyPermissions(): Observable<any> {
+    const query = {
+      query: `
+    {
+      getMyPermissions {
+        name
+      }
+    }
+  `
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  public getMyAssociationPermissions(): Observable<any> {
+    const query = {
+      query: `
+    {
+      getMyAssociationPermissions {
+        permissions
+        associationUUID
+        associationName
+      }
+    }
+  `
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
 
 }

@@ -9,22 +9,22 @@ import {
   AbstractControl
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthenticationService } from '../services/authentication.service';
+import { AuthenticationService } from '../../services/authentication.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ConfirmButtonComponent } from '../buttons/confirm-button/confirm-button.component';
-import { InputFieldFormComponent } from '../input-fields/input-field-form-big/input-field-form.component';
-import { InputFieldFormSmallComponent } from '../input-fields/input-field-form-small/input-field-form-small.component';
-import {ErrorMessageComponent} from "../error-messages/error-message/error-message.component";
+import { ConfirmButtonComponent } from '../../buttons/confirm-button/confirm-button.component';
+import { InputFieldFormComponent } from '../../input-fields/input-field-form-big/input-field-form.component';
+import { InputFieldFormSmallComponent } from '../../input-fields/input-field-form-small/input-field-form-small.component';
+import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import {RouterLink, RouterLinkActive} from "@angular/router";
-import {ErrorMessageManualComponent} from "../error-messages/error-message-manual/error-message-manual.component";
-import {environment} from "../../environment/environment";
+import {ErrorMessageManualComponent} from "../../error-messages/error-message-manual/error-message-manual.component";
+import {environment} from "../../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {NavbarMinimalComponent} from "../navbar/navbar-minimal/navbar-minimal.component";
-import {SidebarService} from "../services/sidebar.service";
+import {NavbarMinimalComponent} from "../../navbar/navbar-minimal/navbar-minimal.component";
+import {SidebarService} from "../../services/sidebar.service";
 
 @Component({
   selector: 'app-register-page',

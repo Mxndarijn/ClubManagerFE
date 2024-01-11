@@ -11,19 +11,26 @@
 <!--<div class="w-80">-->
 <div class="drawer">
   <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
-  <div class="drawer-side">
-<!--    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>-->
-    <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content flex">
-      <div class="flex flex-row space-x-20 mb-10">
+  <div class="drawer-side scrollbar-hide">
+    <!--    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>-->
+    <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content flex ">
+      <div class="flex flex-row space-x-20 mb-5">
         <h1 class="">{{ environment.companyName }}</h1>
         <h1>Logo</h1>
       </div>
       <div class="divider"></div>
       <!-- Sidebar content here -->
-      <div class="p-2" *ngFor="let i of sidebar_items">
+      <div class="p-1" *ngFor="let i of standard_sidebar_items">
         <app-side-bar-item [item]="i"></app-side-bar-item>
       </div>
       <div class="divider"></div>
+      <div *ngFor="let association of associations">
+        <h1 class="font-bold">{{ association.name }}</h1>
+        <div class="p-1" *ngFor="let i of association_sidebar_items">
+          <app-side-bar-item-association *ngIf="hasAssociationPermission(association.id, i.permission)" [item]="i" [association]="association"></app-side-bar-item-association>
+        </div>
+        <div class="divider"></div>
+      </div>
     </ul>
   </div>
 </div>

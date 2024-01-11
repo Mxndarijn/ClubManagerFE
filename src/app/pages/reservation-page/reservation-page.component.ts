@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {SideBarComponent} from "../side-bar/side-bar.component";
+import {SideBarComponent} from "../../navigation/side-bar/side-bar.component";
 
 @Component({
   selector: 'app-reservation-page',

@@ -23,7 +23,6 @@ export class AuthGuard {
     state: RouterStateSnapshot
   ): Promise<boolean> {
     const loggedIn = await this.authService.isLoggedIn();
-    console.log(loggedIn)
     if (!loggedIn) {
       await this.router.navigate(['/login']);
     }

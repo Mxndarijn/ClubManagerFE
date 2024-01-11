@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 // import { LoginPageComponent } from './login-page/login-page.component';
 // import { RegisterPageComponent } from './register-page/register-page.component';
-import {HomePageComponent} from "./home-page/home-page.component";
+import {HomePageComponent} from "./pages/home-page/home-page.component";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {SideBarComponent} from "./side-bar/side-bar.component";
+import {SideBarComponent} from "./navigation/side-bar/side-bar.component";
 
 @Component({
   selector: 'app-root',
