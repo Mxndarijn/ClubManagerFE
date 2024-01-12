@@ -6,6 +6,7 @@ import {ThemeControllerComponent} from "../navigation/simple-navbar/theme-contro
 import {LanguageComponent} from "../navigation/simple-navbar/language/language.component";
 import {Theme, ThemeService} from "../services/theme.service";
 import {GraphQLCommunication} from "../services/graphql-communication.service";
+import {User} from "../../model/user.model";
 
 @Component({
   selector: 'app-navbar',
@@ -16,7 +17,7 @@ import {GraphQLCommunication} from "../services/graphql-communication.service";
 })
 export class NavbarComponent {
   isChecked: boolean;
-  profile: any;
+  profile: User | undefined;
 
   constructor(protected translate: TranslateService,
               private themeService: ThemeService,
@@ -24,7 +25,6 @@ export class NavbarComponent {
     this.graphQL.getMyProfile().subscribe({
       next: (data) => {
         this.profile = data.data.getMyProfile;
-      console.log(this.profile.image.encoded)
       }
     })
     this.isChecked = themeService.getCurrentTheme() != Theme.LIGHT;

@@ -70,20 +70,24 @@ export class SideBarComponent implements OnInit {
   association_sidebar_items: SideBarIconAssociation[] = ASSOCIATION_SIDEBAR_ITEMS
   protected readonly environment = environment;
   associations: any[] = [];
+  public isVisible: boolean = false;
 
 
-  constructor(graphQLCommunication: GraphQLCommunication, sidebarService: SidebarService,
-              protected permissionService: PermissionService) {
-    sidebarService.showSidebar();
-    graphQLCommunication.getMyAssociations().subscribe({
-      next: (response) => {
-        console.log(response)
-        this.associations = response.data.getMyAssociations;
-      },
-      error: (error) => {
-        console.log(error);
+  constructor(
+        private graphQLCommunication: GraphQLCommunication, sidebarService: SidebarService,
+        protected permissionService: PermissionService) {
+    sidebarService.sidebarVisibilityChangedEvent.subscribe({
+      next: (visible: boolean) => {
+        console.log(visible)
+        this.isVisible = visible;
       }
     });
+    sidebarService.sidebarReloadEvent.subscribe({
+      next: ()=> {
+        this.reload()
+      }
+    })
+    this.reload()
   }
 
   associationPermissions: { [associationUUID: string]: string[] } = {};
@@ -105,5 +109,17 @@ export class SideBarComponent implements OnInit {
       return true;
     }
     return this.associationPermissions[associationID]?.includes(perm) || false;
+  }
+
+  private reload() {
+    this.graphQLCommunication.getMyAssociations().subscribe({
+      next: (response) => {
+        console.log(response)
+        this.associations = response.data.getMyAssociations;
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 }

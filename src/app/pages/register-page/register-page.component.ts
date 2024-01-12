@@ -19,12 +19,13 @@ import {ErrorMessageComponent} from "../../error-messages/error-message/error-me
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {ErrorMessageManualComponent} from "../../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {SidebarService} from "../../services/sidebar.service";
 import {NavbarMinimalComponent} from "../../navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
+import {PermissionService} from "../../services/permission.service";
 
 @Component({
   selector: 'app-register-page',
@@ -43,7 +44,7 @@ export class RegisterPageComponent implements OnInit {
   faEyeSlash = faEyeSlash
   @ViewChild('registerErrorMessage', {static: false}) registerErrorMessage!: ErrorMessageManualComponent;
 
-  constructor(private authenticationService: AuthenticationService, private translate: TranslateService, private sidebarService: SidebarService) { sidebarService.hideSidebar()}
+  constructor(private authenticationService: AuthenticationService, private translate: TranslateService, private sidebarService: SidebarService, private permissionService: PermissionService, private router: Router) { sidebarService.hideSidebar()}
 
   ngOnInit() {
     this.registerForm = new FormGroup({
@@ -123,6 +124,9 @@ export class RegisterPageComponent implements OnInit {
           }
         } else {
           this.registerErrorMessage.hideErrorMessage();
+          this.permissionService.refreshPermissions();
+          this.sidebarService.refreshSidebar();
+          this.router.navigate(['/home']);
         }
       }
       })

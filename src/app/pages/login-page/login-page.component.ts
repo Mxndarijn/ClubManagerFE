@@ -77,6 +77,7 @@ export class LoginPageComponent implements OnInit {
           } else {
             this.loginErrorMessage.hideErrorMessage();
             this.permissionService.refreshPermissions();
+            this.sidebarService.refreshSidebar();
             this.router.navigate(['/home']);
             // navigate to home
 

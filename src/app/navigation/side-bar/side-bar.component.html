@@ -9,7 +9,7 @@
 <!--  </ul>-->
 <!--</nav>-->
 <!--<div class="w-80">-->
-<div class="drawer">
+<div class="drawer" [ngClass]="{'lg:drawer-open': isVisible}">
   <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
   <div class="drawer-side scrollbar-hide">
     <!--    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>-->
