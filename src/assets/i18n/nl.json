@@ -55,5 +55,8 @@
       "dutch": "Nederlands",
       "english": "Engels"
     }
+  },
+  "homePage" : {
+    "titleHeader" : "Home"
   }
 }

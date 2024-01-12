@@ -6,8 +6,9 @@ import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {TokenInterceptor} from "../../helpers/token.interceptor";
 import {environment} from "../../../environment/environment";
 import {RouterOutlet} from "@angular/router";
-import {SidebarService} from "../../services/sidebar.service";
-import {NavbarComponent} from "../../navbar/navbar.component";
+import {NavigationService} from "../../services/navigation.service";
+import {NavbarComponent} from "../../navigation/navbar/navbar.component";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-home-page',
@@ -24,8 +25,15 @@ export class HomePageComponent {
 
   associations: any[] = [];
 
-  constructor(graphQLCommunication: GraphQLCommunication, sidebarService: SidebarService) {
-    sidebarService.showSidebar();
+  constructor(graphQLCommunication: GraphQLCommunication, navigationService: NavigationService,
+              private translate: TranslateService) {
+
+    navigationService.showNavigation();
+    this.translate.get('homePage.titleHeader').subscribe((res: string) => {
+        navigationService.setTitle(res);
+      }
+    )
+    navigationService.setSubTitle("");
     graphQLCommunication.getMyAssociations().subscribe({
       next: (response) => {
         this.associations = response.data.getMyAssociations;

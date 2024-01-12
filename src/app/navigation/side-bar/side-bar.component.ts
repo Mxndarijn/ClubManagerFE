@@ -7,7 +7,7 @@ import {ConfirmButtonComponent} from "../../buttons/confirm-button/confirm-butto
 import {RouterOutlet} from "@angular/router";
 import {AssociationPermission} from "../../helpers/permission/association-permission";
 import {GraphQLCommunication} from "../../services/graphql-communication.service";
-import {SidebarService} from "../../services/sidebar.service";
+import {NavigationService} from "../../services/navigation.service";
 import {
   SideBarIconAssociation,
   SideBarItemAssociationComponent
@@ -74,15 +74,14 @@ export class SideBarComponent implements OnInit {
 
 
   constructor(
-        private graphQLCommunication: GraphQLCommunication, sidebarService: SidebarService,
+        private graphQLCommunication: GraphQLCommunication, navigationService: NavigationService,
         protected permissionService: PermissionService) {
-    sidebarService.sidebarVisibilityChangedEvent.subscribe({
+    navigationService.NavigationVisibilityChangedEvent.subscribe({
       next: (visible: boolean) => {
-        console.log(visible)
         this.isVisible = visible;
       }
     });
-    sidebarService.sidebarReloadEvent.subscribe({
+    navigationService.NavigationReloadEvent.subscribe({
       next: ()=> {
         this.reload()
       }

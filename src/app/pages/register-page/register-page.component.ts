@@ -23,7 +23,7 @@ import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {ErrorMessageManualComponent} from "../../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {SidebarService} from "../../services/sidebar.service";
+import {NavigationService} from "../../services/navigation.service";
 import {NavbarMinimalComponent} from "../../navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
 import {PermissionService} from "../../services/permission.service";
 
@@ -44,7 +44,7 @@ export class RegisterPageComponent implements OnInit {
   faEyeSlash = faEyeSlash
   @ViewChild('registerErrorMessage', {static: false}) registerErrorMessage!: ErrorMessageManualComponent;
 
-  constructor(private authenticationService: AuthenticationService, private translate: TranslateService, private sidebarService: SidebarService, private permissionService: PermissionService, private router: Router) { sidebarService.hideSidebar()}
+  constructor(private authenticationService: AuthenticationService, private translate: TranslateService, private sidebarService: NavigationService, private permissionService: PermissionService, private router: Router) { sidebarService.hideNavigation()}
 
   ngOnInit() {
     this.registerForm = new FormGroup({
@@ -125,7 +125,7 @@ export class RegisterPageComponent implements OnInit {
         } else {
           this.registerErrorMessage.hideErrorMessage();
           this.permissionService.refreshPermissions();
-          this.sidebarService.refreshSidebar();
+          this.sidebarService.refreshNavigation();
           this.router.navigate(['/home']);
         }
       }

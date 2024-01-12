@@ -13,7 +13,7 @@ import {ErrorMessageComponent} from "../../error-messages/error-message/error-me
 import {ErrorMessageManualComponent} from "../../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {SidebarService} from "../../services/sidebar.service";
+import {NavigationService} from "../../services/navigation.service";
 import {PermissionService} from "../../services/permission.service";
 import {NavbarMinimalComponent} from "../../navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
 
@@ -38,9 +38,9 @@ export class LoginPageComponent implements OnInit {
   constructor(private authenticationService: AuthenticationService,
               private router: Router,
               private translate: TranslateService,
-              private sidebarService: SidebarService,
+              private navigationService: NavigationService,
               private permissionService: PermissionService) {
-    this.sidebarService.hideSidebar();
+    this.navigationService.hideNavigation();
 
   }
 
@@ -77,7 +77,7 @@ export class LoginPageComponent implements OnInit {
           } else {
             this.loginErrorMessage.hideErrorMessage();
             this.permissionService.refreshPermissions();
-            this.sidebarService.refreshSidebar();
+            this.navigationService.refreshNavigation();
             this.router.navigate(['/home']);
             // navigate to home
 
