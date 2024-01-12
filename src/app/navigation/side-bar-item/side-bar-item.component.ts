@@ -13,10 +13,10 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
 })
 export class SideBarItemComponent {
   @Input()
-  item!: SideBarIcon
+  item!: SideBarIconStandard
 }
 
-export interface SideBarIcon {
+export interface SideBarIconStandard {
   name: string,
   link: string,
 }
