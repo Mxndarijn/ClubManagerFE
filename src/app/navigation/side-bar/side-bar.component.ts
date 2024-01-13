@@ -13,6 +13,8 @@ import {
   SideBarItemAssociationComponent
 } from "../side-bar-item-association/side-bar-item-association.component";
 import {PermissionService} from "../../services/permission.service";
+import {UserAssociation} from "../../../model/user-association.model";
+import {Association} from "../../../model/association.model";
 
 //Voeg items to voor nieuwe gegevens in de nav
 const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
@@ -69,9 +71,9 @@ export class SideBarComponent implements OnInit {
   standard_sidebar_items = STANDARD_SIDEBAR_ITEMS;
   association_sidebar_items: SideBarIconAssociation[] = ASSOCIATION_SIDEBAR_ITEMS
   protected readonly environment = environment;
-  associations: any[] = [];
+  associations: Association[] = [];
   public isVisible: boolean = false;
-
+  associationPermissions: UserAssociation[] = [];
 
   constructor(
         private graphQLCommunication: GraphQLCommunication, navigationService: NavigationService,
@@ -89,7 +91,6 @@ export class SideBarComponent implements OnInit {
     this.reload()
   }
 
-  associationPermissions: { [associationUUID: string]: string[] } = {};
 
 
   ngOnInit() {
@@ -103,18 +104,34 @@ export class SideBarComponent implements OnInit {
     });
   }
 
-  hasAssociationPermission(associationID: string, perm: string) {
-    if(perm == AssociationPermission.NO_PERMISSION) {
+  hasAssociationPermission(associationID: string, perm: string): boolean {
+    // Indien de permissie NO_PERMISSION is, is de toegang toegestaan.
+    if (perm === AssociationPermission.NO_PERMISSION) {
       return true;
     }
-    return this.associationPermissions[associationID]?.includes(perm) || false;
+
+    // Vind de UserAssociation die overeenkomt met de gegeven associationI
+    const userAssociation = this.associationPermissions.find(ua => ua.association.id === associationID);
+
+    // Controleer of de gebruiker deel uitmaakt van de vereniging
+    if (!userAssociation) {
+      return false;
+    }
+    console.log("found userAssociation")
+
+    // Controleer of de gebruiker de benodigde permissie heeft binnen de vereniging
+    return userAssociation.associationRole.permissions.some(p => p.name === perm);
   }
+
 
   private reload() {
     this.graphQLCommunication.getMyAssociations().subscribe({
       next: (response) => {
-        console.log(response)
-        this.associations = response.data.getMyAssociations;
+        if(response.data == null)
+          return;
+        console.log("associations: ")
+        console.log(response.data)
+        this.associations = response.data.getMyProfile.associations.map((assoc: UserAssociation) => assoc.association);
       },
       error: (error) => {
         console.log(error);

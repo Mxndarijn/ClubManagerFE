@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import {GraphQLCommunication} from "./graphql-communication.service";
 import {AuthenticationService} from "./authentication.service";
 import {BehaviorSubject} from "rxjs";
+import {AccountPermission} from "../../model/account-role.model";
+import {AssociationRole} from "../../model/association-role.model";
+import {UserAssociation} from "../../model/user-association.model";
 
 interface AssociationPermission {
   associationUUID: string;
@@ -14,8 +17,8 @@ interface AssociationPermission {
 })
 export class PermissionService {
 
-  private accountPermissions: string[];
-  associationPermissionsSubject = new BehaviorSubject<{ [associationUUID: string]: string[] }>({});
+  private accountPermissions: AccountPermission[];
+  associationPermissionsSubject = new BehaviorSubject<UserAssociation[]>([]);
   public readonly associationPermissions$ = this.associationPermissionsSubject.asObservable();
 
 
@@ -28,23 +31,20 @@ export class PermissionService {
   }
 
   async refreshPermissions() {
-    console.log("Refreshing permissions")
     this.graphQL.getMyPermissions().subscribe({
       next: (response) => {
-        this.accountPermissions = response
+        if(response.data == null)
+          return;
+        this.accountPermissions = response.data.getMyProfile.role.permissions
       },
     })
 
     this.graphQL.getMyAssociationPermissions().subscribe({
       next: (response: any) => {
-        const newPermissions: { [associationUUID: string]: string[] } = {};
-        response.data.getMyAssociationPermissions.forEach((assocPerm: AssociationPermission) => {
-          newPermissions[assocPerm.associationUUID] = assocPerm.permissions;
-        });
-        console.log(newPermissions)
-        this.associationPermissionsSubject.next(newPermissions);
-        console.log("updated?: " + this.associationPermissionsSubject.getValue())
-        console.log("Permissions updated")
+        if(response.data == null)
+          return;
+        console.log(response.data)
+        this.associationPermissionsSubject.next(response.data.getMyProfile.associations);
       },
     })
   }

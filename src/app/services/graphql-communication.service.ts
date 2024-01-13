@@ -24,15 +24,20 @@ export class GraphQLCommunication {
     const query = {
       query: `
     {
-      getMyAssociations {
-        id,
-        name,
-        welcomeMessage,
-        image {
-          encoded
-        },
-        active,
-        contactEmail
+      getMyProfile {
+        associations {
+            association {
+                id
+                name
+                welcomeMessage
+                contactEmail
+                active
+                image {
+                    id
+                    encoded
+                }
+            }
+        }
       }
     }
   `
@@ -45,9 +50,13 @@ export class GraphQLCommunication {
     const query = {
       query: `
     {
-      getMyPermissions {
-        name
-      }
+      getMyProfile {
+        role {
+            permissions {
+                name
+            }
+        }
+    }
     }
   `
     };
@@ -59,11 +68,21 @@ export class GraphQLCommunication {
     const query = {
       query: `
     {
-      getMyAssociationPermissions {
-        permissions
-        associationUUID
-        associationName
-      }
+      getMyProfile {
+        associations {
+            associationRole {
+                permissions {
+                    id
+                    name
+                    description
+                }
+            }
+            association {
+                id
+                name
+            }
+        }
+    }
     }
   `
     };
