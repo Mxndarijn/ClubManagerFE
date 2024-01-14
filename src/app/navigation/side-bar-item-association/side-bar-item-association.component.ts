@@ -19,7 +19,7 @@ export class SideBarItemAssociationComponent {
   association!: any
 
   protected getRouterLink() {
-    return ['/association', this.association.id];
+    return ['/association', this.association.id, this.item.link];
   }
 }
 

@@ -8,7 +8,7 @@ import {HomePageComponent} from "./pages/home-page/home-page.component";
 import {ReservationPageComponent} from "./pages/reservation-page/reservation-page.component";
 import {VisitsPageComponent} from "./pages/visits-page/visits-page.component";
 import {CompetitionPageComponent} from "./pages/competition-page/competition-page.component";
-import { AssociationMembersPageComponentComponent } from "./association-members-page-component/association-members-page-component.component";
+import { AssociationMembersPageComponentComponent } from "./pages/association-members-page-component/association-members-page-component.component";
 import {AssociationManagerGuard} from "./helpers/guards/association-manager-guard.spec";
 
 export const routes: Routes = [
@@ -51,7 +51,7 @@ export const routes: Routes = [
   },
 
   {
-    path: ':associationID/members',
+    path: 'association/:associationID/members',
     component: AssociationMembersPageComponentComponent,
     canActivate: [AuthGuard, AssociationManagerGuard],
   },

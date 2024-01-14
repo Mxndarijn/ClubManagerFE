@@ -35,7 +35,7 @@ module.exports = {
           "base-200" : "#131a23",
           "info": "#3b57c2",
           "info-focus" : "#000000",
-          "success": "#22c55e",
+          "success": "#1ba14f",
           "warning": "#f97316",
           "error": "#d31515",
           "base-content" : "#b4b9b9",

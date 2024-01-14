@@ -1,4 +1,7 @@
 {
+  "config": {
+    "language": "nl-NL"
+  },
   "loginPage": {
     "titleHeader": "Welkom op {{companyName}}",
     "accessInformation": "Inloggen",
@@ -58,5 +61,8 @@
   },
   "homePage" : {
     "titleHeader" : "Home"
+  },
+  "associationMembers" : {
+    "titleHeader" : "Leden-Beheer"
   }
 }

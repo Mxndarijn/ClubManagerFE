@@ -1,0 +1,89 @@
+<div class="w-full mb-10">
+  <div role="tablist" class="tabs tabs-bordered flex justify-center">
+    <div role="tab" class="tab w-36" [class.tab-active]="activeTab === Tab.MEMBERS" (click)="setActiveTab(Tab.MEMBERS)">
+      Leden
+    </div>
+    <div role="tab" class="tab w-36" [class.tab-active]="activeTab === Tab.INVITATIONS"
+         (click)="setActiveTab(Tab.INVITATIONS)">Uitnodigingen
+    </div>
+  </div>
+</div>
+<div *ngIf="activeTab === Tab.MEMBERS" class="w-full">
+  <div class="overflow-x-auto">
+    <table class="table">
+      <!-- head -->
+      <thead>
+      <tr>
+        <th>Lid</th>
+        <th>Rol</th>
+        <th>Lid sinds</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- row 1 -->
+      <tr *ngFor="let userAssociation of userAssociations" class="items-center">
+        <td>
+          <div class="flex items-center gap-3">
+            <div class="avatar">
+              <div class="mask mask-squircle w-12 h-12 rounded-full">
+                <img src="{{userAssociation.user.image?.encoded}}" alt="{{userAssociation.user.fullName}}"/>
+              </div>
+            </div>
+            <div>
+              <!-- Naam + email -->
+              <div class="font-bold">{{ userAssociation.user.fullName }}</div>
+              <div class="text-sm opacity-50">{{ userAssociation.user.email }}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <!-- Rol -->
+          <p>{{ userAssociation.associationRole.name }}</p>
+        </td>
+        <td>
+          <p>{{ formatDate(userAssociation.memberSince) | async }}</p>
+        </td>
+        <td class="justify-evenly items-center">
+          <button class="btn btn-warning btn-sm" (click)="changeSelectedUser(userAssociation)">Wijzig</button>
+          <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+                  [ngClass]="{ 'modal-open': showModifyMemberModal}">
+            <div class="modal-box">
+              <h3 class="font-bold text-lg">Wijzig {{ selectedUser?.user?.fullName }}</h3>
+              <div class="flex flex-row items-center justify-evenly mt-5">
+                <h1>Pas hier de rol aan </h1>
+                <select class="select select-accent w-full max-w-xs" [(ngModel)]="selectedRole">
+                  <option *ngFor="let role of userRoles">{{ role.name }}</option>
+                </select>
+              </div>
+              <div class="modal-action">
+                <form method="dialog">
+                  <button class="btn bg-success"
+                          (click)="updateUserRole()">Bevestig
+                  </button>
+                </form>
+              </div>
+            </div>
+          </dialog>
+
+<!--          *ngIf=" mijnid !== loggedInId"-->
+          <button class="btn btn-error  btn-sm ml-10" >Verwijderen
+            <fa-icon [icon]="faTrashCan"></fa-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+      <!-- foot -->
+      <tfoot>
+      <tr>
+        <!-- Page numbers -->
+      </tr>
+      </tfoot>
+
+    </table>
+  </div>
+</div>
+<div *ngIf="activeTab === Tab.INVITATIONS">
+  <!-- Content for Uitnodigingen tab -->
+  <p>Uitnodigingen content goes here.</p>
+</div>

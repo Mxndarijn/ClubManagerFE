@@ -35,27 +35,27 @@ const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
 const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
   {
     name: "Instellingen",
-    link: "/settings",
+    link: "settings",
     permission: AssociationPermission.MANAGE_SETTINGS
   },
   {
     name: "Leden",
-    link: "/members",
+    link: "members",
     permission: AssociationPermission.MANAGE_MEMBERS
   },
   {
     name: "Baan configuratie",
-    link: "/trackconfiguration",
+    link: "trackconfiguration",
     permission: AssociationPermission.MANAGE_TRACK_CONFIGURATION
   },
   {
     name: "Reserveren",
-    link: "/book",
+    link: "book",
     permission: AssociationPermission.NO_PERMISSION
   },
   {
     name: "Competities",
-    link: "/competitions",
+    link: "competitions",
     permission: AssociationPermission.NO_PERMISSION
   },
 ]
@@ -123,8 +123,6 @@ export class SideBarComponent implements OnInit {
       next: (response) => {
         if(response.data == null)
           return;
-        console.log("associations: ")
-        console.log(response.data)
         this.associations = response.data.getMyProfile.associations.map((assoc: UserAssociation) => assoc.association);
       },
       error: (error) => {

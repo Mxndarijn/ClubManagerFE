@@ -1,7 +1,7 @@
-import { environment } from '../../environment/environment';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {environment} from '../../environment/environment';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
 import {AuthenticationService} from "./authentication.service";
 
 @Injectable({
@@ -9,14 +9,15 @@ import {AuthenticationService} from "./authentication.service";
 })
 export class GraphQLCommunication {
   constructor(private http: HttpClient,
-              private auth: AuthenticationService) {}
+              private auth: AuthenticationService) {
+  }
 
   public sendGraphQLRequest(request: any): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post(
       environment.apiUrl + '/graphql',
-       request,
-      { headers: headers, responseType: 'json' },
+      request,
+      {headers: headers, responseType: 'json'},
     );
   }
 
@@ -103,6 +104,86 @@ export class GraphQLCommunication {
     }
     }
   `
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  public getAssociationMembers(associationID: string): Observable<any> {
+    const query = {
+      query: `
+      query GetAssociationMembers($associationID: String!) {
+        getAssociationDetails(associationID: $associationID) {
+          users {
+            user {
+              id,
+              fullName,
+              email,
+              image {
+                encoded
+              }
+            },
+            associationRole {
+              name
+            },
+            memberSince
+          }
+        }
+      }
+    `,
+      variables: {
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  public getAssociationRoles(): Observable<any> {
+    const query = {
+      query: `
+      {
+      getAssociationRoles {
+    id,
+    name
+  }
+      }
+    `
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  public changeUserAssociation(associationID: string, userID: string, roleID: string): Observable<any> {
+    const query = {
+      query: `
+      mutation changeUserAssociation($changeUserAssociationDTO: ChangeUserAssociationDTO!) {
+  changeUserAssociation(changeUserAssociationDTO: $changeUserAssociationDTO) {
+    success,
+    userAssociation {
+      user {
+        fullName,
+        email,
+        image {
+          encoded
+        }
+      },
+      associationRole {
+        name
+      },
+      memberSince
+    }
+  }
+}
+
+    `,
+      variables: {
+        changeUserAssociationDTO: {
+          userUUID: userID,
+          associationUUID: associationID,
+          associationRoleUUID: roleID
+        }
+      }
     };
     return this.sendGraphQLRequest(query);
 
