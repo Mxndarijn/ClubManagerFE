@@ -5,12 +5,8 @@ import {BehaviorSubject} from "rxjs";
 import {AccountPermission} from "../../model/account-role.model";
 import {AssociationRole} from "../../model/association-role.model";
 import {UserAssociation} from "../../model/user-association.model";
+import {AssociationPermission} from "../helpers/permission/association-permission";
 
-interface AssociationPermission {
-  associationUUID: string;
-  associationName: string;
-  permissions: string[];
-}
 
 @Injectable({
   providedIn: 'root',
@@ -50,4 +46,17 @@ export class PermissionService {
   }
 
 
+  async hasAssociationPermission(id: string, perm: AssociationPermission) {
+    if (perm === AssociationPermission.NO_PERMISSION) {
+      return true;
+    }
+    const userAssociation = this.associationPermissionsSubject.getValue().find(ua => ua.association.id === id);
+
+    if (!userAssociation) {
+      return false;
+    }
+
+    return userAssociation.associationRole.permissions.some(p => p.name === perm);
+
+  }
 }

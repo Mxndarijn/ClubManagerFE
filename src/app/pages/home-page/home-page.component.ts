@@ -3,7 +3,7 @@ import {SideBarComponent} from "../../navigation/side-bar/side-bar.component";
 import {GraphQLCommunication} from "../../services/graphql-communication.service";
 import {NgForOf} from "@angular/common";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
-import {TokenInterceptor} from "../../helpers/token.interceptor";
+import {TokenInterceptor} from "../../helpers/intercceptors/token.interceptor";
 import {environment} from "../../../environment/environment";
 import {RouterOutlet} from "@angular/router";
 import {NavigationService} from "../../services/navigation.service";
