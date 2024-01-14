@@ -19,4 +19,23 @@ export class AuthenticationClient {
       { headers: headers, responseType: 'json' },
     );
   }
-}   
+  public register(email: string, password: string, fullName: string): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post(
+      environment.apiUrl + '/auth/register',
+      { email, password, fullName},
+      { headers: headers, responseType: 'json' },
+    );
+  }
+
+  validateToken(): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post(
+      environment.apiUrl + '/auth/validateToken',
+      { },
+      { headers: headers, responseType: 'json' },
+    );
+  }
+}
