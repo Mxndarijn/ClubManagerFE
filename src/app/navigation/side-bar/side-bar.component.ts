@@ -105,21 +105,15 @@ export class SideBarComponent implements OnInit {
   }
 
   hasAssociationPermission(associationID: string, perm: string): boolean {
-    // Indien de permissie NO_PERMISSION is, is de toegang toegestaan.
     if (perm === AssociationPermission.NO_PERMISSION) {
       return true;
     }
-
-    // Vind de UserAssociation die overeenkomt met de gegeven associationI
     const userAssociation = this.associationPermissions.find(ua => ua.association.id === associationID);
 
-    // Controleer of de gebruiker deel uitmaakt van de vereniging
     if (!userAssociation) {
       return false;
     }
-    console.log("found userAssociation")
 
-    // Controleer of de gebruiker de benodigde permissie heeft binnen de vereniging
     return userAssociation.associationRole.permissions.some(p => p.name === perm);
   }
 
