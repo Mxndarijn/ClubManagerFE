@@ -11,6 +11,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {Modal, ModalChange, ModalService, ModalStatus} from "../../services/modal.service";
 import {AssociationRole} from "../../../model/association-role.model";
 import {FormsModule} from "@angular/forms";
+import {ChangeUserAssociationResponseDTO} from "../../../model/change-user-association-response-dto.model";
 
 enum Tab {
   MEMBERS,
@@ -28,10 +29,10 @@ enum Tab {
     NgClass,
     FormsModule
   ],
-  templateUrl: './association-members-page-component.component.html',
-  styleUrl: './association-members-page-component.component.css'
+  templateUrl: './association-members-page.component.html',
+  styleUrl: './association-members-page.component.css'
 })
-export class AssociationMembersPageComponentComponent {
+export class AssociationMembersPageComponent {
   userAssociations: UserAssociation[] = [];
   userRoles: AssociationRole[] = []
   activeTab: Tab = Tab.MEMBERS; // Default active tab
@@ -103,13 +104,18 @@ export class AssociationMembersPageComponentComponent {
 
     const selectedRoleObj = this.userRoles.find(role => role.name === this.selectedRole);
     if (selectedRoleObj) {
-      console.log("Asso " + this.associationID)
-      console.log("USer " + this.selectedUser!.user.id)
-      console.log("Select " + selectedRoleObj.id)
       this.graphQLCommunication.changeUserAssociation(this.associationID, this.selectedUser!.user.id, selectedRoleObj.id)
         .subscribe({
           next: (response) => {
-            console.log(response)
+            var changedUserDTO: ChangeUserAssociationResponseDTO = response.data.changeUserAssociation
+            if(changedUserDTO.success) {
+              const index = this.userAssociations.findIndex(value => value.user.id === changedUserDTO.userAssociation.user.id);
+              if (index !== -1) {
+                this.userAssociations[index] = changedUserDTO.userAssociation;
+              } else {
+                // user association not found, zou niet moeteh gebeuren
+              }
+            }
           }
         })
     } else {
