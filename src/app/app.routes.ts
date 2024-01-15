@@ -10,6 +10,7 @@ import {VisitsPageComponent} from "./pages/visits-page/visits-page.component";
 import {CompetitionPageComponent} from "./pages/competition-page/competition-page.component";
 import {AssociationManagerGuard} from "./helpers/guards/association-manager-guard.spec";
 import {AssociationMembersPageComponent} from "./pages/association-members-page/association-members-page.component";
+import {InvitationsPageComponent} from "./pages/invitations-page/invitations-page.component";
 
 export const routes: Routes = [
   {
@@ -54,5 +55,10 @@ export const routes: Routes = [
     path: 'association/:associationID/members',
     component: AssociationMembersPageComponent,
     canActivate: [AuthGuard, AssociationManagerGuard],
+  },
+  {
+    path: 'invitations',
+    component: InvitationsPageComponent ,
+    canActivate: [AuthGuard],
   },
 ];

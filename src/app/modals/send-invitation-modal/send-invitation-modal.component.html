@@ -8,9 +8,9 @@
           <label for="email-input" class="mb-2">Vul hier de e-mail in</label>
           <input [formControl]="emailFormControl" id=email-input type="text" placeholder="email"
                  class="input input-bordered border-2 w-full max-w-xs"/>
-          <app-error-message>
-
-          </app-error-message>
+          <app-single-error-message [errorMessage]="'Voer een geldige email in.'"
+                                    [specificFormControl]="emailFormControl">
+          </app-single-error-message>
         </div>
         <div class="flex flex-col items-start justify-evenly mt-5">
           <label for="role-selection" class="mb-2">Selecteer hier de rol</label>

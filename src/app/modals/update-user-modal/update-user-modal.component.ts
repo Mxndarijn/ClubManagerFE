@@ -12,7 +12,7 @@ import {Modal, ModalChange, ModalService, ModalStatus} from "../../services/moda
 import {AssociationMembersPageComponent} from "../../pages/association-members-page/association-members-page.component";
 import {AlertService} from "../../services/alert.service";
 import {AlertInfo} from "../../alerts/alert-manager/alert-manager.component";
-import {AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 
 @Component({
   selector: 'app-update-user-modal',
@@ -32,7 +32,7 @@ export class UpdateUserModalComponent {
   @Input() selectedRole: string | undefined;
   userRoles: AssociationRole[] = [];
 
-  @Output() updateUserAssociationEvent: EventEmitter<UserAssociation> = new EventEmitter<UserAssociation>();
+  @Output() updateUserAssociationEvent= new EventEmitter<UserAssociation>();
 
   constructor(
     private graphQLCommunication: GraphQLCommunication,
@@ -57,7 +57,6 @@ export class UpdateUserModalComponent {
     })
   }
   protected updateUserRole() {
-    console.log(this.selectedUser)
     const selectedRoleObj = this.userRoles.find(role => role.name === this.selectedRole);
     if (selectedRoleObj) {
       this.graphQLCommunication.changeUserAssociation(this.associationMembersPage.associationID, this.selectedUser!.user.id, selectedRoleObj.id)
@@ -69,8 +68,8 @@ export class UpdateUserModalComponent {
               const alert: AlertInfo = {
                 duration: 4000,
                 title: "Succesvol",
-                subTitle:"De rol van "+  this.selectedUser?.user.fullName + "is succesvol verandert.",
-                alertClass: "border-success",
+                subTitle:"De rol van "+  this.selectedUser?.user.fullName + " is succesvol verandert.",
+                alertClass: AlertClass.CORRECT_CLASS,
                 icon: AlertIcon.CHECK
 
               }
@@ -84,9 +83,8 @@ export class UpdateUserModalComponent {
         duration: 4000,
         title: "Fout opgetreden",
         subTitle: "Er is iets mis gegaan bij het bewerken van " + this.selectedUser?.user.fullName + "",
-        alertClass: "border-error",
+        alertClass: AlertClass.INCORRECT_CLASS,
         icon: AlertIcon.XMARK
-
       }
       this.alertService.showAlert(alert)
       // op de een of andere manier is de rol nergens meer de bekennen

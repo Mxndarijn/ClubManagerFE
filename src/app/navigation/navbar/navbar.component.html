@@ -20,7 +20,6 @@
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </label>
-        <!--        <app-theme-controller></app-theme-controller>-->
       </li>
       <li>
         <div class="dropdown dropdown-bottom dropdown-end">
@@ -55,7 +54,6 @@
             </li>
           </ul>
         </div>
-        <!--        <app-language></app-language>-->
       </li>
       <li>
         <div class="dropdown dropdown-bottom dropdown-end">
@@ -80,10 +78,9 @@
             </li>
             <li><a>Settings</a></li>
             <div class="divider"></div>
-            <li class="text-error"><a>Logout</a></li>
+            <li class="text-error"><a (click)="logoutUser()">Logout</a></li>
           </ul>
         </div>
-        <!--        <app-language></app-language>-->
       </li>
     </ul>
   </div>

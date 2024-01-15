@@ -2,30 +2,27 @@
   <div role="tablist" class="tabs tabs-bordered  flex justify-center">
     <div role="tab" class="tab  w-36" [class.tab-active]="activeTab === Tab.MEMBERS"
          (click)="setActiveTab(Tab.MEMBERS)">
-      Leden
+      {{ 'associationMembers.membersHeader' | translate }}
     </div>
     <div role="tab" class="tab w-36" [class.tab-active]="activeTab === Tab.INVITATIONS"
-         (click)="setActiveTab(Tab.INVITATIONS)">Uitnodigingen
+         (click)="setActiveTab(Tab.INVITATIONS)">{{ 'associationMembers.invitationsHeader' | translate }}
     </div>
   </div>
 </div>
 <div *ngIf="activeTab === Tab.MEMBERS" class="w-full">
   <div class="overflow-x-auto">
-    <app-search-box [placeholder]="'Zoek gebruiker'" (SearchEvent)="searchUser($event)"></app-search-box>
+    <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box>
     <table class="table">
-      <!-- head -->
       <thead>
       <tr>
-        <th>Lid</th>
-        <th>Rol</th>
-        <th>Lid sinds</th>
+        <th>{{ 'associationMembers.tableMember.memberHeader' | translate }}</th>
+        <th> {{ 'associationMembers.tableMember.roleHeader' | translate }}</th>
+        <th>{{ 'associationMembers.tableMember.memberSinceHeader' | translate }}</th>
       </tr>
       </thead>
       <tbody>
-
-      <td *ngIf="filteredAssociations.length === 0" colspan="4" class="text-center text-md">Geen resultaten gevonden
+      <td *ngIf="filteredAssociations.length === 0" colspan="4" class="text-center text-md">{{'associationMembers.noResult' | translate}}
       </td>
-
       <tr *ngFor="let userAssociation of filteredAssociations" class="items-center">
         <td>
           <div class="flex items-center gap-3">
@@ -46,21 +43,29 @@
         <td>
           <p>{{ formatDate(userAssociation.memberSince) | async }}</p>
         </td>
-        <td class="justify-evenly items-center">
+        <td>
           <button class="btn border-warning border-2 btn-sm bg-base-100" (click)="changeSelectedUser(userAssociation)"
-                  *ngIf="userAssociation.user.id !== userID">Wijzig
+                  *ngIf="userAssociation.user.id !== userID">{{ 'associationMembers.tableMember.changeButton' | translate }}
           </button>
           <app-update-user-modal
             (updateUserAssociationEvent)="updateUserAssociation($event)"
             [selectedRole]="selectedRole" [selectedUser]="selectedUser"></app-update-user-modal>
 
           <button class="btn border-error border-2 bg-base-100  btn-sm ml-10"
-                  (click)="deleteSelectedUser(userAssociation)" *ngIf="userAssociation.user.id !== userID">Verwijderen
+                  (click)="deleteSelectedUser(userAssociation)"
+                  *ngIf="userAssociation.user.id !== userID">{{ 'associationMembers.tableMember.deleteButton' | translate }}
             <fa-icon [icon]="faTrashCan"></fa-icon>
           </button>
-          <app-remove-user-modal [selectedUser]="selectedUser"
-                                 (userAssociationDeletedEvent)="userAssociationDeleted($event)"
-          ></app-remove-user-modal>
+          <app-confirmation-modal
+            [header]="'associationMembers.tableMember.memberModal.modalHeader' | translate:{name: this.selectedUser?.user?.fullName}"
+            [message]="'associationMembers.tableMember.memberModal.modalMessage' | translate:{name: this.selectedUser?.user?.fullName}"
+            [modalTag]="Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER"
+            [acceptButtonText]="'associationMembers.tableMember.memberModal.acceptButton' | translate"
+            [rejectButtonText]="'associationMembers.tableMember.memberModal.rejectButton' | translate"
+            (AcceptEvent)="removeUser()"
+            (RejectEvent)="cancelRemoveUser()"
+          >
+          </app-confirmation-modal>
         </td>
       </tr>
       </tbody>
@@ -70,20 +75,24 @@
 <div *ngIf="activeTab === Tab.INVITATIONS">
   <!-- Content for Uitnodigingen tab -->
   <div class="w-full flex justify-end">
-    <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="createNewAssociationInvite()">Verstuur uitnodiging
+    <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="createNewAssociationInvite()">
+      {{'associationMembers.tableInvitations.sendMessageButton' | translate}}
     </button>
-    <app-send-invitation-modal></app-send-invitation-modal>
+    <app-send-invitation-modal [associationName]="associationName"
+                               (NewAssociationInviteEvent)="newAssociationInviteEvent($event)"></app-send-invitation-modal>
   </div>
   <div class="overflow-x-auto">
     <table class="table">
       <thead>
       <tr>
-        <th>Email</th>
-        <th>Uitnodiging verzonden</th>
-        <th>Rol</th>
+        <th>{{'associationMembers.tableInvitations.emailHeader' | translate}}</th>
+        <th>{{'associationMembers.tableInvitations.invitationSendHeader' | translate}}</th>
+        <th>{{'associationMembers.tableInvitations.roleHeader' | translate}}</th>
       </tr>
       </thead>
-      <tbody>
+      <td *ngIf="associationInvites.length === 0" colspan="4" class="text-center text-md">{{'associationMembers.noInvitations' | translate}}</td>
+
+        <tbody>
       <tr *ngFor="let associationInvite of associationInvites" class="items-center h-16 ">
         <td>
           <!-- Naam + email -->
@@ -97,7 +106,8 @@
           <p>{{ associationInvite.associationRole.name }}</p>
         </td>
         <td>
-          <button class="btn border-error border-2 bg-base-100  btn-sm ml-10" (click)="deleteSelectedInvite(associationInvite.id)">Annuleer
+          <button class="btn border-error border-2 bg-base-100  btn-sm ml-10"
+                  (click)="deleteSelectedInvite(associationInvite.id)">{{'associationMembers.tableInvitations.cancelButton' | translate}}
           </button>
         </td>
       </tr>

@@ -254,6 +254,37 @@ export class GraphQLCommunication {
 
 }
 
+  getUserInvites() {
+    const query = {
+      query: `
+    {
+      getMyProfile {
+        invites {
+        id {
+        userId,
+        associationId,
+        }
+        association {
+            name
+            contactEmail
+            image {
+                id
+                encoded
+            }
+        }
+        createdAt,
+        associationRole {
+          name
+        }
+        }
+      }
+    }
+  `
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
   deleteAssociationInvite(id: AssociationInviteID): Observable<any> {
     const query = {
       query: `
@@ -270,6 +301,116 @@ export class GraphQLCommunication {
           associationUUID: id.associationId,
         }
       }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  createAssociationInvite(associationID: string, email: string, id: string): Observable<any> {
+    const query = {
+      query: `
+      mutation sendAssociationInvite($dto: CreateAssociationInviteInput!) {
+  sendAssociationInvite(dto: $dto) {
+    success,
+    message,
+    associationInvite {
+    id {
+            userId,
+            associationId
+        },
+        user {
+            email
+        },
+        associationRole {
+            name
+        },
+        createdAt
+    }
+    }
+  }
+    `,
+      variables: {
+        dto: {
+          userEmail: email,
+          associationUUID: associationID,
+          associationRoleUUID: id
+        }
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  getAssociationName(associationID: string) {
+    const query = {
+      query: `
+     query GetAssociationInvites($associationID: ID!) {
+        getAssociationDetails(associationID: $associationID) {
+         name
+      }
+}
+    `,
+      variables: {
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  acceptAssociationInvite(id: AssociationInviteID): Observable<any> {
+    const query = {
+      query: `
+      mutation acceptAssociationInvite($inviteID: AssociationInviteInput!) {
+  acceptAssociationInvite(inviteId: $inviteID) {
+    success,
+    message
+  }
+}
+    `,
+      variables: {
+        inviteID: {
+          userUUID: id.userId,
+          associationUUID: id.associationId,
+        }
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  rejectAssociationInvite(id: AssociationInviteID): Observable<any> {
+    const query = {
+      query: `
+      mutation rejectAssociationInvite($inviteID: AssociationInviteInput!) {
+  rejectAssociationInvite(inviteId: $inviteID) {
+    success,
+    message
+  }
+}
+    `,
+      variables: {
+        inviteID: {
+          userUUID: id.userId,
+          associationUUID: id.associationId,
+        }
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  getUserInviteCount() {
+    const query = {
+      query: `
+    {
+      getMyProfile {
+        invites {
+        id
+        }
+      }
+    }
+  `
     };
     return this.sendGraphQLRequest(query);
 

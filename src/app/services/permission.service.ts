@@ -39,7 +39,6 @@ export class PermissionService {
       next: (response: any) => {
         if(response.data == null)
           return;
-        console.log(response.data)
         this.associationPermissionsSubject.next(response.data.getMyProfile.associations);
       },
     })

@@ -1,27 +1,25 @@
 import {Component, ViewChild} from '@angular/core';
 import {GraphQLCommunication} from "../../services/graphql-communication.service";
 import {NavigationService} from "../../services/navigation.service";
-import {TranslateService} from "@ngx-translate/core";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {UserAssociation} from "../../../model/user-association.model";
 import {ActivatedRoute} from "@angular/router";
 import {map, Observable} from "rxjs";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {Modal, ModalChange, ModalService, ModalStatus} from "../../services/modal.service";
-import {AssociationRole} from "../../../model/association-role.model";
+import {Modal, ModalService} from "../../services/modal.service";
 import {FormsModule} from "@angular/forms";
-import {ChangeUserAssociationResponseDTO} from "../../../model/dto/change-user-association-response-dto.model";
 import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-user-modal.component";
 import {AuthenticationService} from "../../services/authentication.service";
-import {RemoveUserModalComponent} from "../../modals/remove-user-modal/remove-user-modal.component";
 import {SearchBoxComponent} from "../../input-fields/search-box/search-box.component";
 import {AssociationInvite, AssociationInviteID} from "../../../model/association-invite";
 import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
 import {AlertInfo} from "../../alerts/alert-manager/alert-manager.component";
-import {AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 import {AlertService} from "../../services/alert.service";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
+import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confirmation-modal.component";
 
 enum Tab {
   MEMBERS,
@@ -39,9 +37,10 @@ enum Tab {
     NgClass,
     FormsModule,
     UpdateUserModalComponent,
-    RemoveUserModalComponent,
     SearchBoxComponent,
-    SendInvitationModalComponent
+    SendInvitationModalComponent,
+    ConfirmationModalComponent,
+    TranslateModule
   ],
   templateUrl: './association-members-page.component.html',
   styleUrl: './association-members-page.component.css'
@@ -57,6 +56,7 @@ export class AssociationMembersPageComponent {
   associationInvites:AssociationInvite[] = [];
 
   private latestSearchParam: string = "";
+  protected associationName: string = "";
 
   activeTab: Tab = Tab.MEMBERS;
 
@@ -74,8 +74,16 @@ export class AssociationMembersPageComponent {
     private translate: TranslateService,
     route: ActivatedRoute,
     protected modalService: ModalService,
-    private authService: AuthenticationService) {
+    private authService: AuthenticationService,) {
     this.associationID = route.snapshot.params['associationID'];
+
+    this.graphQLCommunication.getAssociationName(this.associationID).subscribe({
+      next: (response) => {
+        navigationService.setSubTitle(response.data.getAssociationDetails.name);
+        this.associationName = response.data.getAssociationDetails.name;
+      }
+    })
+
     navigationService.showNavigation();
     this.translate.get('associationMembers.titleHeader').subscribe((res: string) => {
         navigationService.setTitle(res);
@@ -91,7 +99,6 @@ export class AssociationMembersPageComponent {
 
     this.graphQLCommunication.getAssociationInvites(this.associationID).subscribe({
       next: (response) => {
-        console.log(response)
         this.associationInvites = response.data.getAssociationDetails.invites
       }
     })
@@ -143,7 +150,6 @@ export class AssociationMembersPageComponent {
   }
 
   searchUser(searchValue: string) {
-    console.log("search: " + searchValue)
     this.latestSearchParam = searchValue;
     this.filteredAssociations = this.userAssociations.filter(userAssociation => {
       return userAssociation.user.fullName.includes(searchValue) || userAssociation.user.email.includes(searchValue);
@@ -165,8 +171,8 @@ export class AssociationMembersPageComponent {
             duration: 4000,
             title: "Succesvol",
             subTitle: "De uitnodiging is succesvol ingetrokken.",
-            alertClass: "border-error",
-            icon: AlertIcon.XMARK
+            alertClass: AlertClass.CORRECT_CLASS,
+            icon: AlertIcon.CHECK
 
           }
           this.alertService.showAlert(alert)
@@ -176,20 +182,19 @@ export class AssociationMembersPageComponent {
             duration: 4000,
             title: "Error fout opgetreden",
             subTitle: "Er is iets misgegaan bij het intrekken van de uitnodiging.",
-            alertClass: "border-error",
+            alertClass: AlertClass.INCORRECT_CLASS,
             icon: AlertIcon.XMARK
 
           }
           this.alertService.showAlert(alert)
         }
-        console.log(response);
       },
       error: (e) => {
         const alert: AlertInfo = {
           duration: 4000,
           title: "Error",
           subTitle: "Er is een fout opgetreden bij het intrekken van de uitnodiging.",
-          alertClass: "border-error",
+          alertClass: AlertClass.INCORRECT_CLASS,
           icon: AlertIcon.XMARK
 
         }
@@ -201,5 +206,38 @@ export class AssociationMembersPageComponent {
 
   createNewAssociationInvite() {
     this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);
+  }
+
+  newAssociationInviteEvent(associationInvite: AssociationInvite) {
+    this.associationInvites.push(associationInvite);
+  }
+
+  protected readonly Modal = Modal;
+
+  removeUser() {
+    this.graphQLCommunication.deleteUserAssociation(this.associationID, this.selectedUser!.user.id)
+      .subscribe({
+        next: (response) => {
+          const changedUserDTO: DefaultBooleanResponseDTO = response.data.removeUserAssociation;
+          if (changedUserDTO.success) {
+            this.userAssociationDeleted(this.selectedUser!)
+            const alert: AlertInfo = {
+              duration: 4000,
+              title: "Verwijderd",
+              subTitle: this.selectedUser?.user.fullName + "is succesvol verwijderd uit de vereniging.",
+              alertClass: AlertClass.CORRECT_CLASS,
+              icon: AlertIcon.CHECK
+
+            }
+            this.alertService.showAlert(alert)
+
+          }
+        }
+      })
+    this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
+  }
+
+  cancelRemoveUser() {
+    this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
   }
 }

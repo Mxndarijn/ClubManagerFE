@@ -68,7 +68,6 @@ export class AuthenticationService {
   public logout() {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
-
   }
 
   public async isLoggedIn(): Promise<boolean> {

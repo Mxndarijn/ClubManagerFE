@@ -15,6 +15,7 @@ import {
 import {PermissionService} from "../../services/permission.service";
 import {UserAssociation} from "../../../model/user-association.model";
 import {Association} from "../../../model/association.model";
+import {AssociationInvite} from "../../../model/association-invite";
 
 //Voeg items to voor nieuwe gegevens in de nav
 const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
@@ -24,7 +25,7 @@ const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
   },
   {
     name: "Mijn uitnodigingen",
-    link: "/myinvitations"
+    link: "/invitations"
   },
   {
     name: "Mijn reserveringen",
@@ -74,6 +75,7 @@ export class SideBarComponent implements OnInit {
   associations: Association[] = [];
   public isVisible: boolean = false;
   associationPermissions: UserAssociation[] = [];
+  associationInvitesList: AssociationInvite[] = [];
 
   constructor(
         private graphQLCommunication: GraphQLCommunication, navigationService: NavigationService,
@@ -126,7 +128,12 @@ export class SideBarComponent implements OnInit {
         this.associations = response.data.getMyProfile.associations.map((assoc: UserAssociation) => assoc.association);
       },
       error: (error) => {
-        console.log(error);
+      }
+    });
+
+    this.graphQLCommunication.getUserInvites().subscribe({
+      next: (response) => {
+        this.associationInvitesList = response.data.getMyProfile.invites
       }
     });
   }

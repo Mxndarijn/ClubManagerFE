@@ -1,5 +1,5 @@
 import {Component, ViewChild, ViewContainerRef} from '@angular/core';
-import {AlertIcon, AlertInfoComponent} from "../alert-info/alert-info.component";
+import {AlertClass, AlertIcon, AlertInfoComponent} from "../alert-info/alert-info.component";
 import {AlertService} from "../../services/alert.service";
 
 @Component({
@@ -45,5 +45,5 @@ export interface AlertInfo {
   subTitle: string,
   icon: AlertIcon,
   duration: number,
-  alertClass: string,
+  alertClass: AlertClass,
 }

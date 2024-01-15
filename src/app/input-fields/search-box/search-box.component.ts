@@ -4,6 +4,7 @@ import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgIf} from "@angular/common";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
+import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-search-box',
@@ -12,7 +13,8 @@ import {faXmark} from "@fortawesome/free-solid-svg-icons";
     ReactiveFormsModule,
     FormsModule,
     FaIconComponent,
-    NgIf
+    NgIf,
+    TranslateModule
   ],
   templateUrl: './search-box.component.html',
   styleUrl: './search-box.component.css'
