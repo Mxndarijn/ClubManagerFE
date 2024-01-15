@@ -1,4 +1,4 @@
-import {UserAssociation} from "./user-association.model";
+import {UserAssociation} from "../user-association.model";
 
 export interface ChangeUserAssociationResponseDTO {
   success: boolean;

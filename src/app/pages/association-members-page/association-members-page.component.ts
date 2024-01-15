@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {GraphQLCommunication} from "../../services/graphql-communication.service";
 import {NavigationService} from "../../services/navigation.service";
 import {TranslateService} from "@ngx-translate/core";
@@ -11,7 +11,10 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {Modal, ModalChange, ModalService, ModalStatus} from "../../services/modal.service";
 import {AssociationRole} from "../../../model/association-role.model";
 import {FormsModule} from "@angular/forms";
-import {ChangeUserAssociationResponseDTO} from "../../../model/change-user-association-response-dto.model";
+import {ChangeUserAssociationResponseDTO} from "../../../model/dto/change-user-association-response-dto.model";
+import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-user-modal.component";
+import {AuthenticationService} from "../../services/authentication.service";
+import {RemoveUserModalComponent} from "../../modals/remove-user-modal/remove-user-modal.component";
 
 enum Tab {
   MEMBERS,
@@ -27,20 +30,24 @@ enum Tab {
     AsyncPipe,
     FaIconComponent,
     NgClass,
-    FormsModule
+    FormsModule,
+    UpdateUserModalComponent,
+    RemoveUserModalComponent
   ],
   templateUrl: './association-members-page.component.html',
   styleUrl: './association-members-page.component.css'
 })
 export class AssociationMembersPageComponent {
   userAssociations: UserAssociation[] = [];
-  userRoles: AssociationRole[] = []
-  activeTab: Tab = Tab.MEMBERS; // Default active tab
-  faTrashCan = faTrashCan;
-  showModifyMemberModal = false;
-  selectedUser: UserAssociation | undefined;
-  selectedRole!: string;
   associationID: string;
+  selectedUser: UserAssociation | undefined;
+  selectedRole: string | undefined;
+  userID: string | null;
+
+  activeTab: Tab = Tab.MEMBERS;
+
+  faTrashCan = faTrashCan;
+
 
   setActiveTab(tab: Tab) {
     this.activeTab = tab;
@@ -49,33 +56,20 @@ export class AssociationMembersPageComponent {
     private graphQLCommunication: GraphQLCommunication,
     navigationService: NavigationService,
     private translate: TranslateService,
-    private route: ActivatedRoute,
-    protected modalService: ModalService) {
+    route: ActivatedRoute,
+    protected modalService: ModalService,
+    private authService: AuthenticationService) {
     this.associationID = route.snapshot.params['associationID'];
     navigationService.showNavigation();
     this.translate.get('associationMembers.titleHeader').subscribe((res: string) => {
         navigationService.setTitle(res);
       }
     )
+    this.userID = this.authService.getUserID();
     this.graphQLCommunication.getAssociationMembers(this.associationID).subscribe({
       next: (response) => {
-        console.log('r')
-        console.log(response)
         this.userAssociations = response.data.getAssociationDetails.users
     }
-    })
-
-    this.graphQLCommunication.getAssociationRoles().subscribe({
-      next: (response) => {
-        this.userRoles = response.data.getAssociationRoles
-      }
-    })
-
-    this.modalService.modalVisibilityEvent.subscribe({
-      next: (modalChange: ModalChange) => {
-        if(modalChange.modal == Modal.ASSOCIATION_MEMBERS_MODIFY_MEMBER)
-          this.showModifyMemberModal = (modalChange.status === ModalStatus.OPEN);
-      }
     })
   }
 
@@ -100,28 +94,25 @@ export class AssociationMembersPageComponent {
     this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_MODIFY_MEMBER);
   }
 
-  public  updateUserRole() {
-
-    const selectedRoleObj = this.userRoles.find(role => role.name === this.selectedRole);
-    if (selectedRoleObj) {
-      this.graphQLCommunication.changeUserAssociation(this.associationID, this.selectedUser!.user.id, selectedRoleObj.id)
-        .subscribe({
-          next: (response) => {
-            var changedUserDTO: ChangeUserAssociationResponseDTO = response.data.changeUserAssociation
-            if(changedUserDTO.success) {
-              const index = this.userAssociations.findIndex(value => value.user.id === changedUserDTO.userAssociation.user.id);
-              if (index !== -1) {
-                this.userAssociations[index] = changedUserDTO.userAssociation;
-              } else {
-                // user association not found, zou niet moeteh gebeuren
-              }
-            }
-          }
-        })
-    } else {
-      // op de een of andere manier is de rol nergens meer de bekennen
-    }
-    this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_MODIFY_MEMBER)
+  public deleteSelectedUser(user: UserAssociation) {
+    this.selectedUser = user;
+    this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER);
   }
-  protected readonly Modal = Modal;
+  updateUserAssociation(userAssociation: UserAssociation) {
+    const index = this.userAssociations.findIndex(value => value.user.id === userAssociation.user.id)
+    if (index !== -1) {
+      this.userAssociations[index] = userAssociation;
+    } else {
+      // user association not found, zou niet moeteh gebeuren
+    }
+  }
+
+  userAssociationDeleted(userAssociation: UserAssociation) {
+    const index = this.userAssociations.findIndex(value => value.user.id === userAssociation.user.id)
+    if (index !== -1) {
+      this.userAssociations.splice(index, 1);
+    } else {
+      // user association not found, zou niet moeteh gebeuren
+    }
+  }
 }

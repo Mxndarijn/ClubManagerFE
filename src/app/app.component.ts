@@ -7,11 +7,12 @@ import {HomePageComponent} from "./pages/home-page/home-page.component";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {SideBarComponent} from "./navigation/side-bar/side-bar.component";
 import {NavbarComponent} from "./navigation/navbar/navbar.component";
+import {AlertManagerComponent} from "./alerts/alert-manager/alert-manager.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HomePageComponent, TranslateModule, SideBarComponent, NavbarComponent],
+  imports: [CommonModule, RouterOutlet, HomePageComponent, TranslateModule, SideBarComponent, NavbarComponent, AlertManagerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

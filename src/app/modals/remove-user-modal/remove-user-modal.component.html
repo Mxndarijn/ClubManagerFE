@@ -1,1 +1,19 @@
-<p>remove-user-modal works!</p>
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModifyMemberModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Verwijder {{ selectedUser?.user?.fullName }}</h3>
+    <div class="flex flex-row items-center justify-evenly mt-5">
+      <h1>Weet je zeker dat je {{selectedUser?.user?.fullName}} wilt verwijderen uit de vereniging? </h1>
+    </div>
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between" >
+        <button class="btn border-error border-2 bg-base-100"
+                (click)="cancelDeletingUser()">Annuleer
+        </button>
+        <button class="btn border-success border-2 bg-base-100"
+                (click)="removeUser()">Verwijder
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>

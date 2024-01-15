@@ -8,8 +8,7 @@ import {AuthenticationService} from "./authentication.service";
   providedIn: 'root',
 })
 export class GraphQLCommunication {
-  constructor(private http: HttpClient,
-              private auth: AuthenticationService) {
+  constructor(private http: HttpClient) {
   }
 
   public sendGraphQLRequest(request: any): Observable<any> {
@@ -109,6 +108,20 @@ export class GraphQLCommunication {
 
   }
 
+  public getMyID(): Observable<any> {
+    const query = {
+      query: `
+    {
+      getMyProfile {
+        id
+    }
+    }
+  `
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
   public getAssociationMembers(associationID: string): Observable<any> {
     const query = {
       query: `
@@ -162,6 +175,7 @@ export class GraphQLCommunication {
     success,
     userAssociation {
       user {
+        id,
         fullName,
         email,
         image {
@@ -190,4 +204,23 @@ export class GraphQLCommunication {
   }
 
 
+  deleteUserAssociation(associationID: string, userID: string): Observable<any> {
+    const query = {
+      query: `
+      mutation removeUserAssociation($deleteUserAssociationDTO: DeleteUserAssociationDTO!) {
+  removeUserAssociation(deleteUserAssociationDTO: $deleteUserAssociationDTO) {
+    success,
+  }
+}
+    `,
+      variables: {
+        deleteUserAssociationDTO: {
+          userUUID: userID,
+          associationUUID: associationID,
+        }
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
 }

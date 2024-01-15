@@ -1,7 +1,8 @@
 import {EventEmitter, Injectable} from '@angular/core';
 
 export enum Modal {
-  ASSOCIATION_MEMBERS_MODIFY_MEMBER
+  ASSOCIATION_MEMBERS_MODIFY_MEMBER,
+  ASSOCIATION_MEMBERS_REMOVE_MEMBER
 }
 
 export enum ModalStatus {
