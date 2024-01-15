@@ -1,0 +1,34 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Nieuwe uitnodiging</h3>
+    <div class="flex flex-row items-center mt-5">
+      <div class="flex flex-col w-full">
+        <div class="flex flex-col items-start justify-evenly mt-5">
+          <label for="email-input" class="mb-2">Vul hier de e-mail in</label>
+          <input [formControl]="emailFormControl" id=email-input type="text" placeholder="email"
+                 class="input input-bordered border-2 w-full max-w-xs"/>
+          <app-error-message>
+
+          </app-error-message>
+        </div>
+        <div class="flex flex-col items-start justify-evenly mt-5">
+          <label for="role-selection" class="mb-2">Selecteer hier de rol</label>
+          <select id="role-selection" class="select select-accent w-full max-w-xs border-2" [(ngModel)]="selectedRole">
+            <option *ngFor="let role of userRoles">{{ role.name }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between">
+        <button class="btn border-error border-2 bg-base-100"
+                (click)="cancelInvitation()">Annuleer
+        </button>
+        <button class="btn border-success border-2 bg-base-100"
+                (click)="sendInvitation()">Verstuur
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>

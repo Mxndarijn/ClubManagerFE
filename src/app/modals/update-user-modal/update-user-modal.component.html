@@ -2,8 +2,8 @@
         [ngClass]="{ 'modal-open': showModifyMemberModal}">
   <div class="modal-box">
     <h3 class="font-bold text-lg">Wijzig {{ selectedUser?.user?.fullName }}</h3>
-    <div class="flex flex-row items-center justify-evenly mt-5">
-      <h1>Pas hier de rol aan </h1>
+    <div class="flex flex-col items-start mt-5">
+      <h1 class="mb-2">Pas hier de rol aan </h1>
       <select class="select select-accent w-full max-w-xs border-2" [(ngModel)]="selectedRole">
         <option *ngFor="let role of userRoles">{{ role.name }}</option>
       </select>

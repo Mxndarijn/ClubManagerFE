@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthenticationService} from "./authentication.service";
+import {AssociationInvite, AssociationInviteID} from "../../model/association-invite";
 
 @Injectable({
   providedIn: 'root',
@@ -125,7 +126,7 @@ export class GraphQLCommunication {
   public getAssociationMembers(associationID: string): Observable<any> {
     const query = {
       query: `
-      query GetAssociationMembers($associationID: String!) {
+      query GetAssociationMembers($associationID: ID!) {
         getAssociationDetails(associationID: $associationID) {
           users {
             user {
@@ -217,6 +218,56 @@ export class GraphQLCommunication {
         deleteUserAssociationDTO: {
           userUUID: userID,
           associationUUID: associationID,
+        }
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  getAssociationInvites(associationID: string) {
+    const query = {
+    query: `
+     query GetAssociationInvites($associationID: ID!) {
+        getAssociationDetails(associationID: $associationID) {
+          invites {
+        id {
+            userId,
+            associationId
+        },
+        user {
+            email
+        },
+        associationRole {
+            name
+        },
+        createdAt
+    }
+      }
+}
+    `,
+    variables: {
+      associationID: associationID
+    }
+  };
+  return this.sendGraphQLRequest(query);
+
+}
+
+  deleteAssociationInvite(id: AssociationInviteID): Observable<any> {
+    const query = {
+      query: `
+      mutation removeAssociationInvite($inviteID: AssociationInviteInput!) {
+  removeAssociationInvite(inviteId: $inviteID) {
+    success,
+    message
+  }
+}
+    `,
+      variables: {
+        inviteID: {
+          userUUID: id.userId,
+          associationUUID: id.associationId,
         }
       }
     };

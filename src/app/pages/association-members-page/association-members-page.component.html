@@ -1,6 +1,7 @@
 <div class="w-full mb-10">
   <div role="tablist" class="tabs tabs-bordered  flex justify-center">
-    <div role="tab" class="tab  w-36" [class.tab-active]="activeTab === Tab.MEMBERS" (click)="setActiveTab(Tab.MEMBERS)">
+    <div role="tab" class="tab  w-36" [class.tab-active]="activeTab === Tab.MEMBERS"
+         (click)="setActiveTab(Tab.MEMBERS)">
       Leden
     </div>
     <div role="tab" class="tab w-36" [class.tab-active]="activeTab === Tab.INVITATIONS"
@@ -10,6 +11,7 @@
 </div>
 <div *ngIf="activeTab === Tab.MEMBERS" class="w-full">
   <div class="overflow-x-auto">
+    <app-search-box [placeholder]="'Zoek gebruiker'" (SearchEvent)="searchUser($event)"></app-search-box>
     <table class="table">
       <!-- head -->
       <thead>
@@ -17,12 +19,14 @@
         <th>Lid</th>
         <th>Rol</th>
         <th>Lid sinds</th>
-        <th></th>
       </tr>
       </thead>
       <tbody>
-      <!-- row 1 -->
-      <tr *ngFor="let userAssociation of userAssociations" class="items-center">
+
+      <td *ngIf="filteredAssociations.length === 0" colspan="4" class="text-center text-md">Geen resultaten gevonden
+      </td>
+
+      <tr *ngFor="let userAssociation of filteredAssociations" class="items-center">
         <td>
           <div class="flex items-center gap-3">
             <div class="avatar">
@@ -31,14 +35,12 @@
               </div>
             </div>
             <div>
-              <!-- Naam + email -->
               <div class="font-bold">{{ userAssociation.user.fullName }}</div>
               <div class="text-sm opacity-50">{{ userAssociation.user.email }}</div>
             </div>
           </div>
         </td>
         <td>
-          <!-- Rol -->
           <p>{{ userAssociation.associationRole.name }}</p>
         </td>
         <td>
@@ -52,72 +54,54 @@
             (updateUserAssociationEvent)="updateUserAssociation($event)"
             [selectedRole]="selectedRole" [selectedUser]="selectedUser"></app-update-user-modal>
 
-          <button class="btn border-error border-2 bg-base-100  btn-sm ml-10" (click)="deleteSelectedUser(userAssociation)" *ngIf="userAssociation.user.id !== userID">Verwijderen
+          <button class="btn border-error border-2 bg-base-100  btn-sm ml-10"
+                  (click)="deleteSelectedUser(userAssociation)" *ngIf="userAssociation.user.id !== userID">Verwijderen
             <fa-icon [icon]="faTrashCan"></fa-icon>
           </button>
           <app-remove-user-modal [selectedUser]="selectedUser"
                                  (userAssociationDeletedEvent)="userAssociationDeleted($event)"
-                                 ></app-remove-user-modal>
+          ></app-remove-user-modal>
         </td>
       </tr>
       </tbody>
-      <!-- foot -->
-      <tfoot>
-      <tr>
-        <!-- Page numbers -->
-      </tr>
-      </tfoot>
-
     </table>
   </div>
 </div>
 <div *ngIf="activeTab === Tab.INVITATIONS">
   <!-- Content for Uitnodigingen tab -->
+  <div class="w-full flex justify-end">
+    <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="createNewAssociationInvite()">Verstuur uitnodiging
+    </button>
+    <app-send-invitation-modal></app-send-invitation-modal>
+  </div>
   <div class="overflow-x-auto">
     <table class="table">
-      <!-- head -->
       <thead>
       <tr>
-        <th>Lid</th>
+        <th>Email</th>
+        <th>Uitnodiging verzonden</th>
         <th>Rol</th>
-        <th>Lid sinds</th>
-        <th></th>
       </tr>
       </thead>
       <tbody>
-      <!-- row 1 -->
-      <tr *ngFor="let userAssociation of userAssociations" class="items-center">
+      <tr *ngFor="let associationInvite of associationInvites" class="items-center h-16 ">
         <td>
-          <div class="flex items-center gap-3">
-            <div class="avatar">
-              <div class="mask mask-squircle w-12 h-12 rounded-full">
-                <img src="{{userAssociation.user.image?.encoded}}" alt="{{userAssociation.user.fullName}}"/>
-              </div>
-            </div>
-            <div>
-              <!-- Naam + email -->
-              <div class="font-bold">{{ userAssociation.user.fullName }}</div>
-              <div class="text-sm opacity-50">{{ userAssociation.user.email }}</div>
-            </div>
-          </div>
+          <!-- Naam + email -->
+          <div class="text-sm opacity-50">{{ associationInvite.user.email }}</div>
         </td>
         <td>
           <!-- Rol -->
-          <p>{{ userAssociation.associationRole.name }}</p>
+          <p>{{ formatDate(associationInvite.createdAt) | async }}</p>
         </td>
         <td>
-          <p>{{ formatDate(userAssociation.memberSince) | async }}</p>
+          <p>{{ associationInvite.associationRole.name }}</p>
         </td>
-
+        <td>
+          <button class="btn border-error border-2 bg-base-100  btn-sm ml-10" (click)="deleteSelectedInvite(associationInvite.id)">Annuleer
+          </button>
+        </td>
       </tr>
       </tbody>
-      <!-- foot -->
-      <tfoot>
-      <tr>
-        <!-- Page numbers -->
-      </tr>
-      </tfoot>
-
     </table>
   </div>
 </div>
