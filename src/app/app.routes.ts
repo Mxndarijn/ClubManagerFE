@@ -11,6 +11,7 @@ import {CompetitionPageComponent} from "./pages/competition-page/competition-pag
 import {AssociationManagerGuard} from "./helpers/guards/association-manager-guard.spec";
 import {AssociationMembersPageComponent} from "./pages/association-members-page/association-members-page.component";
 import {InvitationsPageComponent} from "./pages/invitations-page/invitations-page.component";
+import {UpdateProfilePageComponent} from "./pages/update-profile-page/update-profile-page.component";
 
 export const routes: Routes = [
   {
@@ -61,4 +62,11 @@ export const routes: Routes = [
     component: InvitationsPageComponent ,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'profile',
+    component: UpdateProfilePageComponent ,
+    canActivate: [AuthGuard],
+  },
+
+
 ];

@@ -415,4 +415,23 @@ export class GraphQLCommunication {
     return this.sendGraphQLRequest(query);
 
   }
+
+  uploadProfilePicture(dataURL: string) {
+    const query = {
+      query: `
+      mutation updateMyProfilePicture($dto: ChangeProfilePictureDTO!) {
+  updateMyProfilePicture(dto: $dto) {
+    success,
+    message
+  }
+}
+    `,
+      variables: {
+        dto: {
+          image: dataURL,
+        }
+      }
+    };
+    return this.sendGraphQLRequest(query);
+  }
 }

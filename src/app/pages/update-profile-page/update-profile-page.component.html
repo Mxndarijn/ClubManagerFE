@@ -1,0 +1,57 @@
+<div class="flex flex-row w-full justify-between">
+  <div class="flex flex-col ml-5 w-7/12 lg:flex-row justify-start">
+    <div class="avatar indicator mr-5">
+      <button class="indicator-item indicator-bottom mb-10 mr-5 w-20 h-20 rounded-full badge border-accent border-2 hover:bg-accent" (click)="document.getElementById('fileUpload')?.click()">
+        <input type="file" id="fileUpload" class="hidden" accept=".png, .jpg, .jpeg"
+               (change)="handleChangeProfilePicture($event)">
+        <fa-icon class="fa-3x" [icon]="faPencil"></fa-icon>
+      </button>
+      <div class="w-56 rounded-full">
+        <img class="object-scale-down" src="{{profile?.image?.encoded}}" alt="Profile picture of the user"/>
+      </div>
+    </div>
+    <div>
+      <p class="text-5xl font-bold">Niels Lazaroms!</p>
+      <p class="py-6">niels.lazaroms&#64;live.nl</p>
+    </div>
+  </div>
+  <div class="flex flex-col w-5/12 justify-between">
+    <h1 class="font-bold text-3xl">Voorkeuren</h1>
+    <div class="flex flex-col h-full justify-center w-10/12">
+      <app-toggle-slider [sliderLabel]="'Ontvang competitie herinneringen'" [status]="false"></app-toggle-slider>
+      <app-toggle-slider [sliderLabel]="'Ontvang herinnering over reserveringen'" [status]="false"></app-toggle-slider>
+    </div>
+    <app-update-button [borderClass]="'border-success'" class="flex justify-end mr-20"
+                       [label]="'Update'"></app-update-button>
+  </div>
+</div>
+<div class="divider"></div>
+<div class="flex flex-col w-full justify-center items-center">
+  <!--  <p class="w-9/12 mb-10">Om verdere instellingen aan te kunnen passen moet u uw wachtwoord invullen.</p>-->
+  <form autocomplete="off" class="flex flex-row justify-evenly w-10/12 items-center flex-wrap gap-y-3 mb-12 mt-2">
+    <app-update-input-field [autocomplete]="'name'" [placeholder]="'Pas hier je volledige naam aan'"
+                            [labelText]="'Volledige naam'" [inputId]="'fullName'"
+                            [type]="'text'"></app-update-input-field>
+    <app-update-input-field [autocomplete]="'new-password'" [placeholder]="'Vul hier je nieuwe wachtwoord in'"
+                            [labelText]="'Nieuw wachtwoord'" [inputId]="'newPassword'"
+                            [type]="'password'"></app-update-input-field>
+    <app-update-input-field [autocomplete]="'email'" [placeholder]="'Pas hier je e-mail aan'" [labelText]="'Email'"
+                            [inputId]="'Email'" [type]="'text'"></app-update-input-field>
+    <app-update-input-field [autocomplete]="'new-password'" [placeholder]="'Herhaal je nieuwe wachtwoord'"
+                            [labelText]="'Herhaal nieuw wachtwoord'" [inputId]="'repeatNewPassword'"
+                            [type]="'password'"></app-update-input-field>
+  </form>
+  <p class="w-8/12 mr-10">Om de aanpassingen op te slaan moet u hier uw wachtwoord invullen.</p>
+  <div class="flex flex-row w-11/12 mt-5 justify-around items-center ">
+    <app-update-input-field [autocomplete]="'current-password'" [placeholder]="'Vul hier je huidige wachtwoord in'"
+                            [labelText]="'Vul hier je wachtwoord in'" [inputId]="'password'"
+                            [type]="'password'"></app-update-input-field>
+    <div class="flex flex-row mt-5 gap-x-10 justify-end">
+      <app-update-button [borderClass]="'border-error'" [label]="'Annuleer'"></app-update-button>
+      <app-update-button [borderClass]="'border-success'" [label]="'Update'"></app-update-button>
+    </div>
+  </div>
+
+
+</div>
+

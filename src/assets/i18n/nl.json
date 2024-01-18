@@ -93,5 +93,8 @@
   },
   "invitationsPage" : {
   "titleHeader": "Mijn uitnodigingen"
-}
+},
+  "profilePage" : {
+    "titleHeader": "Mijn Profiel"
+  }
 }

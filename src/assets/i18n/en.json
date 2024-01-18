@@ -92,5 +92,8 @@
   },
   "invitationsPage" : {
     "titleHeader": "My Invitations"
+  },
+  "profilePage" : {
+    "titleHeader": "My profile"
   }
 }
