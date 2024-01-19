@@ -434,4 +434,46 @@ export class GraphQLCommunication {
     };
     return this.sendGraphQLRequest(query);
   }
+
+  public getMyFullProfile(): Observable<any> {
+    const query = {
+      query: `
+    {
+      getMyProfile {
+        id
+        image {
+            id,
+            encoded
+        },
+        fullName,
+        email
+    }
+    }
+  `
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  updateProfile(name: string | null, email: string | null, newPassword: string | null, currentPassword: string | null) {
+    const query = {
+      query: `
+      mutation updateMyProfile($dto: UpdateMyProfileDTO!) {
+  updateMyProfile(dto: $dto) {
+    success,
+    message
+  }
+}
+    `,
+      variables: {
+        dto: {
+          fullName: name,
+          email: email,
+          oldPassword: currentPassword,
+          newPassword: newPassword,
+        }
+      }
+    };
+    return this.sendGraphQLRequest(query);
+  }
 }

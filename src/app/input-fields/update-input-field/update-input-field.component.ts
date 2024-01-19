@@ -1,43 +1,28 @@
 import {Component, Input} from '@angular/core';
-import {ControlValueAccessor, FormsModule} from "@angular/forms";
+import {ControlValueAccessor, FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
+import {NgForOf, NgIf} from "@angular/common";
+import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 @Component({
   selector: 'app-update-input-field',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    SingleErrorMessageComponent,
+    NgForOf,
+    FaIconComponent,
+    NgIf
   ],
   templateUrl: './update-input-field.component.html',
   styleUrl: './update-input-field.component.css'
 })
 
-export class UpdateInputFieldComponent implements ControlValueAccessor {
-  private _value: any;
-  onChange: any = () => {};
+export class UpdateInputFieldComponent {
   onTouch: any = () => {};
 
-  get value(): any {
-    return this._value;
-  }
-
-  set value(val: any) {
-    if (val !== this._value) {
-      this._value = val;
-      this.onChange(val);
-    }
-  }
-
-  updateValue(val: any): void {
-    this.value = val;
-  }
-
-  writeValue(value: any): void {
-    this._value = value;
-  }
-
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
 
   registerOnTouched(fn: any): void {
     this.onTouch = fn;
@@ -46,6 +31,16 @@ export class UpdateInputFieldComponent implements ControlValueAccessor {
   @Input() type: string = '';
   @Input() inputId: string = '';
   @Input() labelText: string = '';
-  protected readonly JSON = JSON;
   @Input() autocomplete: string = '';
+  @Input() _formControl!: FormControl ;
+  @Input() errorSettings: ErrorSetting[] = [];
+  @Input() visibilityCanBeToggled = false;
+  protected readonly faEye = faEye;
+  protected readonly faEyeSlash = faEyeSlash;
+  protected showPassword: boolean = false;
+}
+
+export interface ErrorSetting {
+  errorMessage: string,
+  errorName: string,
 }

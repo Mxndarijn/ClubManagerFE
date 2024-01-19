@@ -26,6 +26,7 @@ import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NavigationService} from "../../services/navigation.service";
 import {NavbarMinimalComponent} from "../../navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
 import {PermissionService} from "../../services/permission.service";
+import {ValidationUtils} from "../../helpers/validation-utils";
 
 @Component({
   selector: 'app-register-page',
@@ -49,10 +50,10 @@ export class RegisterPageComponent implements OnInit {
   ngOnInit() {
     this.registerForm = new FormGroup({
       email: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.required, Validators.email])),
-      password: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required,  this.containsUppercase, this.containsLowercase, this.containsNumber, this.containsSpecialChar])),
+      password: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required,  ValidationUtils.containsUppercase, ValidationUtils.containsLowercase, ValidationUtils.containsNumber, ValidationUtils.containsSpecialChar])),
       secondPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
-      fullName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(4), Validators.required, this.containsSpace ])),
-    }, { validators: this.passwordsMatchValidator });
+      fullName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(4), Validators.required, ValidationUtils.containsSpace ])),
+    }, { validators: ValidationUtils.passwordsMatchValidator });
   }
 
   togglePasswordVisibilty(): void {
@@ -60,45 +61,6 @@ export class RegisterPageComponent implements OnInit {
   }
   toggleSecondPasswordVisitbilty(): void {
     this.showSecondPassword = !this.showSecondPassword
-  }
-
-  containsUppercase(control: FormControl): ValidationErrors | null {
-    const uppercasePattern = /[A-Z]/;
-    return uppercasePattern.test(control.value) ? null : { 'noUppercase': true };
-  }
-
-  containsSpace(control: FormControl): ValidationErrors | null {
-    const spacePattern = /\s/;
-    return spacePattern.test(control.value) ? null : { 'noSpace': true };
-  }
-
-
-  passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
-    const password = group.get('password')?.value;
-    const secondPassword = group.get('secondPassword')?.value;
-    if(secondPassword.length == 0 || password.length == 0) {
-      return null;
-    }
-    return password === secondPassword ? null : { 'passwordsMismatch': true };
-  };
-
-
-
-  containsLowercase(control: FormControl): ValidationErrors | null {
-    const lowercasePattern = /[a-z]/;
-    return lowercasePattern.test(control.value) ? null : { 'noLowercase': true };
-  }
-
-
-  containsNumber(control: FormControl): ValidationErrors | null {
-    const numberPattern = /\d/;
-    return numberPattern.test(control.value) ? null : { 'noNumber': true };
-  }
-
-
-  containsSpecialChar(control: FormControl): ValidationErrors | null {
-    const specialCharPattern = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-    return specialCharPattern.test(control.value) ? null : { 'noSpecialChar': true };
   }
 
 

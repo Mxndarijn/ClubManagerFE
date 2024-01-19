@@ -10,4 +10,5 @@ import {Component, Input} from '@angular/core';
 export class UpdateButtonComponent {
   @Input() label: string = '';
   @Input() borderClass: string = '';
+  @Input() disabledCondition: boolean = false;
 }
