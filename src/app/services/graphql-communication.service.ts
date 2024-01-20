@@ -4,6 +4,9 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthenticationService} from "./authentication.service";
 import {AssociationInvite, AssociationInviteID} from "../../model/association-invite";
+import {query} from "@angular/animations";
+import {WeaponStatusInterface} from "../modals/create-weapon-modal/create-weapon-modal.component";
+import {WeaponType} from "../../model/weapon-type.model";
 
 @Injectable({
   providedIn: 'root',
@@ -472,6 +475,161 @@ export class GraphQLCommunication {
           oldPassword: currentPassword,
           newPassword: newPassword,
         }
+      }
+    };
+    return this.sendGraphQLRequest(query);
+  }
+
+  getAssociationSettings(associationID: string) {
+  const query = {
+    query: `
+     query getAssociationDetails($associationID: ID!) {
+     getAssociationDetails(associationID: $associationID) {
+        name,
+        image {
+          encoded
+        },
+        welcomeMessage,
+        contactEmail
+    }
+      }
+    `,
+    variables: {
+      associationID: associationID
+    }
+  };
+  return this.sendGraphQLRequest(query);
+}
+
+  getAssociationStatistics(associationID: string) {
+    const query = {
+      query: `
+     query getAssociationStatistics($associationID: ID!) {
+     getAssociationStatistics(associationID: $associationID) {
+        totalMembers,
+        totalTracks,
+        totalWeapons
+    }
+      }
+    `,
+      variables: {
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+  }
+
+  updateAssociationPicture(associationID: string, dataURL: string) {
+  const query = {
+    query: `
+      mutation updateAssociationPicture($dto: ChangeProfilePictureDTO!, $associationID: ID!) {
+  updateAssociationPicture(dto: $dto, associationID: $associationID) {
+    success,
+    message
+  }
+}
+    `,
+    variables: {
+      dto: {
+        image: dataURL,
+      },
+      associationID: associationID
+    }
+  };
+  return this.sendGraphQLRequest(query);
+}
+
+  updateAssociationSettings(associationName: string, associationDescription: string, email: string, associationID: string) {
+
+    const query = {
+      query: `
+        mutation updateAssociationSettings($dto: UpdateAssociationDTO!, $associationID: ID!) {
+          updateAssociationSettings(dto: $dto, associationID: $associationID) {
+            success,
+            message
+          }
+        }
+      `,
+      variables: {
+        dto: {
+          associationName: associationName,
+          welcomeMessage: associationDescription,
+          contactEmail: email
+        },
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  getAllWeapons(associationID: string) {
+    const query = {
+      query: `
+     query getAllWeapons($associationID: ID!) {
+     getAllWeapons(associationID: $associationID) {
+        id,
+        name,
+        type {
+          id,
+          name
+        }
+        status
+    }
+      }
+    `,
+      variables: {
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  getAllWeaponTypes(associationID: string)  {
+    const query = {
+      query: `
+     query getAllWeaponTypes($associationID: ID!) {
+     getAllWeaponTypes(associationID: $associationID) {
+        id,
+        name
+    }
+      }
+    `,
+      variables: {
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  createWeapon(associationID: string, weaponName: string, weaponStatusInterface: WeaponStatusInterface, weaponType: WeaponType) {
+    const query = {
+      query: `
+         mutation createWeapon($dto: CreateWeaponDTO!, $associationID: ID!) {
+          createWeapon(dto: $dto, associationID: $associationID) {
+            success,
+            message,
+            weapon {
+              id,
+              name,
+              type {
+                id,
+                name
+              }
+              status,
+            }
+          }
+        }
+      `,
+      variables: {
+        dto: {
+          weaponName: weaponName,
+          weaponType: weaponType.id,
+          weaponStatus: weaponStatusInterface.id
+        },
+        associationID: associationID
       }
     };
     return this.sendGraphQLRequest(query);

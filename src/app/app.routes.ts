@@ -12,6 +12,8 @@ import {AssociationManagerGuard} from "./helpers/guards/association-manager-guar
 import {AssociationMembersPageComponent} from "./pages/association-members-page/association-members-page.component";
 import {InvitationsPageComponent} from "./pages/invitations-page/invitations-page.component";
 import {UpdateProfilePageComponent} from "./pages/update-profile-page/update-profile-page.component";
+import {SettingsPageComponent} from "./pages/settings-page/settings-page.component";
+import {WeaponPageComponent} from "./pages/weapon-page/weapon-page.component";
 
 export const routes: Routes = [
   {
@@ -66,6 +68,16 @@ export const routes: Routes = [
     path: 'profile',
     component: UpdateProfilePageComponent ,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'association/:associationID/settings',
+    component: SettingsPageComponent,
+    canActivate: [AuthGuard, AssociationManagerGuard],
+  },
+  {
+    path: 'association/:associationID/weapons',
+    component: WeaponPageComponent,
+    canActivate: [AuthGuard, AssociationManagerGuard],
   },
 
 

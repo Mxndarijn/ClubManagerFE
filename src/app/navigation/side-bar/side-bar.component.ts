@@ -59,6 +59,11 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
     link: "competitions",
     permission: AssociationPermission.NO_PERMISSION
   },
+  {
+    name: "Wapens",
+    link: "weapons",
+    permission: AssociationPermission.MANAGE_WEAPONS
+  },
 ]
 @Component({
   selector: 'app-side-bar',

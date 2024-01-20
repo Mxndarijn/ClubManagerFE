@@ -37,7 +37,7 @@ module.exports = {
           "info-focus" : "#000000",
           "success": "#1ba14f",
           "warning": "#f97316",
-          "error": "#d31515",
+          "error": "#b71d1d",
           "base-content" : "#b4b9b9",
       }
       },

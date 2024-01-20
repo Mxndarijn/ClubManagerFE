@@ -6,7 +6,7 @@ import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 @Component({
-  selector: 'app-update-input-field',
+  selector: 'app-default-input-field',
   standalone: true,
   imports: [
     FormsModule,
@@ -16,11 +16,11 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
     FaIconComponent,
     NgIf
   ],
-  templateUrl: './update-input-field.component.html',
-  styleUrl: './update-input-field.component.css'
+  templateUrl: './default-input-field.component.html',
+  styleUrl: './default-input-field.component.css'
 })
 
-export class UpdateInputFieldComponent {
+export class DefaultInputFieldComponent {
   onTouch: any = () => {};
 
 
@@ -38,6 +38,7 @@ export class UpdateInputFieldComponent {
   protected readonly faEye = faEye;
   protected readonly faEyeSlash = faEyeSlash;
   protected showPassword: boolean = false;
+  @Input() hideErrorsWhenEmpty: boolean = false;
 }
 
 export interface ErrorSetting {

@@ -1,29 +1,20 @@
-import {Component, Input} from '@angular/core';
+import {Component} from '@angular/core';
 import {NavigationService} from "../../services/navigation.service";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NgForOf, NgIf} from "@angular/common";
 import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
-import {SliderComponent} from "../../toggle-slider/slider.component";
-import {InputFieldFormComponent} from "../../input-fields/input-field-form-big/input-field-form.component";
-import {UpdateInputFieldComponent} from "../../input-fields/update-input-field/update-input-field.component";
-import {faEye, faEyeSlash, faPencil} from "@fortawesome/free-solid-svg-icons";
+import {SliderComponent} from "../../input-fields/toggle-slider/slider.component";
+import {faPencil} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {GraphQLCommunication} from "../../services/graphql-communication.service";
 import {User} from "../../../model/user.model";
 import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 import {AlertService} from "../../services/alert.service";
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from "@angular/forms";
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ValidationUtils} from "../../helpers/validation-utils";
 import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
+import {DefaultInputFieldComponent} from "../../input-fields/default-input-field/default-input-field.component";
 
 @Component({
   selector: 'app-update-profile-page',
@@ -32,11 +23,9 @@ import {ErrorMessageComponent} from "../../error-messages/error-message/error-me
     NgForOf,
     UpdateButtonComponent,
     SliderComponent,
-    InputFieldFormComponent,
-    UpdateInputFieldComponent,
+    DefaultInputFieldComponent,
     FaIconComponent,
     ReactiveFormsModule,
-    UpdateInputFieldComponent,
     TranslateModule,
     ErrorMessageComponent,
     NgIf
@@ -47,7 +36,6 @@ import {ErrorMessageComponent} from "../../error-messages/error-message/error-me
 export class UpdateProfilePageComponent {
   faPencil = faPencil
   showPassword: boolean = false;
-  showSecondPassword: boolean = false;
 
 
   profile: User | undefined;
@@ -60,13 +48,11 @@ export class UpdateProfilePageComponent {
   protected checkPasswordForm: FormControl;
 
 
-
   constructor(
     private navigationService: NavigationService,
     private translate: TranslateService,
     private graphQL: GraphQLCommunication,
     private alertService: AlertService,
-
   ) {
     navigationService.showNavigation();
     this.translate.get('profilePage.titleHeader').subscribe((res: string) => {
@@ -75,20 +61,29 @@ export class UpdateProfilePageComponent {
     )
     this.updateDataForm = new FormGroup({
       email: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.required, Validators.email])),
-      password: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required, ValidationUtils.containsUppercase, ValidationUtils.containsLowercase, ValidationUtils.containsNumber, ValidationUtils.containsSpecialChar])),
-      confirmPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
+      password: new FormControl('', Validators.compose([
+        Validators.maxLength(255),
+        Validators.minLength(8),
+        ValidationUtils.containsUppercase,
+        ValidationUtils.containsLowercase,
+        ValidationUtils.containsNumber,
+        ValidationUtils.containsSpecialChar
+      ])),
+      confirmPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8)])),
       fullName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(4), Validators.required, ValidationUtils.containsSpace])),
     }, {validators: ValidationUtils.passwordsMatchValidator});
     this.checkPasswordForm = new FormControl<string>('', Validators.required);
+    this.reloadData();
+  }
+
+  reloadData() {
     this.graphQL.getMyFullProfile().subscribe({
       next: (data) => {
         this.profile = data.data.getMyProfile;
-        this.updateDataForm.controls.email.setValue( this.profile?.email + "");
-        this.updateDataForm.controls.fullName.setValue( this.profile?.fullName + "");
-        console.log(this.profile);
+        this.updateDataForm.controls.email.setValue(this.profile?.email + "");
+        this.updateDataForm.controls.fullName.setValue(this.profile?.fullName + "");
       }
     })
-
   }
 
 
@@ -134,25 +129,84 @@ export class UpdateProfilePageComponent {
   protected readonly document = document;
 
   updateProfile() {
-      if(!this.checkPasswordForm.valid)
-        return;
-      if(!this.updateDataForm.controls.email.valid)
-        return;
-      if(!this.updateDataForm.controls.fullName.valid)
-        return;
-      if(this.updateDataForm.errors?.["passwordsMismatch"] != null)
-        return;
+    if (!this.checkPasswordForm.valid)
+      return;
+    if (!this.updateDataForm.controls.email.valid)
+      return;
+    if (!this.updateDataForm.controls.fullName.valid)
+      return;
+    if (this.updateDataForm.errors?.["passwordsMismatch"] != null)
+      return;
 
-      this.graphQL.updateProfile(
-        this.updateDataForm.controls.fullName.value,
-        this.updateDataForm.controls.email.value,
-        this.updateDataForm.controls.password.value,
-        this.checkPasswordForm.value
-      ).subscribe({
-        next: (response) => {
-          console.log(response)
+    this.graphQL.updateProfile(
+      this.updateDataForm.controls.fullName.value,
+      this.updateDataForm.controls.email.value,
+      this.updateDataForm.controls.password.value,
+      this.checkPasswordForm.value
+    ).subscribe({
+      next: (response) => {
+        console.log(response)
+        const rDTO: DefaultBooleanResponseDTO = response.data.updateMyProfile
+        if (rDTO.success) {
+          this.reloadData();
+          this.alertService.showAlert({
+            title: "Succesvol",
+            subTitle: "De wijzigingen zijn succesvol opgeslagen.",
+            icon: AlertIcon.CHECK,
+            duration: 4000,
+            alertClass: AlertClass.CORRECT_CLASS
+          });
+        } else {
+          switch (rDTO.message) {
+            case "not-correct-password": {
+              this.alertService.showAlert({
+                title: "Fout opgetreden",
+                subTitle: "Het ingevoerde wachtwoord komt niet overeen.",
+                icon: AlertIcon.XMARK,
+                duration: 4000,
+                alertClass: AlertClass.INCORRECT_CLASS
+              });
+              break;
+            }
+            default: {
+              this.alertService.showAlert({
+                title: "Fout opgetreden",
+                subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
+                icon: AlertIcon.XMARK,
+                duration: 4000,
+                alertClass: AlertClass.INCORRECT_CLASS
+              });
+              break;
+            }
 
+          }
         }
-      });
+      },
+      error: (e) => {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+      }
+    });
+  }
+
+  resetUpdateForm() {
+    // this.updateDataForm.reset()
+    this.updateDataForm.controls.email.setValue(this.profile?.email + "")
+    this.updateDataForm.controls.fullName.setValue(this.profile?.fullName + "")
+    this.updateDataForm.controls.password.setValue("")
+    this.updateDataForm.controls.confirmPassword.setValue("")
+
+    this.alertService.showAlert({
+      title: "Informatie",
+      subTitle: "De wijzigingen zijn niet opgeslagen.",
+      icon: AlertIcon.INFO,
+      duration: 4000,
+      alertClass: AlertClass.INFO_CLASS
+    });
   }
 }

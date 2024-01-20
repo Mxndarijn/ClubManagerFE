@@ -96,5 +96,8 @@
 },
   "profilePage" : {
     "titleHeader": "Mijn Profiel"
+  },
+  "associationSettingsPage": {
+    "titleHeader": "Mijn vereniging"
   }
 }

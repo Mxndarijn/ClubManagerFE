@@ -20,8 +20,8 @@
   <div class="flex flex-col w-5/12 justify-between">
     <h1 class="font-bold text-3xl">Voorkeuren</h1>
     <div class="flex flex-col h-full justify-center w-10/12">
-      <app-toggle-slider [sliderLabel]="'Ontvang competitie herinneringen'" [status]="false"></app-toggle-slider>
-      <app-toggle-slider [sliderLabel]="'Ontvang herinnering over reserveringen'" [status]="false"></app-toggle-slider>
+      <app-toggle-slider id="competitionReminder" [sliderLabel]="'Ontvang competitie herinneringen'" [status]="false"></app-toggle-slider>
+      <app-toggle-slider id="reservationReminder" [sliderLabel]="'Ontvang herinnering over reserveringen'" [status]="false"></app-toggle-slider>
     </div>
     <app-update-button [borderClass]="'border-success'" class="flex justify-end mr-20"
                        [label]="'Update'"></app-update-button>
@@ -29,10 +29,9 @@
 </div>
 <div class="divider"></div>
 <div class="flex flex-col w-full justify-center items-center">
-  <!--  <p class="w-9/12 mb-10">Om verdere instellingen aan te kunnen passen moet u uw wachtwoord invullen.</p>-->
   <form autocomplete="off" class="flex flex-row justify-evenly w-10/12 items-start flex-wrap gap-y-3 mb-6"
         [formGroup]="updateDataForm">
-    <app-update-input-field
+    <app-default-input-field
       [_formControl]="updateDataForm.controls.fullName"
       [autocomplete]="'name'"
       [placeholder]="'Pas hier je volledige naam aan'"
@@ -43,8 +42,8 @@
           errorMessage: 'Je moet een geldige naam invullen.',
           errorName: ''
          }]">
-    </app-update-input-field>
-    <app-update-input-field
+    </app-default-input-field>
+    <app-default-input-field
       [_formControl]="updateDataForm.controls.password"
       [autocomplete]="'new-password'"
       [placeholder]="'Vul hier je nieuwe wachtwoord in'"
@@ -72,8 +71,8 @@
          }]"
       [visibilityCanBeToggled]="true">
 
-    </app-update-input-field>
-    <app-update-input-field
+    </app-default-input-field>
+    <app-default-input-field
       [_formControl]="updateDataForm.controls.email"
       [autocomplete]="'email'"
       [placeholder]="'Pas hier je e-mail aan'"
@@ -84,18 +83,19 @@
       errorMessage: 'Je moet een geldige email invullen.',
       errorName: ''
       }]">
-    </app-update-input-field>
+    </app-default-input-field>
     <div>
-      <app-update-input-field
+      <app-default-input-field
         [_formControl]="updateDataForm.controls.confirmPassword"
         [autocomplete]="'new-password'"
         [placeholder]="'Herhaal je nieuwe wachtwoord'"
         [labelText]="'Herhaal nieuw wachtwoord'"
         [inputId]="'repeatNewPassword'"
         [type]="'password'"
-        [visibilityCanBeToggled]="true">
+        [visibilityCanBeToggled]="true"
+        [hideErrorsWhenEmpty]="true">
 
-      </app-update-input-field>
+      </app-default-input-field>
       <app-error-message
         [errorMessage]="'registerPage.errors.passwordMismatch' | translate"
         [formGroup]="updateDataForm"
@@ -105,18 +105,23 @@
   </form>
   <p class="w-8/12 mr-10">Om de aanpassingen op te slaan moet u hier uw wachtwoord invullen.</p>
   <div class="flex flex-row w-11/12 mt-5 justify-around items-center ">
-      <app-update-input-field
+      <app-default-input-field
         [autocomplete]="'current-password'"
         [_formControl]="checkPasswordForm"
         [placeholder]="'Vul hier je huidige wachtwoord in'"
-        [labelText]="'Vul hier je wachtwoord in'"
+        [labelText]="'Vul hier je huidige wachtwoord in'"
         [inputId]="'password'"
-        [type]="showPassword ? 'text' : 'password'"
+        [type]="'password'"
         [errorSettings]="[]"
         [visibilityCanBeToggled]="true">
-      </app-update-input-field>
+      </app-default-input-field>
     <div class="flex flex-row mt-3 gap-x-10 justify-end">
-      <app-update-button [borderClass]="'border-error'" [label]="'Annuleer'"></app-update-button>
+      <app-update-button
+        [borderClass]="'border-error'"
+        [label]="'Reset'"
+      (click)="resetUpdateForm()">
+
+      </app-update-button>
       <app-update-button
         [borderClass]="'border-success'"
         [label]="'Update'"

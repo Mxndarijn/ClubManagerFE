@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InputFieldFormComponent } from './input-field-form.component';
+import { WeaponPageComponent } from './weapon-page.component';
 
-describe('InputFieldFormComponent', () => {
-  let component: InputFieldFormComponent;
-  let fixture: ComponentFixture<InputFieldFormComponent>;
+describe('WeaponPageComponent', () => {
+  let component: WeaponPageComponent;
+  let fixture: ComponentFixture<WeaponPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InputFieldFormComponent]
+      imports: [WeaponPageComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(InputFieldFormComponent);
+    fixture = TestBed.createComponent(WeaponPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

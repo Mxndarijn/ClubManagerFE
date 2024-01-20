@@ -92,7 +92,7 @@ export class SendInvitationModalComponent {
         if(dto.success) {
           const alert: AlertInfo = {
             title: "Succesvol",
-            subTitle: "The uitnodiging is succesvol verstuurd.",
+            subTitle: "De uitnodiging is succesvol verstuurd.",
             icon: AlertIcon.CHECK,
             duration: 4000,
             alertClass: AlertClass.CORRECT_CLASS

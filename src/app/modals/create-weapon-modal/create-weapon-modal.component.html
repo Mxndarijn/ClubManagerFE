@@ -1,0 +1,47 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Nieuw wapen</h3>
+    <div class="flex flex-row items-center mt-5">
+      <div class="flex flex-col w-full">
+        <form class="flex flex-col items-start justify-evenly mt-5" [formGroup]="createWeaponForm">
+          <app-default-input-field
+            [_formControl]="createWeaponForm.controls.name"
+            [placeholder]="'Voer hier de naam van het wapen in'"
+            [labelText]="'Wapen naam'"
+            [inputId]="'weaponName'"
+            [type]="'text'"
+            [errorSettings]="[{
+      errorMessage: 'Je moet een geldige naam invullen.',
+      errorName: ''
+      }]">
+          </app-default-input-field>
+          <div class="flex flex-col w-96 items-start justify-evenly mt-5">
+            <label for="status-selection" class="mb-2">Selecteer de status van het wapen</label>
+            <select id="status-selection" class="select select-accent w-full  border-2"
+                    [formControl]="createWeaponForm.controls.status">
+              <option [ngValue]="weaponStatus" *ngFor="let weaponStatus of weaponStatuses"> {{ weaponStatus.status }}</option>
+            </select>
+          </div>
+          <div class="flex flex-col w-96  items-start justify-evenly mt-5">
+            <label for="type-selection" class="mb-2">Selecteer hier het type van het wapen</label>
+            <select id="type-selection" class="select select-accent w-full  border-2"
+                    [formControl]="createWeaponForm.controls.type">
+              <option [ngValue]="weaponType" *ngFor="let weaponType of weaponTypeList">{{ weaponType.name }}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between">
+        <button class="btn border-error border-2 bg-base-100"
+                (click)="closeModal()">Annuleer
+        </button>
+        <button [disabled]="!createWeaponForm.valid" class="btn border-success border-2 bg-base-100"
+                (click)="createWeapon()">Voeg toe
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>
