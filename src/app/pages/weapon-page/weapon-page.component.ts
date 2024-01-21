@@ -14,6 +14,7 @@ import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.componen
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
 import {AssociationInvite} from "../../../model/association-invite";
 import {getWeaponStatus, Weapon, WeaponStatus} from "../../../model/weapon.model";
+import {CalenderComponent} from "../../calender/calender.component";
 
 enum Tab {
   WEAPON_OVERVIEW,
@@ -30,7 +31,8 @@ enum Tab {
     NgIf,
     SendInvitationModalComponent,
     FaIconComponent,
-    CreateWeaponModalComponent
+    CreateWeaponModalComponent,
+    CalenderComponent
   ],
   templateUrl: './weapon-page.component.html',
   styleUrl: './weapon-page.component.css'

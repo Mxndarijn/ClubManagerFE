@@ -7,6 +7,8 @@ import {TokenInterceptor} from "./helpers/intercceptors/token.interceptor";
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import {CalendarModule, DateAdapter} from "angular-calendar";
+import {adapterFactory} from "angular-calendar/date-adapters/date-fns";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, "/assets/i18n/", ".json")
@@ -24,6 +26,11 @@ export const appConfig: ApplicationConfig = {
   provideAnimations(),
     provideHttpClient(withInterceptorsFromDi()),
     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi:true},
-  importProvidersFrom([HttpClientModule, TranslateModule.forRoot(provideTranslation())])]
+  importProvidersFrom([HttpClientModule,
+    TranslateModule.forRoot(provideTranslation()),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),])],
 };
 
