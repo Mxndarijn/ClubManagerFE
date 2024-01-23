@@ -1,0 +1,18 @@
+<div class="h-screen overflow-y-hidden">
+  <div class="flex flex-row justify-between mb-5 ">
+    <app-calender-switch-button class="ml-10"></app-calender-switch-button>
+    <button class="btn border-accent border-2 bg-base-100 mr-10 btn-md">
+      Plan onderhoud
+    </button>
+  </div>
+  <div class="flex flex-row justify-evenly h-full">
+    <div class="flex flex-col w-3/12 justify-start h-5/6">
+      <app-calender-overview class="h-3/6 mb-3"></app-calender-overview>
+      <app-upcoming-events class="h-2/6"></app-upcoming-events>
+    </div>
+    <div class="w-8/12 border-base-200 border-2 bg-base-100 shadow-2xl overflow-y-auto no-scrollbar ">
+      <app-calender-week class=""></app-calender-week>
+    </div>
+    <!--  Hier komt de rest van de styling-->
+  </div>
+</div>

@@ -28,9 +28,6 @@ export const appConfig: ApplicationConfig = {
     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi:true},
   importProvidersFrom([HttpClientModule,
     TranslateModule.forRoot(provideTranslation()),
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory,
-    }),])],
+    ])],
 };
 
