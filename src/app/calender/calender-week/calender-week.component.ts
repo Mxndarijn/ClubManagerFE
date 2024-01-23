@@ -27,7 +27,7 @@ export class CalenderWeekComponent {
     this.translateService.get("config.language").subscribe({
       next: (response) => {
         this.locale = response;
-        for(let i=7 ; i <= 22 ; i++)
+        for(let i=7 ; i <= 23 ; i++)
         {
           this.hours.push({hourNumber: i, minuteNumber:0, displayName: this.formatTime(i, 0)});
           this.hours.push({hourNumber: i, minuteNumber:30, displayName: this.formatTime(i, 30)});
