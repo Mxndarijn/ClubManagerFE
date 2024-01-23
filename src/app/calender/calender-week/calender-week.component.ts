@@ -64,6 +64,10 @@ export class CalenderWeekComponent {
     // Formatteer de tijd volgens de lokale instellingen en de opgegeven opties
     return new Intl.DateTimeFormat(this.locale, options).format(date);
   }
+
+  getEventsForDate(dayIndex: any, hourIndex: HourRow) {
+
+  }
 }
 
 export interface HourRow {
@@ -71,3 +75,5 @@ export interface HourRow {
   minuteNumber: number,
   displayName: string
 }
+
+
