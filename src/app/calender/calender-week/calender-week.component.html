@@ -1,17 +1,25 @@
-<table class="border-collapse">
+<table class="border-collapse w-full table-fixed z-0">
   <thead class="sticky top-0 bg-base-100 z-10">
-  <tr class="h-14 shadow-xl border-grayTint border-b-2">
-    <th></th>
-    <th *ngFor="let day of this.days" class="w-96">{{day}}</th>
+  <tr class="h-14 shadow-xl border-grayTint border-b-2 w-full">
+    <th class="w-1/12"></th>
+    <th *ngFor="let day of this.days" class="w-1/8">{{ day }}</th>
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let hourIndex of hours" [ngClass]="{'bg-base-300': (hourIndex.hourNumber % 2) === 0}">
-    <td class="w-20 pl-2" *ngIf="hourIndex.minuteNumber === 0">{{hourIndex.displayName}}</td>
-    <td class="w-20" *ngIf="hourIndex.minuteNumber != 0"></td>
-    <td *ngFor="let dayIndex of [].constructor(7); let cellIndexJ = index" class="border-2 border-grayTint border-b-0 border-t-0 w-40 h-14 hover:bg-accent opacity-65" [ngClass]="{'border-2': cellIndexJ != 1 && cellIndexJ != 6}">
-          <div *ngFor="let event of getEventsForDate(dayIndex, hourIndex)"></div>
-<!--      <div class="relative h-14 rounded-2xl bg-red-400">eee</div>-->
+  <tr  *ngFor="let hourIndex of hours" [ngClass]="{'bg-base-300': (hourIndex.hourNumber % 2) === 0}" class="z-0 text-center align-text-top h-14">
+    <td *ngIf="hourIndex.minuteNumber === 0">{{ hourIndex.displayName }}</td>
+    <td class="" *ngIf="hourIndex.minuteNumber != 0"></td>
+    <td *ngFor="let dayIndex of [].constructor(7); let cellIndexJ = index"
+        class="border-2 border-grayTint border-b-0 border-t-0 z-0 align-top relative hover:bg-accent opacity-65"
+        [ngClass]="{'border-2': cellIndexJ != 1 && cellIndexJ != 6}">
+      <div class="flex flex-row  z-10">
+        <div class="absolute z-20 cursor-pointer" [ngStyle]="{'background-color': event.color, 'height': calculateHeight(event), 'width': calculateWidth(getEventsForDate(cellIndexJ, hourIndex).length), 'left': calculateLeft(getEventsForDate(cellIndexJ, hourIndex).length, eventIndex), 'top': calculateTop(event)}"
+             *ngFor="let event of getEventsForDate(cellIndexJ, hourIndex); let eventIndex = index" >
+          <h1 class="truncate ..."> {{ event.title }}</h1>
+          <p>{{ event.description }}</p>
+        </div>
+      </div>
+      <!--      <div class="relative h-14 rounded-2xl bg-red-400">eee</div>-->
 
     </td>
   </tr>

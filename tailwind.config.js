@@ -7,6 +7,12 @@ module.exports = {
     extend: {
       colors: {
         "grayTint": "#54575d",
+      },
+      width: {
+        "1/7" : "14,27%"
+      },
+      maxWidth: {
+        "1/7" : "14,27%"
       }
     },
   },
