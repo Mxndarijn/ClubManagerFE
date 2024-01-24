@@ -3,6 +3,7 @@ import {CalenderEvent} from "../calender-view/calender-view.component";
 import {TranslateService} from "@ngx-translate/core";
 import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {addDays, addHours, differenceInMinutes} from "date-fns";
+import {GridTableCellComponent} from "../../table/grid-table-cell/grid-table-cell.component";
 
 @Component({
   selector: 'app-calender-week',
@@ -11,7 +12,8 @@ import {addDays, addHours, differenceInMinutes} from "date-fns";
     NgForOf,
     NgClass,
     NgIf,
-    NgStyle
+    NgStyle,
+    GridTableCellComponent
   ],
   templateUrl: './calender-week.component.html',
   styleUrls: ['./calender-week.component.css']

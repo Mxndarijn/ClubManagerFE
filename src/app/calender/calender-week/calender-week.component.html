@@ -1,29 +1,14 @@
-<table class="border-collapse w-full table-fixed z-0">
-  <thead class="sticky top-0 bg-base-100 z-10">
-  <tr class="h-14 shadow-xl border-grayTint border-b-2 w-full">
-    <th class="w-1/12"></th>
-    <th *ngFor="let day of this.days" class="w-1/8">{{ day }}</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr  *ngFor="let hourIndex of hours" [ngClass]="{'bg-base-300': (hourIndex.hourNumber % 2) === 0}" class="z-0 text-center align-text-top h-14">
-    <td *ngIf="hourIndex.minuteNumber === 0">{{ hourIndex.displayName }}</td>
-    <td class="" *ngIf="hourIndex.minuteNumber != 0"></td>
-    <td *ngFor="let dayIndex of [].constructor(7); let cellIndexJ = index"
-        class="border-2 border-grayTint border-b-0 border-t-0 z-0 align-top relative hover:bg-accent opacity-65"
-        [ngClass]="{'border-2': cellIndexJ != 1 && cellIndexJ != 6}">
-      <div class="flex flex-row  z-10">
-        <div class="absolute z-20 cursor-pointer" [ngStyle]="{'background-color': event.color, 'height': calculateHeight(event), 'width': calculateWidth(getEventsForDate(cellIndexJ, hourIndex).length), 'left': calculateLeft(getEventsForDate(cellIndexJ, hourIndex).length, eventIndex), 'top': calculateTop(event)}"
-             *ngFor="let event of getEventsForDate(cellIndexJ, hourIndex); let eventIndex = index" >
-          <h1 class="truncate ..."> {{ event.title }}</h1>
-          <p>{{ event.description }}</p>
-        </div>
-      </div>
-      <!--      <div class="relative h-14 rounded-2xl bg-red-400">eee</div>-->
+<div class="grid grid-rows-48" style="grid-template-columns: 0.5fr repeat(7, 1fr);">
+  <div></div>
+  <div *ngFor="let day of days" class="text-center border-b-2 border-grayTint h-8">{{ day }}</div>
 
-    </td>
-  </tr>
-  </tbody>
-</table>
+  <!-- Repeat the following block for each row in your data -->
+  <ng-container class="h-20" *ngFor="let index of [].constructor(48); let i = index">
+    <div class="text-center">{{ '+' }}</div>
+    <!-- Add the rest of the content for each column in the row here -->
+    <ng-container *ngFor="let index of [1, 2, 3, 4, 5, 6, 7]; let i = index">
+      <app-grid-table-cell class="border-l-2 border-r-2 border-grayTint hover:bg-accent" [label]="''"></app-grid-table-cell>
+    </ng-container>
 
-
+  </ng-container>
+</div>
