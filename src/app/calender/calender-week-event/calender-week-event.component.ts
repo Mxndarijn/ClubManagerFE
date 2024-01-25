@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {CalendarEvent} from "angular-calendar";
-import {CalenderEvent} from "../calender/calender-view/calender-view.component";
+import {CalenderEvent} from "../calender-view/calender-view.component";
 import {NgStyle} from "@angular/common";
 
 @Component({

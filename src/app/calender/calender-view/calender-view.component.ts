@@ -12,13 +12,13 @@ import {CalenderWeekComponent} from "../calender-week/calender-week.component";
 @Component({
     selector: 'app-calender',
     standalone: true,
-    imports: [
-      UpcomingEventsComponent,
-      UpdateButtonComponent,
-      CalenderSwitchComponent,
-      CalenderDateOverviewComponent,
-      CalenderWeekComponent
-    ],
+  imports: [
+    UpcomingEventsComponent,
+    UpdateButtonComponent,
+    CalenderSwitchComponent,
+    CalenderDateOverviewComponent,
+    CalenderWeekComponent,
+  ],
     templateUrl: './calender-view.component.html',
     styleUrl: './calender-view.component.css'
   }
@@ -38,6 +38,8 @@ export interface CalenderEvent {
   description: string,
   color: string,
   data: any,
+  width: number // Percentage
+  columnIndex: number
   // onClickEventEmitter: EventEmitter<CalenderEvent>
 
 
