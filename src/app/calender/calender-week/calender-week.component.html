@@ -1,14 +1,13 @@
-<div class="grid grid-rows-48" style="grid-template-columns: 0.5fr repeat(7, 1fr);">
-  <div></div>
-  <div *ngFor="let day of days" class="text-center border-b-2 border-grayTint h-8">{{ day }}</div>
+<div class="grid " [style]="{'grid-template-columns': 'minmax(0, 0.5fr) repeat(7, 1fr)', 'grid-template-rows': '1fr repeat(288, minmax(0,0.3fr))'}">
+  <div class="border-b-2 border-grayTint" [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start':1}"> </div>
+  <div *ngFor="let day of days; let i = index" class="text-center border-b-2 border-grayTint h-8" [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start':i + 2}">{{ day }}</div>
 
-  <!-- Repeat the following block for each row in your data -->
-  <ng-container class="h-20" *ngFor="let index of [].constructor(48); let i = index">
-    <div class="text-center">{{ '+' }}</div>
-    <!-- Add the rest of the content for each column in the row here -->
-    <ng-container *ngFor="let index of [1, 2, 3, 4, 5, 6, 7]; let i = index">
-      <app-grid-table-cell class="border-l-2 border-r-2 border-grayTint hover:bg-accent" [label]="''"></app-grid-table-cell>
-    </ng-container>
+  <div *ngFor="let c of [].constructor(24); let i = index;" class="border-l-2 border-r-2 border-grayTint col-start-1" [style]="{'grid-row-start': i * 12 + 2, 'grid-row-end':  i * 12 + 14, 'grid-column-start':1}"
+  [ngClass]="{'bg-base-300': i % 2 == 0, 'bg-base-100': i % 2 == 1}">TIJD-PLACEHOLDERDDD</div>
 
+
+  <ng-container *ngFor="let i of [].constructor(7); let columnIndex = index;">
+    <div *ngFor="let j of [].constructor(24); let rowIndex = index;" class="border-l-2 border-r-2 border-grayTint " [style]="{'grid-column-start': columnIndex + 2, 'grid-row-start': rowIndex * 12 + 2, 'grid-row-end': rowIndex * 12 + 14}"
+         [ngClass]="{'bg-base-300': rowIndex % 2 == 0, 'bg-base-100': rowIndex % 2 == 1}"> </div>
   </ng-container>
 </div>
