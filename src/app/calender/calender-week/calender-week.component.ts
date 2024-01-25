@@ -1,10 +1,19 @@
-import {Component, Input} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Directive,
+  ElementRef,
+  Input,
+  OnInit,
+  Renderer2,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import {CalenderEvent} from "../calender-view/calender-view.component";
 import {TranslateService} from "@ngx-translate/core";
-import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
+import {NgClass, NgComponentOutlet, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {addDays, addHours, differenceInMinutes} from "date-fns";
-import {GridTableCellComponent} from "../../table/grid-table-cell/grid-table-cell.component";
-
+import {CalenderWeekEventComponent} from "../../calender-week-event/calender-week-event.component";
 @Component({
   selector: 'app-calender-week',
   standalone: true,
@@ -13,13 +22,14 @@ import {GridTableCellComponent} from "../../table/grid-table-cell/grid-table-cel
     NgClass,
     NgIf,
     NgStyle,
-    GridTableCellComponent
+    NgComponentOutlet,
   ],
   templateUrl: './calender-week.component.html',
   styleUrls: ['./calender-week.component.css']
 })
 
-export class CalenderWeekComponent {
+export class CalenderWeekComponent implements  AfterViewInit {
+  @ViewChild('eventTemplate', { read: ViewContainerRef }) eventTemplateHolder!: ViewContainerRef
   @Input() events: CalenderEvent[] = [{
     startDate: new Date(2024, 0, 24, 16, 0),
     endDate: addHours(new Date(2024, 0, 24, 16, 4), 2),
@@ -48,20 +58,46 @@ export class CalenderWeekComponent {
 
 
   constructor(
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private renderer: Renderer2
   ) {
     this.translateService.get("config.language").subscribe({
       next: (response) => {
         this.locale = response;
         for (let i = 7; i <= 23; i++) {
-          this.hours.push({hourNumber: i, minuteNumber: 0, displayName: this.formatTime(i, 0)});
-          this.hours.push({hourNumber: i, minuteNumber: 30, displayName: this.formatTime(i, 30)});
+          this.hours.push({hourNumber: i, displayName: this.formatTime(i, 0)});
         }
       }
     })
   }
 
-  protected readonly Math = Math;
+  ngAfterViewInit(): void {
+    this.events.forEach(calEvent => {
+      const eventComponent = this.eventTemplateHolder.createComponent(CalenderWeekEventComponent);
+      setTimeout(() => {
+        eventComponent.instance.calendarEvent = calEvent;
+        const nativeElement = eventComponent.location.nativeElement;
+
+        this.renderer.setStyle(nativeElement, "grid-column-start", this.getCorrectColumn(calEvent.startDate))
+        this.renderer.setStyle(nativeElement, "grid-row-start", this.getCorrectRow(calEvent.startDate))
+        this.renderer.setStyle(nativeElement, "grid-row-end", this.getCorrectRow(calEvent.endDate))
+      });
+    })
+  }
+
+  getCorrectColumn(date: Date) {
+    const dayOfTheWeek = date.getDay();
+    return (dayOfTheWeek === 0) ? 8 : dayOfTheWeek + 1;
+  }
+
+  getCorrectRow(date: Date) {
+    const hours = (date.getHours() - this.hours[0].hourNumber) * 12;
+    const minutes = Math.floor(date.getMinutes() / 5);
+
+    return hours + minutes + 1;
+  }
+
+
 
 
   formatTime(hour: number, minute: number): string {
@@ -103,40 +139,35 @@ export class CalenderWeekComponent {
     return year1 === year2 && month1 === month2 && day1 === day2;
   }
 
-  getEventsForDate(dayIndex: number, hourIndex: HourRow) {
-    const currentDate = addDays(this.weekStartDay, dayIndex);
-    return this.events.filter(event => {
-      return this.areDatesEqualWithoutTime(currentDate, event.startDate) && event.startDate.getHours() === hourIndex.hourNumber && event.startDate.getMinutes() >= (hourIndex.minuteNumber) && event.startDate.getMinutes() < (hourIndex.minuteNumber + 30)
-    })
-  }
 
-  calculateWidth(eventCount: number): string {
-    const maxWidthForSingleEvent = 100;
 
-    const calculatedWidth = eventCount > 1 ? 100 / eventCount : maxWidthForSingleEvent;
+  // calculateWidth(eventCount: number): string {
+  //   const maxWidthForSingleEvent = 100;
+  //
+  //   const calculatedWidth = eventCount > 1 ? 100 / eventCount : maxWidthForSingleEvent;
+  //
+  //   return calculatedWidth + '%';
+  // }
 
-    return calculatedWidth + '%';
-  }
+  // calculateLeft(length: number, eventIndex: number) {
+  //   return ((100 / length) * eventIndex) + '%'
+  //
+  // }
 
-  calculateLeft(length: number, eventIndex: number) {
-    return ((100 / length) * eventIndex) + '%'
+  // calculateHeight(event: CalenderEvent) {
+  //   const minutes = Math.abs(differenceInMinutes(event.startDate, event.endDate))
+  //   console.log(minutes)
+  //   return (minutes / this.cellTime) * this.cellHeight + 'rem';
+  // }
 
-  }
-
-  calculateHeight(event: CalenderEvent) {
-    const minutes = Math.abs(differenceInMinutes(event.startDate, event.endDate))
-    console.log(minutes)
-    return (minutes / this.cellTime) * this.cellHeight + 'rem';
-  }
-
-  calculateTop(event: CalenderEvent) {
-    return (event.startDate.getMinutes() / this.cellTime) * this.cellHeight + 'rem';
-  }
+  // calculateTop(event: CalenderEvent) {
+  //   return (event.startDate.getMinutes() / this.cellTime) * this.cellHeight + 'rem';
+  // }
+  protected readonly CalenderWeekEventComponent = CalenderWeekEventComponent;
 }
 
 export interface HourRow {
   hourNumber: number,
-  minuteNumber: number,
   displayName: string
 }
 

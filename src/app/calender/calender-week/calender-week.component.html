@@ -1,13 +1,14 @@
-<div class="grid " [style]="{'grid-template-columns': 'minmax(0, 0.5fr) repeat(7, 1fr)', 'grid-template-rows': '1fr repeat(288, minmax(0,0.3fr))'}">
+<div class="grid" [style]="{'grid-template-columns': 'minmax(0, 0.5fr) repeat(' + days.length + ', 1fr)', 'grid-template-rows': '1fr repeat(' + hours.length * 12 + ', minmax(0,0.3fr))'}">
   <div class="border-b-2 border-grayTint" [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start':1}"> </div>
   <div *ngFor="let day of days; let i = index" class="text-center border-b-2 border-grayTint h-8" [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start':i + 2}">{{ day }}</div>
 
-  <div *ngFor="let c of [].constructor(24); let i = index;" class="border-l-2 border-r-2 border-grayTint col-start-1" [style]="{'grid-row-start': i * 12 + 2, 'grid-row-end':  i * 12 + 14, 'grid-column-start':1}"
-  [ngClass]="{'bg-base-300': i % 2 == 0, 'bg-base-100': i % 2 == 1}">TIJD-PLACEHOLDERDDD</div>
+  <div *ngFor="let hour of hours; let i = index;" class="border-r-2 border-grayTint col-start-1" [style]="{'grid-row-start': i * 12 + 2, 'grid-row-end':  i * 12 + 14, 'grid-column-start':1}"
+  [ngClass]="{'bg-base-300': i % 2 == 0, 'bg-base-100': i % 2 == 1}">{{hour.displayName}}</div>
 
 
   <ng-container *ngFor="let i of [].constructor(7); let columnIndex = index;">
-    <div *ngFor="let j of [].constructor(24); let rowIndex = index;" class="border-l-2 border-r-2 border-grayTint " [style]="{'grid-column-start': columnIndex + 2, 'grid-row-start': rowIndex * 12 + 2, 'grid-row-end': rowIndex * 12 + 14}"
-         [ngClass]="{'bg-base-300': rowIndex % 2 == 0, 'bg-base-100': rowIndex % 2 == 1}"> </div>
+    <div *ngFor="let hour of hours; let rowIndex = index;" class="border-l-2 border-grayTint" [style]="{'grid-column-start': columnIndex + 2, 'grid-row-start': rowIndex * 12 + 2, 'grid-row-end': rowIndex * 12 + 14}"
+         [ngClass]="{'bg-base-300': rowIndex % 2 == 0, 'bg-base-100': rowIndex % 2 == 1, 'border-r-2': columnIndex != 6}"></div>
   </ng-container>
+  <ng-template #eventTemplate></ng-template>
 </div>
