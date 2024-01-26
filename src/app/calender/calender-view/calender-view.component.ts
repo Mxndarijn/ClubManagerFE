@@ -5,6 +5,7 @@ import {Modal} from "../../services/modal.service";
 import {CalenderSwitchComponent} from "../calender-switch/calender-switch.component";
 import {CalenderDateOverviewComponent} from "../calender-date-overview/calender-date-overview.component";
 import {CalenderWeekComponent} from "../calender-week/calender-week.component";
+import {ColorPreset} from "../../../model/color-preset.model";
 
 // import {addDays, addHours, endOfMonth, isSameDay, isSameMonth, startOfDay, subDays} from 'date-fns';
 
@@ -36,7 +37,7 @@ export interface CalenderEvent {
   endDate: Date,
   title: string,
   description: string,
-  color: string,
+  color: ColorPreset,
   data: any,
   width: number // Percentage
   columnIndex: number,

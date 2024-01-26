@@ -37,7 +37,11 @@ export class CalenderWeekComponent implements AfterViewInit {
     endDate: addHours(new Date(2024, 0, 24, 16, 4), 1),
     title: "Kiekeboe",
     description: "test desc",
-    color: "#a40b0b",
+    color: {
+      colorName: "red",
+      primaryColor: "#8C0202",
+      secondaryColor: "#DBB8B8"
+    },
     data: {},
     width:100,
     columnIndex: -1,
@@ -49,7 +53,11 @@ export class CalenderWeekComponent implements AfterViewInit {
     endDate: addHours(new Date(2024, 0, 24, 17, 4), 1),
     title: "Kiekeboe1",
     description: "test desc",
-    color: "#0ba4a4",
+    color: {
+      colorName: "blue",
+      primaryColor: "#0D028C",
+      secondaryColor: "#BFB8DB"
+    },
     data: {},
     width:100,
     columnIndex: -1,
@@ -61,7 +69,11 @@ export class CalenderWeekComponent implements AfterViewInit {
     endDate: addHours(new Date(2024, 0, 24, 16, 4), 2),
     title: "Kiekeboe",
     description: "test desc",
-    color: "#a40b0b",
+    color: {
+      colorName: "green",
+      primaryColor: "#028C20",
+      secondaryColor: "#BADBB8"
+    },
     data: {},
     width:100,
     columnIndex: -1,
@@ -73,7 +85,11 @@ export class CalenderWeekComponent implements AfterViewInit {
     endDate: addHours(new Date(2024, 0, 24, 12, 4), 20),
     title: "Kiekeboe",
     description: "test desc",
-    color: "#0b1aa4",
+    color: {
+      colorName: "yellow",
+      primaryColor: "#D9DD13",
+      secondaryColor: "#DBD9B8"
+    },
     data: {},
     width:100,
     columnIndex: -1,
@@ -85,7 +101,11 @@ export class CalenderWeekComponent implements AfterViewInit {
     endDate: addHours(new Date(2024, 0, 24, 12, 4), 1),
     title: "Kiekeboe",
     description: "test desc",
-    color: "#a40b0b",
+    color: {
+      colorName: "blue",
+      primaryColor: "#0D028C",
+      secondaryColor: "#BFB8DB"
+    },
     data: {},
     width:100,
     columnIndex: -1,
@@ -97,7 +117,11 @@ export class CalenderWeekComponent implements AfterViewInit {
     endDate: addHours(new Date(2024, 0, 24, 16, 4), 2),
     title: "Kiekeboe",
     description: "test desc",
-    color: "#a40b0b",
+    color: {
+      colorName: "blue",
+      primaryColor: "#0D028C",
+      secondaryColor: "#BFB8DB"
+    },
     data: {},
     width:100,
     columnIndex: -1,
@@ -109,7 +133,11 @@ export class CalenderWeekComponent implements AfterViewInit {
     endDate: addHours(new Date(2024, 0, 25, 13, 4), 2),
     title: "Kiekeboe",
     description: "test desc",
-    color: "#a40b0b",
+    color: {
+      colorName: "blue",
+      primaryColor: "#0D028C",
+      secondaryColor: "#BFB8DB"
+    },
     data: {},
     width:100,
     columnIndex: -1,
@@ -145,7 +173,7 @@ export class CalenderWeekComponent implements AfterViewInit {
     this.translateService.get("config.language").subscribe({
       next: (response) => {
         this.locale = response;
-        for (let i = this.startHour; i <= this.endHour + 1; i++) {
+        for (let i = this.startHour; i <= this.endHour; i++) {
           this.hours.push({hourNumber: i, displayName: this.formatTime(i, 0)});
         }
       }
@@ -156,16 +184,14 @@ export class CalenderWeekComponent implements AfterViewInit {
     const beginTime = this.hours[0].hourNumber; // bijvoorbeeld 10
     const endTime = this.hours[this.hours.length - 1].hourNumber; // bijvoorbeeld 20
     const multipleDayEvents: CalenderEvent[] = [];
-    const removeEvents: CalenderEvent[] = [];
 
     this.events.forEach(event => {
       if (event.startDate.getDay() !== event.endDate.getDay()) {
-        removeEvents.push(event);
         let currentStart = new Date(event.startDate);
 
         while (currentStart < event.endDate) {
           let currentEnd = new Date(currentStart);
-          currentEnd.setHours(endTime, 0, 0, 0); // Stel eindtijd in op dezelfde dag
+          currentEnd.setHours(endTime, 60, 0, 0); // Stel eindtijd in op dezelfde dag
 
           // Als de berekende eindtijd na de eigenlijke eindtijd van het evenement ligt, gebruik dan de eigenlijke eindtijd
           if (currentEnd > event.endDate) {

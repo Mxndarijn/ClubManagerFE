@@ -7,16 +7,13 @@ module.exports = {
     extend: {
       colors: {
         "grayTint": "#54575d",
+        "black": "#000000",
       },
       width: {
         "1/7": "14,27%"
       },
-      maxWidth: {
-        "1/7": "14,27%"
-      },
-      gridTemplateRows: {
-        // Simple 16 row grid
-        '48': 'repeat(48, minmax(0, 1fr))',
+      height:{
+        "screen-mini": "82vh"
       },
     }
   },
