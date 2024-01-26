@@ -160,16 +160,26 @@ export class CalenderWeekComponent implements AfterViewInit {
   ]
   private locale: string = "en-EN"
   protected hours: HourRow[] = [];
-  protected days: string[] = ["Ma", "Di", "Woe", "Do", "Vr", "Za", "Zo"]
+  protected days: ColumnDay[] = [];
+  protected dayStrings: string[] = ["Ma", "Di", "Woe", "Do", "Vr", "Za", "Zo"]
   private startHour = 7;
   private endHour = 22;
+  protected currentDay = new Date();
   private weekStartDay = new Date(2024, 0, 22)
 
 
   constructor(
     private translateService: TranslateService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
   ) {
+    let i = 0;
+    this.dayStrings.forEach(v => {
+      this.days.push({
+        name: v,
+        date: addDays(this.weekStartDay, i)
+      });
+      i++;
+    });
     this.translateService.get("config.language").subscribe({
       next: (response) => {
         this.locale = response;
@@ -429,6 +439,12 @@ export class CalenderWeekComponent implements AfterViewInit {
     return maxSegmentStartIndex;
   }
 
+  areDatesTheSameDay(date1: Date, date2: Date): boolean {
+    return date1.getDate() === date2.getDate() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getFullYear() === date2.getFullYear();
+  }
+
 }
 
 
@@ -437,6 +453,11 @@ export interface HourRow {
   hourNumber: number,
   displayName: string,
 
+}
+
+export interface ColumnDay {
+  name: string,
+  date: Date
 }
 
 
