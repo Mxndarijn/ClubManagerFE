@@ -39,7 +39,8 @@ export interface CalenderEvent {
   color: string,
   data: any,
   width: number // Percentage
-  columnIndex: number
+  columnIndex: number,
+  id: string
   // onClickEventEmitter: EventEmitter<CalenderEvent>
 
 

@@ -40,7 +40,8 @@ export class CalenderWeekComponent implements AfterViewInit {
     color: "#a40b0b",
     data: {},
     width:100,
-    columnIndex: -1
+    columnIndex: -1,
+    id: "abc"
 
     // onClickEventEmitter: EventEmitter<CalenderEvent>
   },{
@@ -51,7 +52,8 @@ export class CalenderWeekComponent implements AfterViewInit {
     color: "#0ba4a4",
     data: {},
     width:100,
-    columnIndex: -1
+    columnIndex: -1,
+    id: "abcd"
 
     // onClickEventEmitter: EventEmitter<CalenderEvent>
   },{
@@ -62,18 +64,20 @@ export class CalenderWeekComponent implements AfterViewInit {
     color: "#a40b0b",
     data: {},
     width:100,
-    columnIndex: -1
+    columnIndex: -1,
+    id: "abcde"
 
     // onClickEventEmitter: EventEmitter<CalenderEvent>
   },{
     startDate: new Date(2024, 0, 24, 12, 10),
-    endDate: addHours(new Date(2024, 0, 24, 12, 4), 8),
+    endDate: addHours(new Date(2024, 0, 24, 12, 4), 20),
     title: "Kiekeboe",
     description: "test desc",
     color: "#0b1aa4",
     data: {},
     width:100,
-    columnIndex: -1
+    columnIndex: -1,
+    id: "abcdef"
 
     // onClickEventEmitter: EventEmitter<CalenderEvent>
   },{
@@ -84,7 +88,8 @@ export class CalenderWeekComponent implements AfterViewInit {
     color: "#a40b0b",
     data: {},
     width:100,
-    columnIndex: -1
+    columnIndex: -1,
+    id: "abcee"
 
     // onClickEventEmitter: EventEmitter<CalenderEvent>
   }, {
@@ -95,7 +100,8 @@ export class CalenderWeekComponent implements AfterViewInit {
     color: "#a40b0b",
     data: {},
     width:100,
-    columnIndex: -1
+    columnIndex: -1,
+    id: "abc11"
 
     // onClickEventEmitter: EventEmitter<CalenderEvent>
   },{
@@ -106,7 +112,8 @@ export class CalenderWeekComponent implements AfterViewInit {
     color: "#a40b0b",
     data: {},
     width:100,
-    columnIndex: -1
+    columnIndex: -1,
+    id: "aabc"
 
     // onClickEventEmitter: EventEmitter<CalenderEvent>
   },
@@ -146,6 +153,44 @@ export class CalenderWeekComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    const beginTime = this.hours[0].hourNumber; // bijvoorbeeld 10
+    const endTime = this.hours[this.hours.length - 1].hourNumber; // bijvoorbeeld 20
+    const multipleDayEvents: CalenderEvent[] = [];
+    const removeEvents: CalenderEvent[] = [];
+
+    this.events.forEach(event => {
+      if (event.startDate.getDay() !== event.endDate.getDay()) {
+        removeEvents.push(event);
+        let currentStart = new Date(event.startDate);
+
+        while (currentStart < event.endDate) {
+          let currentEnd = new Date(currentStart);
+          currentEnd.setHours(endTime, 0, 0, 0); // Stel eindtijd in op dezelfde dag
+
+          // Als de berekende eindtijd na de eigenlijke eindtijd van het evenement ligt, gebruik dan de eigenlijke eindtijd
+          if (currentEnd > event.endDate) {
+            currentEnd = new Date(event.endDate);
+          }
+
+          multipleDayEvents.push({
+            ...event,
+            startDate: new Date(currentStart),
+            endDate: currentEnd
+          });
+
+          // Bereid de starttijd voor de volgende dag voor
+          currentStart = new Date(currentEnd);
+          currentStart.setDate(currentStart.getDate() + 1); // Ga naar de volgende dag
+          currentStart.setHours(beginTime, 0, 0, 0); // Stel begintijd in op de volgende dag
+        }
+      } else {
+        // Voeg het enkele-dag evenement toe
+        multipleDayEvents.push(event);
+      }
+    });
+    this.events = multipleDayEvents;
+
+
     this.events.sort((a, b) => {
       if (a.startDate.getDate() !== b.startDate.getDate()) {
         return a.startDate.getDate() - b.startDate.getDate();
@@ -171,36 +216,12 @@ export class CalenderWeekComponent implements AfterViewInit {
       const percentage = Math.floor(100 / currentTimeEvents.length);
       currentTimeEvents.forEach(event => {
         event.width = Math.min(event.width, percentage);
+        this.events.filter(e => {
+          return e.id == event.id
+        }).forEach(e => {
+          e.width = event.width;
+        })
       })
-
-
-      // let currentSpace = 0;
-      // const spaceOccupied = Array.from(Array(100).keys());
-      // currentTimeEvents.forEach(event => {
-      //   if(event.columnIndex != -1) {
-      //     for(let i = event.columnIndex; i <= event.columnIndex + event.width; i++) {
-      //       spaceOccupied.splice(i);
-      //     }
-      //   }
-      // })
-      //
-      // currentTimeEvents.forEach(event => {
-      //   if(event.columnIndex == -1) {
-      //     event.columnIndex = currentSpace;
-      //     currentSpace += event.width;
-      //     const index = this.findEarliestPossibleLocation(spaceOccupied, event)
-      //     console.log(index)
-      //     if(index == -1) {
-      //       console.log("Could not find a place for event: " + JSON.stringify(event))
-      //     } else {
-      //       event.columnIndex = index;
-      //       for(let i = event.columnIndex; i <= event.columnIndex + event.width; i++) {
-      //         console.log("removing " + i)
-      //         spaceOccupied.splice(i);
-      //       }
-      //     }
-      //   }
-      // })
       currentTime = addMinutes(currentTime, 5)
     }
 
@@ -221,8 +242,11 @@ export class CalenderWeekComponent implements AfterViewInit {
         }
       })
 
-      const index = this.findEarliestPossibleLocation(availableSpace, event)
+      let index = this.findEarliestPossibleLocation(availableSpace, event)
       console.log(index)
+      if(index == -1) {
+        index = this.findBiggestPossibleLocation(availableSpace);
+      }
       if(index == -1) {
         console.log("Could not find a place for event: " + JSON.stringify(event))
       } else {
@@ -242,13 +266,15 @@ export class CalenderWeekComponent implements AfterViewInit {
           eventComponent.instance.calendarEvent = event;
           const nativeElement = eventComponent.location.nativeElement;
 
-          this.renderer.setStyle(nativeElement, "grid-column-start", this.getCorrectColumn(event.startDate))
-          this.renderer.setStyle(nativeElement, "grid-row-start", this.getCorrectRow(event.startDate))
-          this.renderer.setStyle(nativeElement, "grid-row-end", this.getCorrectRow(event.endDate))
-          this.renderer.setStyle(nativeElement, "width",event.width + "%")
-          console.log(event.columnIndex)
-          this.renderer.setStyle(nativeElement, "left",event.columnIndex + "%")
-          this.renderer.addClass(nativeElement, "relative")
+            this.renderer.setStyle(nativeElement, "grid-column-start", this.getCorrectColumn(event.startDate))
+            this.renderer.setStyle(nativeElement, "grid-row-start", this.getCorrectRow(event.startDate))
+            this.renderer.setStyle(nativeElement, "grid-row-end", this.getCorrectRow(event.endDate))
+            this.renderer.setStyle(nativeElement, "width",event.width + "%")
+            console.log(event.columnIndex)
+            this.renderer.setStyle(nativeElement, "left",event.columnIndex + "%")
+            this.renderer.addClass(nativeElement, "relative")
+
+
         });
     });
 
@@ -266,7 +292,7 @@ export class CalenderWeekComponent implements AfterViewInit {
     const hours = (date.getHours() - this.hours[0].hourNumber) * 12;
     const minutes = Math.floor(date.getMinutes() / 5);
 
-    return hours + minutes + 1;
+    return hours + minutes + 2;
   }
 
 
@@ -346,6 +372,37 @@ export class CalenderWeekComponent implements AfterViewInit {
 
     return -1;
   }
+
+  private findBiggestPossibleLocation(availableSpace: number[]): number {
+    let maxSegmentSize = 0;
+    let maxSegmentStartIndex = -1;
+    let currentSegmentSize = 0;
+    let currentSegmentStartIndex = -1;
+
+    for (let i = 0; i < availableSpace.length; i++) {
+      if (i === 0 || availableSpace[i] !== availableSpace[i - 1] + 1) {
+        // Begin van een nieuw segment
+        if (currentSegmentSize > maxSegmentSize) {
+          maxSegmentSize = currentSegmentSize;
+          maxSegmentStartIndex = currentSegmentStartIndex;
+        }
+        currentSegmentSize = 1;
+        currentSegmentStartIndex = availableSpace[i];
+      } else {
+        // Voortzetting van het huidige segment
+        currentSegmentSize++;
+      }
+    }
+
+    // Controleer aan het einde nogmaals voor het laatste segment
+    if (currentSegmentSize > maxSegmentSize) {
+      maxSegmentSize = currentSegmentSize;
+      maxSegmentStartIndex = currentSegmentStartIndex;
+    }
+
+    return maxSegmentStartIndex;
+  }
+
 }
 
 
