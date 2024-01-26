@@ -11,7 +11,7 @@
       <app-upcoming-events class="h-2/6"></app-upcoming-events>
     </div>
     <div class="w-8/12 border-base-200 border-2 bg-base-100 shadow-2xl overflow-y-auto no-scrollbar ">
-      <app-calender-week class=""></app-calender-week>
+      <app-calender-week [currentDay]="currentDay" [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent" class=""></app-calender-week>
     </div>
     <!--  Hier komt de rest van de styling-->
   </div>

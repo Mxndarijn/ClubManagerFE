@@ -2,9 +2,9 @@
 
   <div class="border-b-2 border-grayTint sticky top-0 bg-base-100 z-50" [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start':1}"> </div>
   <div *ngFor="let day of days; let i = index" class="text-center border-b-2 border-grayTint sticky top-0 bg-base-100 h-14 z-50" [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start':i + 2}">
-    <div class="flex flex-col">
+    <div class="flex flex-col items-center">
       <p>{{ day.name }}</p>
-      <p [ngClass]="{'bg-accent': areDatesTheSameDay(day.date, currentDay)}">{{day.date.getDate()}}</p>
+      <p class="w-8 rounded-full" [ngClass]="{'bg-accent': areDatesTheSameDay(day.date, currentDay)}">{{day.date.getDate()}}</p>
     </div>
   </div>
 

@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component,
   Directive,
-  ElementRef,
+  ElementRef, EventEmitter,
   Input,
   OnInit,
   Renderer2,
@@ -14,6 +14,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NgClass, NgComponentOutlet, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {addDays, addHours, addMinutes, differenceInMinutes} from "date-fns";
 import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-event.component";
+import {BehaviorSubject} from "rxjs";
 
 
 @Component({
@@ -30,156 +31,27 @@ import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-e
   styleUrls: ['./calender-week.component.css']
 })
 
-export class CalenderWeekComponent implements AfterViewInit {
+export class CalenderWeekComponent implements AfterViewInit, OnInit {
+  @Input() focusDayChangedEvent! : BehaviorSubject<Date>
+  @Input() eventsChangedEvent! : BehaviorSubject<CalenderEvent[]>
+  @Input() currentDay!: Date
+
   @ViewChild('eventTemplate', { read: ViewContainerRef }) eventTemplateHolder!: ViewContainerRef
-  @Input() events: CalenderEvent[] = [{
-    startDate: new Date(2024, 0, 24, 16, 0),
-    endDate: addHours(new Date(2024, 0, 24, 16, 4), 1),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "red",
-      primaryColor: "#8C0202",
-      secondaryColor: "#DBB8B8"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abc"
 
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 24, 17, 10),
-    endDate: addHours(new Date(2024, 0, 24, 17, 4), 1),
-    title: "Kiekeboe1",
-    description: "test desc",
-    color: {
-      colorName: "blue",
-      primaryColor: "#0D028C",
-      secondaryColor: "#BFB8DB"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abcd"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 24, 16, 10),
-    endDate: addHours(new Date(2024, 0, 24, 16, 4), 2),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "green",
-      primaryColor: "#028C20",
-      secondaryColor: "#BADBB8"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abcde"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 24, 12, 10),
-    endDate: addHours(new Date(2024, 0, 24, 12, 4), 20),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "yellow",
-      primaryColor: "#D9DD13",
-      secondaryColor: "#DBD9B8"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abcdef"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 24, 11, 10),
-    endDate: addHours(new Date(2024, 0, 24, 12, 4), 1),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "blue",
-      primaryColor: "#0D028C",
-      secondaryColor: "#BFB8DB"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abcee"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  }, {
-    startDate: new Date(2024, 0, 24, 16, 10),
-    endDate: addHours(new Date(2024, 0, 24, 16, 4), 2),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "blue",
-      primaryColor: "#0D028C",
-      secondaryColor: "#BFB8DB"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abc11"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 25, 13, 10),
-    endDate: addHours(new Date(2024, 0, 25, 13, 4), 2),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "blue",
-      primaryColor: "#0D028C",
-      secondaryColor: "#BFB8DB"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "aabc"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },
-    //{
-  //   startDate: new Date(),
-  //   endDate: addHours(new Date(), 2),
-  //   title: "Kiekeboe",
-  //   description: "test desc",
-  //   color: "#0b3ba4",
-  //   data: {},
-  //   width: 100,
-  //   columnIndex: -1
-  //
-  //   // onClickEventEmitter: EventEmitter<CalenderEvent>
-  // }
-  ]
+  private events: CalenderEvent[] = []
   private locale: string = "en-EN"
   protected hours: HourRow[] = [];
   protected days: ColumnDay[] = [];
   protected dayStrings: string[] = ["Ma", "Di", "Woe", "Do", "Vr", "Za", "Zo"]
   private startHour = 7;
   private endHour = 22;
-  protected currentDay = new Date();
-  private weekStartDay = new Date(2024, 0, 22)
+  private weekStartDay!: Date
 
 
   constructor(
     private translateService: TranslateService,
     private renderer: Renderer2,
   ) {
-    let i = 0;
-    this.dayStrings.forEach(v => {
-      this.days.push({
-        name: v,
-        date: addDays(this.weekStartDay, i)
-      });
-      i++;
-    });
     this.translateService.get("config.language").subscribe({
       next: (response) => {
         this.locale = response;
@@ -190,10 +62,41 @@ export class CalenderWeekComponent implements AfterViewInit {
     })
   }
 
-  ngAfterViewInit(): void {
-    const beginTime = this.hours[0].hourNumber; // bijvoorbeeld 10
-    const endTime = this.hours[this.hours.length - 1].hourNumber; // bijvoorbeeld 20
-    const multipleDayEvents: CalenderEvent[] = [];
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.events.length = 0
+      this.eventsChangedEvent.subscribe({
+        next: (events: CalenderEvent[]) => {
+          this.events.length = 0
+          this.events = events
+          this.refreshEvents();
+        }
+      })
+
+      this.focusDayChangedEvent.subscribe({
+        next: (date: Date) => {
+          this.weekStartDay = this.toStartOfWeek(date);
+          let i = 0;
+          this.days = []
+          this.dayStrings.forEach(v => {
+            this.days.push({
+              name: v,
+              date: addDays(this.weekStartDay, i)
+            });
+            i++;
+          });
+        }
+      })
+    });
+  }
+
+  refreshEvents() {
+    console.log("Event size: " + this.events.length);
+    if(this.eventTemplateHolder == null)
+      return;
+    let beginTime = this.hours[0].hourNumber; // bijvoorbeeld 10
+    let endTime = this.hours[this.hours.length - 1].hourNumber; // bijvoorbeeld 20
+    let multipleDayEvents: CalenderEvent[] = [];
 
     this.events.forEach(event => {
       if (event.startDate.getDay() !== event.endDate.getDay()) {
@@ -233,15 +136,15 @@ export class CalenderWeekComponent implements AfterViewInit {
       } else if (a.startDate.getHours() !== b.startDate.getHours()) {
         return a.startDate.getHours() - b.startDate.getHours();
       } else {
-        const durationA = a.endDate.getTime() - a.startDate.getTime();
-        const durationB = b.endDate.getTime() - b.startDate.getTime();
+        let durationA = a.endDate.getTime() - a.startDate.getTime();
+        let durationB = b.endDate.getTime() - b.startDate.getTime();
         return durationA - durationB;
       }
     });
 
     let currentTime = new Date(this.weekStartDay);
 
-    const endDate = addDays(new Date(this.weekStartDay), 7);
+    let endDate = addDays(new Date(this.weekStartDay), 7);
 
     while(currentTime <= endDate) {
       const currentTimeEvents = this.getAllEventsOnSpecificTime(currentTime);
@@ -279,7 +182,6 @@ export class CalenderWeekComponent implements AfterViewInit {
       })
 
       let index = this.findEarliestPossibleLocation(availableSpace, event)
-      console.log(index)
       if(index == -1) {
         index = this.findBiggestPossibleLocation(availableSpace);
       }
@@ -296,26 +198,25 @@ export class CalenderWeekComponent implements AfterViewInit {
       }
     })
 
+    this.eventTemplateHolder.clear();
     this.events.forEach(event=> {
       const eventComponent = this.eventTemplateHolder.createComponent(CalenderWeekEventComponent);
-        setTimeout(() => {
-          eventComponent.instance.calendarEvent = event;
-          const nativeElement = eventComponent.location.nativeElement;
+        eventComponent.instance.calendarEvent = event;
+        const nativeElement = eventComponent.location.nativeElement;
 
-            this.renderer.setStyle(nativeElement, "grid-column-start", this.getCorrectColumn(event.startDate))
-            this.renderer.setStyle(nativeElement, "grid-row-start", this.getCorrectRow(event.startDate))
-            this.renderer.setStyle(nativeElement, "grid-row-end", this.getCorrectRow(event.endDate))
-            this.renderer.setStyle(nativeElement, "width",event.width + "%")
-            console.log(event.columnIndex)
-            this.renderer.setStyle(nativeElement, "left",event.columnIndex + "%")
-            this.renderer.addClass(nativeElement, "relative")
-
-
-        });
+        this.renderer.setStyle(nativeElement, "grid-column-start", this.getCorrectColumn(event.startDate))
+        this.renderer.setStyle(nativeElement, "grid-row-start", this.getCorrectRow(event.startDate))
+        this.renderer.setStyle(nativeElement, "grid-row-end", this.getCorrectRow(event.endDate))
+        this.renderer.setStyle(nativeElement, "width",event.width + "%")
+        this.renderer.setStyle(nativeElement, "left",event.columnIndex + "%")
+        this.renderer.addClass(nativeElement, "relative")
     });
+  }
 
-
-    console.log(this.events);
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.refreshEvents()
+    });
   }
 
   getCorrectColumn(date: Date) {
@@ -361,18 +262,6 @@ export class CalenderWeekComponent implements AfterViewInit {
     return new Intl.DateTimeFormat(this.locale, options).format(date);
   }
 
-  areDatesEqualWithoutTime(date1: Date, date2: Date): boolean {
-    const year1 = date1.getFullYear();
-    const month1 = date1.getMonth();
-    const day1 = date1.getDate();
-
-    const year2 = date2.getFullYear();
-    const month2 = date2.getMonth();
-    const day2 = date2.getDate();
-
-    return year1 === year2 && month1 === month2 && day1 === day2;
-  }
-
   private getAllEventsOnSpecificTime(currentTime: Date) {
     return this.events.filter(event => {
       return currentTime < event.endDate && event.startDate <= currentTime
@@ -387,7 +276,6 @@ export class CalenderWeekComponent implements AfterViewInit {
     let min = Math.min(...freeSpace)
     let max = Math.max(...freeSpace)
 
-    console.log(freeSpace)
 
 
     for (let currentValue = min; currentValue <= max; currentValue++) {
@@ -397,7 +285,6 @@ export class CalenderWeekComponent implements AfterViewInit {
         }
         count++;
         if (count === requiredLength) {
-          console.log("Found: " + count)
           return startingIndex;
         }
       } else {
@@ -407,6 +294,20 @@ export class CalenderWeekComponent implements AfterViewInit {
     }
 
     return -1;
+  }
+
+  toStartOfWeek(date: Date): Date {
+    let day = date.getDay(); // Sunday = 0, Monday = 1, etc.
+    let difference = day - 1; // Number of days since Monday
+
+    if (difference < 0) {
+      // If the day is Sunday, go back 6 days to the previous Monday.
+      difference = 6;
+    }
+
+    let startOfWeek = new Date(date);
+    startOfWeek.setDate(date.getDate() - difference);
+    return startOfWeek;
   }
 
   private findBiggestPossibleLocation(availableSpace: number[]): number {
