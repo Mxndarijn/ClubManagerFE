@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {UpcomingEventsComponent} from "../upcoming-events/upcoming-events.component";
 import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
 import {Modal} from "../../services/modal.service";
@@ -8,6 +8,8 @@ import {CalenderWeekComponent} from "../calender-week/calender-week.component";
 import {ColorPreset} from "../../../model/color-preset.model";
 import {addHours} from "date-fns";
 import {BehaviorSubject} from "rxjs";
+import {CalendarDayComponent} from "../calendar-day/calendar-day.component";
+import {NgSwitch, NgSwitchCase} from "@angular/common";
 
 // import {addDays, addHours, endOfMonth, isSameDay, isSameMonth, startOfDay, subDays} from 'date-fns';
 
@@ -21,6 +23,9 @@ import {BehaviorSubject} from "rxjs";
     CalenderSwitchComponent,
     CalenderDateOverviewComponent,
     CalenderWeekComponent,
+    CalendarDayComponent,
+    NgSwitch,
+    NgSwitchCase,
   ],
     templateUrl: './calender-view.component.html',
     styleUrl: './calender-view.component.css'
@@ -31,8 +36,9 @@ import {BehaviorSubject} from "rxjs";
 export class CalenderViewComponent {
   protected focusDayChangedEvent = new BehaviorSubject<Date>(new Date());
   protected eventsChangedEvent = new BehaviorSubject<CalenderEvent[]>([]);
-  protected focusDay = new Date()
+  protected focusDay = new Date(2024, 0, 24, 17, 10)
   protected currentDay = new Date();
+  protected currentView = CalendarView.WEEK;
   @Input() events: CalenderEvent[] = [{
     startDate: new Date(2024, 0, 24, 16, 0),
     endDate: addHours(new Date(2024, 0, 24, 16, 4), 1),
@@ -144,15 +150,31 @@ export class CalenderViewComponent {
     columnIndex: -1,
     id: "aabc"
 
+  },{
+    startDate: new Date(2024, 0, 27, 13, 10),
+    endDate: addHours(new Date(2024, 0, 27, 13, 4), 2),
+    title: "Kiekeboe",
+    description: "test desc",
+    color: {
+      colorName: "blue",
+      primaryColor: "#0D028C",
+      secondaryColor: "#BFB8DB"
+    },
+    data: {},
+    width:100,
+    columnIndex: -1,
+    id: "aabc"
+
   }]
 
 
   constructor() {
     this.focusDayChangedEvent.next(this.focusDay);
-    this.eventsChangedEvent.next(this.events);
+    this.eventsChangedEvent.next(this.events)
   }
 
   protected readonly Modal = Modal;
+  protected readonly CalendarView = CalendarView;
 }
 
 export interface CalenderEvent {
@@ -168,4 +190,10 @@ export interface CalenderEvent {
   // onClickEventEmitter: EventEmitter<CalenderEvent>
 
 
+}
+
+export enum CalendarView {
+  MONTH,
+  WEEK,
+  DAY
 }

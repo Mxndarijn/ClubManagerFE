@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {CalanderSwitchButtonComponent} from "../../buttons/calander-switch-button/calander-switch-button.component";
+import {CalendarView} from "../calender-view/calender-view.component";
 
 @Component({
   selector: 'app-calender-switch-button',
@@ -11,5 +12,7 @@ import {CalanderSwitchButtonComponent} from "../../buttons/calander-switch-butto
   styleUrl: './calender-switch.component.css'
 })
 export class CalenderSwitchComponent {
+  @Output() public viewChangeEvent = new EventEmitter<CalendarView>();
 
+  protected readonly CalendarView = CalendarView;
 }

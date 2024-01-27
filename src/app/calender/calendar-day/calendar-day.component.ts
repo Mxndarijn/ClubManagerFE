@@ -1,37 +1,23 @@
-import {
-  AfterViewInit,
-  Component,
-  Directive,
-  ElementRef, EventEmitter,
-  Input,
-  OnInit,
-  Renderer2,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {BehaviorSubject} from "rxjs";
 import {CalenderEvent} from "../calender-view/calender-view.component";
 import {TranslateService} from "@ngx-translate/core";
-import {NgClass, NgComponentOutlet, NgForOf, NgIf, NgStyle} from "@angular/common";
-import {addDays, addHours, addMinutes, differenceInMinutes} from "date-fns";
+import {addDays, addMinutes} from "date-fns";
 import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-event.component";
-import {BehaviorSubject} from "rxjs";
-
+import {ColumnDay, HourRow} from "../calender-week/calender-week.component";
+import {NgClass, NgForOf} from "@angular/common";
 
 @Component({
-  selector: 'app-calender-week',
+  selector: 'app-calendar-day',
   standalone: true,
   imports: [
     NgForOf,
-    NgClass,
-    NgIf,
-    NgStyle,
-    NgComponentOutlet,
+    NgClass
   ],
-  templateUrl: './calender-week.component.html',
-  styleUrls: ['./calender-week.component.css']
+  templateUrl: './calendar-day.component.html',
+  styleUrl: './calendar-day.component.css'
 })
-
-export class CalenderWeekComponent implements AfterViewInit, OnInit {
+export class CalendarDayComponent implements AfterViewInit, OnInit {
   @Input() focusDayChangedEvent! : BehaviorSubject<Date>
   @Input() eventsChangedEvent! : BehaviorSubject<CalenderEvent[]>
   @Input() currentDay!: Date
@@ -41,11 +27,10 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   private events: CalenderEvent[] = []
   private locale: string = "en-EN"
   protected hours: HourRow[] = [];
-  protected days: ColumnDay[] = [];
-  protected dayStrings: string[] = ["Ma", "Di", "Woe", "Do", "Vr", "Za", "Zo"]
   private startHour = 7;
   private endHour = 22;
-  private weekStartDay!: Date
+
+  protected selectedDay: Date = new Date();
 
 
   constructor(
@@ -75,28 +60,26 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
 
       this.focusDayChangedEvent.subscribe({
         next: (date: Date) => {
-          this.weekStartDay = this.toStartOfWeek(date);
-          let i = 0;
-          this.days = []
-          this.dayStrings.forEach(v => {
-            this.days.push({
-              name: v,
-              date: addDays(this.weekStartDay, i)
-            });
-            i++;
-          });
+          this.selectedDay = date;
         }
       })
     });
   }
 
   refreshEvents() {
-    console.log("Event size: " + this.events.length);
+
     if(this.eventTemplateHolder == null)
       return;
     let beginTime = this.hours[0].hourNumber; // bijvoorbeeld 10
     let endTime = this.hours[this.hours.length - 1].hourNumber; // bijvoorbeeld 20
     let multipleDayEvents: CalenderEvent[] = [];
+
+    let currentTime = new Date(this.selectedDay);
+    currentTime.setHours(beginTime);
+    currentTime.setMinutes(0);
+    let endTimeDate = new Date(currentTime);
+    endTimeDate.setHours(endTime);
+    endTimeDate.setMinutes(60);
 
     this.events.forEach(event => {
       if (event.startDate.getDay() !== event.endDate.getDay()) {
@@ -126,15 +109,28 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
         // Voeg het enkele-dag evenement toe
         multipleDayEvents.push(event);
       }
+    })
+
+    let eventsOnSpecificDay = multipleDayEvents.filter(event => {
+      return this.areDatesTheSameDay(event.startDate, currentTime)
     });
-    this.events = multipleDayEvents;
 
-    let currentTime = new Date(this.weekStartDay);
 
-    let endDate = addDays(new Date(this.weekStartDay), 7);
+    // eventsOnSpecificDay.sort((a, b) => {
+    //   if (a.startDate.getDate() !== b.startDate.getDate()) {
+    //     return a.startDate.getDate() - b.startDate.getDate();
+    //   } else if (a.startDate.getHours() !== b.startDate.getHours()) {
+    //     return a.startDate.getHours() - b.startDate.getHours();
+    //   } else {
+    //     let durationA = a.endDate.getTime() - a.startDate.getTime();
+    //     let durationB = b.endDate.getTime() - b.startDate.getTime();
+    //     return durationA - durationB;
+    //   }
+    // });
 
-    while(currentTime <= endDate) {
-      const currentTimeEvents = this.getAllEventsOnSpecificTime(currentTime);
+
+    while(currentTime <= endTimeDate) {
+      const currentTimeEvents = this.getAllEventsOnSpecificTime(eventsOnSpecificDay, currentTime);
       if(currentTimeEvents.length == 0) {
         currentTime = addMinutes(currentTime, 5)
         continue
@@ -142,7 +138,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
       const percentage = Math.floor(100 / currentTimeEvents.length);
       currentTimeEvents.forEach(event => {
         event.width = Math.min(event.width, percentage);
-        this.events.filter(e => {
+        eventsOnSpecificDay.filter(e => {
           return e.id == event.id
         }).forEach(e => {
           e.width = event.width;
@@ -151,14 +147,14 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
       currentTime = addMinutes(currentTime, 5)
     }
 
-    this.events.sort((a,b) => {
+    eventsOnSpecificDay.sort((a,b) => {
       return a.startDate.getTime() - b.startDate.getTime();
     })
 
-    this.events.forEach(event => {
+    eventsOnSpecificDay.forEach(event => {
 
       let availableSpace = Array.from(Array(100).keys());
-      const allEventsOnTime = this.getAllEventsOnSpecificTime(event.startDate);
+      const allEventsOnTime = this.getAllEventsOnSpecificTime(eventsOnSpecificDay, event.startDate);
 
       allEventsOnTime.forEach(e => {
         if(e.columnIndex != -1 && e != event) {
@@ -186,17 +182,17 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
     })
 
     this.eventTemplateHolder.clear();
-    this.events.forEach(event=> {
+    eventsOnSpecificDay.forEach(event=> {
       const eventComponent = this.eventTemplateHolder.createComponent(CalenderWeekEventComponent);
-        eventComponent.instance.calendarEvent = event;
-        const nativeElement = eventComponent.location.nativeElement;
+      eventComponent.instance.calendarEvent = event;
+      const nativeElement = eventComponent.location.nativeElement;
 
-        this.renderer.setStyle(nativeElement, "grid-column-start", this.getCorrectColumn(event.startDate))
-        this.renderer.setStyle(nativeElement, "grid-row-start", this.getCorrectRow(event.startDate))
-        this.renderer.setStyle(nativeElement, "grid-row-end", this.getCorrectRow(event.endDate))
-        this.renderer.setStyle(nativeElement, "width",event.width + "%")
-        this.renderer.setStyle(nativeElement, "left",event.columnIndex + "%")
-        this.renderer.addClass(nativeElement, "relative")
+      this.renderer.setStyle(nativeElement, "grid-column-start", 2)
+      this.renderer.setStyle(nativeElement, "grid-row-start", this.getCorrectRow(event.startDate))
+      this.renderer.setStyle(nativeElement, "grid-row-end", this.getCorrectRow(event.endDate))
+      this.renderer.setStyle(nativeElement, "width",event.width + "%")
+      this.renderer.setStyle(nativeElement, "left",event.columnIndex + "%")
+      this.renderer.addClass(nativeElement, "relative")
     });
   }
 
@@ -204,11 +200,6 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
     setTimeout(() => {
       this.refreshEvents()
     });
-  }
-
-  getCorrectColumn(date: Date) {
-    const dayOfTheWeek = date.getDay();
-    return (dayOfTheWeek === 0) ? 8 : dayOfTheWeek + 1;
   }
 
   getCorrectRow(date: Date) {
@@ -249,8 +240,8 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
     return new Intl.DateTimeFormat(this.locale, options).format(date);
   }
 
-  private getAllEventsOnSpecificTime(currentTime: Date) {
-    return this.events.filter(event => {
+  private getAllEventsOnSpecificTime(eventsOnSpecificDay: CalenderEvent[], currentTime: Date) {
+    return eventsOnSpecificDay.filter(event => {
       return currentTime < event.endDate && event.startDate <= currentTime
     });
   }
@@ -334,18 +325,3 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   }
 
 }
-
-
-
-export interface HourRow {
-  hourNumber: number,
-  displayName: string,
-
-}
-
-export interface ColumnDay {
-  name: string,
-  date: Date
-}
-
-
