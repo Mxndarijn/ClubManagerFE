@@ -1,13 +1,17 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {CalenderEvent} from "../calender-view/calender-view.component";
-import {NgForOf} from "@angular/common";
+import {NgClass, NgForOf} from "@angular/common";
+import {UtilityFunctions} from "../../helpers/utility-functions";
+import {CalenderUpcomingEventComponent} from "../calender-upcoming-event/calender-upcoming-event.component";
 
 @Component({
   selector: 'app-upcoming-events',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    CalenderUpcomingEventComponent,
+    NgClass
   ],
   templateUrl: './upcoming-events.component.html',
   styleUrl: './upcoming-events.component.css'
@@ -17,6 +21,9 @@ export class UpcomingEventsComponent implements OnInit {
   @Input() currentDay!: Date
   protected events: CalenderEvent[] = [];
 
+  constructor(
+  ) {
+  }
 
   ngOnInit(): void {
     this.eventsChangedEvent.subscribe({

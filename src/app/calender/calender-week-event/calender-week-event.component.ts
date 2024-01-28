@@ -1,17 +1,33 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {CalendarEvent} from "angular-calendar";
 import {CalenderEvent} from "../calender-view/calender-view.component";
-import {NgStyle} from "@angular/common";
+import {NgClass, NgStyle} from "@angular/common";
+import {UtilityFunctions} from "../../helpers/utility-functions";
 
 @Component({
   selector: 'app-calender-week-event',
   standalone: true,
   imports: [
-    NgStyle
+    NgStyle,
+    NgClass
   ],
   templateUrl: './calender-week-event.component.html',
   styleUrl: './calender-week-event.component.css'
 })
-export class CalenderWeekEventComponent {
-@Input() calendarEvent: CalenderEvent | undefined
+export class CalenderWeekEventComponent implements OnInit {
+@Input() calendarEvent!: CalenderEvent
+
+  // In je component class
+  startTime: string = "";
+
+  async ngOnInit() {
+    this.startTime = await this.utility.formatTime(this.calendarEvent?.startDate);
+  }
+
+
+  constructor(
+    protected utility: UtilityFunctions
+  ) {
+
+  }
 }

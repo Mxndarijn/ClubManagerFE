@@ -8,7 +8,7 @@
   <div class="flex flex-row justify-evenly h-full">
     <div class="flex flex-col w-3/12 justify-start h-5/6">
       <app-calender-overview class="h-3/6 mb-3"></app-calender-overview>
-      <app-upcoming-events [eventsChangedEvent]="eventsChangedEvent" [currentDay]="currentDay" class="h-2/6"></app-upcoming-events>
+      <app-upcoming-events [eventsChangedEvent]="eventsChangedEvent" [currentDay]="currentDay" class="h-2/6 overflow-y-auto no-scrollbar"></app-upcoming-events>
     </div>
     <div [ngSwitch]="currentView" class="w-8/12 border-base-200 border-2 bg-base-100 shadow-2xl overflow-y-auto no-scrollbar ">
         <app-calender-week *ngSwitchCase="CalendarView.WEEK" [currentDay]="currentDay" [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent" class=""></app-calender-week>

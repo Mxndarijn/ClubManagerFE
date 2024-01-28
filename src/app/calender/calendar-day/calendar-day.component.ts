@@ -6,6 +6,7 @@ import {addDays, addMinutes} from "date-fns";
 import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-event.component";
 import {ColumnDay, HourRow} from "../calender-week/calender-week.component";
 import {NgClass, NgForOf} from "@angular/common";
+import {UtilityFunctions} from "../../helpers/utility-functions";
 
 @Component({
   selector: 'app-calendar-day',
@@ -25,10 +26,10 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
   @ViewChild('eventTemplate', { read: ViewContainerRef }) eventTemplateHolder!: ViewContainerRef
 
   private events: CalenderEvent[] = []
-  private locale: string = "en-EN"
   protected hours: HourRow[] = [];
   private startHour = 7;
   private endHour = 22;
+  protected title = "";
 
   protected selectedDay: Date = new Date();
 
@@ -36,15 +37,14 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
   constructor(
     private translateService: TranslateService,
     private renderer: Renderer2,
+    private utility: UtilityFunctions
+
   ) {
-    this.translateService.get("config.language").subscribe({
-      next: (response) => {
-        this.locale = response;
-        for (let i = this.startHour; i <= this.endHour; i++) {
-          this.hours.push({hourNumber: i, displayName: this.formatTime(i, 0)});
-        }
-      }
-    })
+    for (let i = this.startHour; i <= this.endHour; i++) {
+      utility.formatTimeI(i, 0).then(displayName => {
+        this.hours.push({hourNumber: i, displayName: displayName});
+      })
+    }
   }
 
   ngOnInit(): void {
@@ -61,6 +61,9 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
       this.focusDayChangedEvent.subscribe({
         next: (date: Date) => {
           this.selectedDay = date;
+            this.utility.formatDate(this.selectedDay).then(result => {
+              this.title = result;
+            })
         }
       })
     });
@@ -208,36 +211,6 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
     const minutes = Math.floor(date.getMinutes() / 5);
 
     return hours + minutes + 2;
-  }
-
-
-
-
-  formatTime(hour: number, minute: number): string {
-    const date = new Date();
-    date.setHours(hour);
-    date.setMinutes(minute);
-
-    let options: Intl.DateTimeFormatOptions;
-
-    // Als de locale 'nl-NL' is, gebruik dan het 24-uurs formaat
-    if (this.locale === 'nl-NL') {
-      options = {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false // Gebruik 24-uurs formaat voor Nederlandse tijd
-      };
-    } else {
-      // Voor andere locales, gebruik het 12-uurs formaat met AM/PM
-      options = {
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      };
-    }
-
-    // Formatteer de tijd volgens de lokale instellingen en de opgegeven opties
-    return new Intl.DateTimeFormat(this.locale, options).format(date);
   }
 
   private getAllEventsOnSpecificTime(eventsOnSpecificDay: CalenderEvent[], currentTime: Date) {

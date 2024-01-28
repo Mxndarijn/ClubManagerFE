@@ -15,6 +15,7 @@ import {NgClass, NgComponentOutlet, NgForOf, NgIf, NgStyle} from "@angular/commo
 import {addDays, addHours, addMinutes, differenceInMinutes} from "date-fns";
 import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-event.component";
 import {BehaviorSubject} from "rxjs";
+import {UtilityFunctions} from "../../helpers/utility-functions";
 
 
 @Component({
@@ -33,12 +34,11 @@ import {BehaviorSubject} from "rxjs";
 })
 
 export class CalenderWeekComponent implements AfterViewInit, OnInit {
-  @Input() focusDayChangedEvent! : BehaviorSubject<Date>
-  @Input() eventsChangedEvent! : BehaviorSubject<CalenderEvent[]>
+  @Input() focusDayChangedEvent!: BehaviorSubject<Date>
+  @Input() eventsChangedEvent!: BehaviorSubject<CalenderEvent[]>
   @Input() currentDay!: Date
 
   private events: CalenderEvent[] = []
-  private locale: string = "en-EN"
   protected hours: HourRow[] = [];
   protected days: ColumnDay[] = [];
   protected dayStrings: string[] = ["Ma", "Di", "Woe", "Do", "Vr", "Za", "Zo"]
@@ -51,15 +51,13 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
 
   constructor(
     private translateService: TranslateService,
+    private utility: UtilityFunctions
   ) {
-    this.translateService.get("config.language").subscribe({
-      next: (response) => {
-        this.locale = response;
-        for (let i = this.startHour; i <= this.endHour; i++) {
-          this.hours.push({hourNumber: i, displayName: this.formatTime(i, 0)});
-        }
-      }
-    })
+    for (let i = this.startHour; i <= this.endHour; i++) {
+      utility.formatTimeI(i, 0).then(displayName => {
+        this.hours.push({hourNumber: i, displayName: displayName});
+      })
+    }
   }
 
   ngOnInit(): void {
@@ -96,7 +94,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
 
     this.assignWidthsToEvents(multipleDayEvents);
 
-    multipleDayEvents.sort((a,b) => {
+    multipleDayEvents.sort((a, b) => {
       return a.startDate.getTime() - b.startDate.getTime();
     })
 
@@ -152,9 +150,9 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
 
     let endDate = addDays(new Date(this.weekStartDay), 7);
 
-    while(currentTime <= endDate) {
+    while (currentTime <= endDate) {
       const currentTimeEvents = this.getAllEventsOnSpecificTime(multipleDayEvents, currentTime);
-      if(currentTimeEvents.length == 0) {
+      if (currentTimeEvents.length == 0) {
         currentTime = addMinutes(currentTime, 5)
         continue
       }
@@ -187,7 +185,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
       const allEventsOnTime = this.getAllEventsOnSpecificTime(multipleDayEvents, event.startDate);
 
       allEventsOnTime.forEach(e => {
-        if(e.columnIndex != -1 && e != event) {
+        if (e.columnIndex != -1 && e != event) {
           for (let i = e.columnIndex; i < e.columnIndex + e.width; i++) {
             availableSpace = availableSpace.filter(item => item !== i);
           }
@@ -195,14 +193,14 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
       })
 
       let index = this.findEarliestPossibleLocation(availableSpace, event)
-      if(index == -1) {
+      if (index == -1) {
         index = this.findBiggestPossibleLocation(availableSpace);
       }
-      if(index == -1) {
+      if (index == -1) {
         console.log("Could not find a place for event: " + JSON.stringify(event))
       } else {
         event.columnIndex = index;
-        for(let i = event.columnIndex; i <= event.columnIndex + event.width; i++) {
+        for (let i = event.columnIndex; i <= event.columnIndex + event.width; i++) {
           for (let i = event.columnIndex; i < event.columnIndex + event.width; i++) {
             availableSpace = availableSpace.filter(item => item !== i);
           }
@@ -232,35 +230,6 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   }
 
 
-
-
-  formatTime(hour: number, minute: number): string {
-    const date = new Date();
-    date.setHours(hour);
-    date.setMinutes(minute);
-
-    let options: Intl.DateTimeFormatOptions;
-
-    // Als de locale 'nl-NL' is, gebruik dan het 24-uurs formaat
-    if (this.locale === 'nl-NL') {
-      options = {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false // Gebruik 24-uurs formaat voor Nederlandse tijd
-      };
-    } else {
-      // Voor andere locales, gebruik het 12-uurs formaat met AM/PM
-      options = {
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      };
-    }
-
-    // Formatteer de tijd volgens de lokale instellingen en de opgegeven opties
-    return new Intl.DateTimeFormat(this.locale, options).format(date);
-  }
-
   private getAllEventsOnSpecificTime(multipleDayEvents: CalenderEvent[], currentTime: Date) {
     return multipleDayEvents.filter(event => {
       return currentTime < event.endDate && event.startDate <= currentTime
@@ -274,7 +243,6 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
 
     let min = Math.min(...freeSpace)
     let max = Math.max(...freeSpace)
-
 
 
     for (let currentValue = min; currentValue <= max; currentValue++) {
@@ -348,7 +316,6 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   }
 
 }
-
 
 
 export interface HourRow {
