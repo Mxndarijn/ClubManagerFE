@@ -16,5 +16,17 @@
     <div *ngFor="let hour of hours; let rowIndex = index;" class="border-l-2 border-grayTint" [style]="{'grid-column-start': columnIndex + 2, 'grid-row-start': rowIndex * 12 + 2, 'grid-row-end': rowIndex * 12 + 14}"
          [ngClass]="{'bg-base-300': rowIndex % 2 == 0, 'bg-base-100': rowIndex % 2 == 1, 'border-r-2': columnIndex != 6}"></div>
   </ng-container>
-  <ng-template #eventTemplate></ng-template>
+
+  <app-calender-week-event *ngFor="let event of weekEvents" [calendarEvent]="event" class="relative"
+  [ngStyle]="{
+  'grid-column-start': this.getCorrectColumn(event.startDate),
+  'grid-row-start': this.getCorrectRow(event.startDate),
+  'grid-row-end': this.getCorrectRow(event.endDate),
+  'width': event.width + '%',
+  'left': event.columnIndex + '%',
+
+
+  }">
+
+  </app-calender-week-event>
 </div>
