@@ -91,7 +91,6 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   }
 
   refreshEvents() {
-    console.log("Event size: " + this.events.length);
     if(this.eventTemplateHolder == null)
       return;
     let beginTime = this.hours[0].hourNumber; // bijvoorbeeld 10
