@@ -10,6 +10,7 @@ import {addHours} from "date-fns";
 import {BehaviorSubject} from "rxjs";
 import {CalendarDayComponent} from "../calendar-day/calendar-day.component";
 import {NgSwitch, NgSwitchCase} from "@angular/common";
+import {CalendarMonthComponent} from "../calendar-month/calendar-month.component";
 
 // import {addDays, addHours, endOfMonth, isSameDay, isSameMonth, startOfDay, subDays} from 'date-fns';
 
@@ -26,6 +27,7 @@ import {NgSwitch, NgSwitchCase} from "@angular/common";
     CalendarDayComponent,
     NgSwitch,
     NgSwitchCase,
+    CalendarMonthComponent,
   ],
     templateUrl: './calender-view.component.html',
     styleUrl: './calender-view.component.css'
@@ -36,8 +38,8 @@ import {NgSwitch, NgSwitchCase} from "@angular/common";
 export class CalenderViewComponent {
   protected focusDayChangedEvent = new BehaviorSubject<Date>(new Date());
   protected eventsChangedEvent = new BehaviorSubject<CalenderEvent[]>([]);
-  protected focusDay = new Date(2024, 0, 24, 17, 10)
-  protected currentDay = new Date(2024, 0, 24, 17, 10)
+  protected focusDay = new Date(2024, 3, 24, 17, 10)
+  protected currentDay = new Date(2024, 3, 24, 17, 10)
   protected currentView = CalendarView.WEEK;
   @Input() events: CalenderEvent[] = [{
     startDate: new Date(2024, 0, 24, 16, 0),

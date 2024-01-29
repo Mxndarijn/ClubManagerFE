@@ -13,6 +13,7 @@
     <div [ngSwitch]="currentView" class="w-8/12 border-base-200 border-2 bg-base-100 shadow-2xl overflow-y-auto no-scrollbar ">
         <app-calender-week *ngSwitchCase="CalendarView.WEEK" [currentDay]="currentDay" [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent" class=""></app-calender-week>
         <app-calendar-day *ngSwitchCase="CalendarView.DAY" [currentDay]="currentDay" [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent" class=""></app-calendar-day>
+      <app-calendar-month *ngSwitchCase="CalendarView.MONTH" [currentDay]="currentDay" [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent"></app-calendar-month>
     </div>
     <!--  Hier komt de rest van de styling-->
   </div>
