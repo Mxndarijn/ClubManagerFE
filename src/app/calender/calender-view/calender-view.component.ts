@@ -1,16 +1,25 @@
-import {Component, EventEmitter, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Renderer2,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import {UpcomingEventsComponent} from "../upcoming-events/upcoming-events.component";
 import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
 import {Modal} from "../../services/modal.service";
-import {CalenderSwitchComponent} from "../calender-switch/calender-switch.component";
-import {CalenderDateOverviewComponent} from "../calender-date-overview/calender-date-overview.component";
 import {CalenderWeekComponent} from "../calender-week/calender-week.component";
 import {ColorPreset} from "../../../model/color-preset.model";
 import {addHours} from "date-fns";
 import {BehaviorSubject} from "rxjs";
 import {CalendarDayComponent} from "../calendar-day/calendar-day.component";
-import {NgSwitch, NgSwitchCase} from "@angular/common";
+import {KeyValuePipe, NgForOf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CalendarMonthComponent} from "../calendar-month/calendar-month.component";
+import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {UtilityFunctions} from "../../helpers/utility-functions";
 
 // import {addDays, addHours, endOfMonth, isSameDay, isSameMonth, startOfDay, subDays} from 'date-fns';
 
@@ -21,13 +30,15 @@ import {CalendarMonthComponent} from "../calendar-month/calendar-month.component
   imports: [
     UpcomingEventsComponent,
     UpdateButtonComponent,
-    CalenderSwitchComponent,
-    CalenderDateOverviewComponent,
     CalenderWeekComponent,
     CalendarDayComponent,
     NgSwitch,
     NgSwitchCase,
     CalendarMonthComponent,
+    NgForOf,
+    KeyValuePipe,
+    FormsModule,
+    ReactiveFormsModule,
   ],
     templateUrl: './calender-view.component.html',
     styleUrl: './calender-view.component.css'
@@ -168,15 +179,36 @@ export class CalenderViewComponent {
     id: "aabc"
 
   }]
+  @ViewChild('viewSelector') myDetails!: ElementRef;
+
+  protected timeFormControl: FormControl
 
 
-  constructor() {
+  constructor(
+    private renderer: Renderer2,
+    private util: UtilityFunctions
+  ) {
     this.focusDayChangedEvent.next(this.focusDay);
     this.eventsChangedEvent.next(this.events)
+
+    this.timeFormControl = new FormControl<string>(util.formatDateForFormControl(this.focusDay))
+    this.timeFormControl.valueChanges.subscribe({
+      next: (value ) => {
+        this.focusDay = new Date(value);
+        this.focusDayChangedEvent.next(this.focusDay);
+
+      }
+    })
   }
 
   protected readonly Modal = Modal;
   protected readonly CalendarView = CalendarView;
+
+  setCurrentView(key: string) {
+    this.currentView = this.CalendarView[key as keyof typeof CalendarView]
+    this.renderer.removeAttribute(this.myDetails.nativeElement, 'open')
+
+  }
 }
 
 export interface CalenderEvent {
@@ -195,7 +227,7 @@ export interface CalenderEvent {
 }
 
 export enum CalendarView {
-  MONTH,
-  WEEK,
-  DAY
+  MONTH = "Maand overzicht",
+  WEEK = "Week overzicht",
+  DAY = "Dag overzicht"
 }

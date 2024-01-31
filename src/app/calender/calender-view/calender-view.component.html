@@ -1,20 +1,40 @@
 <div class="h-screen-mini overflow-y-hidden">
-  <div class="flex flex-row justify-between mb-5 ">
-    <app-calender-switch-button (viewChangeEvent)="currentView = $event" class="ml-10"></app-calender-switch-button>
-    <button class="btn border-accent border-2 bg-base-100 mr-10 btn-md">
+  <div class="flex flex-row justify-end space-x-4 mb-2 mt-5 mr-8">
+    <details #viewSelector class="dropdown">
+      <summary class="btn border-accent border-2 bg-base-100 btn-md">{{ currentView }}
+        <svg width="12px" height="12px" class="hidden h-2 w-2 fill-current opacity-60 sm:inline-block"
+             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
+          <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
+        </svg>
+      </summary>
+      <ul class="p-2 shadow menu dropdown-content z-50 bg-base-100 rounded-box w-52">
+        <li *ngFor="let view of CalendarView | keyvalue">
+          <div (click)="setCurrentView(view.key)">{{ view.value }}</div>
+        </li>
+      </ul>
+    </details>
+    <input type="date" [formControl]="timeFormControl"
+           class="bg-base-100 border-2 p-2 border-accent rounded-md hover:cursor-pointer focus:border-accent">
+    <button class="btn border-accent border-2 bg-base-100  btn-md">
       Plan onderhoud
     </button>
   </div>
-  <div class="flex flex-row justify-evenly h-full">
-    <div class="flex flex-col w-3/12 justify-start h-5/6">
-      <app-calender-overview class="h-3/6 mb-3"></app-calender-overview>
-      <app-upcoming-events [eventsChangedEvent]="eventsChangedEvent" [currentDay]="currentDay" class="h-2/6 overflow-y-auto no-scrollbar"></app-upcoming-events>
+  <div class="flex flex-row justify-evenly h-85%">
+    <div class="flex flex-col w-3/12 justify-start h-full">
+      <app-upcoming-events [eventsChangedEvent]="eventsChangedEvent" [currentDay]="currentDay"
+                           class=" border-base-200 border-2 bg-base-100 shadow-2xl h-4/6 overflow-y-auto no-scrollbar"></app-upcoming-events>
     </div>
-    <div [ngSwitch]="currentView" class="w-8/12 border-base-200 border-2 bg-base-100 shadow-2xl overflow-y-auto no-scrollbar ">
-        <app-calender-week *ngSwitchCase="CalendarView.WEEK" [currentDay]="currentDay" [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent" class=""></app-calender-week>
-        <app-calendar-day *ngSwitchCase="CalendarView.DAY" [currentDay]="currentDay" [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent" class=""></app-calendar-day>
-      <app-calendar-month *ngSwitchCase="CalendarView.MONTH" [currentDay]="currentDay" [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent"></app-calendar-month>
+    <div [ngSwitch]="currentView"
+         class="w-8/12 border-base-200 border-2 bg-base-100 shadow-2xl overflow-y-auto no-scrollbar ">
+      <app-calender-week *ngSwitchCase="CalendarView.WEEK" [currentDay]="currentDay"
+                         [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent"
+                         class=""></app-calender-week>
+      <app-calendar-day *ngSwitchCase="CalendarView.DAY" [currentDay]="currentDay"
+                        [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent"
+                        class=""></app-calendar-day>
+      <app-calendar-month *ngSwitchCase="CalendarView.MONTH" [currentDay]="currentDay"
+                          [eventsChangedEvent]="eventsChangedEvent"
+                          [focusDayChangedEvent]="focusDayChangedEvent"></app-calendar-month>
     </div>
-    <!--  Hier komt de rest van de styling-->
   </div>
 </div>

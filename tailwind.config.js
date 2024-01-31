@@ -13,7 +13,8 @@ module.exports = {
         "1/7": "14,27%"
       },
       height:{
-        "screen-mini": "82vh"
+        "screen-mini": "82vh",
+        "85%": "85%"
       },
     }
   },

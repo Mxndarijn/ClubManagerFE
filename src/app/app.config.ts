@@ -23,11 +23,11 @@ export const provideTranslation = () => ({
 });
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes),
-  provideAnimations(),
+    provideAnimations(),
     provideHttpClient(withInterceptorsFromDi()),
-    {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi:true},
-  importProvidersFrom([HttpClientModule,
-    TranslateModule.forRoot(provideTranslation()),
-    ])],
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    importProvidersFrom([HttpClientModule,
+        TranslateModule.forRoot(provideTranslation()),
+    ]), provideAnimations()],
 };
 

@@ -81,6 +81,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
             });
             i++;
           });
+          this.refreshEvents()
         }
       })
     });

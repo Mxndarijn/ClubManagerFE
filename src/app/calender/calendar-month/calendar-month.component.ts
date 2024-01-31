@@ -3,7 +3,7 @@ import { CalenderEvent } from '../calender-view/calender-view.component';
 import {BehaviorSubject} from "rxjs";
 import {addDays, subDays} from "date-fns";
 import {CalendarEvent} from "angular-calendar";
-import {NgClass, NgForOf} from "@angular/common";
+import {NgClass, NgForOf, NgStyle} from "@angular/common";
 import {TranslateService} from "@ngx-translate/core";
 
 @Component({
@@ -11,7 +11,8 @@ import {TranslateService} from "@ngx-translate/core";
   standalone: true,
   imports: [
     NgForOf,
-    NgClass
+    NgClass,
+    NgStyle
   ],
   templateUrl: './calendar-month.component.html',
   styleUrl: './calendar-month.component.css'
@@ -26,7 +27,8 @@ export class CalendarMonthComponent implements OnInit {
   private focusDay: Date = new Date(2024, 0, 24, 17, 10)
   protected days: string[] = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"]
   private startingRow = 3;
-  private endingRow = 7;
+  protected endingRow = 7;
+  protected startingColumn = 1
 
   constructor(
     private translate : TranslateService

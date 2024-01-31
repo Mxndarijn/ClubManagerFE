@@ -52,6 +52,7 @@ export class UtilityFunctions {
       this.translate.get("config.language").subscribe({
         next: (locale) => {
           const options: Intl.DateTimeFormatOptions = {
+            weekday: 'long',
             day: 'numeric',
             month: 'long',
           };
@@ -60,6 +61,16 @@ export class UtilityFunctions {
         }
       })
     })
+  }
+
+  formatDateForFormControl(date: Date) {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
   }
 
   formatDateTime(date: Date) {
