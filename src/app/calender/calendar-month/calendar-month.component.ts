@@ -23,7 +23,7 @@ export class CalendarMonthComponent implements OnInit {
   @Input() currentDay!: Date
   @Input() monthItems: MonthItem[] = []
   private events: CalenderEvent[] = []
-  private focusDay: Date = new Date(2024, 3, 1);
+  private focusDay: Date = new Date(2024, 0, 24, 17, 10)
   protected days: string[] = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"]
   private startingRow = 3;
   private endingRow = 7;
@@ -71,7 +71,7 @@ export class CalendarMonthComponent implements OnInit {
       this.monthItems.push({
         column: (i == 0) ? 7 : i,
         row: this.startingRow,
-        events: [],
+        events: this.getEventsForDate(newDate),
         date: newDate,
         isInScope: false
       })
@@ -84,7 +84,7 @@ export class CalendarMonthComponent implements OnInit {
       this.monthItems.push({
         column: newDate.getDay() == 0 ? 7 : newDate.getDay(),
         row: Math.floor((i + addedDays - 1) / 7) + this.startingRow,
-        events: [],
+        events: this.getEventsForDate(newDate),
         date: newDate,
         isInScope: true
       })
@@ -92,19 +92,35 @@ export class CalendarMonthComponent implements OnInit {
     }
 
     for(let i = endOfMonth.getDay() + 1; i <= 7; i++) {
-      console.log(i)
       const newDate = addDays(endOfMonth, i - endOfMonth.getDay());
 
       this.monthItems.push({
         column: i,
         row: this.endingRow,
-        events: [],
+        events: this.getEventsForDate(newDate),
         date: newDate,
         isInScope: false
       })
     }
 
+    console.log(this.monthItems)
+
   }
+
+  private getEventsForDate(date: Date): CalenderEvent[] {
+    // Creëer een nieuwe datum met alleen de jaar, maand, en dag componenten
+    const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    return this.events.filter((event: CalenderEvent) => {
+      // Normaliseer de start- en einddatum van het evenement
+      const startDate = new Date(event.startDate.getFullYear(), event.startDate.getMonth(), event.startDate.getDate());
+      const endDate = new Date(event.endDate.getFullYear(), event.endDate.getMonth(), event.endDate.getDate());
+
+      // Controleer of de meegegeven datum binnen de start- en einddatum van het evenement valt
+      return checkDate >= startDate && checkDate <= endDate;
+    });
+  }
+
 
   formatMonthName(date :Date) {
     return new Promise<string>(resolve => this.translate.get("config.language").subscribe({
