@@ -24,7 +24,7 @@ export class CalendarMonthComponent implements OnInit {
   @Input() currentDay!: Date
   @Input() monthItems: MonthItem[] = []
   private events: CalenderEvent[] = []
-  private focusDay: Date = new Date(2024, 0, 24, 17, 10)
+  private focusDay: Date = new Date()
   protected days: string[] = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"]
   private startingRow = 3;
   protected endingRow = 7;
@@ -48,6 +48,7 @@ export class CalendarMonthComponent implements OnInit {
       this.focusDayChangedEvent.subscribe({
         next: (date: Date) => {
           this.focusDay = date;
+          this.refreshEvents()
         }
       })
     });

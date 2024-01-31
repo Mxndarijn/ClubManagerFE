@@ -49,8 +49,8 @@ import {UtilityFunctions} from "../../helpers/utility-functions";
 export class CalenderViewComponent {
   protected focusDayChangedEvent = new BehaviorSubject<Date>(new Date());
   protected eventsChangedEvent = new BehaviorSubject<CalenderEvent[]>([]);
-  protected focusDay = new Date(2024, 0, 24, 17, 10)
-  protected currentDay = new Date(2024, 0, 24, 17, 10)
+  protected focusDay = new Date()
+  protected currentDay = new Date()
   protected currentView = CalendarView.WEEK;
   @Input() events: CalenderEvent[] = [{
     startDate: new Date(2024, 0, 24, 16, 0),
