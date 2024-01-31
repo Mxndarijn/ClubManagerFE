@@ -73,7 +73,6 @@ export class CreateWeaponModalComponent implements OnInit {
   ngOnInit(): void {
     this.graphQLService.getAllWeaponTypes(this.associationID).subscribe({
       next: (response) => {
-        console.log(response)
         this.weaponTypeList = response.data.getAllWeaponTypes
       }
     })

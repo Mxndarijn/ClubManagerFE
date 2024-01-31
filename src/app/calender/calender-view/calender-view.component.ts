@@ -20,6 +20,11 @@ import {KeyValuePipe, NgForOf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CalendarMonthComponent} from "../calendar-month/calendar-month.component";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UtilityFunctions} from "../../helpers/utility-functions";
+import {GraphQLCommunication} from "../../services/graphql-communication.service";
+import {ActivatedRoute} from "@angular/router";
+import {
+  GetWeaponMaintenancesDTO
+} from "../../../model/dto/get-weapon-maintenances-dto";
 
 // import {addDays, addHours, endOfMonth, isSameDay, isSameMonth, startOfDay, subDays} from 'date-fns';
 
@@ -52,6 +57,7 @@ export class CalenderViewComponent {
   protected focusDay = new Date()
   protected currentDay = new Date()
   protected currentView = CalendarView.WEEK;
+  protected associationID: string;
   @Input() events: CalenderEvent[] = [{
     startDate: new Date(2024, 0, 24, 16, 0),
     endDate: addHours(new Date(2024, 0, 24, 16, 4), 1),
@@ -184,21 +190,32 @@ export class CalenderViewComponent {
   protected timeFormControl: FormControl
 
 
+  private route: ActivatedRoute;
+
+  private util: UtilityFunctions;
+
   constructor(
     private renderer: Renderer2,
-    private util: UtilityFunctions
+    util: UtilityFunctions,
+    private graphQLService: GraphQLCommunication,
+    route: ActivatedRoute
   ) {
+    this.util = util;
+    this.route = route;
     this.focusDayChangedEvent.next(this.focusDay);
     this.eventsChangedEvent.next(this.events)
 
     this.timeFormControl = new FormControl<string>(util.formatDateForFormControl(this.focusDay))
+    this.associationID = route.snapshot.params['associationID'];
     this.timeFormControl.valueChanges.subscribe({
       next: (value ) => {
         this.focusDay = new Date(value);
         this.focusDayChangedEvent.next(this.focusDay);
+        this.updateEvents()
 
       }
     })
+    this.updateEvents()
   }
 
   protected readonly Modal = Modal;
@@ -208,6 +225,36 @@ export class CalenderViewComponent {
     this.currentView = this.CalendarView[key as keyof typeof CalendarView]
     this.renderer.removeAttribute(this.myDetails.nativeElement, 'open')
 
+  }
+  updateEvents() {
+    this.graphQLService.getAssociationMaintenances(this.associationID, this.focusDay).subscribe({
+      next: (response) => {
+        const dto : GetWeaponMaintenancesDTO = response.data.getWeaponMaintenancesBetween;
+        if(dto.success) {
+          const newEvents: CalenderEvent[] = []
+          dto.maintenances.forEach(maintenance => {
+            newEvents.push({
+              title: maintenance.title,
+              description: maintenance.description,
+              id: maintenance.id,
+              color: maintenance.colorPreset,
+              data: maintenance,
+              width: 100,
+              columnIndex: -1,
+              startDate: maintenance.startDate,
+              endDate: maintenance.endDate
+            })
+          });
+          this.events = newEvents;
+          this.eventsChangedEvent.next(this.events);
+
+        } else {
+          console.log("Could not request events")
+          console.log(response)
+        }
+
+      }
+    })
   }
 }
 
@@ -225,6 +272,7 @@ export interface CalenderEvent {
 
 
 }
+
 
 export enum CalendarView {
   MONTH = "Maand overzicht",

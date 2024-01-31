@@ -76,7 +76,6 @@ export class WeaponPageComponent {
   private reloadData() {
     this.graphQLCommunication.getAllWeapons(this.associationID).subscribe({
       next: (response) => {
-        console.log(response)
         this.weaponList = response.data.getAllWeapons
       },
       error: (e) => {

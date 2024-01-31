@@ -7,12 +7,15 @@ import {AssociationInvite, AssociationInviteID} from "../../model/association-in
 import {query} from "@angular/animations";
 import {WeaponStatusInterface} from "../modals/create-weapon-modal/create-weapon-modal.component";
 import {WeaponType} from "../../model/weapon-type.model";
+import {addMonths, subMonths } from 'date-fns';
+import {UtilityFunctions} from "../helpers/utility-functions";
 
 @Injectable({
   providedIn: 'root',
 })
 export class GraphQLCommunication {
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private util: UtilityFunctions) {
   }
 
   public sendGraphQLRequest(request: any): Observable<any> {
@@ -633,5 +636,44 @@ export class GraphQLCommunication {
       }
     };
     return this.sendGraphQLRequest(query);
+  }
+
+  getAssociationMaintenances(associationID: string, focusDate: Date): Observable<any> {
+    const startDate = subMonths(focusDate, 1);
+    const endDate = addMonths(focusDate, 1);
+
+    const query = {
+      query: `
+      query getWeaponMaintenancesBetween($a: ID!, $start: LocalDateTime!, $end: LocalDateTime!){
+    getWeaponMaintenancesBetween(associationID: $a, startDate: $start, endDate: $end) {
+    success,
+    maintenances {
+        id,
+        association {
+            id,
+            name
+        },
+        startDate,
+        endDate,
+        title,
+        colorPreset {
+            id,
+            name,
+            primaryColor,
+            secondaryColor
+        },
+        description
+    }
+    }
+}
+    `,
+      variables: {
+        a: associationID,
+        start: this.util.toLocalIsoDateTime(startDate),
+        end: this.util.toLocalIsoDateTime(endDate),
+      }
+    };
+    return this.sendGraphQLRequest(query);
+
   }
 }
