@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {CalenderEvent} from "../calender-view/calender-view.component";
 import {NgClass, NgForOf} from "@angular/common";
@@ -19,6 +19,8 @@ import {CalenderUpcomingEventComponent} from "../calender-upcoming-event/calende
 export class UpcomingEventsComponent implements OnInit {
   @Input() eventsChangedEvent! : BehaviorSubject<CalenderEvent[]>
   @Input() currentDay!: Date
+  @Input() calendarItemClickedEvent? : EventEmitter<CalenderEvent>
+
   protected events: CalenderEvent[] = [];
 
   constructor(

@@ -1,5 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {CalendarEvent} from "angular-calendar";
+import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {CalenderEvent} from "../calender-view/calender-view.component";
 import {NgClass, NgStyle} from "@angular/common";
 import {UtilityFunctions} from "../../helpers/utility-functions";
@@ -15,7 +14,8 @@ import {UtilityFunctions} from "../../helpers/utility-functions";
   styleUrl: './calender-week-event.component.css'
 })
 export class CalenderWeekEventComponent implements OnInit {
-@Input() calendarEvent!: CalenderEvent
+  @Input() calendarEvent!: CalenderEvent
+  @Input() calendarItemClickedEvent?: EventEmitter<CalenderEvent>;
 
   // In je component class
   startTime: string = "";
@@ -30,4 +30,6 @@ export class CalenderWeekEventComponent implements OnInit {
   ) {
 
   }
+
+  protected readonly console = console;
 }

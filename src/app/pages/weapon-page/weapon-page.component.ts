@@ -1,4 +1,4 @@
-import {Component, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
@@ -14,8 +14,10 @@ import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.componen
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
 import {AssociationInvite} from "../../../model/association-invite";
 import {getWeaponStatus, Weapon, WeaponStatus} from "../../../model/weapon.model";
-import {CalenderViewComponent} from "../../calender/calender-view/calender-view.component";
+import {CalenderEvent, CalenderViewComponent} from "../../calender/calender-view/calender-view.component";
 import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
+import {GetWeaponMaintenancesDTO} from "../../../model/dto/get-weapon-maintenances-dto";
+import {CalendarEvent} from "angular-calendar";
 
 enum Tab {
   WEAPON_OVERVIEW,
@@ -51,6 +53,7 @@ export class WeaponPageComponent {
     private graphQLCommunication: GraphQLCommunication,
     navigationService: NavigationService,
     private translate: TranslateService,
+    private graphQLService: GraphQLCommunication,
     route: ActivatedRoute,
     protected modalService: ModalService,
     ) {
@@ -92,4 +95,43 @@ export class WeaponPageComponent {
 
   protected readonly WeaponStatus = WeaponStatus;
   protected readonly getWeaponStatus = getWeaponStatus;
+  protected updateCalendarItemsEvent = new EventEmitter<CalenderEvent[]>();
+  protected calendarItemClickedEvent?: EventEmitter<CalenderEvent>;
+
+  updateEvents(date: Date) {
+    this.graphQLService.getAssociationMaintenances(this.associationID, date).subscribe({
+      next: (response) => {
+        const dto : GetWeaponMaintenancesDTO = response.data.getWeaponMaintenancesBetween;
+        if(dto.success) {
+          const newEvents: CalenderEvent[] = []
+          dto.maintenances.forEach(maintenance => {
+            newEvents.push({
+              title: maintenance.title,
+              description: maintenance.description,
+              id: maintenance.id,
+              color: maintenance.colorPreset,
+              data: maintenance,
+              width: 100,
+              columnIndex: -1,
+              startDate: new Date(maintenance.startDate),
+              endDate: new Date(maintenance.endDate)
+            })
+          });
+          this.updateCalendarItemsEvent?.next(newEvents);
+
+
+        } else {
+          console.log("Could not request events")
+          console.log(response)
+        }
+
+      }
+    })
+  }
+
+  calendarItemClicked(event: CalenderEvent) {
+    console.log("click")
+    console.log(event)
+
+  }
 }

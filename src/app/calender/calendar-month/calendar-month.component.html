@@ -20,7 +20,7 @@
     <p class="mt-1 ml-2 text-lg"
        [ngClass]="{'opacity-40': !month.isInScope, 'text-accent': areDatesTheSameDay(month.date, currentDay)}">{{ month.date.getDate() }}</p>
     <div class="flex flex-row justify-start gap-y-1 flex-wrap mt-5">
-    <div *ngFor="let event of month.events" class="ml-1 badge badge-md" [ngStyle]="{'background-color': event.color.secondaryColor, 'border-color': event.color.primaryColor}"></div>
+    <div *ngFor="let event of month.events" class="ml-1 badge badge-md" [ngStyle]="{'background-color': event.color.secondaryColor, 'border-color': event.color.primaryColor}" (click)="calendarItemClickedEvent?.emit(event)"></div>
       </div>
   </div>
 </div>

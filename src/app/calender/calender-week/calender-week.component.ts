@@ -15,7 +15,7 @@ import {NgClass, NgComponentOutlet, NgForOf, NgIf, NgStyle} from "@angular/commo
 import {addDays, addHours, addMinutes, differenceInMinutes} from "date-fns";
 import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-event.component";
 import {BehaviorSubject} from "rxjs";
-import {UtilityFunctions} from "../../helpers/utility-functions";
+import {UtilityFunctions} from "../../helpers/utility-functions"
 
 
 @Component({
@@ -36,6 +36,7 @@ import {UtilityFunctions} from "../../helpers/utility-functions";
 export class CalenderWeekComponent implements AfterViewInit, OnInit {
   @Input() focusDayChangedEvent!: BehaviorSubject<Date>
   @Input() eventsChangedEvent!: BehaviorSubject<CalenderEvent[]>
+  @Input() calendarItemClickedEvent? : EventEmitter<CalenderEvent>
   @Input() currentDay!: Date
 
   private events: CalenderEvent[] = []
@@ -315,7 +316,6 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
       date1.getMonth() === date2.getMonth() &&
       date1.getFullYear() === date2.getFullYear();
   }
-
 }
 
 

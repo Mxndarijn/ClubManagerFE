@@ -21,20 +21,24 @@
   </div>
   <div class="flex flex-row justify-evenly h-85%">
     <div class="flex flex-col w-3/12 justify-start h-full">
-      <app-upcoming-events [eventsChangedEvent]="eventsChangedEvent" [currentDay]="currentDay"
+      <app-upcoming-events [eventsChangedEvent]="eventsChangedEvent" [currentDay]="currentDay" [calendarItemClickedEvent]="CalendarItemClickedEvent"
                            class=" border-base-200 border-2 bg-base-100 shadow-2xl h-4/6 overflow-y-auto no-scrollbar"></app-upcoming-events>
     </div>
     <div [ngSwitch]="currentView"
          class="w-8/12 border-base-200 border-2 bg-base-100 shadow-2xl overflow-y-auto no-scrollbar ">
       <app-calender-week *ngSwitchCase="CalendarView.WEEK" [currentDay]="currentDay"
                          [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent"
+                         [calendarItemClickedEvent]="CalendarItemClickedEvent"
                          class=""></app-calender-week>
       <app-calendar-day *ngSwitchCase="CalendarView.DAY" [currentDay]="currentDay"
                         [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent"
+                        [calendarItemClickedEvent]="CalendarItemClickedEvent"
                         class=""></app-calendar-day>
       <app-calendar-month *ngSwitchCase="CalendarView.MONTH" [currentDay]="currentDay"
                           [eventsChangedEvent]="eventsChangedEvent"
-                          [focusDayChangedEvent]="focusDayChangedEvent"></app-calendar-month>
+                          [focusDayChangedEvent]="focusDayChangedEvent"
+                          [calendarItemClickedEvent]="CalendarItemClickedEvent"
+      ></app-calendar-month>
     </div>
   </div>
 </div>

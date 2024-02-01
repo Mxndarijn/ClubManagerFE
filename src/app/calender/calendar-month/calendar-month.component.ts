@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import { CalenderEvent } from '../calender-view/calender-view.component';
 import {BehaviorSubject} from "rxjs";
 import {addDays, subDays} from "date-fns";
@@ -23,6 +23,8 @@ export class CalendarMonthComponent implements OnInit {
   @Input() eventsChangedEvent!: BehaviorSubject<CalenderEvent[]>
   @Input() currentDay!: Date
   @Input() monthItems: MonthItem[] = []
+  @Input() calendarItemClickedEvent? : EventEmitter<CalenderEvent>
+
   private events: CalenderEvent[] = []
   private focusDay: Date = new Date()
   protected days: string[] = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"]

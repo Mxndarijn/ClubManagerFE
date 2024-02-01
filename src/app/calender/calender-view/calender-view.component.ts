@@ -3,7 +3,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnInit,
+  OnInit, Output,
   Renderer2,
   ViewChild,
   ViewContainerRef
@@ -25,6 +25,7 @@ import {ActivatedRoute} from "@angular/router";
 import {
   GetWeaponMaintenancesDTO
 } from "../../../model/dto/get-weapon-maintenances-dto";
+import {CalendarEvent} from "angular-calendar";
 
 // import {addDays, addHours, endOfMonth, isSameDay, isSameMonth, startOfDay, subDays} from 'date-fns';
 
@@ -51,140 +52,18 @@ import {
 )
 
 
-export class CalenderViewComponent {
+export class CalenderViewComponent implements OnInit {
+  @Output() readonly RequestNewCalendarItemsEvent = new EventEmitter<Date>();
+  @Output() readonly CalendarItemClickedEvent = new EventEmitter<CalenderEvent>();
+  @Input() NewCalendarItemsEvent : EventEmitter<CalenderEvent[]> | undefined
+
   protected focusDayChangedEvent = new BehaviorSubject<Date>(new Date());
   protected eventsChangedEvent = new BehaviorSubject<CalenderEvent[]>([]);
   protected focusDay = new Date()
   protected currentDay = new Date()
   protected currentView = CalendarView.WEEK;
   protected associationID: string;
-  @Input() events: CalenderEvent[] = [{
-    startDate: new Date(2024, 0, 24, 16, 0),
-    endDate: addHours(new Date(2024, 0, 24, 16, 4), 1),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "red",
-      primaryColor: "#8C0202",
-      secondaryColor: "#DBB8B8"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abc"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 24, 17, 10),
-    endDate: addHours(new Date(2024, 0, 24, 17, 4), 1),
-    title: "Kiekeboe1",
-    description: "test desc",
-    color: {
-      colorName: "blue",
-      primaryColor: "#0D028C",
-      secondaryColor: "#BFB8DB"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abcd"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 24, 16, 10),
-    endDate: addHours(new Date(2024, 0, 24, 16, 4), 2),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "green",
-      primaryColor: "#028C20",
-      secondaryColor: "#BADBB8"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abcde"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 24, 12, 10),
-    endDate: addHours(new Date(2024, 0, 24, 12, 4), 20),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "yellow",
-      primaryColor: "#D9DD13",
-      secondaryColor: "#DBD9B8"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abcdef"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 24, 11, 10),
-    endDate: addHours(new Date(2024, 0, 24, 12, 4), 1),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "blue",
-      primaryColor: "#0D028C",
-      secondaryColor: "#BFB8DB"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abcee"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  }, {
-    startDate: new Date(2024, 0, 24, 16, 10),
-    endDate: addHours(new Date(2024, 0, 24, 16, 4), 2),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "blue",
-      primaryColor: "#0D028C",
-      secondaryColor: "#BFB8DB"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "abc11"
-
-    // onClickEventEmitter: EventEmitter<CalenderEvent>
-  },{
-    startDate: new Date(2024, 0, 25, 13, 10),
-    endDate: addHours(new Date(2024, 0, 25, 13, 4), 2),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "blue",
-      primaryColor: "#0D028C",
-      secondaryColor: "#BFB8DB"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "aabc"
-
-  },{
-    startDate: new Date(2024, 0, 27, 13, 10),
-    endDate: addHours(new Date(2024, 0, 27, 13, 4), 2),
-    title: "Kiekeboe",
-    description: "test desc",
-    color: {
-      colorName: "blue",
-      primaryColor: "#0D028C",
-      secondaryColor: "#BFB8DB"
-    },
-    data: {},
-    width:100,
-    columnIndex: -1,
-    id: "aabc"
-
-  }]
+  @Input() events: CalenderEvent[] = []
   @ViewChild('viewSelector') myDetails!: ElementRef;
 
   protected timeFormControl: FormControl
@@ -197,7 +76,6 @@ export class CalenderViewComponent {
   constructor(
     private renderer: Renderer2,
     util: UtilityFunctions,
-    private graphQLService: GraphQLCommunication,
     route: ActivatedRoute
   ) {
     this.util = util;
@@ -211,12 +89,21 @@ export class CalenderViewComponent {
       next: (value ) => {
         this.focusDay = new Date(value);
         this.focusDayChangedEvent.next(this.focusDay);
-        this.updateEvents()
+        this.RequestNewCalendarItemsEvent.next(this.focusDay);
 
       }
     })
-    this.updateEvents()
   }
+
+  ngOnInit(): void {
+        this.NewCalendarItemsEvent?.subscribe({
+          next: (events: CalenderEvent[]) => {
+            this.events = events
+            this.eventsChangedEvent.next(this.events);
+          }
+        })
+    this.RequestNewCalendarItemsEvent.next(this.focusDay);
+    }
 
   protected readonly Modal = Modal;
   protected readonly CalendarView = CalendarView;
@@ -225,36 +112,6 @@ export class CalenderViewComponent {
     this.currentView = this.CalendarView[key as keyof typeof CalendarView]
     this.renderer.removeAttribute(this.myDetails.nativeElement, 'open')
 
-  }
-  updateEvents() {
-    this.graphQLService.getAssociationMaintenances(this.associationID, this.focusDay).subscribe({
-      next: (response) => {
-        const dto : GetWeaponMaintenancesDTO = response.data.getWeaponMaintenancesBetween;
-        if(dto.success) {
-          const newEvents: CalenderEvent[] = []
-          dto.maintenances.forEach(maintenance => {
-            newEvents.push({
-              title: maintenance.title,
-              description: maintenance.description,
-              id: maintenance.id,
-              color: maintenance.colorPreset,
-              data: maintenance,
-              width: 100,
-              columnIndex: -1,
-              startDate: maintenance.startDate,
-              endDate: maintenance.endDate
-            })
-          });
-          this.events = newEvents;
-          this.eventsChangedEvent.next(this.events);
-
-        } else {
-          console.log("Could not request events")
-          console.log(response)
-        }
-
-      }
-    })
   }
 }
 

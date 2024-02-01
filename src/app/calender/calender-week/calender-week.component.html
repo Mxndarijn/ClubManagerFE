@@ -17,7 +17,7 @@
          [ngClass]="{'bg-base-300': rowIndex % 2 == 0, 'bg-base-100': rowIndex % 2 == 1, 'border-r-2': columnIndex != 6}"></div>
   </ng-container>
 
-  <app-calender-week-event *ngFor="let event of weekEvents" [calendarEvent]="event" class="relative"
+  <app-calender-week-event *ngFor="let event of weekEvents" [calendarEvent]="event" class="relative" [calendarItemClickedEvent]="calendarItemClickedEvent"
   [ngStyle]="{
   'grid-column-start': this.getCorrectColumn(event.startDate),
   'grid-row-start': this.getCorrectRow(event.startDate),
