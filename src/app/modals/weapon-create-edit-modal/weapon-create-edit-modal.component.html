@@ -2,13 +2,41 @@
         [ngClass]="{ 'modal-open': showModal}">
   <div class="modal-box">
     <h3 class="font-bold text-lg">Plan wapen onderhoud</h3>
+    <div class="flex flex-col">
+      <div class="flex flex-row w-full gap-x-20 ">
+        <div class="flex flex-col w-3/6">
+          <h1 class="">Wapen voor onderhoud </h1>
+          <select class="select select-accent max-w-xs border-2">
+            <option>qwe</option>
+          </select>
+        </div>
+        <div class="flex flex-col w-2/6">
+          <h1 class="">Visualisatie kleur </h1>
+          <select class="select select-accent max-w-xs border-2">
+            <option> qwe</option>
+          </select>
+        </div>
+      </div>
+      <label for="startDate-selector" class="mt-2 ">Start datum voor onderhoud</label>
+      <input type="datetime-local" id="startDate-selector" class="bg-transparent border-2 border-accent p-2 rounded-md">
+      <label for="endDate-selector" class="mt-2 ">Eind datum voor onderhoud</label>
+      <input type="datetime-local" id="endDate-selector" class="bg-transparent border-2 border-accent p-2 rounded-md">
+      <app-default-text-area class="mt-2"
+                                     [placeholder]="'Vul hier de beschrijving van het onderhoud in.'"
+                                     [labelText]="'Beschrijving voor onderhoud'"
+                                     [textAreaID]="'maintenanceDescription'">
+        <!--        &lt;!&ndash;Form control toevoegen &ndash;&gt;-->
+      </app-default-text-area>
+
+
+    </div>
     <div class="modal-action">
-      <form method="dialog" class="w-full flex justify-between" >
+      <form method="dialog" class="w-full flex justify-between">
         <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
-        >Sluit {{currentWeaponMaintenance?.title}}
+        >Annuleer {{ currentWeaponMaintenance?.title }}
         </button>
-        <button class="btn border-accent border-2 bg-base-100"
-        >Wijzig
+        <button class="btn border-success border-2 bg-base-100"
+        >Opslaan
         </button>
       </form>
     </div>

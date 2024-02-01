@@ -1,16 +1,21 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormsModule} from "@angular/forms";
-import {NgClass} from "@angular/common";
+import {NgClass, NgForOf} from "@angular/common";
 import {DefaultModalInformation} from "../../helpers/default-modal-information";
 import {Modal, ModalService } from '../../services/modal.service';
 import {WeaponMaintenance} from "../../../model/weapon-maintenance.model";
+import {DefaultInputFieldComponent} from "../../input-fields/default-input-field/default-input-field.component";
+import {DefaultTextAreaComponent} from "../../input-fields/default-text-area/default-text-area.component";
 
 @Component({
   selector: 'app-weapon-create-edit-modal',
   standalone: true,
   imports: [
     FormsModule,
-    NgClass
+    NgClass,
+    DefaultInputFieldComponent,
+    DefaultTextAreaComponent,
+    NgForOf
   ],
   templateUrl: './weapon-create-edit-modal.component.html',
   styleUrl: './weapon-create-edit-modal.component.css'
