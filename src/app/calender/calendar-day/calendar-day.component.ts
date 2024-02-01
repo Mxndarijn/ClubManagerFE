@@ -73,7 +73,10 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
 
       this.focusDayChangedEvent.subscribe({
         next: (date: Date) => {
-          this.selectedDay = date;
+          this.selectedDay = new Date(date);
+          this.selectedDay.setHours(0)
+          this.selectedDay.setMinutes(0)
+
             this.utility.formatDate(this.selectedDay).then(result => {
               this.title = result;
             })
@@ -88,7 +91,6 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
     let endTime = this.hours[this.hours.length - 1].hourNumber; // bijvoorbeeld 20
     let multipleDayEvents = this.calculateMultiDayEvents(beginTime, endTime)
 
-    console.log(multipleDayEvents)
     this.assignWidthsToEvents(multipleDayEvents);
 
     multipleDayEvents.sort((a, b) => {
@@ -104,7 +106,6 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
   calculateMultiDayEvents(beginTime: number, endTime: number) {
     let multipleDayEvents: CalenderEvent[] = [];
 
-    console.log(this.events)
     this.events.forEach(event => {
       if (event.startDate.getDay() !== event.endDate.getDay()) {
         let currentStart = new Date(event.startDate);
@@ -135,11 +136,11 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
       }
     });
 
-    const weekEndDate = new Date(this.currentDay)
+    const weekEndDate = new Date(this.selectedDay)
     weekEndDate.setHours(23);
     weekEndDate.setMinutes(59)
     multipleDayEvents = multipleDayEvents.filter(event => {
-      return this.eventsOverlap(this.currentDay, weekEndDate, event.startDate, event.endDate)
+      return this.eventsOverlap(this.selectedDay, weekEndDate, event.startDate, event.endDate)
     });
 
     return multipleDayEvents;
@@ -149,7 +150,7 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
     let currentTime = new Date(this.selectedDay);
     currentTime.setHours(1)
 
-    let endDate = this.selectedDay;
+    let endDate = new Date(this.selectedDay);
     endDate.setHours(23)
     endDate.setMinutes(59)
 
@@ -199,84 +200,6 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
     return eventsOnSpecificDay.filter(event => {
       return currentTime < event.endDate && event.startDate <= currentTime
     });
-  }
-
-  private findEarliestPossibleLocation(freeSpace: number[], event: { width: number }): number {
-    let requiredLength = event.width;
-    let startingIndex = -1;
-    let count = 0;
-
-    let min = Math.min(...freeSpace)
-    let max = Math.max(...freeSpace)
-
-
-
-    for (let currentValue = min; currentValue <= max; currentValue++) {
-      if (freeSpace.includes(currentValue)) {
-        if (startingIndex === -1) {
-          startingIndex = currentValue;
-        }
-        count++;
-        if (count === requiredLength) {
-          return startingIndex;
-        }
-      } else {
-        startingIndex = -1;
-        count = 0;
-      }
-    }
-
-    return -1;
-  }
-
-  toStartOfWeek(date: Date): Date {
-    let day = date.getDay(); // Sunday = 0, Monday = 1, etc.
-    let difference = day - 1; // Number of days since Monday
-
-    if (difference < 0) {
-      // If the day is Sunday, go back 6 days to the previous Monday.
-      difference = 6;
-    }
-
-    let startOfWeek = new Date(date);
-    startOfWeek.setDate(date.getDate() - difference);
-    return startOfWeek;
-  }
-
-  private findBiggestPossibleLocation(availableSpace: number[]): number {
-    let maxSegmentSize = 0;
-    let maxSegmentStartIndex = -1;
-    let currentSegmentSize = 0;
-    let currentSegmentStartIndex = -1;
-
-    for (let i = 0; i < availableSpace.length; i++) {
-      if (i === 0 || availableSpace[i] !== availableSpace[i - 1] + 1) {
-        // Begin van een nieuw segment
-        if (currentSegmentSize > maxSegmentSize) {
-          maxSegmentSize = currentSegmentSize;
-          maxSegmentStartIndex = currentSegmentStartIndex;
-        }
-        currentSegmentSize = 1;
-        currentSegmentStartIndex = availableSpace[i];
-      } else {
-        // Voortzetting van het huidige segment
-        currentSegmentSize++;
-      }
-    }
-
-    // Controleer aan het einde nogmaals voor het laatste segment
-    if (currentSegmentSize > maxSegmentSize) {
-      maxSegmentSize = currentSegmentSize;
-      maxSegmentStartIndex = currentSegmentStartIndex;
-    }
-
-    return maxSegmentStartIndex;
-  }
-
-  areDatesTheSameDay(date1: Date, date2: Date): boolean {
-    return date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear();
   }
 
 }
