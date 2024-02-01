@@ -55,7 +55,9 @@ import {CalendarEvent} from "angular-calendar";
 export class CalenderViewComponent implements OnInit {
   @Output() readonly RequestNewCalendarItemsEvent = new EventEmitter<Date>();
   @Output() readonly CalendarItemClickedEvent = new EventEmitter<CalenderEvent>();
+  @Output() readonly ButtonClickedEvent = new EventEmitter<void>();
   @Input() NewCalendarItemsEvent : EventEmitter<CalenderEvent[]> | undefined
+  @Input()  buttonTitle: string = "";
 
   protected focusDayChangedEvent = new BehaviorSubject<Date>(new Date());
   protected eventsChangedEvent = new BehaviorSubject<CalenderEvent[]>([]);

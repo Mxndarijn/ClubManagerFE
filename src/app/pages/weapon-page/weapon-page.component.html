@@ -50,5 +50,7 @@
   </div>
 </div>
 <div *ngIf="activeTab === Tab.CALENDER_VIEW" >
-  <app-calender (RequestNewCalendarItemsEvent)="updateEvents($event)" [NewCalendarItemsEvent]="updateCalendarItemsEvent" (CalendarItemClickedEvent)="calendarItemClicked($event)" class="w-full"></app-calender>
+  <app-calender (RequestNewCalendarItemsEvent)="updateEvents($event)" [NewCalendarItemsEvent]="updateCalendarItemsEvent" (CalendarItemClickedEvent)="calendarItemClicked($event)" (ButtonClickedEvent)="createNewWeaponMaintenance()" [buttonTitle]="'Plan onderhoud'" class="w-full"></app-calender>
 </div>
+<app-weapon-information-modal [changeCurrentWeaponMaintenance]="changeCurrentWeaponMaintenance"[changeSelectedEvent]="changeSelectedWeaponMaintenanceEvent"></app-weapon-information-modal>
+<app-weapon-create-edit-modal [changeCurrentWeaponMaintenance]="changeCurrentWeaponMaintenance"></app-weapon-create-edit-modal>

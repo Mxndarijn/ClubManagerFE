@@ -1,0 +1,16 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Plan wapen onderhoud</h3>
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between" >
+        <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+        >Sluit {{currentWeaponMaintenance?.title}}
+        </button>
+        <button class="btn border-accent border-2 bg-base-100"
+        >Wijzig
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>

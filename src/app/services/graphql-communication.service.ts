@@ -653,6 +653,12 @@ export class GraphQLCommunication {
             id,
             name
         },
+        weapon {
+          name,
+          type {
+            name
+          }
+        }
         startDate,
         endDate,
         title,

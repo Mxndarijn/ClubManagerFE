@@ -1,0 +1,31 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Wapen-onderhoud: {{title}}</h3>
+    <div class="flex flex-row gap-x-1 mt-5">
+      <div class="flex flex-col">
+      <p>StartTijd:</p>
+      <p>EindTijd: </p>
+      <p>Duur: </p>
+      <p>Wapen: </p>
+      <p class="mt-2">{{selectedMaintenanceEvent?.description}}</p>
+      </div>
+      <div>
+        <p>{{startTime}}</p>
+        <p>{{endTime}}</p>
+        <p>{{calculateDuration()}}</p>
+        <p>{{selectedMaintenanceEvent?.weapon?.name}} ({{selectedMaintenanceEvent?.weapon?.type?.name}})</p>
+      </div>
+    </div>
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between" >
+        <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+                >Sluit
+        </button>
+        <button class="btn border-accent border-2 bg-base-100" (click)="hideModal(); this.changeCurrentWeaponMaintenance?.emit(selectedMaintenanceEvent); this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_EDIT_WEAPON_MAINTENANCE)"
+                >Wijzig
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>

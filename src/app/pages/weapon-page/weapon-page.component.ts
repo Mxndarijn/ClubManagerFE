@@ -18,6 +18,11 @@ import {CalenderEvent, CalenderViewComponent} from "../../calender/calender-view
 import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
 import {GetWeaponMaintenancesDTO} from "../../../model/dto/get-weapon-maintenances-dto";
 import {CalendarEvent} from "angular-calendar";
+import {
+  WeaponInformationModalComponent
+} from "../../modals/weapon-information-modal/weapon-information-modal.component";
+import {generateDefaultWeaponMaintenance, WeaponMaintenance} from "../../../model/weapon-maintenance.model";
+import {WeaponCreateEditModalComponent} from "../../modals/weapon-create-edit-modal/weapon-create-edit-modal.component";
 
 enum Tab {
   WEAPON_OVERVIEW,
@@ -37,6 +42,8 @@ enum Tab {
     CreateWeaponModalComponent,
     CalenderViewComponent,
     UpdateButtonComponent,
+    WeaponInformationModalComponent,
+    WeaponCreateEditModalComponent,
 
   ],
   templateUrl: './weapon-page.component.html',
@@ -97,6 +104,9 @@ export class WeaponPageComponent {
   protected readonly getWeaponStatus = getWeaponStatus;
   protected updateCalendarItemsEvent = new EventEmitter<CalenderEvent[]>();
   protected calendarItemClickedEvent?: EventEmitter<CalenderEvent>;
+  selectedMaintenanceEvent?: WeaponMaintenance;
+  changeSelectedWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
+  changeCurrentWeaponMaintenance: EventEmitter<WeaponMaintenance> = new EventEmitter<WeaponMaintenance>();
 
   updateEvents(date: Date) {
     this.graphQLService.getAssociationMaintenances(this.associationID, date).subscribe({
@@ -106,15 +116,15 @@ export class WeaponPageComponent {
           const newEvents: CalenderEvent[] = []
           dto.maintenances.forEach(maintenance => {
             newEvents.push({
-              title: maintenance.title,
-              description: maintenance.description,
-              id: maintenance.id,
-              color: maintenance.colorPreset,
+              title: maintenance!.title!,
+              description: maintenance!.description!,
+              id: maintenance.id!,
+              color: maintenance.colorPreset!,
               data: maintenance,
               width: 100,
               columnIndex: -1,
-              startDate: new Date(maintenance.startDate),
-              endDate: new Date(maintenance.endDate)
+              startDate: new Date(maintenance!.startDate!),
+              endDate: new Date(maintenance!.endDate!)
             })
           });
           this.updateCalendarItemsEvent?.next(newEvents);
@@ -130,8 +140,16 @@ export class WeaponPageComponent {
   }
 
   calendarItemClicked(event: CalenderEvent) {
-    console.log("click")
     console.log(event)
+    this.selectedMaintenanceEvent = event.data as WeaponMaintenance;
+    this.changeSelectedWeaponMaintenanceEvent.emit(this.selectedMaintenanceEvent)
+    this.modalService.showModal(Modal.ASSOCIATION_WEAPON_INFORMATION)
 
+  }
+
+  createNewWeaponMaintenance() {
+
+    this.changeCurrentWeaponMaintenance.emit(generateDefaultWeaponMaintenance());
+    this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_EDIT_WEAPON_MAINTENANCE)
   }
 }

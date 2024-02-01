@@ -15,8 +15,8 @@
     </details>
     <input type="date" [formControl]="timeFormControl"
            class="bg-base-100 border-2 p-2 border-accent rounded-md hover:cursor-pointer focus:border-accent">
-    <button class="btn border-accent border-2 bg-base-100  btn-md">
-      Plan onderhoud
+    <button class="btn border-accent border-2 bg-base-100  btn-md" (click)="ButtonClickedEvent.emit()">
+      {{buttonTitle}}
     </button>
   </div>
   <div class="flex flex-row justify-evenly h-85%">
