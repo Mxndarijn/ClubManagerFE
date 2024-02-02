@@ -53,4 +53,4 @@
   <app-calender (RequestNewCalendarItemsEvent)="updateEvents($event)" [NewCalendarItemsEvent]="updateCalendarItemsEvent" (CalendarItemClickedEvent)="calendarItemClicked($event)" (ButtonClickedEvent)="createNewWeaponMaintenance()" [buttonTitle]="'Plan onderhoud'" class="w-full"></app-calender>
 </div>
 <app-weapon-information-modal [changeCurrentWeaponMaintenance]="changeCurrentWeaponMaintenance"[changeSelectedEvent]="changeSelectedWeaponMaintenanceEvent"></app-weapon-information-modal>
-<app-weapon-create-edit-modal [changeCurrentWeaponMaintenance]="changeCurrentWeaponMaintenance"></app-weapon-create-edit-modal>
+<app-weapon-maintenance-create-edit-modal [addWeaponMaintenanceEvent]="addWeaponMaintenanceEvent" [changeCurrentWeaponMaintenance]="changeCurrentWeaponMaintenance"></app-weapon-maintenance-create-edit-modal>

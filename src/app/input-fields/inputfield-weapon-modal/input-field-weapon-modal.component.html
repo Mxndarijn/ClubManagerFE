@@ -1,0 +1,27 @@
+<div class="flex flex-col">
+  <label class="text-md" [for]="inputId">{{ labelText }}</label>
+  <div class="relative flex items-center"> <!--Wrapper for input field -->
+    <input class="input input-bordered border-2 border-accent w-full" [autocomplete]="autocomplete"
+           [placeholder]="placeholder" [id]="inputId" [formControl]="_formControl"
+           [type]="!visibilityCanBeToggled ?type : showPassword ? 'text' : 'password'"
+           (blur)="onTouch()"/>
+    <button class="absolute right-0 mr-2" (click)="showPassword = !showPassword" *ngIf="visibilityCanBeToggled">
+      <div>
+        <fa-icon *ngIf="showPassword; else eyeSlashIcon" [icon]="faEye"></fa-icon>
+        <ng-template #eyeSlashIcon>
+          <fa-icon [icon]="faEyeSlash"></fa-icon>
+        </ng-template>
+      </div>
+    </button>
+  </div>
+</div>
+<div *ngIf="(_formControl.value == null || _formControl.value.length == 0) ? hideErrorsWhenEmpty : true">
+  <app-single-error-message  *ngFor="let errorSetting of errorSettings"
+
+                             [errorMessage]="errorSetting.errorMessage"
+                             [specificError]="errorSetting.errorName"
+                             [specificFormControl]="_formControl">
+
+  </app-single-error-message>
+</div>
+

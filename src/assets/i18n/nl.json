@@ -1,6 +1,12 @@
 {
   "config": {
-    "language": "nl-NL"
+    "language": "nl-NL",
+    "colors": {
+      "green": "Groen",
+      "yellow": "Geel",
+      "blue": "Blauw",
+      "red": "Rood"
+    }
   },
   "loginPage": {
     "titleHeader": "Welkom op {{companyName}}",

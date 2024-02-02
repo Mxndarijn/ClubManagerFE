@@ -1,6 +1,12 @@
 {
   "config": {
-    "language": "en-EN"
+    "language": "en-EN",
+    "colors": {
+      "green": "Green",
+      "yellow": "Yellow",
+      "blue": "Blue",
+      "red": "Red"
+    }
   },
   "loginPage": {
     "titleHeader": "Welcome to {{companyName}}",

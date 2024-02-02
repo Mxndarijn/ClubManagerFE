@@ -20,7 +20,8 @@
             <label for="status-selection" class="mb-2">Selecteer de status van het wapen</label>
             <select id="status-selection" class="select select-accent w-full  border-2"
                     [formControl]="createWeaponForm.controls.status">
-              <option [ngValue]="weaponStatus" *ngFor="let weaponStatus of weaponStatuses"> {{ weaponStatus.status }}</option>
+              <option [ngValue]="weaponStatus" *ngFor="let weaponStatus of weaponStatuses"> {{ weaponStatus.status }}
+              </option>
             </select>
           </div>
           <div class="flex flex-col w-96  items-start justify-evenly mt-5">

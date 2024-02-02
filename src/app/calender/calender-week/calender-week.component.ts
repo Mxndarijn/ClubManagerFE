@@ -120,18 +120,20 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
             currentEnd = new Date(event.endDate);
           }
 
-          multipleDayEvents.push({
-            ...event,
-            startDate: new Date(currentStart),
-            endDate: currentEnd
-          });
+          if(currentStart.getHours() >= beginTime && currentStart.getHours() < endTime) {
+            multipleDayEvents.push({
+              ...event,
+              startDate: new Date(currentStart),
+              endDate: currentEnd
+            });
+          }
 
           // Bereid de starttijd voor de volgende dag voor
           currentStart = new Date(currentEnd);
           currentStart.setDate(currentStart.getDate() + 1); // Ga naar de volgende dag
           currentStart.setHours(beginTime, 0, 0, 0); // Stel begintijd in op de volgende dag
         }
-      } else {
+      } else if(event.startDate.getHours() >= beginTime && event.startDate.getHours() < endTime) {
         // Voeg het enkele-dag evenement toe
         multipleDayEvents.push(event);
       }

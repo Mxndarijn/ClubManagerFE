@@ -22,7 +22,9 @@ import {
   WeaponInformationModalComponent
 } from "../../modals/weapon-information-modal/weapon-information-modal.component";
 import {generateDefaultWeaponMaintenance, WeaponMaintenance} from "../../../model/weapon-maintenance.model";
-import {WeaponCreateEditModalComponent} from "../../modals/weapon-create-edit-modal/weapon-create-edit-modal.component";
+import {
+  WeaponMaintenanceCreateEditModalComponent
+} from "../../modals/weapon-maintenance-create-edit-modal/weapon-maintenance-create-edit-modal.component";
 
 enum Tab {
   WEAPON_OVERVIEW,
@@ -43,7 +45,7 @@ enum Tab {
     CalenderViewComponent,
     UpdateButtonComponent,
     WeaponInformationModalComponent,
-    WeaponCreateEditModalComponent,
+    WeaponMaintenanceCreateEditModalComponent,
 
   ],
   templateUrl: './weapon-page.component.html',
@@ -63,8 +65,15 @@ export class WeaponPageComponent {
     private graphQLService: GraphQLCommunication,
     route: ActivatedRoute,
     protected modalService: ModalService,
-    ) {
+  ) {
     this.associationID = route.snapshot.params['associationID'];
+    this.addWeaponMaintenanceEvent.subscribe({
+      next: (i: WeaponMaintenance) => {
+        this.calendarItems.push(this.convertWeaponMaintenanceToCalendarEvent(i))
+        this.updateCalendarItemsEvent?.next(this.calendarItems);
+
+      }
+    })
     this.reloadData();
   }
 
@@ -107,27 +116,20 @@ export class WeaponPageComponent {
   selectedMaintenanceEvent?: WeaponMaintenance;
   changeSelectedWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
   changeCurrentWeaponMaintenance: EventEmitter<WeaponMaintenance> = new EventEmitter<WeaponMaintenance>();
+  protected addWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
+  protected calendarItems: CalenderEvent[] = []
 
   updateEvents(date: Date) {
     this.graphQLService.getAssociationMaintenances(this.associationID, date).subscribe({
       next: (response) => {
-        const dto : GetWeaponMaintenancesDTO = response.data.getWeaponMaintenancesBetween;
-        if(dto.success) {
+        const dto: GetWeaponMaintenancesDTO = response.data.getWeaponMaintenancesBetween;
+        if (dto.success) {
           const newEvents: CalenderEvent[] = []
           dto.maintenances.forEach(maintenance => {
-            newEvents.push({
-              title: maintenance!.title!,
-              description: maintenance!.description!,
-              id: maintenance.id!,
-              color: maintenance.colorPreset!,
-              data: maintenance,
-              width: 100,
-              columnIndex: -1,
-              startDate: new Date(maintenance!.startDate!),
-              endDate: new Date(maintenance!.endDate!)
-            })
+            newEvents.push(this.convertWeaponMaintenanceToCalendarEvent(maintenance))
           });
           this.updateCalendarItemsEvent?.next(newEvents);
+          this.calendarItems = newEvents;
 
 
         } else {
@@ -151,5 +153,20 @@ export class WeaponPageComponent {
 
     this.changeCurrentWeaponMaintenance.emit(generateDefaultWeaponMaintenance());
     this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_EDIT_WEAPON_MAINTENANCE)
+  }
+
+  convertWeaponMaintenanceToCalendarEvent(maintenance: WeaponMaintenance) : CalenderEvent {
+    return {
+      title: maintenance!.title!,
+      description: maintenance!.description!,
+      id: maintenance.id!,
+      color: maintenance.colorPreset!,
+      data: maintenance,
+      width: 100,
+      columnIndex: -1,
+      startDate: new Date(maintenance!.startDate!),
+      endDate: new Date(maintenance!.endDate!)
+    }
+
   }
 }

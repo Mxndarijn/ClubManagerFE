@@ -1,0 +1,14 @@
+<div class="flex flex-col">
+  <label for="{{inputID}}" class="mt-2 ">{{ labelText }}</label>
+  <input type="datetime-local" id="startDate-selector" class="bg-transparent border-2 border-accent p-2 rounded-md"
+         [id]="inputID" [formControl]="_formControl" [min]="minDate">
+</div>
+<div *ngIf="(_formControl.value == null || _formControl.value.length == 0) ? hideErrorsWhenEmpty : true">
+  <app-single-error-message  *ngFor="let errorSetting of errorSettings"
+
+                             [errorMessage]="errorSetting.errorMessage"
+                             [specificError]="errorSetting.errorName"
+                             [specificFormControl]="_formControl">
+
+  </app-single-error-message>
+</div>

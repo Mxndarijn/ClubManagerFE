@@ -63,7 +63,7 @@ export class WeaponInformationModalComponent extends DefaultModalInformation imp
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
       // Formatteer het resultaat
-      return `${days != 0 ? '${days} Dag(en),' : ''} ${hours} Uur(en) en ${minutes} Minu(u)t(en)`;
+      return `${days != 0 ? days + 'Dag(en),' : ''} ${hours} Uur(en) en ${minutes} Minu(u)t(en)`;
     }
     return "";
   }

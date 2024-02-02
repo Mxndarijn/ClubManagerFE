@@ -9,6 +9,7 @@ import {WeaponStatusInterface} from "../modals/create-weapon-modal/create-weapon
 import {WeaponType} from "../../model/weapon-type.model";
 import {addMonths, subMonths } from 'date-fns';
 import {UtilityFunctions} from "../helpers/utility-functions";
+import {WeaponMaintenance} from "../../model/weapon-maintenance.model";
 
 @Injectable({
   providedIn: 'root',
@@ -654,6 +655,7 @@ export class GraphQLCommunication {
             name
         },
         weapon {
+          id,
           name,
           type {
             name
@@ -664,7 +666,7 @@ export class GraphQLCommunication {
         title,
         colorPreset {
             id,
-            name,
+            colorName,
             primaryColor,
             secondaryColor
         },
@@ -679,6 +681,73 @@ export class GraphQLCommunication {
         end: this.util.toLocalIsoDateTime(endDate),
       }
     };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  getAllColorPresets() {
+    const query = {
+      query: `
+     query getAllColorPresets {
+     getAllColorPresets {
+        id,
+        colorName,
+        primaryColor,
+        secondaryColor
+    }
+      }
+    `
+    };
+    return this.sendGraphQLRequest(query);
+  }
+
+  createWeaponMaintenance(associationID: string, currentWeaponMaintenance: WeaponMaintenance) {
+    const query = {
+      query: `
+        mutation createWeaponMaintenance($dto: CreateWeaponMaintenanceDTO!) {
+          createWeaponMaintenance(dto: $dto) {
+            success,
+            message,
+            maintenance {
+               id,
+        association {
+            id,
+            name
+        },
+        weapon {
+          id,
+          name,
+          type {
+            name
+          }
+        }
+        startDate,
+        endDate,
+        title,
+        colorPreset {
+            id,
+            colorName,
+            primaryColor,
+            secondaryColor
+        },
+        description
+            }
+          }
+        }
+      `,
+      variables: {
+        dto: {
+          weaponUUID: currentWeaponMaintenance.weapon?.id,
+          colorPresetUUID: currentWeaponMaintenance.colorPreset?.id,
+          title: currentWeaponMaintenance.title,
+          description: currentWeaponMaintenance.description,
+          startDate: this.util.toLocalIsoDateTime(new Date(currentWeaponMaintenance.startDate!)),
+          endDate: this.util.toLocalIsoDateTime(new Date(currentWeaponMaintenance.endDate!)),
+          associationUUID: associationID,
+        },
+      }
+    };
+
     return this.sendGraphQLRequest(query);
 
   }
