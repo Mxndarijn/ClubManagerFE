@@ -24,6 +24,7 @@ export class WeaponInformationModalComponent extends DefaultModalInformation imp
   @Input() changeCurrentWeaponMaintenance?: EventEmitter<WeaponMaintenance>;
   protected startTime = "";
   protected endTime = "";
+  protected currentDate = new Date()
 
 
   constructor(
@@ -69,4 +70,13 @@ export class WeaponInformationModalComponent extends DefaultModalInformation imp
   }
 
   protected readonly Modal = Modal;
+
+  timeIsAfterCurrentDate(startDate: string | undefined) {
+    if(!startDate) {
+      return false;
+    }
+    const startDateTime = new Date(startDate);
+    return startDateTime.getTime() > this.currentDate.getTime();
+
+  }
 }

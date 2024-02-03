@@ -18,5 +18,7 @@ export function generateDefaultWeaponMaintenance() {
   return {
     title: "",
     description: "",
+    startDate: '',
+    endDate: ''
   } as WeaponMaintenance
 }

@@ -23,6 +23,7 @@ import {ErrorMessageComponent} from "../../error-messages/error-message/error-me
 import {CreateWeaponMaintenanceResponseDTO} from "../../../model/dto/create-weapon-maintenance-response-dto.model";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 import { AlertService } from '../../services/alert.service';
+import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
 
 @Component({
   selector: 'app-weapon-maintenance-create-edit-modal',
@@ -89,7 +90,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     this.weaponMaintenanceFormGroup = new FormGroup({
       maintenanceTitle: new FormControl('', Validators.compose([Validators.required, Validators.minLength(3)])),
       maintenanceColor: new FormControl(null, Validators.required),
-      maintenanceStartDate: new FormControl('', Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
+      maintenanceStartDate: new FormControl('', Validators.compose([Validators.required])),
       maintenanceEndDate: new FormControl('', Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
       maintenanceDescription: new FormControl(''),
       maintenanceWeapon: new FormControl(null, Validators.required),
@@ -113,8 +114,14 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
 
         this.weaponMaintenanceFormGroup.controls.maintenanceTitle.setValue(e.title!)
         this.weaponMaintenanceFormGroup.controls.maintenanceDescription.setValue(e.description!)
-        this.weaponMaintenanceFormGroup.controls.maintenanceStartDate.setValue(e.startDate!)
-        this.weaponMaintenanceFormGroup.controls.maintenanceEndDate.setValue(e.endDate!)
+        if(e.startDate  && e.startDate.length > 0) {
+          this.weaponMaintenanceFormGroup.controls.maintenanceStartDate.setValue(e.startDate!)
+        }
+
+        if(e.endDate  && e.endDate.length > 0) {
+          this.weaponMaintenanceFormGroup.controls.maintenanceEndDate.setValue(e.endDate!)
+        }
+
 
         if(this.currentWeaponMaintenance?.weapon != null) {
 
@@ -139,16 +146,10 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
 
 
   createMaintenance() {
-    console.log(this.weaponMaintenanceFormGroup)
     if(!this.weaponMaintenanceFormGroup.valid) {
       return;
     }
-    this.currentWeaponMaintenance!.startDate = this.weaponMaintenanceFormGroup.controls.maintenanceStartDate.value!;
-    this.currentWeaponMaintenance!.endDate = this.weaponMaintenanceFormGroup.controls.maintenanceEndDate.value!;
-    this.currentWeaponMaintenance!.title = this.weaponMaintenanceFormGroup.controls.maintenanceTitle.value!;
-    this.currentWeaponMaintenance!.description = this.weaponMaintenanceFormGroup.controls.maintenanceDescription.value!;
-    this.currentWeaponMaintenance!.weapon = this.weaponMaintenanceFormGroup.controls.maintenanceWeapon.value!;
-    this.currentWeaponMaintenance!.colorPreset = this.weaponMaintenanceFormGroup.controls.maintenanceColor.value!;
+    this.setValues()
 
 
     this.graphQLService.createWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).subscribe({
@@ -158,7 +159,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
           this.addWeaponMaintenanceEvent.emit(dto.maintenance)
           this.alertService.showAlert({
             title: "Succesvol",
-            subTitle: "Wapen onderhoud is toegevoegd",
+            subTitle: "Wapen onderhoud is toegevoegd.",
             icon: AlertIcon.CHECK,
             duration: 4000,
             alertClass: AlertClass.CORRECT_CLASS
@@ -194,8 +195,101 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
   protected readonly Date = Date;
   currentDay: Date = new Date();
   @Input() addWeaponMaintenanceEvent!: EventEmitter<WeaponMaintenance>;
+  @Input() changeWeaponMaintenanceEvent!: EventEmitter<WeaponMaintenance>;
+  @Input() deleteWeaponMaintenanceEvent!: EventEmitter<WeaponMaintenance>;
 
+
+  setValues() {
+    this.currentWeaponMaintenance!.startDate = this.weaponMaintenanceFormGroup.controls.maintenanceStartDate.value!;
+    this.currentWeaponMaintenance!.endDate = this.weaponMaintenanceFormGroup.controls.maintenanceEndDate.value!;
+    this.currentWeaponMaintenance!.title = this.weaponMaintenanceFormGroup.controls.maintenanceTitle.value!;
+    this.currentWeaponMaintenance!.description = this.weaponMaintenanceFormGroup.controls.maintenanceDescription.value!;
+    this.currentWeaponMaintenance!.weapon = this.weaponMaintenanceFormGroup.controls.maintenanceWeapon.value!;
+    this.currentWeaponMaintenance!.colorPreset = this.weaponMaintenanceFormGroup.controls.maintenanceColor.value!;
+  }
   saveMaintenance() {
+    if(!this.weaponMaintenanceFormGroup.valid) {
+      return;
+    }
+    this.setValues()
 
+
+    this.graphQLService.changeWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).subscribe({
+      next: (response) => {
+        const dto: CreateWeaponMaintenanceResponseDTO = response.data.changeWeaponMaintenance
+        if(dto.success) {
+          this.changeWeaponMaintenanceEvent.emit(dto.maintenance)
+          this.alertService.showAlert({
+            title: "Succesvol",
+            subTitle: "Wapen onderhoud is aangepast.",
+            icon: AlertIcon.CHECK,
+            duration: 4000,
+            alertClass: AlertClass.CORRECT_CLASS
+          });
+
+        } else {
+          this.alertService.showAlert({
+            title: "Fout opgetreden",
+            subTitle: "Er is een fout opgetreden.",
+            icon: AlertIcon.XMARK,
+            duration: 4000,
+            alertClass: AlertClass.INCORRECT_CLASS
+          });
+
+        }
+      },
+      error: (e) => {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een fout opgetreden.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+      }
+    });
+    this.hideModal()
+
+  }
+
+  deleteMaintenance() {
+    if(!this.currentWeaponMaintenance?.id)
+
+      return;
+    this.graphQLService.deleteWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).subscribe({
+      next: (response) => {
+        const dto: DefaultBooleanResponseDTO = response.data.deleteWeaponMaintenance
+        if(dto.success) {
+          this.deleteWeaponMaintenanceEvent.emit(this.currentWeaponMaintenance)
+          this.alertService.showAlert({
+            title: "Succesvol",
+            subTitle: "Wapen onderhoud is verwijderd.",
+            icon: AlertIcon.CHECK,
+            duration: 4000,
+            alertClass: AlertClass.CORRECT_CLASS
+          });
+
+        } else {
+          this.alertService.showAlert({
+            title: "Fout opgetreden",
+            subTitle: "Er is een fout opgetreden.",
+            icon: AlertIcon.XMARK,
+            duration: 4000,
+            alertClass: AlertClass.INCORRECT_CLASS
+          });
+
+        }
+      },
+      error: (e) => {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een fout opgetreden.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+      }
+    });
+    this.hideModal()
   }
 }

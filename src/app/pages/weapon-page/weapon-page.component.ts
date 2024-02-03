@@ -74,6 +74,21 @@ export class WeaponPageComponent {
 
       }
     })
+    this.changeWeaponMaintenanceEvent.subscribe({
+      next: (i: WeaponMaintenance) => {
+        this.calendarItems = this.calendarItems.filter(c => c.id != i.id)
+        this.calendarItems.push(this.convertWeaponMaintenanceToCalendarEvent(i))
+        this.updateCalendarItemsEvent?.next(this.calendarItems);
+
+      }
+    })
+    this.deleteWeaponMaintenanceEvent.subscribe({
+      next: (i: WeaponMaintenance) => {
+        this.calendarItems = this.calendarItems.filter(c => c.id != i.id)
+        this.updateCalendarItemsEvent?.next(this.calendarItems);
+
+      }
+    })
     this.reloadData();
   }
 
@@ -117,6 +132,8 @@ export class WeaponPageComponent {
   changeSelectedWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
   changeCurrentWeaponMaintenance: EventEmitter<WeaponMaintenance> = new EventEmitter<WeaponMaintenance>();
   protected addWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
+  protected changeWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
+  protected deleteWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
   protected calendarItems: CalenderEvent[] = []
 
   updateEvents(date: Date) {
@@ -156,6 +173,11 @@ export class WeaponPageComponent {
   }
 
   convertWeaponMaintenanceToCalendarEvent(maintenance: WeaponMaintenance) : CalenderEvent {
+    const s = new Date();
+    s.setSeconds(0,0);
+
+    const e = new Date();
+    e.setSeconds(0,0);
     return {
       title: maintenance!.title!,
       description: maintenance!.description!,
@@ -164,8 +186,8 @@ export class WeaponPageComponent {
       data: maintenance,
       width: 100,
       columnIndex: -1,
-      startDate: new Date(maintenance!.startDate!),
-      endDate: new Date(maintenance!.endDate!)
+      startDate: maintenance.startDate != null && maintenance.startDate.length > 0 ? new Date(maintenance!.startDate!) : s,
+      endDate: maintenance.endDate != null && maintenance.endDate.length > 0 ? new Date(maintenance!.endDate!) : e
     }
 
   }

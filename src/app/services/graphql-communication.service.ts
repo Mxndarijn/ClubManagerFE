@@ -751,4 +751,74 @@ export class GraphQLCommunication {
     return this.sendGraphQLRequest(query);
 
   }
+
+  changeWeaponMaintenance(associationID: string, currentWeaponMaintenance: WeaponMaintenance) {
+    const query = {
+      query: `
+        mutation changeWeaponMaintenance($dto: ChangeWeaponMaintenanceDTO!) {
+          changeWeaponMaintenance(dto: $dto) {
+            success,
+            message,
+            maintenance {
+               id,
+        association {
+            id,
+            name
+        },
+        weapon {
+          id,
+          name,
+          type {
+            name
+          }
+        }
+        startDate,
+        endDate,
+        title,
+        colorPreset {
+            id,
+            colorName,
+            primaryColor,
+            secondaryColor
+        },
+        description
+            }
+          }
+        }
+      `,
+      variables: {
+        dto: {
+          weaponUUID: currentWeaponMaintenance.weapon?.id,
+          colorPresetUUID: currentWeaponMaintenance.colorPreset?.id,
+          weaponMaintenanceUUID: currentWeaponMaintenance.id,
+          title: currentWeaponMaintenance.title,
+          description: currentWeaponMaintenance.description,
+          startDate: this.util.toLocalIsoDateTime(new Date(currentWeaponMaintenance.startDate!)),
+          endDate: this.util.toLocalIsoDateTime(new Date(currentWeaponMaintenance.endDate!)),
+          associationUUID: associationID,
+        },
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
+
+  deleteWeaponMaintenance(associationID: string, currentWeaponMaintenance: WeaponMaintenance) {
+    const query = {
+      query: `
+        mutation deleteWeaponMaintenance($dto: ID!, $associationID: ID!) {
+          deleteWeaponMaintenance(maintenanceID: $dto, associationID: $associationID) {
+            success,
+            message,
+          }
+        }
+      `,
+      variables: {
+        dto: currentWeaponMaintenance.id,
+        associationID: associationID,
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
 }
