@@ -1,0 +1,6 @@
+<div class="h-full">
+  <h1 class="text-xl font-bold  h-12 border-b-grayTint border-b-2 sticky top-0 bg-base-100 z-50">Aankomende gebeurtenissen</h1>
+  <app-calender-upcoming-event *ngFor="let event of events; let i = index;" [calendarEvent]="event" [index]="i" [calendarItemClickedEvent]="calendarItemClickedEvent">
+
+  </app-calender-upcoming-event>
+</div>

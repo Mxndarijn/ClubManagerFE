@@ -1,0 +1,27 @@
+<div class="grid"
+     [style]="{'grid-template-columns': 'repeat(7, 1fr)', 'grid-template-rows': '1fr  1fr repeat(5, 3fr)'}">
+
+  <div
+    class="flex items-center justify-center text-center  sticky top-0 bg-base-100 h-12 z-20 "
+    [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start': 1, 'grid-column-end': 8}">
+    <p class="text-2xl font-bold">{{ title }}</p>
+  </div>
+
+  <div *ngFor="let day of days; let i = index"
+       class="flex justify-center items-end text-center border-b-2 border-grayTint sticky top-0 bg-base-100 z-20"
+       [style]="{'grid-row-start': 2, 'grid-row-end':  2, 'grid-column-start':i + 1}">
+    <p>{{ day }}</p>
+  </div>
+
+
+  <div *ngFor="let month of monthItems" class="border-l-2 border-l-grayTint border-b-2 border-b-grayTint "
+       [style]="{'grid-row-start': month.row, 'grid-row-end':  month.row, 'grid-column-start': month.column, 'grid-column-end': month.column}"
+       [ngClass]="{'bg-base-300': (month.row-1) % 2 == 0, 'border-l-0': month.column == startingColumn, 'border-b-0': month.row == endingRow}">
+    <p class="mt-1 ml-2 text-lg"
+       [ngClass]="{'opacity-40': !month.isInScope, 'text-accent': areDatesTheSameDay(month.date, currentDay)}">{{ month.date.getDate() }}</p>
+    <div class="flex flex-row justify-start gap-y-1 flex-wrap mt-5">
+    <div *ngFor="let event of month.events" class="ml-1 badge badge-md" [ngStyle]="{'background-color': event.color.secondaryColor, 'border-color': event.color.primaryColor}" (click)="calendarItemClickedEvent?.emit(event)"></div>
+      </div>
+  </div>
+</div>
+

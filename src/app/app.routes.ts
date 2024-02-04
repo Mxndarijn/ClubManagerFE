@@ -8,8 +8,12 @@ import {HomePageComponent} from "./pages/home-page/home-page.component";
 import {ReservationPageComponent} from "./pages/reservation-page/reservation-page.component";
 import {VisitsPageComponent} from "./pages/visits-page/visits-page.component";
 import {CompetitionPageComponent} from "./pages/competition-page/competition-page.component";
-import { AssociationMembersPageComponentComponent } from "./association-members-page-component/association-members-page-component.component";
 import {AssociationManagerGuard} from "./helpers/guards/association-manager-guard.spec";
+import {AssociationMembersPageComponent} from "./pages/association-members-page/association-members-page.component";
+import {InvitationsPageComponent} from "./pages/invitations-page/invitations-page.component";
+import {UpdateProfilePageComponent} from "./pages/update-profile-page/update-profile-page.component";
+import {SettingsPageComponent} from "./pages/settings-page/settings-page.component";
+import {WeaponPageComponent} from "./pages/weapon-page/weapon-page.component";
 
 export const routes: Routes = [
   {
@@ -51,8 +55,30 @@ export const routes: Routes = [
   },
 
   {
-    path: ':associationID/members',
-    component: AssociationMembersPageComponentComponent,
+    path: 'association/:associationID/members',
+    component: AssociationMembersPageComponent,
     canActivate: [AuthGuard, AssociationManagerGuard],
   },
+  {
+    path: 'invitations',
+    component: InvitationsPageComponent ,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'profile',
+    component: UpdateProfilePageComponent ,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'association/:associationID/settings',
+    component: SettingsPageComponent,
+    canActivate: [AuthGuard, AssociationManagerGuard],
+  },
+  {
+    path: 'association/:associationID/weapons',
+    component: WeaponPageComponent,
+    canActivate: [AuthGuard, AssociationManagerGuard],
+  },
+
+
 ];

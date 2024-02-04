@@ -1,4 +1,13 @@
 {
+  "config": {
+    "language": "nl-NL",
+    "colors": {
+      "green": "Groen",
+      "yellow": "Geel",
+      "blue": "Blauw",
+      "red": "Rood"
+    }
+  },
   "loginPage": {
     "titleHeader": "Welkom op {{companyName}}",
     "accessInformation": "Inloggen",
@@ -58,5 +67,43 @@
   },
   "homePage" : {
     "titleHeader" : "Home"
+  },
+  "associationMembers" : {
+    "titleHeader" : "Leden-Beheer",
+    "invitationsHeader" : "Uitnodigingen",
+    "membersHeader" : "Leden",
+    "searchPlaceholder" : "Zoek gebruiker",
+    "searchButtonText" : "Zoek",
+    "noResult" : "Geen resultaten gevonden",
+    "noInvitations" : "Er zijn geen uitnodigingen gevonden",
+    "tableMember" : {
+      "memberHeader" : "Lid",
+      "roleHeader" : "Rol",
+      "memberSinceHeader" : "Lid sinds",
+      "changeButton" : "Wijzig",
+      "deleteButton" : "Verwijderen",
+      "memberModal" : {
+        "modalHeader" : "Verwijder {{name}}",
+        "modalMessage" : "Weet je zeker dat je {{name}} wilt verwijderen uit de vereniging?",
+        "acceptButton" : "Verwijder",
+        "rejectButton" : "Annuleer"
+      }
+    },
+    "tableInvitations" : {
+      "sendMessageButton" : "Verstuur Uitnodiging",
+      "emailHeader": "Email",
+      "invitationSendHeader": "Uitnodiging verzonden",
+      "roleHeader": "Rol",
+      "cancelButton" : "Annuleer"
+    }
+  },
+  "invitationsPage" : {
+  "titleHeader": "Mijn uitnodigingen"
+},
+  "profilePage" : {
+    "titleHeader": "Mijn Profiel"
+  },
+  "associationSettingsPage": {
+    "titleHeader": "Mijn vereniging"
   }
 }

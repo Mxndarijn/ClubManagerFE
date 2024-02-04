@@ -8,6 +8,10 @@ import {Theme, ThemeService} from "../../services/theme.service";
 import {GraphQLCommunication} from "../../services/graphql-communication.service";
 import {User} from "../../../model/user.model";
 import {NavigationService} from "../../services/navigation.service";
+import {AuthenticationService} from "../../services/authentication.service";
+import {Router} from "@angular/router";
+import {AlertService} from "../../services/alert.service";
+import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 
 @Component({
   selector: 'app-navbar',
@@ -26,7 +30,10 @@ export class NavbarComponent {
   constructor(protected translate: TranslateService,
               private themeService: ThemeService,
               private graphQL: GraphQLCommunication,
-              private navigationService: NavigationService) {
+              private navigationService: NavigationService,
+              private authService: AuthenticationService,
+              private router: Router,
+              private alertService: AlertService) {
     this.navigationService.NavigationVisibilityChangedEvent.subscribe({
       next: (visible: boolean) => {
         this.isVisible = visible;
@@ -66,5 +73,17 @@ export class NavbarComponent {
   onCheckboxChange() {
     this.themeService.setTheme(this.isChecked ? Theme.DARK : Theme.LIGHT);
 
+  }
+
+  logoutUser() {
+    this.authService.logout();
+    this.router.navigate(["/login"]);
+    this.alertService.showAlert({
+      title: "Informatie",
+      subTitle: "Je bent uitgelogd.",
+      icon: AlertIcon.INFO,
+      duration: 4000,
+      alertClass: AlertClass.INFO_CLASS
+    });
   }
 }

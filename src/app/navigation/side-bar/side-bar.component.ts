@@ -15,6 +15,7 @@ import {
 import {PermissionService} from "../../services/permission.service";
 import {UserAssociation} from "../../../model/user-association.model";
 import {Association} from "../../../model/association.model";
+import {AssociationInvite} from "../../../model/association-invite";
 
 //Voeg items to voor nieuwe gegevens in de nav
 const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
@@ -24,7 +25,7 @@ const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
   },
   {
     name: "Mijn uitnodigingen",
-    link: "/myinvitations"
+    link: "/invitations"
   },
   {
     name: "Mijn reserveringen",
@@ -35,28 +36,33 @@ const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
 const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
   {
     name: "Instellingen",
-    link: "/settings",
+    link: "settings",
     permission: AssociationPermission.MANAGE_SETTINGS
   },
   {
     name: "Leden",
-    link: "/members",
+    link: "members",
     permission: AssociationPermission.MANAGE_MEMBERS
   },
   {
     name: "Baan configuratie",
-    link: "/trackconfiguration",
+    link: "trackconfiguration",
     permission: AssociationPermission.MANAGE_TRACK_CONFIGURATION
   },
   {
     name: "Reserveren",
-    link: "/book",
+    link: "book",
     permission: AssociationPermission.NO_PERMISSION
   },
   {
     name: "Competities",
-    link: "/competitions",
+    link: "competitions",
     permission: AssociationPermission.NO_PERMISSION
+  },
+  {
+    name: "Wapens",
+    link: "weapons",
+    permission: AssociationPermission.MANAGE_WEAPONS
   },
 ]
 @Component({
@@ -74,6 +80,7 @@ export class SideBarComponent implements OnInit {
   associations: Association[] = [];
   public isVisible: boolean = false;
   associationPermissions: UserAssociation[] = [];
+  associationInvitesList: AssociationInvite[] = [];
 
   constructor(
         private graphQLCommunication: GraphQLCommunication, navigationService: NavigationService,
@@ -123,12 +130,15 @@ export class SideBarComponent implements OnInit {
       next: (response) => {
         if(response.data == null)
           return;
-        console.log("associations: ")
-        console.log(response.data)
         this.associations = response.data.getMyProfile.associations.map((assoc: UserAssociation) => assoc.association);
       },
       error: (error) => {
-        console.log(error);
+      }
+    });
+
+    this.graphQLCommunication.getUserInvites().subscribe({
+      next: (response) => {
+        this.associationInvitesList = response.data.getMyProfile.invites
       }
     });
   }

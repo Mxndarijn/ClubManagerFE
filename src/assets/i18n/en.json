@@ -1,4 +1,13 @@
 {
+  "config": {
+    "language": "en-EN",
+    "colors": {
+      "green": "Green",
+      "yellow": "Yellow",
+      "blue": "Blue",
+      "red": "Red"
+    }
+  },
   "loginPage": {
     "titleHeader": "Welcome to {{companyName}}",
     "accessInformation": "Login",
@@ -7,8 +16,8 @@
     "loginButton": "Log in",
     "emailPlaceholder": "Enter your email here",
     "passwordPlaceholder": "Enter your password here",
-    "forgotPassword": "Forgot your password? Click here!",
-    "noAccount": "Don't have an account yet? Create one here.",
+    "forgotPassword": "Forgot password? Click here!",
+    "noAccount": "Don't have an account? Create one here.",
     "errors": {
       "noValidEmail": "You must enter a valid email.",
       "noValidPassword": "You must enter a password.",
@@ -26,7 +35,7 @@
     "fullNameHeader": "Full Name",
     "emailHeader": "Email",
     "passwordHeader": "Password",
-    "repeatPasswordHeader": "Repeat Password",
+    "repeatPasswordHeader": "Repeat password",
     "registerButton": "Register",
     "alreadyAccount": "Already have an account? Log in here.",
     "fullNamePlaceholder": "Enter your full name here.",
@@ -35,7 +44,7 @@
     "repeatPasswordPlaceholder": "Enter your password again here",
     "errors": {
       "noFullName": "You must enter a valid name.",
-      "noValidEmail": "You must enter a valid email.",
+      "noValidEmail": "You must enter a valid email",
       "noChars": "The password must have 8 characters.",
       "noUpperCase": "The password must contain an uppercase letter.",
       "noLowerCase": "The password must contain a lowercase letter.",
@@ -44,7 +53,7 @@
       "passwordMismatch": "The passwords do not match.",
       "serverResponses": {
         "account-validation-error": "An error occurred while validating the data.",
-        "email-already-used": "An account with this email address already exists.",
+        "email-already-used": "An account with this email address already exists",
         "otherError": "An error occurred."
       }
     }
@@ -54,5 +63,43 @@
       "dutch": "Dutch",
       "english": "English"
     }
+  },
+  "homePage" : {
+    "titleHeader" : "Home"
+  },
+  "associationMembers" : {
+    "titleHeader" : "Member Management",
+    "invitationsHeader" : "Invitations",
+    "membersHeader" : "Members",
+    "searchPlaceholder" : "Search user",
+    "searchButtonText" : "Search",
+    "noResult" : "No results found",
+    "noInvitations" : "No invitations found",
+    "tableMember" : {
+      "memberHeader" : "Member",
+      "roleHeader" : "Role",
+      "memberSinceHeader" : "Member since",
+      "changeButton" : "Change",
+      "deleteButton" : "Delete",
+      "memberModal" : {
+        "modalHeader" : "Delete {{name}}",
+        "modalMessage" : "Are you sure you want to delete {{name}} from the association?",
+        "acceptButton" : "Delete",
+        "rejectButton" : "Cancel"
+      }
+    },
+    "tableInvitations" : {
+      "sendMessageButton" : "Send Invitation",
+      "emailHeader": "Email",
+      "invitationSendHeader": "Invitation sent",
+      "roleHeader": "Role",
+      "cancelButton" : "Cancel"
+    }
+  },
+  "invitationsPage" : {
+    "titleHeader": "My Invitations"
+  },
+  "profilePage" : {
+    "titleHeader": "My profile"
   }
 }

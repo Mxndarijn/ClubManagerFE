@@ -9,6 +9,8 @@ import {RouterOutlet} from "@angular/router";
 import {NavigationService} from "../../services/navigation.service";
 import {NavbarComponent} from "../../navigation/navbar/navbar.component";
 import {TranslateService} from "@ngx-translate/core";
+import {Association} from "../../../model/association.model";
+import {UserAssociation} from "../../../model/user-association.model";
 
 @Component({
   selector: 'app-home-page',
@@ -23,7 +25,7 @@ import {TranslateService} from "@ngx-translate/core";
 })
 export class HomePageComponent {
 
-  associations: any[] = [];
+  associations: Association[] = [];
 
   constructor(graphQLCommunication: GraphQLCommunication, navigationService: NavigationService,
               private translate: TranslateService) {
@@ -36,10 +38,9 @@ export class HomePageComponent {
     navigationService.setSubTitle("");
     graphQLCommunication.getMyAssociations().subscribe({
       next: (response) => {
-        this.associations = response.data.getMyAssociations;
+        this.associations = response.data.getMyProfile.associations.map((assoc: UserAssociation) => assoc.association);
       },
       error: (error) => {
-        console.log(error);
       }
     });
 

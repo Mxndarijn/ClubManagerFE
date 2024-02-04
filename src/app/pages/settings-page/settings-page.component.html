@@ -1,0 +1,85 @@
+<div class="flex flex-row w-full justify-between">
+  <div class="flex flex-col ml-5 w-full lg:flex-row justify-start">
+    <div class="avatar indicator mr-5">
+      <button
+        class="indicator-item indicator-bottom mb-5 mr-5 w-16 h-16 rounded-full badge border-accent border-2 hover:bg-accent"
+        (click)="document.getElementById('fileUpload')?.click()">
+        <input type="file" id="fileUpload" class="hidden" accept=".png, .jpg, .jpeg"
+               (change)="handleChangeAssociationProfilePicture($event)">
+        <fa-icon class="fa-2x" [icon]="faPencil"></fa-icon>
+      </button>
+      <div class="w-96 h-56 rounded-lg">
+        <img class="object-scale-down" src="{{associationDetails?.image?.encoded}}" alt="Profile picture of the user"/>
+      </div>
+    </div>
+    <div class="flex flex-col justify-between ml-10 w-full">
+      <div class="">
+        <h1 class=" text-left text-4xl font-bold">{{ associationDetails?.name }}</h1>
+        <p class="">{{ associationDetails?.contactEmail }}</p>
+      </div>
+      <div>
+      <h3 class="text-xl font-bold">Statistieken</h3>
+      <div class="flex flex-row gap-x-8">
+        <div class="flex flex-col">
+          <p>Aantal Leden:</p>
+          <p>Aantal banen:</p>
+          <p>Aantal wapens:</p>
+        </div>
+        <div class="flex flex-col">
+          <p>{{ associationStatistics?.totalMembers }}</p>
+          <p>{{ associationStatistics?.totalTracks }}</p>
+          <p>{{ associationStatistics?.totalWeapons }}</p>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="divider"></div>
+<div class="flex flex-col w-full justify-center items-center">
+  <form autocomplete="off" class="flex flex-row justify-evenly w-10/12 items-start flex-wrap gap-y-3 mb-6"
+        [formGroup]="updateAssociationDataForm">
+    <app-default-input-field
+      [_formControl]="updateAssociationDataForm.controls.associationName"
+      [placeholder]="'Pas hier je vereniging naam aan'"
+      [labelText]="'Vereniging naam'"
+      [inputId]="'associationName'"
+      [type]="'text'"
+      [errorSettings]="[{
+          errorMessage: 'Je moet een geldige vereniging naam invullen.',
+          errorName: ''
+         }]">
+    </app-default-input-field>
+    <app-default-input-field
+      [_formControl]="updateAssociationDataForm.controls.email"
+      [placeholder]="'Pas hier de e-mail van de vereniging aan'"
+      [labelText]="'Vereniging email'"
+      [inputId]="'Email'"
+      [type]="'text'"
+      [errorSettings]="[{
+      errorMessage: 'Je moet een geldige email invullen.',
+      errorName: ''
+      }]">
+    </app-default-input-field>
+    <app-default-text-area class="w-10/12"
+                           [_formControl]="updateAssociationDataForm.controls.associationDescription"
+                           [placeholder]="'Pas hier het welkoms bericht van uw vereniging aan.'"
+                           [labelText]="'Vereniging welkoms bericht'"
+                           [textAreaID]="'associationDescription'">
+
+    </app-default-text-area>
+    <div class="flex flex-row w-10/12 mt-3 gap-x-10 justify-end">
+      <app-update-button
+        [borderClass]="'border-error'"
+        [label]="'Reset'"
+        (click)="resetSettingsForm()">
+
+      </app-update-button>
+      <app-update-button
+        [borderClass]="'border-success'"
+        [label]="'Update'"
+        (click)="updateSettings()">
+      </app-update-button>
+    </div>
+  </form>
+</div>
