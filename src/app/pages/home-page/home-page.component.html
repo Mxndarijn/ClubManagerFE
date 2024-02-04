@@ -1,0 +1,21 @@
+<!--<div class="flex flex-row justify-between">-->
+<!--<div *ngFor="let association of associations">-->
+<!--  <h1></h1>-->
+<!--  <p></p>-->
+<!--  <img src="{{association.image.encoded}}">-->
+<!--</div>-->
+  <div *ngFor="let association of associations"  >
+    <div class="hero min-h-screen bg-base-100 ">
+      <div class="hero-content flex-col lg:flex-row-reverse shadow-2xl">
+        <img src="{{association.image?.encoded}}" class="max-w-sm rounded-lg shadow-2xl"
+             alt="Photo of association {{association.name}}"/>
+        <div>
+          <h1 class="text-5xl font-bold">{{ association.name }}!</h1>
+          <p class="py-6">{{ association.welcomeMessage }}</p>
+          <button class="btn border-accent border-2 bg-base-100">Contact</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+

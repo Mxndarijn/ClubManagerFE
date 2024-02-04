@@ -1,0 +1,25 @@
+<div class="grid" [style]="{'grid-template-columns': '1fr 15fr', 'grid-template-rows': '1fr repeat(' + hours.length * 12 + ', minmax(0,0.18fr))'}">
+
+
+  <div class="flex items-center justify-center text-center border-b-2 border-grayTint sticky top-0 bg-base-100 h-14 z-20" [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start': 1, 'grid-column-end': 3}">
+      <p class="text-2xl font-bold">{{ title }}</p>
+  </div>
+
+  <div *ngFor="let hour of hours; let i = index;" class="border-r-2 border-grayTint col-start-1" [style]="{'grid-row-start': i * 12 + 2, 'grid-row-end':  i * 12 + 14, 'grid-column-start':1}"
+       [ngClass]="{'bg-base-300': i % 2 == 0, 'bg-base-100': i % 2 == 1}">{{hour.displayName}}</div>
+
+
+  <div *ngFor="let hour of hours; let rowIndex = index;" class="border-l-2 border-grayTint" [style]="{'grid-column-start': 2, 'grid-row-start': rowIndex * 12 + 2, 'grid-row-end': rowIndex * 12 + 14}"
+       [ngClass]="{'bg-base-300': rowIndex % 2 == 0, 'bg-base-100': rowIndex % 2 == 1}"></div>
+
+  <app-calender-week-event *ngFor="let event of weekEvents" [calendarEvent]="event" class="relative" [calendarItemClickedEvent]="calendarItemClickedEvent"
+                           [ngStyle]="{
+  'grid-column-start': 2,
+  'grid-row-start': this.getCorrectRow(event.startDate),
+  'grid-row-end': this.getCorrectRow(event.endDate),
+  'width': event.width + '%',
+  'left': event.columnIndex + '%',
+
+  }">
+  </app-calender-week-event>
+</div>

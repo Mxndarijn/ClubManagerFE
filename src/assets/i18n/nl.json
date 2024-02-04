@@ -1,0 +1,109 @@
+{
+  "config": {
+    "language": "nl-NL",
+    "colors": {
+      "green": "Groen",
+      "yellow": "Geel",
+      "blue": "Blauw",
+      "red": "Rood"
+    }
+  },
+  "loginPage": {
+    "titleHeader": "Welkom op {{companyName}}",
+    "accessInformation": "Inloggen",
+    "emailHeader": "Email",
+    "passwordHeader": "Wachtwoord",
+    "loginButton": "Log in",
+    "emailPlaceholder": "Vul hier je email in",
+    "passwordPlaceholder": "Vul hier je wachtwoord in",
+    "forgotPassword": "Wachtwoord vergeten? Klik hier!",
+    "noAccount": "Heb je nog geen account? Maak er hier een aan.",
+    "errors": {
+      "noValidEmail": "Je moet een geldig email invullen.",
+      "noValidPassword": "Je moet een wachtwoord invullen.",
+      "serverResponses": {
+        "account-validation-error": "Er is een fout opgetreden tijdens het valideren van de gegevens.",
+        "account-bad-credentials": "Email en wachtwoord komen niet overeen.",
+        "otherError": "Er is een fout opgetreden.",
+        "errorDuringLogin": "Er is een fout opgetreden tijdens het inloggen."
+      }
+
+    }
+  },
+  "registerPage": {
+    "titleHeader": "Welkom op {{companyName}}",
+    "accessInformation": "Registeren",
+    "fullNameHeader": "Volledige Naam",
+    "emailHeader": "Email",
+    "passwordHeader": "Wachtwoord",
+    "repeatPasswordHeader": "Herhaal wachtwoord",
+    "registerButton": "Registreer",
+    "alreadyAccount": "Heb je al een account? Log hier in.",
+    "fullNamePlaceholder": "Vul hier je volledige naam in.",
+    "emailPlaceholder": "Vul hier je email in",
+    "passwordPlaceholder": "Vul hier je wachtwoord in",
+    "repeatPasswordPlaceholder": "Vul hier je wachtwoord nog een keer in",
+    "errors": {
+      "noFullName": "Je moet een geldige naam invullen.",
+      "noValidEmail": "Je moet een geldig email invullen",
+      "noChars": "Het wachtwoord moet 8 karakters hebben.",
+      "noUpperCase":  "Het wachtwoord moet een hoofdletter bevatten.",
+      "noLowerCase": "Het wachtwoord moet een kleine letter bevatten.",
+      "noNumber": "Het wachtwoord moet een getal bevatten.",
+      "noSpecialChar": "Het wachtwoord moet speciaal karakter bevatten.",
+      "passwordMismatch": "De wachtwoorden komen niet overeen.",
+      "serverResponses": {
+        "account-validation-error": "Er is een fout opgetreden tijdens het valideren van de gegevens.",
+        "email-already-used": "Er is al een account met dit emailadres",
+        "otherError": "Er is een fout opgetreden."
+        }
+    }
+  },
+  "navbar": {
+    "languages": {
+      "dutch": "Nederlands",
+      "english": "Engels"
+    }
+  },
+  "homePage" : {
+    "titleHeader" : "Home"
+  },
+  "associationMembers" : {
+    "titleHeader" : "Leden-Beheer",
+    "invitationsHeader" : "Uitnodigingen",
+    "membersHeader" : "Leden",
+    "searchPlaceholder" : "Zoek gebruiker",
+    "searchButtonText" : "Zoek",
+    "noResult" : "Geen resultaten gevonden",
+    "noInvitations" : "Er zijn geen uitnodigingen gevonden",
+    "tableMember" : {
+      "memberHeader" : "Lid",
+      "roleHeader" : "Rol",
+      "memberSinceHeader" : "Lid sinds",
+      "changeButton" : "Wijzig",
+      "deleteButton" : "Verwijderen",
+      "memberModal" : {
+        "modalHeader" : "Verwijder {{name}}",
+        "modalMessage" : "Weet je zeker dat je {{name}} wilt verwijderen uit de vereniging?",
+        "acceptButton" : "Verwijder",
+        "rejectButton" : "Annuleer"
+      }
+    },
+    "tableInvitations" : {
+      "sendMessageButton" : "Verstuur Uitnodiging",
+      "emailHeader": "Email",
+      "invitationSendHeader": "Uitnodiging verzonden",
+      "roleHeader": "Rol",
+      "cancelButton" : "Annuleer"
+    }
+  },
+  "invitationsPage" : {
+  "titleHeader": "Mijn uitnodigingen"
+},
+  "profilePage" : {
+    "titleHeader": "Mijn Profiel"
+  },
+  "associationSettingsPage": {
+    "titleHeader": "Mijn vereniging"
+  }
+}

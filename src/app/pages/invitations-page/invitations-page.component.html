@@ -1,0 +1,65 @@
+<div class="w-full">
+  <div class="overflow-x-auto">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Vereniging</th>
+        <th>Uitnodiging ontvangen</th>
+        <th>Rol</th>
+      </tr>
+      </thead>
+      <td *ngIf="associationInvites.length === 0" colspan="4" class="text-center text-md">Er zijn geen uitnodigingen gevonden.
+      </td>
+        <tbody>
+      <tr *ngFor="let associationInvite of associationInvites" class="items-center">
+        <td>
+          <div class="flex items-center gap-3">
+            <div class="avatar">
+              <div class="mask mask-squircle w-12 h-12 rounded-full">
+                <img src="{{associationInvite.association.image?.encoded}}" alt="{{associationInvite.association.name}}"/>
+              </div>
+            </div>
+            <div>
+              <div class="font-bold">{{ associationInvite.association.name }}</div>
+              <div class="text-sm opacity-50">{{ associationInvite.association.contactEmail }}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <p>{{ formatDate(associationInvite.createdAt) | async }}</p>
+        </td>
+        <td>
+          <p>{{ associationInvite.associationRole.name }}</p>
+
+        </td>
+        <td>
+          <button class="btn border-error border-2 bg-base-100  btn-sm" (click)="this.modalService.showModal(Modal.INVITATIONS_DECLINE_ASSOCIATION_INVITE)">Weiger</button>
+
+          <app-confirmation-modal
+
+            [header]="'Weiger de uitnodiging'"
+            [message]="'Weet je zeker dat je de uitnodiging van ' + associationInvite.association.name + ' wilt weigeren?'"
+            [modalTag]="Modal.INVITATIONS_DECLINE_ASSOCIATION_INVITE"
+            [acceptButtonText]="'Bevestig'"
+            [rejectButtonText]="'Annuleer'"
+            (AcceptEvent)="declineInvite(associationInvite.id)"
+            (RejectEvent)="this.modalService.hideModal(Modal.INVITATIONS_DECLINE_ASSOCIATION_INVITE)"
+          >
+          </app-confirmation-modal>
+          <button class="btn border-success border-2 btn-sm bg-base-100 ml-10" (click)="this.modalService.showModal(Modal.INVITATIONS_ACCEPT_ASSOCIATION_INVITE)">Accepteer</button>
+          <app-confirmation-modal
+            [header]="'Accepteer de uitnodiging'"
+            [message]="'Weet je zeker dat je de uitnodiging van ' + associationInvite.association.name + ' wilt accepteren?'"
+            [modalTag]="Modal.INVITATIONS_ACCEPT_ASSOCIATION_INVITE"
+            [acceptButtonText]="'Bevestig'"
+            [rejectButtonText]="'Annuleer'"
+            (AcceptEvent)="acceptInvite(associationInvite.id)"
+            (RejectEvent)="this.modalService.hideModal(Modal.INVITATIONS_ACCEPT_ASSOCIATION_INVITE)"
+          >
+          </app-confirmation-modal>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

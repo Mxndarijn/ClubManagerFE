@@ -1,0 +1,136 @@
+<div class="flex flex-row w-full justify-between">
+  <div class="flex flex-col ml-5 w-7/12 lg:flex-row justify-start">
+    <div class="avatar indicator mr-5">
+      <button
+        class="indicator-item indicator-bottom mb-10 mr-5 w-20 h-20 rounded-full badge border-accent border-2 hover:bg-accent"
+        (click)="document.getElementById('fileUpload')?.click()">
+        <input type="file" id="fileUpload" class="hidden" accept=".png, .jpg, .jpeg"
+               (change)="handleChangeProfilePicture($event)">
+        <fa-icon class="fa-3x" [icon]="faPencil"></fa-icon>
+      </button>
+      <div class="w-56 rounded-full">
+        <img class="object-scale-down" src="{{profile?.image?.encoded}}" alt="Profile picture of the user"/>
+      </div>
+    </div>
+    <div>
+      <h1 class=" text-left text-4xl font-bold">{{ profile?.fullName }}</h1>
+      <p class="">{{ profile?.email }}</p>
+    </div>
+  </div>
+  <div class="flex flex-col w-5/12 justify-between">
+    <h1 class="font-bold text-3xl">Voorkeuren</h1>
+    <div class="flex flex-col h-full justify-center w-10/12">
+      <app-toggle-slider id="competitionReminder" [sliderLabel]="'Ontvang competitie herinneringen'" [status]="false"></app-toggle-slider>
+      <app-toggle-slider id="reservationReminder" [sliderLabel]="'Ontvang herinnering over reserveringen'" [status]="false"></app-toggle-slider>
+    </div>
+    <app-update-button [borderClass]="'border-success'" class="flex justify-end mr-20"
+                       [label]="'Update'"></app-update-button>
+  </div>
+</div>
+<div class="divider"></div>
+<div class="flex flex-col w-full justify-center items-center">
+  <form autocomplete="off" class="flex flex-row justify-evenly w-10/12 items-start flex-wrap gap-y-3 mb-6"
+        [formGroup]="updateDataForm">
+    <app-default-input-field
+      [_formControl]="updateDataForm.controls.fullName"
+      [autocomplete]="'name'"
+      [placeholder]="'Pas hier je volledige naam aan'"
+      [labelText]="'Volledige naam'"
+      [inputId]="'fullName'"
+      [type]="'text'"
+      [errorSettings]="[{
+          errorMessage: 'Je moet een geldige naam invullen.',
+          errorName: ''
+         }]">
+    </app-default-input-field>
+    <app-default-input-field
+      [_formControl]="updateDataForm.controls.password"
+      [autocomplete]="'new-password'"
+      [placeholder]="'Vul hier je nieuwe wachtwoord in'"
+      [labelText]="'Nieuw wachtwoord'" [inputId]="'newPassword'"
+      [type]="'password'"
+      [errorSettings]="[{
+          errorMessage: 'registerPage.errors.noChars' | translate,
+          errorName: 'minlength'
+         },
+         {
+          errorMessage: 'registerPage.errors.noUpperCase' | translate,
+          errorName: 'noUppercase'
+         },
+         {
+          errorMessage: 'registerPage.errors.noLowerCase' | translate,
+          errorName: 'noLowercase'
+         }
+         ,{
+          errorMessage: 'registerPage.errors.noNumber' | translate,
+          errorName: 'noNumber'
+         }
+         ,{
+          errorMessage: 'registerPage.errors.noSpecialChar' | translate,
+          errorName: 'noSpecialChar'
+         }]"
+      [visibilityCanBeToggled]="true">
+
+    </app-default-input-field>
+    <app-default-input-field
+      [_formControl]="updateDataForm.controls.email"
+      [autocomplete]="'email'"
+      [placeholder]="'Pas hier je e-mail aan'"
+      [labelText]="'Email'"
+      [inputId]="'Email'"
+      [type]="'text'"
+      [errorSettings]="[{
+      errorMessage: 'Je moet een geldige email invullen.',
+      errorName: ''
+      }]">
+    </app-default-input-field>
+    <div>
+      <app-default-input-field
+        [_formControl]="updateDataForm.controls.confirmPassword"
+        [autocomplete]="'new-password'"
+        [placeholder]="'Herhaal je nieuwe wachtwoord'"
+        [labelText]="'Herhaal nieuw wachtwoord'"
+        [inputId]="'repeatNewPassword'"
+        [type]="'password'"
+        [visibilityCanBeToggled]="true"
+        [hideErrorsWhenEmpty]="true">
+
+      </app-default-input-field>
+      <app-error-message
+        [errorMessage]="'registerPage.errors.passwordMismatch' | translate"
+        [formGroup]="updateDataForm"
+        [specificError]="'passwordsMismatch'">
+      </app-error-message>
+    </div>
+  </form>
+  <p class="w-8/12 mr-10">Om de aanpassingen op te slaan moet u hier uw wachtwoord invullen.</p>
+  <div class="flex flex-row w-11/12 mt-5 justify-around items-center ">
+      <app-default-input-field
+        [autocomplete]="'current-password'"
+        [_formControl]="checkPasswordForm"
+        [placeholder]="'Vul hier je huidige wachtwoord in'"
+        [labelText]="'Vul hier je huidige wachtwoord in'"
+        [inputId]="'password'"
+        [type]="'password'"
+        [errorSettings]="[]"
+        [visibilityCanBeToggled]="true">
+      </app-default-input-field>
+    <div class="flex flex-row mt-3 gap-x-10 justify-end">
+      <app-update-button
+        [borderClass]="'border-error'"
+        [label]="'Reset'"
+      (click)="resetUpdateForm()">
+
+      </app-update-button>
+      <app-update-button
+        [borderClass]="'border-success'"
+        [label]="'Update'"
+        [disabledCondition]="!checkPasswordForm.valid"
+      (click)="updateProfile()">
+      </app-update-button>
+    </div>
+  </div>
+
+
+</div>
+

@@ -1,0 +1,15 @@
+<div class="flex justify-end w-full">
+  <div class="flex flex-row w-5/12 justify-evenly   mr-10">
+    <div class="relative flex items-center w-9/12">
+      <input type="text" [placeholder]="placeholder" [(ngModel)]="value"
+             class="input input-bordered border-2 w-full"/>
+      <button class="absolute right-0 mr-3" (click)="clearFilter()">
+        <div>
+          <fa-icon [icon]="faXMark"></fa-icon>
+        </div>
+      </button>
+    </div>
+    <button class="btn border-accent border-2  bg-base-100" (click)="SearchEvent.emit(value)">{{'associationMembers.searchButtonText' | translate}}
+    </button>
+  </div>
+</div>

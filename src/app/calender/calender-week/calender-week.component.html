@@ -1,0 +1,31 @@
+<div class="grid" [style]="{'grid-template-columns': 'minmax(0, 0.5fr) repeat(' + days.length + ', 1fr)', 'grid-template-rows': '1fr repeat(' + hours.length * 12 + ', minmax(0,0.18fr))'}">
+
+  <div class="border-b-2 border-grayTint sticky top-0 bg-base-100 z-20" [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start':1}"> </div>
+  <div *ngFor="let day of days; let i = index" class="text-center border-b-2 border-grayTint sticky top-0 bg-base-100 h-14 z-20" [style]="{'grid-row-start': 1, 'grid-row-end':  1, 'grid-column-start':i + 2}">
+    <div class="flex flex-col items-center">
+      <p>{{ day.name }}</p>
+      <p class="w-8 rounded-full" [ngClass]="{'bg-accent': areDatesTheSameDay(day.date, currentDay)}">{{day.date.getDate()}}</p>
+    </div>
+  </div>
+
+  <div *ngFor="let hour of hours; let i = index;" class="border-r-2 border-grayTint col-start-1" [style]="{'grid-row-start': i * 12 + 2, 'grid-row-end':  i * 12 + 14, 'grid-column-start':1}"
+  [ngClass]="{'bg-base-300': i % 2 == 0, 'bg-base-100': i % 2 == 1}">{{hour.displayName}}</div>
+
+
+  <ng-container *ngFor="let i of [].constructor(7); let columnIndex = index;">
+    <div *ngFor="let hour of hours; let rowIndex = index;" class="border-l-2 border-grayTint" [style]="{'grid-column-start': columnIndex + 2, 'grid-row-start': rowIndex * 12 + 2, 'grid-row-end': rowIndex * 12 + 14}"
+         [ngClass]="{'bg-base-300': rowIndex % 2 == 0, 'bg-base-100': rowIndex % 2 == 1, 'border-r-2': columnIndex != 6}"></div>
+  </ng-container>
+
+  <app-calender-week-event *ngFor="let event of weekEvents" [calendarEvent]="event" class="relative" [calendarItemClickedEvent]="calendarItemClickedEvent"
+  [ngStyle]="{
+  'grid-column-start': this.getCorrectColumn(event.startDate),
+  'grid-row-start': this.getCorrectRow(event.startDate),
+  'grid-row-end': this.getCorrectRow(event.endDate),
+  'width': event.width + '%',
+  'left': event.columnIndex + '%',
+
+  }">
+
+  </app-calender-week-event>
+</div>
