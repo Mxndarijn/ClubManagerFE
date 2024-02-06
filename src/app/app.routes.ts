@@ -14,6 +14,7 @@ import {InvitationsPageComponent} from "./pages/invitations-page/invitations-pag
 import {UpdateProfilePageComponent} from "./pages/update-profile-page/update-profile-page.component";
 import {SettingsPageComponent} from "./pages/settings-page/settings-page.component";
 import {WeaponPageComponent} from "./pages/weapon-page/weapon-page.component";
+import {TrackConfigurationPageComponent} from "./pages/track-configuration-page/track-configuration-page.component";
 
 export const routes: Routes = [
   {
@@ -79,6 +80,10 @@ export const routes: Routes = [
     component: WeaponPageComponent,
     canActivate: [AuthGuard, AssociationManagerGuard],
   },
-
+  {
+    path: 'association/:associationID/trackConfiguration',
+    component: TrackConfigurationPageComponent,
+    canActivate: [AuthGuard, AssociationManagerGuard],
+  },
 
 ];

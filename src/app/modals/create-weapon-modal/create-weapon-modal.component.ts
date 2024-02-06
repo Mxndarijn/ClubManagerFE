@@ -10,6 +10,7 @@ import {Modal, ModalChange, ModalService, ModalStatus} from "../../services/moda
 import {CreateWeaponResponseDTO} from "../../../model/dto/create-weapon-response-dto";
 import {AlertService} from "../../services/alert.service";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {ActivatedRoute} from "@angular/router";
 export interface WeaponStatusInterface {
   status: string,
   id: string,
@@ -30,14 +31,14 @@ export interface WeaponStatusInterface {
   styleUrl: './create-weapon-modal.component.css'
 })
 
-export class CreateWeaponModalComponent implements OnInit {
+export class CreateWeaponModalComponent {
   showModal: boolean = false;
   createWeaponForm: FormGroup<{
     name: FormControl<string | null>;
     status: FormControl<WeaponStatusInterface | null>;
     type: FormControl<WeaponType | null>;
   }>;
-  @Input() associationID: string = '';
+  private associationID: string = '';
   weaponTypeList: WeaponType[] = [];
   weaponStatuses: WeaponStatusInterface[] = [
     {
@@ -53,8 +54,11 @@ export class CreateWeaponModalComponent implements OnInit {
   constructor(
     private graphQLService: GraphQLCommunication,
     protected modalService: ModalService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private route: ActivatedRoute
   ) {
+    this.associationID = route.snapshot.params['associationID'];
+
     this.modalService.modalVisibilityEvent.subscribe({
       next: (modalChange: ModalChange) => {
         if (modalChange.modal == Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON)
@@ -67,16 +71,12 @@ export class CreateWeaponModalComponent implements OnInit {
       status: new FormControl(this.weaponStatuses[0], Validators.required),
       type: new FormControl(null, Validators.required),
     });
-
-
-  }
-  ngOnInit(): void {
     this.graphQLService.getAllWeaponTypes(this.associationID).subscribe({
       next: (response) => {
         this.weaponTypeList = response.data.getAllWeaponTypes
       }
     })
-    }
+  }
 
 
   protected readonly WeaponStatus = WeaponStatus;

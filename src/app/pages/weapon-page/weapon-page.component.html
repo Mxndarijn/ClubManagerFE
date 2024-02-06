@@ -1,10 +1,10 @@
 <div role="tablist" class="tabs tabs-bordered  flex justify-center">
   <div role="tab" class="tab  w-36" [class.tab-active]="activeTab === Tab.WEAPON_OVERVIEW"
-       (click)="setActiveTab(Tab.WEAPON_OVERVIEW)">
+       (click)="activeTab = (Tab.WEAPON_OVERVIEW)">
     Wapen overzicht
   </div>
   <div role="tab" class="tab w-36" [class.tab-active]="activeTab === Tab.CALENDER_VIEW"
-       (click)="setActiveTab(Tab.CALENDER_VIEW)"> Kalender
+       (click)="activeTab = (Tab.CALENDER_VIEW)"> Kalender
   </div>
 </div>
 <div *ngIf="activeTab === Tab.WEAPON_OVERVIEW">
@@ -12,7 +12,7 @@
     <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON)">
       Voeg wapen toe
     </button>
-    <app-create-weapon-modal [associationID]="associationID"  (CreateWeaponEvent)="createWeaponEvent($event)"></app-create-weapon-modal>
+    <app-create-weapon-modal (CreateWeaponEvent)="createWeaponEvent($event)"></app-create-weapon-modal>
   </div>
   <div class="overflow-x-auto">
     <table class="table">

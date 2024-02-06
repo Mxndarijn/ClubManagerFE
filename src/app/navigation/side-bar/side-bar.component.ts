@@ -46,7 +46,7 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
   },
   {
     name: "Baan configuratie",
-    link: "trackconfiguration",
+    link: "trackConfiguration",
     permission: AssociationPermission.MANAGE_TRACK_CONFIGURATION
   },
   {
@@ -64,6 +64,7 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
     link: "weapons",
     permission: AssociationPermission.MANAGE_WEAPONS
   },
+
 ]
 @Component({
   selector: 'app-side-bar',

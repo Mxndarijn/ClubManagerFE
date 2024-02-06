@@ -1,0 +1,67 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{{ title }}</h3>
+    <app-inputfield-weapon-modal
+      [inputId]="'inputID'"
+      [placeholder]="'Vul hier de track naam in.'"
+      [_formControl]="createTrackForm.controls.trackTitle"
+      [labelText]="'Track naam'"
+      [hideErrorsWhenEmpty]="true"
+      [type]="'text'"
+      [errorSettings]="[
+      {
+      errorMessage: 'Je moet een naam invullen.',
+      errorName: ''
+      }]">
+
+    </app-inputfield-weapon-modal>
+    <app-textarea-modal
+      [placeholder]="'Vul hier de beschrijving van de baan in.'"
+      [labelText]="'Beschrijving voor baan'"
+      [textAreaID]="'trackDescription'"
+      [_formControl]="createTrackForm.controls.trackDescription">
+
+    </app-textarea-modal>
+    <div class="flex flex-col w-96  items-start justify-evenly mt-5">
+<!--      <label for="type-selection" class="mb-2">Selecteer hier het type van het wapen</label>-->
+<!--      <select id="type-selection" class="select select-accent w-full  border-2" multiple-->
+<!--              [formControl]="createTrackForm.controls.trackWeaponTypes">-->
+<!--        <option [ngValue]="weaponType" *ngFor="let weaponType of weaponTypeList">{{ weaponType.name }}</option>-->
+<!--      </select>-->
+
+      <div class="dropdown border-2 border-accent select select-accent w-full">
+        <button class="dropdown-button">Selecteer Wapen Types</button>
+        <div class="dropdown-content flex flex-col">
+
+          <label *ngFor="let weaponType of weaponTypeList" class="flex flex-row">
+            <input type="checkbox" class="w-full border-2 border-accent checkbox checkbox-md" [value]="weaponType" (change)="onWeaponTypeChange(weaponType, $event)">
+            {{ weaponType.name }}
+          </label>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between">
+        <ng-container *ngIf="!currentTrack?.id">
+          <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+          >Annuleer
+          </button>
+          <button class="btn border-success border-2 bg-base-100" (click)="createTrack()"
+          >Voeg toe
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="currentTrack?.id">
+          <button class="btn border-error border-2 bg-base-100" (click)="deleteTrack()"
+          >Verwijder
+          </button>
+          <button class="btn border-success border-2 bg-base-100" (click)="saveTrack()"
+          >Opslaan
+          </button>
+        </ng-container>
+      </form>
+    </div>
+  </div>
+</dialog>

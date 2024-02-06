@@ -1,0 +1,60 @@
+<div role="tablist" class="tabs tabs-bordered  flex justify-center">
+  <div role="tab" class="tab  w-36" [class.tab-active]="activeTab === Tab.TRACKS"
+       (click)="activeTab = (Tab.TRACKS)">
+    Banen
+  </div>
+  <div role="tab" class="tab w-36" [class.tab-active]="activeTab === Tab.CALENDAR"
+       (click)="activeTab = (Tab.CALENDAR)"> Kalender
+  </div>
+</div>
+<ng-container [ngSwitch]="activeTab">
+  <div *ngSwitchCase="Tab.TRACKS">
+    <div class="w-full flex justify-end">
+      <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="this.modalService.showModal(Modal.ASSOCIATION_CONFIGURE_TRACK_CREATE_TRACK)">
+        Voeg baan toe
+      </button>
+    </div>
+    <app-create-track-modal></app-create-track-modal>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Baan naam</th>
+          <th>Omschrijving</th>
+          <th>Toegestane wapentypes</th>
+        </tr>
+        </thead>
+        <!--          <td *ngIf="weaponList.length === 0"  colspan="4" class="text-center text-md"> Geen wapens gevonden</td>-->
+        <tbody>
+        <tr class="items-center h-16">
+          <td>
+            <p>qwe</p>
+          </td>
+          <td>
+            <p>qwe2</p>
+          </td>
+          <td>
+            <p>qwe3</p>
+          </td>
+          <td>
+            <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10">
+              Wijzig
+            </button>
+            <button class="btn border-error border-2 bg-base-100  btn-sm ml-10">
+              Verwijder
+              <fa-icon [icon]="faTrashCan"></fa-icon>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngSwitchCase="Tab.CALENDAR">
+
+  </div>
+
+
+</ng-container>
+
