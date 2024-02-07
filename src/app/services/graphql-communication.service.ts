@@ -10,6 +10,7 @@ import {WeaponType} from "../../model/weapon-type.model";
 import {addMonths, subMonths } from 'date-fns';
 import {UtilityFunctions} from "../helpers/utility-functions";
 import {WeaponMaintenance} from "../../model/weapon-maintenance.model";
+import {Track} from "../../model/track.model";
 
 @Injectable({
   providedIn: 'root',
@@ -815,6 +816,122 @@ export class GraphQLCommunication {
       `,
       variables: {
         dto: currentWeaponMaintenance.id,
+        associationID: associationID,
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
+
+  createTrack(associationID: string, track: Track) {
+    const query = {
+      query: `
+        mutation createTrackForAssociation($dto: TrackDTO!, $associationID: ID!) {
+          createTrackForAssociation(dto: $dto, associationID: $associationID) {
+            success,
+            message,
+            track {
+              id,
+              name,
+              description,
+              association {
+                id
+              },
+              allowedWeaponTypes {
+                id,
+                name
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        dto: {
+          name: track.name,
+          description: track.description,
+          allowedWeaponTypes: track.allowedWeaponTypes
+        },
+        associationID: associationID,
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
+
+  editTrack(associationID: string, track: Track) {
+    const query = {
+      query: `
+        mutation editTrackForAssociation($dto: TrackDTO!, $associationID: ID!, $trackID: ID!) {
+          editTrackForAssociation(dto: $dto, associationID: $associationID, trackID: $trackID) {
+            success,
+            message,
+            track {
+              id,
+              name,
+              description,
+              association {
+                id
+              },
+              allowedWeaponTypes {
+                id,
+                name
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        dto: {
+          name: track.name,
+          description: track.description,
+          allowedWeaponTypes: track.allowedWeaponTypes
+        },
+        associationID: associationID,
+        trackID: track.id
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
+
+  deleteTrack(associationID: string, track: Track) {
+    const query = {
+      query: `
+        mutation deleteTrackForAssociation($associationID: ID!, $trackID: ID!) {
+          deleteTrackForAssociation(associationID: $associationID, trackID: $trackID) {
+            success,
+            message,
+          }
+        }
+      `,
+      variables: {
+        associationID: associationID,
+        trackID: track.id
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
+
+  getTracksOfAssociation(associationID: string) {
+    const query = {
+      query: `
+        mutation getTracksOfAssociation($associationID: ID!) {
+          getTracksOfAssociation(associationID: $associationID) {
+            id,
+            name,
+            description,
+            association {
+              id
+            },
+            allowedWeaponTypes {
+              id,
+              name
+            }
+          }
+        }
+      `,
+      variables: {
         associationID: associationID,
       }
     };
