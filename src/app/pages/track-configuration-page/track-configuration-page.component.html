@@ -10,11 +10,11 @@
 <ng-container [ngSwitch]="activeTab">
   <div *ngSwitchCase="Tab.TRACKS">
     <div class="w-full flex justify-end">
-      <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="this.modalService.showModal(Modal.ASSOCIATION_CONFIGURE_TRACK_CREATE_TRACK)">
+      <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="openModal(generateNewTrack())">
         Voeg baan toe
       </button>
     </div>
-    <app-create-track-modal></app-create-track-modal>
+    <app-create-track-modal (TrackCreatedEvent)="trackCreated($event)" (TrackDeleteEvent)="trackDeleted($event)" (TrackEditedEvent)="trackEdited($event)" [SetCurrentTrack]="SetCurrentTrack"></app-create-track-modal>
     <div class="overflow-x-auto">
       <table class="table">
         <thead>
@@ -26,7 +26,7 @@
         </thead>
         <!--          <td *ngIf="weaponList.length === 0"  colspan="4" class="text-center text-md"> Geen wapens gevonden</td>-->
         <tbody>
-        <tr class="items-center h-16">
+        <tr class="items-center h-16" *ngFor="let track of tracks">
           <td>
             <p>qwe</p>
           </td>
@@ -37,7 +37,7 @@
             <p>qwe3</p>
           </td>
           <td>
-            <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10">
+            <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10" (click)="openModal(track)">
               Wijzig
             </button>
             <button class="btn border-error border-2 bg-base-100  btn-sm ml-10">

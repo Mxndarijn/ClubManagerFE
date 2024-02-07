@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {DefaultModalInformation} from "../../helpers/default-modal-information";
@@ -35,21 +35,22 @@ import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-resp
   templateUrl: './create-track-modal.component.html',
   styleUrl: './create-track-modal.component.css'
 })
-export class CreateTrackModalComponent extends DefaultModalInformation {
+export class CreateTrackModalComponent extends DefaultModalInformation implements OnInit {
   @Input() rejectButtonText: string = "";
   @Input() acceptButtonText: string = "";
+  @Input() currentTrack?: Track;
   protected createTrackForm: FormGroup<{
     trackTitle: FormControl<string | null>;
     trackDescription: FormControl<string | null>;
     trackWeaponTypes: FormControl<WeaponType[] | null>;
   }>;
-  @Input() currentTrack?: Track;
   weaponTypeList: WeaponType[] = [];
   private associationID: string;
 
   @Output() TrackCreatedEvent = new EventEmitter<Track>
   @Output() TrackEditedEvent = new EventEmitter<Track>
   @Output() TrackDeleteEvent = new EventEmitter<Track>
+  @Input() SetCurrentTrack!: EventEmitter<Track>;
 
 
   constructor(
@@ -74,6 +75,17 @@ export class CreateTrackModalComponent extends DefaultModalInformation {
       }
     })
   }
+
+  ngOnInit(): void {
+    this.SetCurrentTrack.subscribe({
+      next: (track: Track) => {
+        this.currentTrack = track;
+        this.createTrackForm.controls.trackWeaponTypes.setValue(this.currentTrack!.allowedWeaponTypes);
+        this.createTrackForm.controls.trackTitle.setValue(this.currentTrack!.name);
+        this.createTrackForm.controls.trackDescription.setValue(this.currentTrack!.description);
+      }
+    })
+    }
 
   setCurrentTrack() {
     this.currentTrack!.name = this.createTrackForm.controls.trackTitle.value!;
