@@ -39,6 +39,8 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
   @Input() rejectButtonText: string = "";
   @Input() acceptButtonText: string = "";
   @Input() currentTrack?: Track;
+  @Input() SetCurrentTrack!: EventEmitter<Track>;
+
   protected createTrackForm: FormGroup<{
     trackTitle: FormControl<string | null>;
     trackDescription: FormControl<string | null>;
@@ -50,7 +52,6 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
   @Output() TrackCreatedEvent = new EventEmitter<Track>
   @Output() TrackEditedEvent = new EventEmitter<Track>
   @Output() TrackDeleteEvent = new EventEmitter<Track>
-  @Input() SetCurrentTrack!: EventEmitter<Track>;
 
 
   constructor(
