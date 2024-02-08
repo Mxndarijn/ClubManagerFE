@@ -27,7 +27,7 @@
       <div class="dropdown-button">Selecteer Wapen Types</div>
       <div class="flex flex-row flex-wrap w-full gap-x-5  ">
         <div *ngFor="let weaponType of weaponTypeList" >
-          <input type="checkbox" id="checkboxList" class=" align-middle border-2 border-accent  checkbox checkbox-md"
+          <input type="checkbox" id="checkboxList" class=" align-middle border-2 border-accent  checkbox checkbox-md" [checked]="containsWeaponTypeInList(weaponType)"
                  [value]="weaponType" (change)="onWeaponTypeChange(weaponType, $event)">
           {{ weaponType.name }}
         </div>
@@ -45,8 +45,8 @@
         </ng-container>
 
         <ng-container *ngIf="currentTrack?.id">
-          <button class="btn border-error border-2 bg-base-100" (click)="deleteTrack()"
-          >Verwijder
+          <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+          >Annuleer
           </button>
           <button class="btn border-success border-2 bg-base-100" (click)="saveTrack()"
           >Opslaan

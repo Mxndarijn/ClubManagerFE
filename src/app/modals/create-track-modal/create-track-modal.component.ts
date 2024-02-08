@@ -80,8 +80,16 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
   ngOnInit(): void {
     this.SetCurrentTrack.subscribe({
       next: (track: Track) => {
+        console.log(track)
         this.currentTrack = track;
-        this.createTrackForm.controls.trackWeaponTypes.setValue(this.currentTrack!.allowedWeaponTypes);
+        const list: WeaponType[] = [];
+        this.currentTrack.allowedWeaponTypes.forEach(weaponType => {
+          const value = this.weaponTypeList.find(w => w.id === weaponType.id)
+          if(value != null) {
+            list.push(value);
+          }
+        })
+        this.createTrackForm.controls.trackWeaponTypes.setValue(list);
         this.createTrackForm.controls.trackTitle.setValue(this.currentTrack!.name);
         this.createTrackForm.controls.trackDescription.setValue(this.currentTrack!.description);
       }
@@ -96,9 +104,11 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
 
   createTrack() {
     this.setCurrentTrack();
+    console.log(this.currentTrack)
     this.graphQLService.createTrack(this.associationID, this.currentTrack!).subscribe({
       next: (response) => {
         this.hideModal();
+        console.log(response)
         const rDTO = response.data.createTrackForAssociation as CreateTrackResponseDTO;
         if(rDTO.success) {
           this.alertService.showAlert({
@@ -119,6 +129,15 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
           });
 
         }
+      },
+      error: (e) => {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een onbekende fout opgetreden bij het aanmaken van de baan.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
       }
     })
   }
@@ -165,7 +184,7 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
             duration: 4000,
             alertClass: AlertClass.CORRECT_CLASS
           });
-          this.TrackCreatedEvent.emit(rDTO.track);
+          this.TrackEditedEvent.emit(rDTO.track);
         } else {
           this.alertService.showAlert({
             title: "Fout opgetreden",
@@ -189,6 +208,11 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
     } else {
       this.createTrackForm.controls.trackWeaponTypes.setValue(this.createTrackForm.controls.trackWeaponTypes.value!.filter(type => type !== weaponType));
     }
+
+  }
+
+  containsWeaponTypeInList(weaponType: WeaponType) {
+    return this.createTrackForm.controls.trackWeaponTypes.value!.includes(weaponType);
 
   }
 }

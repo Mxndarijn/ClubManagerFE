@@ -7,6 +7,8 @@ import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/creat
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {CreateTrackModalComponent} from "../../modals/create-track-modal/create-track-modal.component";
 import {Track} from "../../../model/track.model";
+import {GraphQLCommunication} from "../../services/graphql-communication.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-track-configuration-page',
@@ -31,11 +33,22 @@ export class TrackConfigurationPageComponent {
   protected readonly faTrashCan = faTrashCan;
   protected SetCurrentTrack= new EventEmitter<Track>();
   protected tracks: Track[] = []
+  private associationID: string;
 
 
   constructor(
-    protected modalService: ModalService
+    protected modalService: ModalService,
+    protected graphQLService: GraphQLCommunication,
+    protected route: ActivatedRoute
   ) {
+    this.associationID = route.snapshot.params['associationID'];
+    this.graphQLService.getTracksOfAssociation(this.associationID).subscribe({
+      next: (response) => {
+        console.log(response)
+        this.tracks = response.data.getTracksOfAssociation;
+      }
+    })
+
   }
 
   trackCreated(track: Track) {

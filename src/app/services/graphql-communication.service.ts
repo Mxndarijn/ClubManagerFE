@@ -849,7 +849,7 @@ export class GraphQLCommunication {
         dto: {
           name: track.name,
           description: track.description,
-          allowedWeaponTypes: track.allowedWeaponTypes
+          allowedWeaponTypes: track.allowedWeaponTypes.map(e => { return e.id})
         },
         associationID: associationID,
       }
@@ -884,7 +884,7 @@ export class GraphQLCommunication {
         dto: {
           name: track.name,
           description: track.description,
-          allowedWeaponTypes: track.allowedWeaponTypes
+          allowedWeaponTypes: track.allowedWeaponTypes.map(e => { return e.id})
         },
         associationID: associationID,
         trackID: track.id
@@ -916,7 +916,7 @@ export class GraphQLCommunication {
   getTracksOfAssociation(associationID: string) {
     const query = {
       query: `
-        mutation getTracksOfAssociation($associationID: ID!) {
+        query getTracksOfAssociation($associationID: ID!) {
           getTracksOfAssociation(associationID: $associationID) {
             id,
             name,

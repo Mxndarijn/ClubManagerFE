@@ -28,13 +28,13 @@
         <tbody>
         <tr class="items-center h-16" *ngFor="let track of tracks">
           <td>
-            <p>qwe</p>
+            <p>{{track.name}}</p>
           </td>
           <td>
-            <p>qwe2</p>
+            <p>{{track.description}}</p>
           </td>
           <td>
-            <p>qwe3</p>
+            <p *ngFor="let value of track.allowedWeaponTypes">{{value.name}}</p>
           </td>
           <td>
             <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10" (click)="openModal(track)">
