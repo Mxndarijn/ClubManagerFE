@@ -67,6 +67,18 @@ export class WeaponPageComponent {
     protected modalService: ModalService,
   ) {
     this.associationID = route.snapshot.params['associationID'];
+
+    navigationService.showNavigation();
+    this.translate.get('weaponsPage.titleHeader').subscribe((res: string) => {
+        navigationService.setTitle(res);
+      }
+    )
+    this.graphQLCommunication.getAssociationName(this.associationID).subscribe({
+      next: (response) => {
+        navigationService.setSubTitle(response.data.getAssociationDetails.name);
+      }
+    })
+
     this.addWeaponMaintenanceEvent.subscribe({
       next: (i: WeaponMaintenance) => {
         this.calendarItems.push(this.convertWeaponMaintenanceToCalendarEvent(i))

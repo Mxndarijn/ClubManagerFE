@@ -40,7 +40,7 @@
             <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10" (click)="openModal(track)">
               Wijzig
             </button>
-            <button class="btn border-error border-2 bg-base-100  btn-sm ml-10">
+            <button class="btn border-error border-2 bg-base-100  btn-sm ml-10" (click)="startDeleteTrack(track)">
               Verwijder
               <fa-icon [icon]="faTrashCan"></fa-icon>
             </button>
@@ -49,9 +49,11 @@
         </tbody>
       </table>
     </div>
+    <app-confirmation-modal header="Verwijder baan" acceptButtonText="Verwijder" rejectButtonText="Behoud" [message]="confirmModalMessage" (AcceptEvent)="deleteTrack()" (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE)" [modalTag]="Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE"></app-confirmation-modal>
   </div>
 
   <div *ngSwitchCase="Tab.CALENDAR">
+    <app-calender (RequestNewCalendarItemsEvent)="updateEvents($event)" [NewCalendarItemsEvent]="updateCalendarItemsEvent" (CalendarItemClickedEvent)="calendarItemClicked($event)" (ButtonClickedEvent)="createNewTrackReservation()" [buttonTitle]="'Plan reservatie'" class="w-full"></app-calender>
 
   </div>
 

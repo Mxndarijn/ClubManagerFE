@@ -80,7 +80,6 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
   ngOnInit(): void {
     this.SetCurrentTrack.subscribe({
       next: (track: Track) => {
-        console.log(track)
         this.currentTrack = track;
         const list: WeaponType[] = [];
         this.currentTrack.allowedWeaponTypes.forEach(weaponType => {
@@ -104,11 +103,9 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
 
   createTrack() {
     this.setCurrentTrack();
-    console.log(this.currentTrack)
     this.graphQLService.createTrack(this.associationID, this.currentTrack!).subscribe({
       next: (response) => {
-        this.hideModal();
-        console.log(response)
+        this.hideModal()
         const rDTO = response.data.createTrackForAssociation as CreateTrackResponseDTO;
         if(rDTO.success) {
           this.alertService.showAlert({
@@ -138,34 +135,6 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
           duration: 4000,
           alertClass: AlertClass.INCORRECT_CLASS
         });
-      }
-    })
-  }
-
-  deleteTrack() {
-    this.graphQLService.deleteTrack(this.associationID, this.currentTrack!).subscribe({
-      next: (response) => {
-        this.hideModal();
-        const rDTO = response.data.deleteTrackForAssociation as DefaultBooleanResponseDTO;
-        if(rDTO.success) {
-          this.alertService.showAlert({
-            title: "Succesvol",
-            subTitle: "De baan is succesvol verwijderd.",
-            icon: AlertIcon.CHECK,
-            duration: 4000,
-            alertClass: AlertClass.CORRECT_CLASS
-          });
-          this.TrackDeleteEvent.emit(this.currentTrack);
-        } else {
-          this.alertService.showAlert({
-            title: "Fout opgetreden",
-            subTitle: "Er is een fout opgetreden bij het verwijderen van de baan.",
-            icon: AlertIcon.XMARK,
-            duration: 4000,
-            alertClass: AlertClass.INCORRECT_CLASS
-          });
-
-        }
       }
     })
   }
