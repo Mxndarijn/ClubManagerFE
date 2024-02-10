@@ -154,9 +154,7 @@ export class TrackConfigurationPageComponent {
 
   }
 }
-
 enum Tab {
-  TRACKS,
-  CALENDAR
+  TRACKS= 0,
+  CALENDAR= 1
 }
-

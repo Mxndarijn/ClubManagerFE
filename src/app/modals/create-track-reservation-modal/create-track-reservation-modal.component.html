@@ -1,0 +1,28 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{{ title }}</h3>
+
+<app-inputfield-weapon-modal
+  [inputId]="'inputID'"
+  [placeholder]="'Vul hier de naam van de reservering in.'"
+  [_formControl]="createReservationForm.controls.title"
+  [labelText]="'Titel voor de reservering'"
+  [hideErrorsWhenEmpty]="true"
+  [type]="'text'"
+  [errorSettings]="[
+      {
+      errorMessage: 'Je moet een naam invullen.',
+      errorName: ''
+      }]">
+
+</app-inputfield-weapon-modal>
+<app-textarea-modal
+  [placeholder]="'Vul hier de beschrijving van de reservering in.'"
+  [labelText]="'Beschrijving voor de reservering'"
+  [textAreaID]="'trackDescription'"
+  [_formControl]="createReservationForm.controls.description">
+</app-textarea-modal>
+
+  </div>
+</dialog>
