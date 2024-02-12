@@ -54,7 +54,7 @@
 
   <div *ngSwitchCase="Tab.CALENDAR">
     <app-calender (RequestNewCalendarItemsEvent)="updateEvents($event)" [NewCalendarItemsEvent]="updateCalendarItemsEvent" (CalendarItemClickedEvent)="calendarItemClicked($event)" (ButtonClickedEvent)="createNewTrackReservation()" [buttonTitle]="'Plan reservatie'" class="w-full"></app-calender>
-
+    <app-create-track-reservation-modal [SetCurrentReservation]="SetCurrentReservation"> </app-create-track-reservation-modal>
   </div>
 
 

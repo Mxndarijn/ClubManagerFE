@@ -11,11 +11,15 @@ import {GraphQLCommunication} from "../../services/graphql-communication.service
 import {ActivatedRoute} from "@angular/router";
 import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
-import { AlertService } from '../../services/alert.service';
+import {AlertService} from '../../services/alert.service';
 import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confirmation-modal.component";
 import {CalenderEvent, CalenderViewComponent} from "../../calender/calender-view/calender-view.component";
 import {NavigationService} from "../../services/navigation.service";
 import {TranslateService} from "@ngx-translate/core";
+import {Reservation, ReservationRepeat, ReservationStatus} from "../../../model/reservation.model";
+import {
+  CreateTrackReservationModalComponent
+} from "../../modals/create-track-reservation-modal/create-track-reservation-modal.component";
 
 @Component({
   selector: 'app-track-configuration-page',
@@ -29,7 +33,8 @@ import {TranslateService} from "@ngx-translate/core";
     NgIf,
     CreateTrackModalComponent,
     ConfirmationModalComponent,
-    CalenderViewComponent
+    CalenderViewComponent,
+    CreateTrackReservationModalComponent
   ],
   templateUrl: './track-configuration-page.component.html',
   styleUrl: './track-configuration-page.component.css'
@@ -41,6 +46,7 @@ export class TrackConfigurationPageComponent {
   protected readonly Modal = Modal;
   protected readonly faTrashCan = faTrashCan;
   protected SetCurrentTrack= new EventEmitter<Track>();
+  protected SetCurrentReservation= new EventEmitter<Reservation>();
   protected tracks: Track[] = []
   private associationID: string;
 
@@ -151,7 +157,33 @@ export class TrackConfigurationPageComponent {
   }
 
   createNewTrackReservation() {
+    this.modalService.showModal(Modal.ASSOCIATION_CONFIGURE_TRACK_CREATE_RESERVATION)
+    this.SetCurrentReservation.emit(this.generateNewReservation())
+  }
 
+  private generateNewReservation(): Reservation {
+    return {
+      allowedWeaponTypes: [],
+      association: undefined,
+      id: "", maxSize: 0,
+      tracks: [],
+      users: [],
+      title: "",
+      startDate: "",
+      endDate: "",
+      description: "",
+      status: ReservationStatus.IDK,
+      reservationSerie: {
+        id: "",
+        reservations: [],
+        reservationRepeat: ReservationRepeat.DAILY,
+        repeatDaysBetween: 1,
+        repeatUntil: "",
+        repeatDays: []
+      }
+
+
+    };
   }
 }
 enum Tab {

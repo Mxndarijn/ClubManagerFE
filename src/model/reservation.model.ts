@@ -6,7 +6,7 @@ import {DAYS_OF_WEEK} from "angular-calendar";
 
 export interface Reservation {
      id: string;
-     association: Association;
+     association: Association | undefined;
      startDate: string;
      endDate: string;
      title: string;
@@ -16,13 +16,12 @@ export interface Reservation {
      users: User[];
      tracks: Track[];
      allowedWeaponTypes: WeaponType[];
-     reservationSerie?: ReservationSeries;
-
+     reservationSerie?: ReservationSeries
  }
 
 
 
-enum ReservationStatus {
+export enum ReservationStatus {
      IDK,
      // Add other enum values here
  }
@@ -31,15 +30,17 @@ export interface ReservationSeries {
      id: string;
      reservations: Reservation[];
      reservationRepeat: ReservationRepeat;
-     repeatInteger: number;
      repeatDaysBetween: number;
      repeatUntil: string;
      repeatDays: DAYS_OF_WEEK[]
 }
 
 export enum ReservationRepeat {
-  NO_REPEAT = "config.settings.repeat.no_repeat",
-  DAY = "config.settings.repeat.day",
-  WEEK = "config.settings.repeat.week",
-  CUSTOM = "config.settings.repeat.custom"
+  DAILY = "DAILY",
+  WEEKLY = "WEEKLY"
 }
+
+export const ReservationRepeatLabels = {
+  [ReservationRepeat.DAILY.valueOf()]: { label: "config.settings.repeat.daily", value: 1 },
+  [ReservationRepeat.WEEKLY.valueOf()]: { label: "config.settings.repeat.weekly", value: 7 }
+};

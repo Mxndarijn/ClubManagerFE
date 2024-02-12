@@ -6,6 +6,12 @@
       "yellow": "Geel",
       "blue": "Blauw",
       "red": "Rood"
+    },
+    "settings": {
+      "repeat": {
+        "daily": "Dagen",
+        "weekly": "Weken"
+      }
     }
   },
   "loginPage": {
