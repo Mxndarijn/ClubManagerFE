@@ -71,8 +71,8 @@
             [errorSettings]="[]">
           </app-inputfield-weapon-modal>
 
-          <select class="select select-accent  border-2"
-                  [formControl]="createReservationForm.controls.repeats">
+          <select class="select select-accent border-2"
+                  [formControl]="createSerieForm.controls.repeatType">
             <option [ngValue]="repeat.key"
                     *ngFor="let repeat of ReservationRepeat | keyvalue">{{ ReservationRepeatLabels[repeat.key].label | translate }}
             </option>

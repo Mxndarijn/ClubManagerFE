@@ -73,8 +73,6 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     repeatDays: FormControl<DAYS_OF_WEEK[] | undefined>
     repeatDaysBetween: FormControl<number>
     repeatType: FormControl<ReservationRepeat | undefined>
-
-
   }>;
 
   private weaponTypeList: WeaponType[] = [];
@@ -111,18 +109,14 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
       startDate: new FormControl(""),
       endDate: new FormControl(""),
       maxSize: new FormControl(1),
-      repeats: new FormControl(false),
-      repeatUntil: new FormControl(""),
-      repeatDays: new FormControl(""),
-      repeatInteger: new FormControl(0),
-      repeatDaysBetween: new FormControl(0)
+      repeats: new FormControl(false)
     });
 
     // @ts-ignore
     this.createSerieForm = new FormGroup({
       repeatUntil: new FormControl(""),
       repeatDays: new FormControl(""),
-      repeatInteger: new FormControl(0),
+      repeatType: new FormControl(undefined),
       repeatDaysBetween: new FormControl(0)
     });
   }
@@ -142,16 +136,12 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
           maxSize: this.currentReservation?.maxSize,
           repeats: this.currentReservation.reservationSerie != null && this.currentReservation.reservationSerie.id.length > 0,
         });
-        this.createReservationForm.controls.repeats.valueChanges.subscribe({
-          next: (e) => {
-            console.log("New value: " + e)
-          }
-        })
 
         this.createSerieForm.patchValue({
           repeatUntil: this.currentReservation?.reservationSerie?.repeatUntil,
           repeatDays: this.currentReservation?.reservationSerie?.repeatDays,
-          repeatDaysBetween: this.currentReservation?.reservationSerie?.repeatDaysBetween
+          repeatDaysBetween: this.currentReservation?.reservationSerie?.repeatDaysBetween,
+          repeatType: this.currentReservation.reservationSerie?.reservationRepeat
         });
       }
     }))
