@@ -913,6 +913,27 @@ export class GraphQLCommunication {
     return this.sendGraphQLRequest(query);
   }
 
+  login(email: string, password: string) {
+    const query = {
+      query: `
+        mutation login($loginRequest: LoginDTOInput!) {
+          login(loginRequest: $loginRequest) {
+            success,
+            message,
+          }
+        }
+      `,
+      variables: {
+        loginRequest: {
+          email: email,
+          password: password
+        }
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
+
   getTracksOfAssociation(associationID: string) {
     const query = {
       query: `
@@ -933,6 +954,43 @@ export class GraphQLCommunication {
       `,
       variables: {
         associationID: associationID,
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
+
+  validateToken(): Observable<any> {
+    const query = {
+      query: `
+    {
+      validateToken {
+          success,
+            message,
+    }
+    }
+  `
+    };
+    return this.sendGraphQLRequest(query);
+
+  }
+
+  register(email: string, password: string, fullName: string) {
+    const query = {
+      query: `
+        mutation register($registerRequest: RegisterDTOInput!) {
+          register(registerRequest: $registerRequest) {
+            success,
+            message,
+          }
+        }
+      `,
+      variables: {
+        registerRequest: {
+          email: email,
+          password: password,
+          fullName: fullName
+        }
       }
     };
 

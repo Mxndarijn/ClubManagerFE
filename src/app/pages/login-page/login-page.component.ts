@@ -16,6 +16,7 @@ import {NavigationService} from "../../services/navigation.service";
 import {PermissionService} from "../../services/permission.service";
 import {NavbarMinimalComponent} from "../../navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
 import {DefaultInputFieldComponent} from "../../input-fields/default-input-field/default-input-field.component";
+import {GraphQLCommunication} from "../../services/graphql-communication.service";
 
 
 
@@ -42,6 +43,7 @@ export class LoginPageComponent {
               private router: Router,
               private translate: TranslateService,
               private navigationService: NavigationService,
+              private graphQLCommunication: GraphQLCommunication,
               private permissionService: PermissionService) {
     this.navigationService.hideNavigation();
     this.loginForm = new FormGroup({
@@ -53,14 +55,11 @@ export class LoginPageComponent {
 
   public onSubmit() {
     if(this.loginForm.valid) {
-      this.authenticationService.login(
-        this.loginForm.controls.email.value!,
-        this.loginForm.controls.password.value!,
-      ).subscribe({
-        next: (loginRequest) => {
-          if(!loginRequest.success) {
-            if (typeof loginRequest.error === 'string') {
-              this.translate.get('loginPage.errors.serverResponses.' + loginRequest.error).subscribe((res: string) => {
+      this.authenticationService.login(this.loginForm.controls.email.value!, this.loginForm.controls.password.value!).subscribe({
+        next: (dto) => {
+          if(!dto.success) {
+            if (typeof dto.message === 'string') {
+              this.translate.get('loginPage.errors.serverResponses.' + dto.message).subscribe((res: string) => {
                   this.loginErrorMessage.showErrorMessage(res);
                 }
               )

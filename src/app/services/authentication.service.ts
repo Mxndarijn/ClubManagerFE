@@ -4,6 +4,10 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import {firstValueFrom, Observable} from 'rxjs';
 import {GraphQLCommunication} from "./graphql-communication.service";
+import {
+  DefaultBooleanResponseDTO,
+  DefaultBooleanResponseWithAnyMessageDTO
+} from "../../model/dto/default-boolean-response-dto";
 
 @Injectable({
   providedIn: 'root',
@@ -20,17 +24,18 @@ export class AuthenticationService {
 
   public login(email: string, password: string): Observable<any> {
     return new Observable(subscriber => {
-      this.authenticationClient.login(email, password).subscribe( {
+      this.graphQLService.login(email, password).subscribe( {
         next: (response) => {
-          if(response.success) {
-            localStorage.setItem(this.tokenKey, response.message)
+          const dto = response.data.login as DefaultBooleanResponseWithAnyMessageDTO;
+          if(dto.success) {
+            localStorage.setItem(this.tokenKey, dto.message)
             this.updateUserID();
           }
-          subscriber.next(response);
+          subscriber.next(dto);
           subscriber.complete();
       },
         error: (error) => {
-          console.error('Er is een fout opgetreden', error);
+          // console.error('Er is een fout opgetreden', error);
           subscriber.error(error);
         }
     });
@@ -47,17 +52,18 @@ export class AuthenticationService {
 
   public register(email: string, password: string, fullName: string): Observable<any> {
     return new Observable(subscriber => {
-      this.authenticationClient.register(email, password, fullName).subscribe({
+      this.graphQLService.register(email, password, fullName).subscribe({
         next: (response) => {
-          if (response.success) {
-            localStorage.setItem(this.tokenKey, response.message);
+          const dto = response.data.register as DefaultBooleanResponseDTO;
+          if (dto.success) {
+            localStorage.setItem(this.tokenKey, dto.message);
             this.updateUserID();
           }
-          subscriber.next(response);
+          subscriber.next(dto);
           subscriber.complete();
         },
         error: (error) => {
-          console.error('Fout bij registreren', error);
+          // console.error('Fout bij registreren', error);
           subscriber.error(error);
         }
       });
@@ -76,8 +82,8 @@ export class AuthenticationService {
       return false;
     }
     try {
-      const response = await firstValueFrom(this.authenticationClient.validateToken());
-      return response.success;
+      const response = await firstValueFrom(this.graphQLService.validateToken());
+      return response.data.validateToken.success;
     } catch (error) {
       return false;
     }
