@@ -162,8 +162,8 @@ export class WeaponPageComponent {
 
 
         } else {
-          console.log("Could not request events")
-          console.log(response)
+          console.error("Could not request events")
+          console.error(response)
         }
 
       }

@@ -7,7 +7,7 @@ import {AssociationInvite, AssociationInviteID} from "../../model/association-in
 import {query} from "@angular/animations";
 import {WeaponStatusInterface} from "../modals/create-weapon-modal/create-weapon-modal.component";
 import {WeaponType} from "../../model/weapon-type.model";
-import {addMonths, subMonths } from 'date-fns';
+import {addMonths, subMonths} from 'date-fns';
 import {UtilityFunctions} from "../helpers/utility-functions";
 import {WeaponMaintenance} from "../../model/weapon-maintenance.model";
 import {Track} from "../../model/track.model";
@@ -235,7 +235,7 @@ export class GraphQLCommunication {
 
   getAssociationInvites(associationID: string) {
     const query = {
-    query: `
+      query: `
      query GetAssociationInvites($associationID: ID!) {
         getAssociationDetails(associationID: $associationID) {
           invites {
@@ -254,13 +254,13 @@ export class GraphQLCommunication {
       }
 }
     `,
-    variables: {
-      associationID: associationID
-    }
-  };
-  return this.sendGraphQLRequest(query);
+      variables: {
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
 
-}
+  }
 
   getUserInvites() {
     const query = {
@@ -486,8 +486,8 @@ export class GraphQLCommunication {
   }
 
   getAssociationSettings(associationID: string) {
-  const query = {
-    query: `
+    const query = {
+      query: `
      query getAssociationDetails($associationID: ID!) {
      getAssociationDetails(associationID: $associationID) {
         name,
@@ -499,12 +499,12 @@ export class GraphQLCommunication {
     }
       }
     `,
-    variables: {
-      associationID: associationID
-    }
-  };
-  return this.sendGraphQLRequest(query);
-}
+      variables: {
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+  }
 
   getAssociationStatistics(associationID: string) {
     const query = {
@@ -525,8 +525,8 @@ export class GraphQLCommunication {
   }
 
   updateAssociationPicture(associationID: string, dataURL: string) {
-  const query = {
-    query: `
+    const query = {
+      query: `
       mutation updateAssociationPicture($dto: ChangeProfilePictureDTO!, $associationID: ID!) {
   updateAssociationPicture(dto: $dto, associationID: $associationID) {
     success,
@@ -534,15 +534,15 @@ export class GraphQLCommunication {
   }
 }
     `,
-    variables: {
-      dto: {
-        image: dataURL,
-      },
-      associationID: associationID
-    }
-  };
-  return this.sendGraphQLRequest(query);
-}
+      variables: {
+        dto: {
+          image: dataURL,
+        },
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+  }
 
   updateAssociationSettings(associationName: string, associationDescription: string, email: string, associationID: string) {
 
@@ -591,7 +591,7 @@ export class GraphQLCommunication {
 
   }
 
-  getAllWeaponTypes(associationID: string)  {
+  getAllWeaponTypes(associationID: string) {
     const query = {
       query: `
      query getAllWeaponTypes($associationID: ID!) {
@@ -849,7 +849,9 @@ export class GraphQLCommunication {
         dto: {
           name: track.name,
           description: track.description,
-          allowedWeaponTypes: track.allowedWeaponTypes.map(e => { return e.id})
+          allowedWeaponTypes: track.allowedWeaponTypes.map(e => {
+            return e.id
+          })
         },
         associationID: associationID,
       }
@@ -884,7 +886,9 @@ export class GraphQLCommunication {
         dto: {
           name: track.name,
           description: track.description,
-          allowedWeaponTypes: track.allowedWeaponTypes.map(e => { return e.id})
+          allowedWeaponTypes: track.allowedWeaponTypes.map(e => {
+            return e.id
+          })
         },
         associationID: associationID,
         trackID: track.id
@@ -991,6 +995,69 @@ export class GraphQLCommunication {
           password: password,
           fullName: fullName
         }
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
+
+  getReservations(associationID: string, date: Date) {
+    const startDate = subMonths(date, 1);
+    const endDate = addMonths(date, 1);
+    const query = {
+      query: `
+        query getReservationsBetween($associationID: ID!, $startDate: LocalDateTime!, $endDate: LocalDateTime!) {
+          getReservationsBetween(associationID: $associationID, startDate: $startDate, endDate: $endDate) {
+            success,
+            reservations {
+              id,
+              association {
+                id
+              },
+              startDate,
+              endDate,
+              title,
+              description,
+              status,
+              maxSize,
+              users {
+                id {
+                userId,
+                reservationId
+                }
+              },
+              tracks {
+                id,
+                name
+              },
+              allowedWeaponTypes {
+                id,
+                name
+              },
+              reservationSeries {
+                id,
+                title,
+                description,
+                maxUsers,
+                reservations {
+                  id
+                }
+
+              },
+              colorPreset {
+                  id,
+                colorName,
+                primaryColor,
+                secondaryColor
+              }
+            },
+          }
+        }
+      `,
+      variables: {
+        associationID: associationID,
+        startDate: this.util.toLocalIsoDateTime(startDate),
+        endDate: this.util.toLocalIsoDateTime(endDate),
       }
     };
 

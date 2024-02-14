@@ -14,7 +14,7 @@ export interface WeaponMaintenance {
 
 }
 
-export function generateDefaultWeaponMaintenance() {
+export function generateDefaultWeaponMaintenance() : WeaponMaintenance {
   return {
     title: "",
     description: "",

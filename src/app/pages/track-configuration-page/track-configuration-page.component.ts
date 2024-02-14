@@ -20,6 +20,7 @@ import {Reservation, ReservationRepeat, ReservationStatus} from "../../../model/
 import {
   CreateTrackReservationModalComponent
 } from "../../modals/create-track-reservation-modal/create-track-reservation-modal.component";
+import {GetWeaponMaintenancesDTO} from "../../../model/dto/get-weapon-maintenances-dto";
 
 @Component({
   selector: 'app-track-configuration-page',
@@ -53,6 +54,7 @@ export class TrackConfigurationPageComponent {
   private selectedTrack : Track | undefined;
   confirmModalMessage: string = "";
   updateCalendarItemsEvent = new EventEmitter<CalenderEvent[]>;
+  private calendarItems: CalenderEvent[] = [];
 
 
   constructor(
@@ -149,6 +151,26 @@ export class TrackConfigurationPageComponent {
   }
 
   updateEvents(date: Date) {
+    this.graphQLService.getReservations(this.associationID, date).subscribe({
+      next: (response) => {
+        const dto = response.data.getReservationsBetween;
+        if (dto.success) {
+          const reservations = dto.reservations as Reservation[]
+          const newEvents: CalenderEvent[] = []
+          reservations.forEach(reservation => {
+            newEvents.push(this.convertReservationToCalendarEvent(reservation))
+          });
+          this.updateCalendarItemsEvent?.next(newEvents);
+          this.calendarItems = newEvents;
+
+
+        } else {
+          console.error("Could not request events")
+          console.error(response)
+        }
+
+      }
+    })
 
   }
 
@@ -180,10 +202,27 @@ export class TrackConfigurationPageComponent {
         repeatDaysBetween: 1,
         repeatUntil: "",
         repeatDays: []
-      }
-
-
+      },
     };
+  }
+
+  private convertReservationToCalendarEvent(reservation: Reservation) {
+    const s = new Date();
+    s.setSeconds(0,0);
+
+    const e = new Date();
+    e.setSeconds(0,0);
+    return {
+      title: reservation!.title!,
+      description: reservation!.description!,
+      id: reservation.id!,
+      color: reservation.colorPreset!,
+      data: reservation,
+      width: 100,
+      columnIndex: -1,
+      startDate: reservation.startDate != null && reservation.startDate.length > 0 ? new Date(reservation!.startDate!) : s,
+      endDate: reservation.endDate != null && reservation.endDate.length > 0 ? new Date(reservation!.endDate!) : e
+    }
   }
 }
 enum Tab {
