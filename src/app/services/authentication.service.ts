@@ -26,6 +26,7 @@ export class AuthenticationService {
     return new Observable(subscriber => {
       this.graphQLService.login(email, password).subscribe( {
         next: (response) => {
+          console.log(response)
           const dto = response.data.login as DefaultBooleanResponseWithAnyMessageDTO;
           if(dto.success) {
             localStorage.setItem(this.tokenKey, dto.message)
