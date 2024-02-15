@@ -1,4 +1,4 @@
-<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+<dialog id="my_modal_5" class="modal modal-bottom  sm:modal-middle"
         [ngClass]="{ 'modal-open': showModal}">
   <div class="modal-box">
     <h3 class="font-bold text-lg">{{ title }}</h3>
@@ -23,20 +23,20 @@
       [textAreaID]="'trackDescription'"
       [_formControl]="createReservationForm.controls.description">
     </app-textarea-modal>
-    <div class="flex flex-row">
+    <div class="flex flex-row space-x-2">
       <app-date-time-selector
-        [labelText]="'Startdatum voor de reservering'"
+        [labelText]="'Startdatum'"
         [_formControl]="createReservationForm.controls.startDate">
       </app-date-time-selector>
       <app-date-time-selector
-        [labelText]="'Einddatum voor de reservering'"
+        [labelText]="'Einddatum'"
         [_formControl]="createReservationForm.controls.endDate">
       </app-date-time-selector>
     </div>
 
     <app-inputfield-weapon-modal
       [inputId]="'inputID'"
-      [placeholder]="'Vul hier het aantal max aantal leden dat zich kunnen aanmelden in.'"
+      [placeholder]="'Vul hier het max aantal deelnemers in.'"
       [_formControl]="createReservationForm.controls.title"
       [labelText]="'Maximaal aantal aanmeldingen'"
       [hideErrorsWhenEmpty]="true"
@@ -49,29 +49,31 @@
     </app-inputfield-weapon-modal>
 
     <ng-container *ngIf="!currentReservation?.id || currentReservation!.id.length == 0">
-
+      <div class="flex flex-row">
       <app-default-checkbox-input-field
         [_formControl]="createReservationForm.controls.repeats"
         [labelText]="'Herhaalt zich'">
       </app-default-checkbox-input-field>
 
+      </div>
       <ng-container *ngIf="createReservationForm.controls.repeats.value">
         <app-date-time-selector
           [labelText]="'Herhaling tot'"
           [_formControl]="createSerieForm.controls.repeatUntil">
         </app-date-time-selector>
 
-        <div class="flex flex-row align-middle">
-          <p class="align-middle">Herhaalt elke</p>
+<!--        <p class="align-middle">Herhaalt elke</p>-->
+        <div class="flex flex-row items-end space-x-2">
           <app-inputfield-weapon-modal
             [inputId]="'inputID'"
+            [labelText]="'Herhaalt elke'"
             [_formControl]="createSerieForm.controls.repeatDaysBetween"
             [hideErrorsWhenEmpty]="true"
             [type]="'number'"
             [errorSettings]="[]">
           </app-inputfield-weapon-modal>
 
-          <select class="select select-accent border-2"
+          <select class="select select-accent border-2 "
                   [formControl]="createSerieForm.controls.repeatType">
             <option [ngValue]="repeat.key"
                     *ngFor="let repeat of ReservationRepeat | keyvalue">{{ ReservationRepeatLabels[repeat.key].label | translate }}
