@@ -13,7 +13,7 @@ import {
   InputFieldWeaponModalComponent
 } from "../../input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
 import {TextareaModalComponent} from "../../input-fields/textarea-modal/textarea-modal.component";
-import {KeyValuePipe, NgClass, NgForOf, NgIf} from "@angular/common";
+import {KeyValuePipe, NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {DateTimeSelectorComponent} from "../../input-fields/date-time-selector/date-time-selector.component";
 import {
   DefaultCheckboxInputFieldComponent
@@ -36,7 +36,8 @@ import {Subscription} from "rxjs";
     ReactiveFormsModule,
     KeyValuePipe,
     DefaultCheckboxInputFieldComponent,
-    TranslateModule
+    TranslateModule,
+    NgStyle
   ],
   templateUrl: './create-track-reservation-modal.component.html',
   styleUrl: './create-track-reservation-modal.component.css'
