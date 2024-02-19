@@ -7,20 +7,32 @@ import {AlertService} from "../../services/alert.service";
 import {DefaultModalInformation} from "../../helpers/default-modal-information";
 import {WeaponType} from '../../../model/weapon-type.model';
 import {Track} from "../../../model/track.model";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DAYS_OF_WEEK} from "angular-calendar";
 import {
   InputFieldWeaponModalComponent
 } from "../../input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
 import {TextareaModalComponent} from "../../input-fields/textarea-modal/textarea-modal.component";
-import {KeyValuePipe, NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
+import {KeyValuePipe, NgClass, NgForOf, NgIf, NgStyle, NgSwitch, NgSwitchCase} from "@angular/common";
 import {DateTimeSelectorComponent} from "../../input-fields/date-time-selector/date-time-selector.component";
 import {
   DefaultCheckboxInputFieldComponent
 } from "../../input-fields/default-checkbox-input-field/default-checkbox-input-field.component";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {DefaultSubscriptionDestroy} from "../../helpers/default-subscription-destroy";
 import {Subscription} from "rxjs";
+import {ColorPreset} from "../../../model/color-preset.model";
+import {ValidationUtils} from '../../helpers/validation-utils';
+import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
+import {daysInWeek} from "date-fns/constants";
+import {Day} from "../../helpers/utility-functions";
+
+enum Step {
+  STEP_1,
+  STEP_2,
+  STEP_3,
+  STEP_4
+}
 
 @Component({
   selector: 'app-create-track-reservation-modal',
@@ -37,7 +49,10 @@ import {Subscription} from "rxjs";
     KeyValuePipe,
     DefaultCheckboxInputFieldComponent,
     TranslateModule,
-    NgStyle
+    NgStyle,
+    SingleErrorMessageComponent,
+    NgSwitch,
+    NgSwitchCase
   ],
   templateUrl: './create-track-reservation-modal.component.html',
   styleUrl: './create-track-reservation-modal.component.css'
@@ -67,24 +82,26 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     endDate: FormControl<string | null>
     maxSize: FormControl<number>
     repeats: FormControl<boolean | undefined>
+    color: FormControl<ColorPreset | null>;
   }>;
 
   protected createSerieForm: FormGroup<{
     repeatUntil: FormControl<string | undefined>
-    repeatDays: FormControl<DAYS_OF_WEEK[] | undefined>
     repeatDaysBetween: FormControl<number>
     repeatType: FormControl<ReservationRepeat | undefined>
   }>;
 
   private weaponTypeList: WeaponType[] = [];
   private tracksList: Track[] = [];
+  protected colorPresets: ColorPreset[] = []
 
 
   constructor(
     modalService: ModalService,
     private route: ActivatedRoute,
     private graphQLService: GraphQLCommunication,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private translate: TranslateService
   ) {
     super(Modal.ASSOCIATION_CONFIGURE_TRACK_CREATE_RESERVATION, modalService);
     this.associationID = route.snapshot.params['associationID'];
@@ -101,22 +118,36 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
       }
     })
 
+    graphQLService.getAllColorPresets().subscribe({
+      next: (response) => {
+        this.colorPresets = response.data.getAllColorPresets
+
+        this.colorPresets.forEach(preset => {
+          translate.get(preset.colorName).subscribe({
+            next: (translatedValue) => {
+              preset.colorName = translatedValue;
+            }
+          })
+        })
+      }
+    })
+
     // @ts-ignore
     this.createReservationForm = new FormGroup({
-      title: new FormControl(""),
-      description: new FormControl(""),
-      weaponTypes: new FormControl([]),
-      tracks: new FormControl([]),
-      startDate: new FormControl(""),
-      endDate: new FormControl(""),
-      maxSize: new FormControl(1),
-      repeats: new FormControl(false)
-    });
+      title: new FormControl("", Validators.compose([Validators.required, Validators.minLength(3)])),
+      description: new FormControl("", Validators.required),
+      weaponTypes: new FormControl([], Validators.required),
+      tracks: new FormControl([], Validators.required),
+      startDate: new FormControl("", Validators.required),
+      endDate: new FormControl("", Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
+      maxSize: new FormControl(1, Validators.compose([Validators.required, Validators.min(1)])),
+      repeats: new FormControl(false),
+      color: new FormControl(null, Validators.required)
+    }, {validators: ValidationUtils.validateDatesFactory("startDate", "endDate")});
 
     // @ts-ignore
     this.createSerieForm = new FormGroup({
       repeatUntil: new FormControl(""),
-      repeatDays: new FormControl(""),
       repeatType: new FormControl(undefined),
       repeatDaysBetween: new FormControl(0)
     });
@@ -140,7 +171,6 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
 
         this.createSerieForm.patchValue({
           repeatUntil: this.currentReservation?.reservationSerie?.repeatUntil,
-          repeatDays: this.currentReservation?.reservationSerie?.repeatDays,
           repeatDaysBetween: this.currentReservation?.reservationSerie?.repeatDaysBetween,
           repeatType: this.currentReservation.reservationSerie?.reservationRepeat
         });
@@ -149,7 +179,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   }
 
   setCurrentValues(setSerie: boolean) {
-    if(this.currentReservation == null)
+    if (this.currentReservation == null)
       return;
     this.currentReservation.tracks = this.createReservationForm.controls.tracks.value!;
     this.currentReservation.title = this.createReservationForm.controls.title.value!;
@@ -159,25 +189,23 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     this.currentReservation.startDate = this.createReservationForm.controls.startDate.value!;
     this.currentReservation.endDate = this.createReservationForm.controls.endDate.value!;
     this.currentReservation.maxSize = this.createReservationForm.controls.maxSize.value!;
-    if(!setSerie)
+    if (!setSerie)
       return;
 
-    if(this.currentReservation.reservationSerie) {
+    if (this.currentReservation.reservationSerie) {
       this.currentReservation.reservationSerie.repeatUntil = this.createSerieForm.controls.repeatUntil.value!;
-      this.currentReservation.reservationSerie.repeatDays = this.createSerieForm.controls.repeatDays.value!;
       this.currentReservation.reservationSerie.repeatDaysBetween = this.createSerieForm.controls.repeatDaysBetween.value!;
       this.currentReservation.reservationSerie.reservationRepeat = this.createSerieForm.controls.repeatType.value!;
     } else {
       this.currentReservation.reservationSerie = {
         id: "", reservations: [],
         repeatUntil: this.createSerieForm.controls.repeatUntil.value!,
-        repeatDays: this.createSerieForm.controls.repeatDays.value!,
         repeatDaysBetween: this.createSerieForm.controls.repeatDaysBetween.value!,
         reservationRepeat: this.createSerieForm.controls.repeatType.value!
       };
     }
 
-}
+  }
 
   createReservation() {
     this.setCurrentValues(true);
@@ -188,6 +216,43 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   }
 
   protected readonly ReservationRepeat = ReservationRepeat;
-  protected readonly Object = Object;
   protected readonly ReservationRepeatLabels = ReservationRepeatLabels;
+  protected step: Step = Step.STEP_1;
+  protected readonly Step = Step;
+  protected steps = [
+    {
+      step: Step.STEP_1,
+      label: "createTrackReservationModal.steps.step1"
+    },
+    {
+      step: Step.STEP_2,
+      label: "createTrackReservationModal.steps.step2"
+    },
+    {
+      step: Step.STEP_3,
+      label: "createTrackReservationModal.steps.step3"
+    },
+    {
+      step: Step.STEP_4,
+      label: "createTrackReservationModal.steps.step4"
+    }]
+
+  increaseStep() {
+    this.step++;
+  }
+
+  decreaseStep() {
+    this.step--;
+  }
+
+  getClassForStep(currentStep: Step) {
+    if (currentStep <= this.step) {
+      return "step-accent";
+    }
+    return "";
+  }
+
 }
+
+
+

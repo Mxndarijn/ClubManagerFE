@@ -20,7 +20,6 @@ import {Reservation, ReservationRepeat, ReservationStatus} from "../../../model/
 import {
   CreateTrackReservationModalComponent
 } from "../../modals/create-track-reservation-modal/create-track-reservation-modal.component";
-import {GetWeaponMaintenancesDTO} from "../../../model/dto/get-weapon-maintenances-dto";
 
 @Component({
   selector: 'app-track-configuration-page',
@@ -187,7 +186,7 @@ export class TrackConfigurationPageComponent {
     return {
       allowedWeaponTypes: [],
       association: undefined,
-      id: "", maxSize: 0,
+      id: "", maxSize: 1,
       tracks: [],
       users: [],
       title: "",
@@ -201,7 +200,6 @@ export class TrackConfigurationPageComponent {
         reservationRepeat: ReservationRepeat.DAILY,
         repeatDaysBetween: 1,
         repeatUntil: "",
-        repeatDays: []
       },
     };
   }

@@ -11,6 +11,16 @@
       "repeat": {
         "daily": "Dagen",
         "weekly": "Weken"
+      },
+      "days": {
+        "MONDAY": "Maandag",
+        "TUESDAY": "Dinsdag",
+        "WEDNESDAY": "Woensdag",
+        "THURSDAY": "Donderdag",
+        "FRIDAY": "Vrijdag",
+        "SATURDAY": "Zaterdag",
+        "SUNDAY": "Zondag"
+
       }
     }
   },
@@ -111,5 +121,13 @@
   },
   "associationSettingsPage": {
     "titleHeader": "Mijn vereniging"
+  },
+  "createTrackReservationModal": {
+    "steps": {
+      "step1": "1",
+      "step2": "2",
+      "step3": "3",
+      "step4": "4"
+    }
   }
 }

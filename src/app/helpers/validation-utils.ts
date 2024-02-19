@@ -21,9 +21,15 @@ export class ValidationUtils {
     return password === confirmPassword ? null : { 'passwordsMismatch': true };
   };
 
-  static validateDates: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
-    return ValidationUtils.isDateAfterOther(group.get("maintenanceStartDate")?.value, group.get("maintenanceEndDate")?.value);
-  };
+
+  static validateDatesFactory(startFieldName: string, endFieldName: string): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      return ValidationUtils.isDateAfterOther(group.get(startFieldName)?.value, group.get(endFieldName)?.value);
+    };
+  }
+
+
+
 
   static containsLowercase(control: AbstractControl): ValidationErrors | null {
     const lowercasePattern = /[a-z]/;

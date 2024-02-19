@@ -1,111 +1,182 @@
 <dialog id="my_modal_5" class="modal modal-bottom  sm:modal-middle"
         [ngClass]="{ 'modal-open': showModal}">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">{{ title }}</h3>
 
-    <app-inputfield-weapon-modal
-      [inputId]="'inputID'"
-      [placeholder]="'Vul hier de naam van de reservering in.'"
-      [_formControl]="createReservationForm.controls.title"
-      [labelText]="'Titel voor de reservering'"
-      [hideErrorsWhenEmpty]="true"
-      [type]="'text'"
-      [errorSettings]="[
-      {
-      errorMessage: 'Je moet een naam invullen.',
-      errorName: ''
-      }]">
-
-    </app-inputfield-weapon-modal>
-    <app-textarea-modal
-      [placeholder]="'Vul hier de beschrijving van de reservering in.'"
-      [labelText]="'Beschrijving voor de reservering'"
-      [textAreaID]="'trackDescription'"
-      [_formControl]="createReservationForm.controls.description">
-    </app-textarea-modal>
-    <div class="flex flex-row space-x-2">
-      <app-date-time-selector
-        [labelText]="'Startdatum'"
-        [_formControl]="createReservationForm.controls.startDate">
-      </app-date-time-selector>
-      <app-date-time-selector
-        [labelText]="'Einddatum'"
-        [_formControl]="createReservationForm.controls.endDate">
-      </app-date-time-selector>
+    <div class="flex flex-row justify-between">
+      <h3 class="font-bold text-lg">{{ title }}</h3>
+      <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+      >X
+      </button>
     </div>
 
-    <app-inputfield-weapon-modal
-      [inputId]="'inputID'"
-      [placeholder]="'Vul hier het max aantal deelnemers in.'"
-      [_formControl]="createReservationForm.controls.title"
-      [labelText]="'Maximaal aantal aanmeldingen'"
-      [hideErrorsWhenEmpty]="true"
-      [type]="'number'"
-      [errorSettings]="[
-      {
-      errorMessage: 'Je moet een naam invullen.',
-      errorName: ''
-      }]">
-    </app-inputfield-weapon-modal>
+    <ng-container [ngSwitch]="step">
 
-    <ng-container *ngIf="!currentReservation?.id || currentReservation!.id.length == 0">
-      <div class="flex flex-row">
-      <app-default-checkbox-input-field
-        [_formControl]="createReservationForm.controls.repeats"
-        [labelText]="'Herhaalt zich'">
-      </app-default-checkbox-input-field>
+      <ul class="steps">
+        <li *ngFor="let s of steps" class="step" [ngClass]="getClassForStep(s.step)"> {{ s.label | translate}}</li>
+      </ul>
+
+      <div *ngSwitchCase="Step.STEP_1">
 
       </div>
-      <ng-container *ngIf="createReservationForm.controls.repeats.value">
-        <app-date-time-selector
-          [labelText]="'Herhaling tot'"
-          [_formControl]="createSerieForm.controls.repeatUntil">
-        </app-date-time-selector>
 
-<!--        <p class="align-middle">Herhaalt elke</p>-->
-        <div class="flex flex-row items-end space-x-2">
-          <app-inputfield-weapon-modal
-            [inputId]="'inputID'"
-            [labelText]="'Herhaalt elke'"
-            [_formControl]="createSerieForm.controls.repeatDaysBetween"
-            [hideErrorsWhenEmpty]="true"
-            [type]="'number'"
-            [errorSettings]="[]">
-          </app-inputfield-weapon-modal>
+      <div *ngSwitchCase="Step.STEP_2">
 
-          <select class="select select-accent border-2 "
-                  [formControl]="createSerieForm.controls.repeatType">
-            <option [ngValue]="repeat.key"
-                    *ngFor="let repeat of ReservationRepeat | keyvalue">{{ ReservationRepeatLabels[repeat.key].label | translate }}
-            </option>
-          </select>
-        </div>
+      </div>
 
-      </ng-container>
+      <div *ngSwitchCase="Step.STEP_3">
+
+      </div>
+
+      <div *ngSwitchCase="Step.STEP_3">
+
+      </div>
+      <div class="flex flex-row justify-between">
+        <button *ngIf="step == Step.STEP_1" class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+        >Annuleer
+        </button>
+        <button *ngIf="step != Step.STEP_1" class="btn border-error border-2 bg-base-100" (click)="decreaseStep()"
+        >Vorige
+        </button>
+
+
+        <button *ngIf="step != Step.STEP_4" class="btn border-success border-2 bg-base-100"
+                (click)="increaseStep()"
+                [disabled]="createReservationForm.controls.repeats ? createReservationForm.valid && createSerieForm.valid : createReservationForm.valid"
+        >Volgende
+        </button>
+        <button *ngIf="step == Step.STEP_4" class="btn border-success border-2 bg-base-100"
+                (click)="createReservation()"
+                [disabled]="createReservationForm.controls.repeats ? createReservationForm.valid && createSerieForm.valid : createReservationForm.valid"
+        >Opslaan
+        </button>
+
+      </div>
     </ng-container>
 
-    <div class="modal-action">
-      <form method="dialog" class="w-full flex justify-between">
-        <ng-container *ngIf="!currentReservation?.id">
-          <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
-          >Annuleer
-          </button>
-          <button class="btn border-success border-2 bg-base-100" (click)="createReservation()"
-                  [disabled]="createReservationForm.controls.repeats ? createReservationForm.valid && createSerieForm.valid : createReservationForm.valid"
-          >Voeg toe
-          </button>
-        </ng-container>
+    <!--    <app-inputfield-weapon-modal-->
+    <!--      [inputId]="'inputID'"-->
+    <!--      [placeholder]="'Vul hier de naam van de reservering in.'"-->
+    <!--      [_formControl]="createReservationForm.controls.title"-->
+    <!--      [labelText]="'Titel'"-->
+    <!--      [hideErrorsWhenEmpty]="true"-->
+    <!--      [type]="'text'"-->
+    <!--      [errorSettings]="[-->
+    <!--      {-->
+    <!--      errorMessage: 'Je moet een naam invullen.',-->
+    <!--      errorName: ''-->
+    <!--      }]">-->
 
-        <ng-container *ngIf="currentReservation?.id">
-          <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
-          >Annuleer
-          </button>
-          <button class="btn border-success border-2 bg-base-100" (click)="saveReservation()"
-                  [disabled]="createReservationForm.controls.repeats ? createReservationForm.valid && createSerieForm.valid : createReservationForm.valid"
-          >Opslaan
-          </button>
-        </ng-container>
-      </form>
-    </div>
+    <!--    </app-inputfield-weapon-modal>-->
+    <!--    <app-textarea-modal-->
+    <!--      [placeholder]="'Vul hier de beschrijving van de reservering in.'"-->
+    <!--      [labelText]="'Beschrijving'"-->
+    <!--      [textAreaID]="'trackDescription'"-->
+    <!--      [_formControl]="createReservationForm.controls.description">-->
+    <!--    </app-textarea-modal>-->
+    <!--    <div class="flex flex-row w-full space-x-2">-->
+    <!--      <app-date-time-selector class="w-3/6"-->
+    <!--        [labelText]="'Startdatum'"-->
+    <!--        [_formControl]="createReservationForm.controls.startDate">-->
+    <!--      </app-date-time-selector>-->
+    <!--      <app-date-time-selector class="w-3/6"-->
+    <!--        [labelText]="'Einddatum'"-->
+    <!--        [_formControl]="createReservationForm.controls.endDate">-->
+    <!--      </app-date-time-selector>-->
+    <!--    </div>-->
+
+    <!--    <div class="flex flex-row items-end  w-full space-x-2">-->
+    <!--      <app-inputfield-weapon-modal class="w-3/6"-->
+    <!--        [inputId]="'inputID'"-->
+    <!--        [placeholder]="'Vul hier het max aantal deelnemers in.'"-->
+    <!--        [_formControl]="createReservationForm.controls.maxSize"-->
+    <!--        [labelText]="'Max aantal aanmeldingen'"-->
+    <!--        [hideErrorsWhenEmpty]="true"-->
+    <!--        [type]="'number'"-->
+    <!--        [errorSettings]="[-->
+    <!--      {-->
+    <!--      errorMessage: 'Je moet een positief getal invullen.',-->
+    <!--      errorName: ''-->
+    <!--      }]">-->
+    <!--      </app-inputfield-weapon-modal>-->
+
+    <!--      <div class="flex flex-col w-3/6">-->
+    <!--        <h1 class="">Visualisatie kleur </h1>-->
+    <!--        <select class="select select-accent max-w-xs border-2"-->
+    <!--                [formControl]="createReservationForm.controls.color">-->
+    <!--          <option [ngValue]="preset" *ngFor="let preset of colorPresets"> {{ preset.colorName }}</option>-->
+    <!--        </select>-->
+    <!--        <div *ngIf="(createReservationForm.controls.color.value == null)">-->
+    <!--          <app-single-error-message *ngFor="let errorSetting of [{-->
+    <!--      errorMessage: 'Je moet een kleur selecteren.',-->
+    <!--      errorName: ''-->
+    <!--      }]"-->
+
+    <!--                                    [errorMessage]="errorSetting.errorMessage"-->
+    <!--                                    [specificError]="errorSetting.errorName"-->
+    <!--                                    [specificFormControl]="createReservationForm.controls.color">-->
+
+    <!--          </app-single-error-message>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+
+    <!--    <ng-container *ngIf="!currentReservation?.id || currentReservation!.id.length == 0">-->
+    <!--      <div class="flex flex-row">-->
+    <!--        <app-default-checkbox-input-field-->
+    <!--          [_formControl]="createReservationForm.controls.repeats"-->
+    <!--          [labelText]="'Herhaalt zich'">-->
+    <!--        </app-default-checkbox-input-field>-->
+
+    <!--      </div>-->
+    <!--      <ng-container *ngIf="createReservationForm.controls.repeats.value">-->
+    <!--        <app-date-time-selector-->
+    <!--          [labelText]="'Herhaling tot'"-->
+    <!--          [_formControl]="createSerieForm.controls.repeatUntil">-->
+    <!--        </app-date-time-selector>-->
+
+    <!--        <div class="flex flex-row items-end space-x-2">-->
+    <!--          <app-inputfield-weapon-modal-->
+    <!--            [inputId]="'inputID'"-->
+    <!--            [labelText]="'Herhaalt elke'"-->
+    <!--            [_formControl]="createSerieForm.controls.repeatDaysBetween"-->
+    <!--            [hideErrorsWhenEmpty]="true"-->
+    <!--            [type]="'number'"-->
+    <!--            [errorSettings]="[]">-->
+    <!--          </app-inputfield-weapon-modal>-->
+
+    <!--          <select class="select select-accent border-2 "-->
+    <!--                  [formControl]="createSerieForm.controls.repeatType">-->
+    <!--            <option [ngValue]="repeat.key"-->
+    <!--                    *ngFor="let repeat of ReservationRepeat | keyvalue">{{ ReservationRepeatLabels[repeat.key].label | translate }}-->
+    <!--            </option>-->
+    <!--          </select>-->
+    <!--        </div>-->
+
+    <!--      </ng-container>-->
+    <!--    </ng-container>-->
+
+    <!--    <div class="modal-action">-->
+    <!--      <form method="dialog" class="w-full flex justify-between">-->
+    <!--        <ng-container *ngIf="!currentReservation?.id">-->
+    <!--          <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"-->
+    <!--          >Annuleer-->
+    <!--          </button>-->
+    <!--          <button class="btn border-success border-2 bg-base-100" (click)="createReservation()"-->
+    <!--                  [disabled]="createReservationForm.controls.repeats ? createReservationForm.valid && createSerieForm.valid : createReservationForm.valid"-->
+    <!--          >Voeg toe-->
+    <!--          </button>-->
+    <!--        </ng-container>-->
+
+    <!--        <ng-container *ngIf="currentReservation?.id">-->
+    <!--          <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"-->
+    <!--          >Annuleer-->
+    <!--          </button>-->
+    <!--          <button class="btn border-success border-2 bg-base-100" (click)="saveReservation()"-->
+    <!--                  [disabled]="createReservationForm.controls.repeats ? createReservationForm.valid && createSerieForm.valid : createReservationForm.valid"-->
+    <!--          >Opslaan-->
+    <!--          </button>-->
+    <!--        </ng-container>-->
+    <!--      </form>-->
+    <!--    </div>-->
   </div>
 </dialog>

@@ -171,7 +171,6 @@ export class WeaponPageComponent {
   }
 
   calendarItemClicked(event: CalenderEvent) {
-    console.log(event)
     this.selectedMaintenanceEvent = event.data as WeaponMaintenance;
     this.changeSelectedWeaponMaintenanceEvent.emit(this.selectedMaintenanceEvent)
     this.modalService.showModal(Modal.ASSOCIATION_WEAPON_INFORMATION)

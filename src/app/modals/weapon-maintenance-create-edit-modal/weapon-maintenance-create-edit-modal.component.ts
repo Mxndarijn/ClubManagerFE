@@ -94,7 +94,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
       maintenanceEndDate: new FormControl('', Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
       maintenanceDescription: new FormControl(''),
       maintenanceWeapon: new FormControl(null, Validators.required),
-    }, { validators: ValidationUtils.validateDates });
+    }, { validators: ValidationUtils.validateDatesFactory("maintenanceStartDate", "maintenanceEndDate") });
 
 
 

@@ -33,7 +33,6 @@ export interface ReservationSeries {
   reservationRepeat: ReservationRepeat;
   repeatDaysBetween: number;
   repeatUntil: string;
-  repeatDays: DAYS_OF_WEEK[]
 }
 
 export enum ReservationRepeat {
