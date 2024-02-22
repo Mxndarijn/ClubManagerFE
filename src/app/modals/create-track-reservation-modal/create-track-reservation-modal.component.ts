@@ -73,25 +73,30 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   @Output() ReservationEditedEvent = new EventEmitter<Reservation[]>
   @Output() ReservationDeleteEvent = new EventEmitter<Reservation[]>
 
-  protected createReservationForm: FormGroup<{
+  protected step1ReservationForm: FormGroup<{
     title: FormControl<string | null>;
     description: FormControl<string | null>;
     weaponTypes: FormControl<WeaponType[] | null>;
-    tracks: FormControl<Track[] | null>;
-    startDate: FormControl<string | null>
-    endDate: FormControl<string | null>
-    maxSize: FormControl<number>
-    repeats: FormControl<boolean | undefined>
+    maxSize: FormControl<number>;
     color: FormControl<ColorPreset | null>;
   }>;
+  protected step2ReservationForm: FormGroup<{
+    tracks: FormControl<Track[] | null>;
+  }>
 
-  protected createSerieForm: FormGroup<{
+  protected step3ReservationForm: FormGroup<{
+    startDate: FormControl<string | null>;
+    endDate: FormControl<string | null>;
+    repeats: FormControl<boolean | undefined>;
+  }>
+
+  protected createSeriesForm: FormGroup<{
     repeatUntil: FormControl<string | undefined>
     repeatDaysBetween: FormControl<number>
     repeatType: FormControl<ReservationRepeat | undefined>
   }>;
 
-  private weaponTypeList: WeaponType[] = [];
+  protected weaponTypeList: WeaponType[] = [];
   private tracksList: Track[] = [];
   protected colorPresets: ColorPreset[] = []
 
@@ -133,20 +138,32 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     })
 
     // @ts-ignore
-    this.createReservationForm = new FormGroup({
+    this.step1ReservationForm = new FormGroup({
       title: new FormControl("", Validators.compose([Validators.required, Validators.minLength(3)])),
       description: new FormControl("", Validators.required),
+
       weaponTypes: new FormControl([], Validators.required),
-      tracks: new FormControl([], Validators.required),
-      startDate: new FormControl("", Validators.required),
-      endDate: new FormControl("", Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
       maxSize: new FormControl(1, Validators.compose([Validators.required, Validators.min(1)])),
-      repeats: new FormControl(false),
       color: new FormControl(null, Validators.required)
-    }, {validators: ValidationUtils.validateDatesFactory("startDate", "endDate")});
+    });
 
     // @ts-ignore
-    this.createSerieForm = new FormGroup({
+    this.step2ReservationForm = new FormGroup({
+      tracks: new FormControl([], Validators.required),
+
+    });
+
+    // @ts-ignore
+    this.step3ReservationForm = new FormGroup({
+      startDate: new FormControl("", Validators.required),
+      endDate: new FormControl("", Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
+      repeats: new FormControl(false),
+
+    });
+
+
+    // @ts-ignore
+    this.createSeriesForm = new FormGroup({
       repeatUntil: new FormControl(""),
       repeatType: new FormControl(undefined),
       repeatDaysBetween: new FormControl(0)
@@ -158,18 +175,25 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
       next: (reservation: Reservation) => {
         this.title = reservation.id != null ? "Nieuwe reservering" : "Wijzig reservering"
         this.currentReservation = reservation;
-        this.createReservationForm.patchValue({
+        this.step1ReservationForm.patchValue({
           title: this.currentReservation?.title,
           description: this.currentReservation?.description,
           weaponTypes: this.currentReservation?.allowedWeaponTypes,
+          maxSize: this.currentReservation?.maxSize,
+          color: this.currentReservation?.colorPreset,
+        });
+
+        this.step2ReservationForm.patchValue({
           tracks: this.currentReservation?.tracks,
+        });
+
+        this.step3ReservationForm.patchValue({
           startDate: this.currentReservation?.startDate,
           endDate: this.currentReservation?.endDate,
-          maxSize: this.currentReservation?.maxSize,
           repeats: this.currentReservation.reservationSerie != null && this.currentReservation.reservationSerie.id.length > 0,
         });
 
-        this.createSerieForm.patchValue({
+        this.createSeriesForm.patchValue({
           repeatUntil: this.currentReservation?.reservationSerie?.repeatUntil,
           repeatDaysBetween: this.currentReservation?.reservationSerie?.repeatDaysBetween,
           repeatType: this.currentReservation.reservationSerie?.reservationRepeat
@@ -181,27 +205,27 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   setCurrentValues(setSerie: boolean) {
     if (this.currentReservation == null)
       return;
-    this.currentReservation.tracks = this.createReservationForm.controls.tracks.value!;
-    this.currentReservation.title = this.createReservationForm.controls.title.value!;
-    this.currentReservation.description = this.createReservationForm.controls.description.value!;
-    this.currentReservation.allowedWeaponTypes = this.createReservationForm.controls.weaponTypes.value!;
-    this.currentReservation.tracks = this.createReservationForm.controls.tracks.value!;
-    this.currentReservation.startDate = this.createReservationForm.controls.startDate.value!;
-    this.currentReservation.endDate = this.createReservationForm.controls.endDate.value!;
-    this.currentReservation.maxSize = this.createReservationForm.controls.maxSize.value!;
+    this.currentReservation.tracks = this.step2ReservationForm.controls.tracks.value!;
+    this.currentReservation.title = this.step1ReservationForm.controls.title.value!;
+    this.currentReservation.description = this.step1ReservationForm.controls.description.value!;
+    this.currentReservation.allowedWeaponTypes = this.step1ReservationForm.controls.weaponTypes.value!;
+    this.currentReservation.tracks = this.step2ReservationForm.controls.tracks.value!;
+    this.currentReservation.startDate = this.step3ReservationForm.controls.startDate.value!;
+    this.currentReservation.endDate = this.step3ReservationForm.controls.endDate.value!;
+    this.currentReservation.maxSize = this.step1ReservationForm.controls.maxSize.value!;
     if (!setSerie)
       return;
 
     if (this.currentReservation.reservationSerie) {
-      this.currentReservation.reservationSerie.repeatUntil = this.createSerieForm.controls.repeatUntil.value!;
-      this.currentReservation.reservationSerie.repeatDaysBetween = this.createSerieForm.controls.repeatDaysBetween.value!;
-      this.currentReservation.reservationSerie.reservationRepeat = this.createSerieForm.controls.repeatType.value!;
+      this.currentReservation.reservationSerie.repeatUntil = this.createSeriesForm.controls.repeatUntil.value!;
+      this.currentReservation.reservationSerie.repeatDaysBetween = this.createSeriesForm.controls.repeatDaysBetween.value!;
+      this.currentReservation.reservationSerie.reservationRepeat = this.createSeriesForm.controls.repeatType.value!;
     } else {
       this.currentReservation.reservationSerie = {
         id: "", reservations: [],
-        repeatUntil: this.createSerieForm.controls.repeatUntil.value!,
-        repeatDaysBetween: this.createSerieForm.controls.repeatDaysBetween.value!,
-        reservationRepeat: this.createSerieForm.controls.repeatType.value!
+        repeatUntil: this.createSeriesForm.controls.repeatUntil.value!,
+        repeatDaysBetween: this.createSeriesForm.controls.repeatDaysBetween.value!,
+        reservationRepeat: this.createSeriesForm.controls.repeatType.value!
       };
     }
 
@@ -252,6 +276,42 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     return "";
   }
 
+  isDisabled() {
+    switch (this.step) {
+      case Step.STEP_1:
+        return !this.step1ReservationForm.valid;
+      case Step.STEP_2:
+        return !this.step2ReservationForm.valid;
+      case Step.STEP_3:
+        return !(this.step3ReservationForm.controls.repeats ? this.step3ReservationForm.valid && this.createSeriesForm.valid : this.step3ReservationForm.valid);
+    }
+    return false;
+  }
+
+  canSubmit() {
+    let valid = this.step1ReservationForm.valid && this.step2ReservationForm.valid && this.step3ReservationForm.valid
+    if (this.step3ReservationForm.controls.repeats) {
+      valid = valid && this.createSeriesForm.valid;
+    }
+    return valid;
+  }
+
+  onWeaponTypeChange(weaponType: WeaponType, event: any) {
+    const checked = event.target.checked;
+    if(checked) {
+      const list = this.step1ReservationForm.controls.weaponTypes.value!;
+      list.push(weaponType)
+      this.step1ReservationForm.controls.weaponTypes.setValue(list);
+    } else {
+      this.step1ReservationForm.controls.weaponTypes.setValue(this.step1ReservationForm.controls.weaponTypes.value!.filter(type => type !== weaponType));
+    }
+
+  }
+
+  containsWeaponTypeInList(weaponType: WeaponType) {
+    return this.step1ReservationForm.controls.weaponTypes.value!.includes(weaponType);
+
+  }
 }
 
 

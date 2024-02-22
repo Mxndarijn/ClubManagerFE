@@ -124,10 +124,10 @@
   },
   "createTrackReservationModal": {
     "steps": {
-      "step1": "1",
-      "step2": "2",
-      "step3": "3",
-      "step4": "4"
+      "step1": "Gegevens",
+      "step2": "Banen",
+      "step3": "Datum",
+      "step4": "Overzicht"
     }
   }
 }
