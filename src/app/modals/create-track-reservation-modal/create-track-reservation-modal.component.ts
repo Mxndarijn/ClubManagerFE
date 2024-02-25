@@ -97,7 +97,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   }>;
 
   protected weaponTypeList: WeaponType[] = [];
-  private tracksList: Track[] = [];
+  protected tracksList: Track[] = [];
   protected colorPresets: ColorPreset[] = []
 
 
@@ -311,6 +311,20 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   containsWeaponTypeInList(weaponType: WeaponType) {
     return this.step1ReservationForm.controls.weaponTypes.value!.includes(weaponType);
 
+  }
+
+  getSubTitleForStep() {
+    switch (this.step) {
+      case Step.STEP_1:
+        return "1";
+      case Step.STEP_2:
+        return "2";
+      case Step.STEP_3:
+        return "3";
+      case Step.STEP_4:
+        return "4";
+    }
+    return "Onbekend";
   }
 }
 

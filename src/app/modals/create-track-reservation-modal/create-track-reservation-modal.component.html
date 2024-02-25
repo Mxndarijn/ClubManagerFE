@@ -3,57 +3,62 @@
   <div class="modal-box">
 
     <div class="flex flex-row justify-between">
-      <h3 class="font-bold text-lg">{{ title }}</h3>
-      <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+      <div>
+        <h3 class="font-bold text-lg">{{ title }}</h3>
+        <p class="text-md">{{getSubTitleForStep()}}</p>
+
+      </div>
+
+      <button class="btn btn-md border-error border-2 bg-base-100" (click)="hideModal()"
       >X
       </button>
     </div>
 
     <ng-container [ngSwitch]="step">
 
-      <ul class="steps">
-        <li *ngFor="let s of steps" class="step" [ngClass]="getClassForStep(s.step)"> {{ s.label | translate}}</li>
+      <ul class="steps w-full mt-2 mb-3">
+        <li *ngFor="let s of steps" class="step" [ngClass]="getClassForStep(s.step)"> {{ s.label | translate }}</li>
       </ul>
 
       <div *ngSwitchCase="Step.STEP_1">
-          <app-inputfield-weapon-modal
-            [inputId]="'inputID'"
-            [placeholder]="'Vul hier de naam van de reservering in.'"
-            [_formControl]="step1ReservationForm.controls.title"
-            [labelText]="'Titel'"
-            [hideErrorsWhenEmpty]="true"
-            [type]="'text'"
-            [errorSettings]="[
+        <app-inputfield-weapon-modal
+          [inputId]="'inputID'"
+          [placeholder]="'Vul hier de naam van de reservering in.'"
+          [_formControl]="step1ReservationForm.controls.title"
+          [labelText]="'Titel'"
+          [hideErrorsWhenEmpty]="true"
+          [type]="'text'"
+          [errorSettings]="[
             {
             errorMessage: 'Je moet een naam invullen.',
             errorName: ''
             }]">
 
-          </app-inputfield-weapon-modal>
+        </app-inputfield-weapon-modal>
         <app-textarea-modal
           [placeholder]="'Vul hier de beschrijving van de reservering in.'"
           [labelText]="'Beschrijving'"
           [textAreaID]="'trackDescription'"
           [_formControl]="step1ReservationForm.controls.description">
         </app-textarea-modal>
-          <app-inputfield-weapon-modal class="w-3/6"
-            [inputId]="'inputID'"
-            [placeholder]="'Vul hier het max aantal deelnemers in.'"
-            [_formControl]="step1ReservationForm.controls.maxSize"
-            [labelText]="'Max aantal aanmeldingen'"
-            [hideErrorsWhenEmpty]="true"
-            [type]="'number'"
-            [errorSettings]="[
+
+        <div class="flex flex-row  items-start w-full space-x-2 mt-2">
+          <app-inputfield-weapon-modal class="w-3/6 "
+                                       [inputId]="'inputID'"
+                                       [placeholder]="'Vul hier het max aantal deelnemers in.'"
+                                       [_formControl]="step1ReservationForm.controls.maxSize"
+                                       [labelText]="'Max aantal aanmeldingen'"
+                                       [hideErrorsWhenEmpty]="true"
+                                       [type]="'number'"
+                                       [errorSettings]="[
           {
           errorMessage: 'Je moet een positief getal invullen.',
           errorName: ''
           }]">
           </app-inputfield-weapon-modal>
-        <div class="flex flex-row items-end  w-full space-x-2">
-
           <div class="flex flex-col w-3/6">
-            <h1 class="">Visualisatie kleur </h1>
-            <select class="select select-accent max-w-xs border-2"
+            <label for="select-color" class="">Visualisatie kleur </label>
+            <select id="select-color" class="select select-accent max-w-xs border-2"
                     [formControl]="step1ReservationForm.controls.color">
               <option [ngValue]="preset" *ngFor="let preset of colorPresets"> {{ preset.colorName }}</option>
             </select>
@@ -70,12 +75,15 @@
               </app-single-error-message>
             </div>
           </div>
+
         </div>
-        <div class="flex flex-col w-full  items-start justify-evenly mt-5">
+        <div class="flex flex-col w-full  items-start justify-evenly mt-2">
           <div class="dropdown-button">Selecteer Wapen Types</div>
           <div class="flex flex-row flex-wrap w-full gap-x-5  ">
-            <div *ngFor="let weaponType of weaponTypeList" >
-              <input type="checkbox" id="checkboxList" class=" align-middle border-2 border-accent  checkbox checkbox-md" [checked]="containsWeaponTypeInList(weaponType)"
+            <div *ngFor="let weaponType of weaponTypeList">
+              <input type="checkbox" id="checkboxList"
+                     class=" align-middle border-2 border-accent  checkbox checkbox-md"
+                     [checked]="containsWeaponTypeInList(weaponType)"
                      [value]="weaponType" (change)="onWeaponTypeChange(weaponType, $event)">
               {{ weaponType.name }}
             </div>
@@ -84,7 +92,32 @@
       </div>
 
       <div *ngSwitchCase="Step.STEP_2">
-
+        <p class="mt-2 italic">Selecteer de banen voor de reservering.</p>
+        <table class="table">
+          <thead>
+          <tr>
+            <th></th>
+            <th>Baan naam</th>
+            <th>Omschrijving</th>
+            <th>Beschikbare wapentypes</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!--          <td></td>Voor als het leeg is-->
+          <tr *ngFor="let track of tracksList">
+            <td><input type="checkbox" class="checkbox checkbox-accent"/></td>
+            <td> {{ track.name }}</td>
+            <td class="max-w-36 break-words"> {{ track.description }}</td>
+            <td>
+              <div class="flex flex-row max-w-36 items-center flex-wrap">
+                <ng-container *ngFor="let value of track.allowedWeaponTypes; let last = last">
+                  <p>{{ value.name }}{{ !last ? ', &nbsp;' : '' }}</p>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
 
       <div *ngSwitchCase="Step.STEP_3">
@@ -94,7 +127,7 @@
       <div *ngSwitchCase="Step.STEP_3">
 
       </div>
-      <div class="flex flex-row justify-between">
+      <div class="flex flex-row justify-between mt-5">
         <button *ngIf="step == Step.STEP_1" class="btn border-error border-2 bg-base-100" (click)="hideModal()"
         >Annuleer
         </button>

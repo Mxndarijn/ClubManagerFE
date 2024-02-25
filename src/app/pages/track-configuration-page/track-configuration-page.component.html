@@ -14,7 +14,9 @@
         Voeg baan toe
       </button>
     </div>
-    <app-create-track-modal (TrackCreatedEvent)="trackCreated($event)" (TrackDeleteEvent)="trackDeleted($event)" (TrackEditedEvent)="trackEdited($event)" [SetCurrentTrack]="SetCurrentTrack"></app-create-track-modal>
+    <app-create-track-modal (TrackCreatedEvent)="trackCreated($event)" (TrackDeleteEvent)="trackDeleted($event)"
+                            (TrackEditedEvent)="trackEdited($event)"
+                            [SetCurrentTrack]="SetCurrentTrack"></app-create-track-modal>
     <div class="overflow-x-auto">
       <table class="table">
         <thead>
@@ -28,15 +30,17 @@
         <tbody>
         <tr class="items-center h-16" *ngFor="let track of tracks">
           <td>
-            <p>{{track.name}}</p>
+            <p>{{ track.name }}</p>
           </td>
           <td>
-            <p>{{track.description}}</p>
+            <p>{{ track.description }}</p>
           </td>
-          <td class="flex flex-row max-w-36 h-16 items-center flex-wrap">
-            <ng-container *ngFor="let value of track.allowedWeaponTypes; let last = last">
-              <p>{{value.name}}{{ !last ? ', &nbsp;' : '' }}</p>
-            </ng-container>
+          <td>
+            <div class="flex flex-row max-w-36 items-center flex-wrap">
+              <ng-container *ngFor="let value of track.allowedWeaponTypes; let last = last">
+                <p>{{ value.name }}{{ !last ? ', &nbsp;' : '' }}</p>
+              </ng-container>
+            </div>
           </td>
           <td>
             <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10" (click)="openModal(track)">
@@ -51,12 +55,20 @@
         </tbody>
       </table>
     </div>
-    <app-confirmation-modal header="Verwijder baan" acceptButtonText="Verwijder" rejectButtonText="Behoud" [message]="confirmModalMessage" (AcceptEvent)="deleteTrack()" (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE)" [modalTag]="Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE"></app-confirmation-modal>
+    <app-confirmation-modal header="Verwijder baan" acceptButtonText="Verwijder" rejectButtonText="Behoud"
+                            [message]="confirmModalMessage" (AcceptEvent)="deleteTrack()"
+                            (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE)"
+                            [modalTag]="Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE"></app-confirmation-modal>
   </div>
 
   <div *ngSwitchCase="Tab.CALENDAR">
-    <app-calender (RequestNewCalendarItemsEvent)="updateEvents($event)" [NewCalendarItemsEvent]="updateCalendarItemsEvent" (CalendarItemClickedEvent)="calendarItemClicked($event)" (ButtonClickedEvent)="createNewTrackReservation()" [buttonTitle]="'Plan reservatie'" class="w-full"></app-calender>
-    <app-create-track-reservation-modal [SetCurrentReservation]="SetCurrentReservation"> </app-create-track-reservation-modal>
+    <app-calender (RequestNewCalendarItemsEvent)="updateEvents($event)"
+                  [NewCalendarItemsEvent]="updateCalendarItemsEvent"
+                  (CalendarItemClickedEvent)="calendarItemClicked($event)"
+                  (ButtonClickedEvent)="createNewTrackReservation()" [buttonTitle]="'Plan reservatie'"
+                  class="w-full"></app-calender>
+    <app-create-track-reservation-modal
+      [SetCurrentReservation]="SetCurrentReservation"></app-create-track-reservation-modal>
   </div>
 
 
