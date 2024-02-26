@@ -84,7 +84,7 @@
                               [minDate]="weaponMaintenanceFormGroup.controls.maintenanceStartDate.value"
       ></app-date-time-selector>
 
-      <app-error-message
+      <app-error-message *ngIf="weaponMaintenanceFormGroup.controls.maintenanceStartDate.valid && weaponMaintenanceFormGroup.controls.maintenanceEndDate.valid"
         [errorMessage]="'De einddatum moet na de startdatum.'"
         [formGroup]="weaponMaintenanceFormGroup"
         [specificError]="'dateNotAfterOther'">

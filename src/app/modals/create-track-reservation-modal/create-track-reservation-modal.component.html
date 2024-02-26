@@ -5,7 +5,7 @@
     <div class="flex flex-row justify-between">
       <div>
         <h3 class="font-bold text-lg">{{ title }}</h3>
-        <p class="text-md">{{getSubTitleForStep()}}</p>
+        <p class="text-md">{{ getSubTitleForStep() }}</p>
 
       </div>
 
@@ -92,7 +92,6 @@
       </div>
 
       <div *ngSwitchCase="Step.STEP_2">
-        <p class="mt-2 italic">Selecteer de banen voor de reservering.</p>
         <table class="table">
           <thead>
           <tr>
@@ -105,7 +104,11 @@
           <tbody>
           <!--          <td></td>Voor als het leeg is-->
           <tr *ngFor="let track of tracksList">
-            <td><input type="checkbox" class="checkbox checkbox-accent"/></td>
+            <td>
+              <input type="checkbox" class="align-middle border-2 border-accent  checkbox checkbox-md"
+                     [checked]="containsTrackInList(track)"
+                     [value]="track" (change)="onTrackChange(track, $event)"/>
+            </td>
             <td> {{ track.name }}</td>
             <td class="max-w-36 break-words"> {{ track.description }}</td>
             <td>
@@ -121,10 +124,71 @@
       </div>
 
       <div *ngSwitchCase="Step.STEP_3">
+        <div class="flex flex-row w-full space-x-2">
+          <app-date-time-selector class="w-3/6"
+                                  [labelText]="'Startdatum'"
+                                  [_formControl]="step3ReservationForm.controls.startDate"
+                                  [errorSettings]="[
+      {
+      errorMessage: 'Je moet geldige start datum instellen.',
+      errorName: ''
+      }]"
+                                  [minDate]="util.toLocalIsoDateTime(currentDay)">
+          </app-date-time-selector>
+          <app-date-time-selector class="w-3/6"
+                                  [labelText]="'Einddatum'"
+                                  [_formControl]="step3ReservationForm.controls.endDate"
+                                  [errorSettings]="[
+      {
+      errorMessage: 'Je moet geldige eind datum instellen.',
+      errorName: ''
+      }]"
+                                  [minDate]="step3ReservationForm.controls.startDate.value">
+          </app-date-time-selector>
+        </div>
+        <app-error-message *ngIf="step3ReservationForm.controls.startDate.valid && step3ReservationForm.controls.endDate.valid"
+          [errorMessage]="'De einddatum moet na de startdatum.'"
+          [formGroup]="step3ReservationForm"
+          [specificError]="'dateNotAfterOther'">
+        </app-error-message>
 
+        <ng-container *ngIf="!currentReservation?.id || currentReservation!.id.length == 0">
+          <div class="flex flex-row">
+            <app-default-checkbox-input-field
+              [_formControl]="step3ReservationForm.controls.repeats"
+              [labelText]="'Herhaalt zich'">
+            </app-default-checkbox-input-field>
+
+          </div>
+          <ng-container *ngIf="step3ReservationForm.controls.repeats.value">
+            <app-date-time-selector
+              [labelText]="'Herhaling tot'"
+              [_formControl]="createSeriesForm.controls.repeatUntil">
+            </app-date-time-selector>
+
+            <div class="flex flex-row items-end space-x-2">
+              <app-inputfield-weapon-modal
+                [inputId]="'inputID'"
+                [labelText]="'Herhaalt elke'"
+                [_formControl]="createSeriesForm.controls.repeatDaysBetween"
+                [hideErrorsWhenEmpty]="true"
+                [type]="'number'"
+                [errorSettings]="[]">
+              </app-inputfield-weapon-modal>
+
+              <select class="select select-accent border-2 "
+                      [formControl]="createSeriesForm.controls.repeatType">
+                <option [ngValue]="repeat.key"
+                        *ngFor="let repeat of ReservationRepeat | keyvalue">{{ ReservationRepeatLabels[repeat.key].label | translate }}
+                </option>
+              </select>
+            </div>
+
+          </ng-container>
+        </ng-container>
       </div>
 
-      <div *ngSwitchCase="Step.STEP_3">
+      <div *ngSwitchCase="Step.STEP_4">
 
       </div>
       <div class="flex flex-row justify-between mt-5">
@@ -149,78 +213,5 @@
 
       </div>
     </ng-container>
-
-
-    <!--    </app-inputfield-weapon-modal>-->
-    <!--    <div class="flex flex-row w-full space-x-2">-->
-    <!--      <app-date-time-selector class="w-3/6"-->
-    <!--        [labelText]="'Startdatum'"-->
-    <!--        [_formControl]="createReservationForm.controls.startDate">-->
-    <!--      </app-date-time-selector>-->
-    <!--      <app-date-time-selector class="w-3/6"-->
-    <!--        [labelText]="'Einddatum'"-->
-    <!--        [_formControl]="createReservationForm.controls.endDate">-->
-    <!--      </app-date-time-selector>-->
-    <!--    </div>-->
-
-
-    <!--    <ng-container *ngIf="!currentReservation?.id || currentReservation!.id.length == 0">-->
-    <!--      <div class="flex flex-row">-->
-    <!--        <app-default-checkbox-input-field-->
-    <!--          [_formControl]="createReservationForm.controls.repeats"-->
-    <!--          [labelText]="'Herhaalt zich'">-->
-    <!--        </app-default-checkbox-input-field>-->
-
-    <!--      </div>-->
-    <!--      <ng-container *ngIf="createReservationForm.controls.repeats.value">-->
-    <!--        <app-date-time-selector-->
-    <!--          [labelText]="'Herhaling tot'"-->
-    <!--          [_formControl]="createSerieForm.controls.repeatUntil">-->
-    <!--        </app-date-time-selector>-->
-
-    <!--        <div class="flex flex-row items-end space-x-2">-->
-    <!--          <app-inputfield-weapon-modal-->
-    <!--            [inputId]="'inputID'"-->
-    <!--            [labelText]="'Herhaalt elke'"-->
-    <!--            [_formControl]="createSerieForm.controls.repeatDaysBetween"-->
-    <!--            [hideErrorsWhenEmpty]="true"-->
-    <!--            [type]="'number'"-->
-    <!--            [errorSettings]="[]">-->
-    <!--          </app-inputfield-weapon-modal>-->
-
-    <!--          <select class="select select-accent border-2 "-->
-    <!--                  [formControl]="createSerieForm.controls.repeatType">-->
-    <!--            <option [ngValue]="repeat.key"-->
-    <!--                    *ngFor="let repeat of ReservationRepeat | keyvalue">{{ ReservationRepeatLabels[repeat.key].label | translate }}-->
-    <!--            </option>-->
-    <!--          </select>-->
-    <!--        </div>-->
-
-    <!--      </ng-container>-->
-    <!--    </ng-container>-->
-
-    <!--    <div class="modal-action">-->
-    <!--      <form method="dialog" class="w-full flex justify-between">-->
-    <!--        <ng-container *ngIf="!currentReservation?.id">-->
-    <!--          <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"-->
-    <!--          >Annuleer-->
-    <!--          </button>-->
-    <!--          <button class="btn border-success border-2 bg-base-100" (click)="createReservation()"-->
-    <!--                  [disabled]="createReservationForm.controls.repeats ? createReservationForm.valid && createSerieForm.valid : createReservationForm.valid"-->
-    <!--          >Voeg toe-->
-    <!--          </button>-->
-    <!--        </ng-container>-->
-
-    <!--        <ng-container *ngIf="currentReservation?.id">-->
-    <!--          <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"-->
-    <!--          >Annuleer-->
-    <!--          </button>-->
-    <!--          <button class="btn border-success border-2 bg-base-100" (click)="saveReservation()"-->
-    <!--                  [disabled]="createReservationForm.controls.repeats ? createReservationForm.valid && createSerieForm.valid : createReservationForm.valid"-->
-    <!--          >Opslaan-->
-    <!--          </button>-->
-    <!--        </ng-container>-->
-    <!--      </form>-->
-    <!--    </div>-->
   </div>
 </dialog>

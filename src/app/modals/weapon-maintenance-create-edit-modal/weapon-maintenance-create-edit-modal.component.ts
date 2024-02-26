@@ -18,11 +18,11 @@ import {
 } from "../../input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
 import {UtilityFunctions} from "../../helpers/utility-functions";
 import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
-import { ValidationUtils } from '../../helpers/validation-utils';
+import {ValidationUtils} from '../../helpers/validation-utils';
 import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
 import {CreateWeaponMaintenanceResponseDTO} from "../../../model/dto/create-weapon-maintenance-response-dto.model";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
-import { AlertService } from '../../services/alert.service';
+import {AlertService} from '../../services/alert.service';
 import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
 
 @Component({
@@ -94,9 +94,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
       maintenanceEndDate: new FormControl('', Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
       maintenanceDescription: new FormControl(''),
       maintenanceWeapon: new FormControl(null, Validators.required),
-    }, { validators: ValidationUtils.validateDatesFactory("maintenanceStartDate", "maintenanceEndDate") });
-
-
+    }, {validators: ValidationUtils.validateDatesFactory("maintenanceStartDate", "maintenanceEndDate")});
 
 
     graphQLService.getAllWeapons(this.associationID).subscribe({
@@ -114,16 +112,16 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
 
         this.weaponMaintenanceFormGroup.controls.maintenanceTitle.setValue(e.title!)
         this.weaponMaintenanceFormGroup.controls.maintenanceDescription.setValue(e.description!)
-        if(e.startDate  && e.startDate.length > 0) {
+        if (e.startDate && e.startDate.length > 0) {
           this.weaponMaintenanceFormGroup.controls.maintenanceStartDate.setValue(e.startDate!)
         }
 
-        if(e.endDate  && e.endDate.length > 0) {
+        if (e.endDate && e.endDate.length > 0) {
           this.weaponMaintenanceFormGroup.controls.maintenanceEndDate.setValue(e.endDate!)
         }
 
 
-        if(this.currentWeaponMaintenance?.weapon != null) {
+        if (this.currentWeaponMaintenance?.weapon != null) {
 
           if (this.currentWeaponMaintenance?.weapon) {
             const weapon = this.weapons.find(w => w.id === this.currentWeaponMaintenance!.weapon!.id);
@@ -134,7 +132,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
 
         }
 
-        if(this.currentWeaponMaintenance?.colorPreset) {
+        if (this.currentWeaponMaintenance?.colorPreset) {
           const c = this.colorPresets.find(w => w.primaryColor === this.currentWeaponMaintenance!.colorPreset!.primaryColor);
           if (c) {
             this.weaponMaintenanceFormGroup.controls.maintenanceColor.setValue(c);
@@ -146,7 +144,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
 
 
   createMaintenance() {
-    if(!this.weaponMaintenanceFormGroup.valid) {
+    if (!this.weaponMaintenanceFormGroup.valid) {
       return;
     }
     this.setValues()
@@ -155,7 +153,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     this.graphQLService.createWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).subscribe({
       next: (response) => {
         const dto: CreateWeaponMaintenanceResponseDTO = response.data.createWeaponMaintenance
-        if(dto.success) {
+        if (dto.success) {
           this.addWeaponMaintenanceEvent.emit(dto.maintenance)
           this.alertService.showAlert({
             title: "Succesvol",
@@ -193,7 +191,8 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
   protected readonly ValidationUtils = ValidationUtils;
   protected readonly Validators = Validators;
   protected readonly Date = Date;
-  currentDay: Date = new Date();
+  private specificDayAndTime = new Date();
+  protected currentDay = new Date(this.specificDayAndTime.getFullYear(), this.specificDayAndTime.getMonth(), this.specificDayAndTime.getDate());
   @Input() addWeaponMaintenanceEvent!: EventEmitter<WeaponMaintenance>;
   @Input() changeWeaponMaintenanceEvent!: EventEmitter<WeaponMaintenance>;
   @Input() deleteWeaponMaintenanceEvent!: EventEmitter<WeaponMaintenance>;
@@ -207,8 +206,9 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     this.currentWeaponMaintenance!.weapon = this.weaponMaintenanceFormGroup.controls.maintenanceWeapon.value!;
     this.currentWeaponMaintenance!.colorPreset = this.weaponMaintenanceFormGroup.controls.maintenanceColor.value!;
   }
+
   saveMaintenance() {
-    if(!this.weaponMaintenanceFormGroup.valid) {
+    if (!this.weaponMaintenanceFormGroup.valid) {
       return;
     }
     this.setValues()
@@ -217,7 +217,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     this.graphQLService.changeWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).subscribe({
       next: (response) => {
         const dto: CreateWeaponMaintenanceResponseDTO = response.data.changeWeaponMaintenance
-        if(dto.success) {
+        if (dto.success) {
           this.changeWeaponMaintenanceEvent.emit(dto.maintenance)
           this.alertService.showAlert({
             title: "Succesvol",
@@ -253,13 +253,13 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
   }
 
   deleteMaintenance() {
-    if(!this.currentWeaponMaintenance?.id)
+    if (!this.currentWeaponMaintenance?.id)
 
       return;
     this.graphQLService.deleteWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).subscribe({
       next: (response) => {
         const dto: DefaultBooleanResponseDTO = response.data.deleteWeaponMaintenance
-        if(dto.success) {
+        if (dto.success) {
           this.deleteWeaponMaintenanceEvent.emit(this.currentWeaponMaintenance)
           this.alertService.showAlert({
             title: "Succesvol",

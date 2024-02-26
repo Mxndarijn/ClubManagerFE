@@ -25,7 +25,8 @@ import {ColorPreset} from "../../../model/color-preset.model";
 import {ValidationUtils} from '../../helpers/validation-utils';
 import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
 import {daysInWeek} from "date-fns/constants";
-import {Day} from "../../helpers/utility-functions";
+import {Day, UtilityFunctions} from "../../helpers/utility-functions";
+import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
 
 enum Step {
   STEP_1,
@@ -52,7 +53,8 @@ enum Step {
     NgStyle,
     SingleErrorMessageComponent,
     NgSwitch,
-    NgSwitchCase
+    NgSwitchCase,
+    ErrorMessageComponent,
   ],
   templateUrl: './create-track-reservation-modal.component.html',
   styleUrl: './create-track-reservation-modal.component.css'
@@ -106,7 +108,8 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     private route: ActivatedRoute,
     private graphQLService: GraphQLCommunication,
     private alertService: AlertService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    protected util: UtilityFunctions,
   ) {
     super(Modal.ASSOCIATION_CONFIGURE_TRACK_CREATE_RESERVATION, modalService);
     this.associationID = route.snapshot.params['associationID'];
@@ -157,17 +160,16 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     this.step3ReservationForm = new FormGroup({
       startDate: new FormControl("", Validators.required),
       endDate: new FormControl("", Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
-      repeats: new FormControl(false),
-
-    });
+      repeats: new FormControl(false, Validators.required),
+    }, { validators: ValidationUtils.validateDatesFactory("startDate", "endDate")});
 
 
     // @ts-ignore
     this.createSeriesForm = new FormGroup({
-      repeatUntil: new FormControl(""),
-      repeatType: new FormControl(undefined),
-      repeatDaysBetween: new FormControl(0)
-    });
+      repeatUntil: new FormControl("", Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
+      repeatType: new FormControl(undefined, Validators.required),
+      repeatDaysBetween: new FormControl(0, Validators.min(1))
+    }, );
   }
 
   ngOnInit(): void {
@@ -283,7 +285,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
       case Step.STEP_2:
         return !this.step2ReservationForm.valid;
       case Step.STEP_3:
-        return !(this.step3ReservationForm.controls.repeats ? this.step3ReservationForm.valid && this.createSeriesForm.valid : this.step3ReservationForm.valid);
+        return !(this.step3ReservationForm.controls.repeats.value ? this.step3ReservationForm.valid && this.createSeriesForm.valid : this.step3ReservationForm.valid);
     }
     return false;
   }
@@ -316,16 +318,36 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   getSubTitleForStep() {
     switch (this.step) {
       case Step.STEP_1:
-        return "1";
+        return "Vul de correcte gegevens in";
       case Step.STEP_2:
-        return "2";
+        return "Selecteer de banen";
       case Step.STEP_3:
-        return "3";
+        return "Selecteer een datum en herhaling";
       case Step.STEP_4:
-        return "4";
+        return "Bevestig reservering";
     }
     return "Onbekend";
   }
+
+  containsTrackInList(track: Track) {
+    return this.step2ReservationForm.controls.tracks.value!.includes(track);
+
+  }
+
+  onTrackChange(track: Track, event: any) {
+    const checked = event.target.checked;
+    if(checked) {
+      const list = this.step2ReservationForm.controls.tracks.value!;
+      list.push(track)
+      this.step2ReservationForm.controls.tracks.setValue(list);
+    } else {
+      this.step2ReservationForm.controls.tracks.setValue(this.step2ReservationForm.controls.tracks.value!.filter(type => type !== track));
+    }
+  }
+
+
+  private specificDayAndTime = new Date();
+  protected currentDay = new Date(this.specificDayAndTime.getFullYear(), this.specificDayAndTime.getMonth(), this.specificDayAndTime.getDate());
 }
 
 
