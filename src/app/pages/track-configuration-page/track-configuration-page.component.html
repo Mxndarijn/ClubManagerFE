@@ -65,10 +65,11 @@
     <app-calender (RequestNewCalendarItemsEvent)="updateEvents($event)"
                   [NewCalendarItemsEvent]="updateCalendarItemsEvent"
                   (CalendarItemClickedEvent)="calendarItemClicked($event)"
-                  (ButtonClickedEvent)="createNewTrackReservation()" [buttonTitle]="'Plan reservatie'"
+                  (ButtonClickedEvent)="createNewTrackReservation()" [buttonTitle]="'Plan reservering'"
                   class="w-full"></app-calender>
     <app-create-track-reservation-modal
       [SetCurrentReservation]="SetCurrentReservation"></app-create-track-reservation-modal>
+    <app-view-track-reservation-modal [SetSelectedItem]="SetSelectedItemForView"  [SetEditingReservation]="SetCurrentReservation"></app-view-track-reservation-modal>
   </div>
 
 

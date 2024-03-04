@@ -37,10 +37,12 @@ export interface ReservationSeries {
 
 export enum ReservationRepeat {
   DAILY = "DAILY",
-  WEEKLY = "WEEKLY"
+  WEEKLY = "WEEKLY",
+  NO_REPEAT = "NO_REPEAT"
 }
 
 export const ReservationRepeatLabels = {
   [ReservationRepeat.DAILY.valueOf()]: {label: "config.settings.repeat.daily", value: 1},
-  [ReservationRepeat.WEEKLY.valueOf()]: {label: "config.settings.repeat.weekly", value: 7}
+  [ReservationRepeat.WEEKLY.valueOf()]: {label: "config.settings.repeat.weekly", value: 7},
+  [ReservationRepeat.NO_REPEAT.valueOf()]: {label: "config.settings.repeat.NO_REPEAT", value: 7},
 };

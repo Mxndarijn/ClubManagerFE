@@ -20,6 +20,10 @@ import {Reservation, ReservationRepeat, ReservationStatus} from "../../../model/
 import {
   CreateTrackReservationModalComponent
 } from "../../modals/create-track-reservation-modal/create-track-reservation-modal.component";
+import {GetWeaponMaintenancesDTO} from "../../../model/dto/get-reservations-between-dto";
+import {
+  ViewTrackReservationModalComponent
+} from "../../modals/view-track-reservation-modal/view-track-reservation-modal.component";
 
 @Component({
   selector: 'app-track-configuration-page',
@@ -34,7 +38,8 @@ import {
     CreateTrackModalComponent,
     ConfirmationModalComponent,
     CalenderViewComponent,
-    CreateTrackReservationModalComponent
+    CreateTrackReservationModalComponent,
+    ViewTrackReservationModalComponent
   ],
   templateUrl: './track-configuration-page.component.html',
   styleUrl: './track-configuration-page.component.css'
@@ -54,6 +59,7 @@ export class TrackConfigurationPageComponent {
   confirmModalMessage: string = "";
   updateCalendarItemsEvent = new EventEmitter<CalenderEvent[]>;
   private calendarItems: CalenderEvent[] = [];
+  SetSelectedItemForView = new EventEmitter<CalenderEvent>();
 
 
   constructor(
@@ -152,9 +158,10 @@ export class TrackConfigurationPageComponent {
   updateEvents(date: Date) {
     this.graphQLService.getReservations(this.associationID, date).subscribe({
       next: (response) => {
-        const dto = response.data.getReservationsBetween;
+        console.log(response)
+        const dto = response.data.getReservationsBetween as GetWeaponMaintenancesDTO;
         if (dto.success) {
-          const reservations = dto.reservations as Reservation[]
+          const reservations = dto.reservations
           const newEvents: CalenderEvent[] = []
           reservations.forEach(reservation => {
             newEvents.push(this.convertReservationToCalendarEvent(reservation))
@@ -174,6 +181,8 @@ export class TrackConfigurationPageComponent {
   }
 
   calendarItemClicked(item: CalenderEvent) {
+    this.SetSelectedItemForView?.emit(item);
+    this.modalService.showModal(Modal.ASSOCIATION_CONFIGURE_TRACK_VIEW_RESERVATION);
 
   }
 

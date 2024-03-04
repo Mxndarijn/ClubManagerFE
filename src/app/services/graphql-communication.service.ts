@@ -11,6 +11,7 @@ import {addMonths, subMonths} from 'date-fns';
 import {UtilityFunctions} from "../helpers/utility-functions";
 import {WeaponMaintenance} from "../../model/weapon-maintenance.model";
 import {Track} from "../../model/track.model";
+import {Reservation, ReservationSeries} from "../../model/reservation.model";
 
 @Injectable({
   providedIn: 'root',
@@ -1020,7 +1021,7 @@ export class GraphQLCommunication {
               description,
               status,
               maxSize,
-              users {
+              reservationUsers {
                 id {
                 userId,
                 reservationId
@@ -1058,6 +1059,88 @@ export class GraphQLCommunication {
         associationID: associationID,
         startDate: this.util.toLocalIsoDateTime(startDate),
         endDate: this.util.toLocalIsoDateTime(endDate),
+      }
+    };
+
+    return this.sendGraphQLRequest(query);
+  }
+
+  createTrackReservation(reservation: Reservation, associationID: string, series: ReservationSeries) {
+    const query = {
+      query: `
+        mutation createReservations($dto: CreateReservationDTO!) {
+          createReservations(dto: $dto) {
+            success,
+            message,
+            reservationSeries {
+               id,
+                  title,
+                  description,
+                  maxUsers,
+                  reservations {
+                    id
+                  }
+            }
+            reservations {
+              id,
+              association {
+                id
+              },
+              startDate,
+              endDate,
+              title,
+              description,
+              status,
+              maxSize,
+              reservationUsers {
+                id {
+                userId,
+                reservationId
+                }
+              },
+              tracks {
+                id,
+                name
+              },
+              allowedWeaponTypes {
+                id,
+                name
+              },
+              reservationSeries {
+                id,
+                title,
+                description,
+                maxUsers,
+                reservations {
+                  id
+                }
+
+              },
+              colorPreset {
+                  id,
+                colorName,
+                primaryColor,
+                secondaryColor
+              }
+            },
+          }
+        }
+      `,
+      variables: {
+        dto: {
+          title: reservation.title,
+          description: reservation.description,
+          startTime: reservation.startDate,
+          endTime: reservation.endDate,
+          maxSize: reservation.maxSize,
+          repeatType: series.reservationRepeat,
+          repeatUntil: series.repeatUntil,
+          customDaysBetween: series.repeatDaysBetween,
+          associationID: associationID,
+          tracks: reservation.tracks.map(r => r.id),
+          allowedWeaponTypes: reservation.allowedWeaponTypes.map(a => a.id),
+          colorPreset: reservation.colorPreset?.id ? reservation.colorPreset.id : ""
+        }
       }
     };
 

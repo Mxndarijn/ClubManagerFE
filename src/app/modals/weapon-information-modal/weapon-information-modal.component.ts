@@ -52,22 +52,7 @@ export class WeaponInformationModalComponent extends DefaultModalInformation imp
     })
   }
 
-  calculateDuration() {
-    if(this.selectedMaintenanceEvent != null) {
-      const startDate = new Date(this.selectedMaintenanceEvent?.startDate!);
-      const endDate = new Date(this.selectedMaintenanceEvent?.endDate!);
-      const diff = endDate.getTime() - startDate.getTime();
 
-      // Omzetten naar dagen, uren, minuten
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-
-      // Formatteer het resultaat
-      return `${days != 0 ? days + 'Dag(en),' : ''} ${hours} Uur(en) en ${minutes} Minu(u)t(en)`;
-    }
-    return "";
-  }
 
   protected readonly Modal = Modal;
 

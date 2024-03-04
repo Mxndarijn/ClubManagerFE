@@ -13,7 +13,7 @@
       <div>
         <p>{{startTime}}</p>
         <p>{{endTime}}</p>
-        <p>{{calculateDuration()}}</p>
+        <p>{{util.calculateDuration(selectedMaintenanceEvent?.startDate!, selectedMaintenanceEvent?.endDate!)}}</p>
         <p>{{selectedMaintenanceEvent?.weapon?.name}} ({{selectedMaintenanceEvent?.weapon?.type?.name}})</p>
       </div>
     </div>

@@ -1,5 +1,10 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Reservation, ReservationRepeat, ReservationRepeatLabels} from "../../../model/reservation.model";
+import {
+  Reservation,
+  ReservationRepeat,
+  ReservationRepeatLabels,
+  ReservationSeries
+} from "../../../model/reservation.model";
 import {Modal, ModalService} from "../../services/modal.service";
 import {ActivatedRoute} from "@angular/router";
 import {GraphQLCommunication} from "../../services/graphql-communication.service";
@@ -8,25 +13,25 @@ import {DefaultModalInformation} from "../../helpers/default-modal-information";
 import {WeaponType} from '../../../model/weapon-type.model';
 import {Track} from "../../../model/track.model";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {DAYS_OF_WEEK} from "angular-calendar";
 import {
   InputFieldWeaponModalComponent
 } from "../../input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
 import {TextareaModalComponent} from "../../input-fields/textarea-modal/textarea-modal.component";
-import {KeyValuePipe, NgClass, NgForOf, NgIf, NgStyle, NgSwitch, NgSwitchCase} from "@angular/common";
+import {AsyncPipe, KeyValuePipe, NgClass, NgForOf, NgIf, NgStyle, NgSwitch, NgSwitchCase} from "@angular/common";
 import {DateTimeSelectorComponent} from "../../input-fields/date-time-selector/date-time-selector.component";
 import {
   DefaultCheckboxInputFieldComponent
 } from "../../input-fields/default-checkbox-input-field/default-checkbox-input-field.component";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {DefaultSubscriptionDestroy} from "../../helpers/default-subscription-destroy";
 import {Subscription} from "rxjs";
 import {ColorPreset} from "../../../model/color-preset.model";
 import {ValidationUtils} from '../../helpers/validation-utils';
 import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
-import {daysInWeek} from "date-fns/constants";
-import {Day, UtilityFunctions} from "../../helpers/utility-functions";
+import {UtilityFunctions} from "../../helpers/utility-functions";
 import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
+import {addDays} from "date-fns";
+import {CreateTrackReservationDTO} from "../../../model/dto/create-track-reservation-dto";
+import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 
 enum Step {
   STEP_1,
@@ -55,6 +60,7 @@ enum Step {
     NgSwitch,
     NgSwitchCase,
     ErrorMessageComponent,
+    AsyncPipe,
   ],
   templateUrl: './create-track-reservation-modal.component.html',
   styleUrl: './create-track-reservation-modal.component.css'
@@ -170,6 +176,25 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
       repeatType: new FormControl(undefined, Validators.required),
       repeatDaysBetween: new FormControl(0, Validators.min(1))
     }, );
+
+    this.step3ReservationForm.controls.startDate.valueChanges.subscribe({
+      next: async (value) => {
+        if(value == null) return;
+        this.startTime = await this.util.formatDateTimeAsString(value!);
+      }
+    })
+    this.step3ReservationForm.controls.endDate.valueChanges.subscribe({
+      next: async (value) => {
+        if(value == null) return;
+        this.endTime = await this.util.formatDateTimeAsString(value!);
+      }
+    })
+    this.createSeriesForm.controls.repeatUntil.valueChanges.subscribe({
+      next: async (value) => {
+        if(value == null) return;
+        this.repeatTime = await this.util.formatDateTimeAsString(value!);
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -215,6 +240,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     this.currentReservation.startDate = this.step3ReservationForm.controls.startDate.value!;
     this.currentReservation.endDate = this.step3ReservationForm.controls.endDate.value!;
     this.currentReservation.maxSize = this.step1ReservationForm.controls.maxSize.value!;
+    this.currentReservation.colorPreset = this.step1ReservationForm.controls.color.value!
     if (!setSerie)
       return;
 
@@ -235,6 +261,43 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
 
   createReservation() {
     this.setCurrentValues(true);
+    const series = this.createSeries();
+    this.graphQLService.createTrackReservation(this.currentReservation!, this.associationID, series).subscribe({
+      next: (response) => {
+        const dto = response.data.createReservations as CreateTrackReservationDTO
+        if(dto.success) {
+          this.ReservationCreatedEvent.emit(dto.reservations);
+          this.alertService.showAlert({
+            title: "Succesvol",
+            subTitle: "Baan reservering is toegevoegd.",
+            icon: AlertIcon.CHECK,
+            duration: 4000,
+            alertClass: AlertClass.CORRECT_CLASS
+          });
+        } else {
+          this.alertService.showAlert({
+            title: "Fout opgetreden",
+            subTitle: "Er is een fout opgetreden.",
+            icon: AlertIcon.XMARK,
+            duration: 4000,
+            alertClass: AlertClass.INCORRECT_CLASS
+          });
+        }
+        console.log(response)
+        this.hideModal()
+      },
+      error: (e) => {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een fout opgetreden.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+        console.log(e)
+        this.hideModal()
+      }
+    });
   }
 
   saveReservation() {
@@ -348,6 +411,30 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
 
   private specificDayAndTime = new Date();
   protected currentDay = new Date(this.specificDayAndTime.getFullYear(), this.specificDayAndTime.getMonth(), this.specificDayAndTime.getDate());
+  protected startTime: string = "";
+  protected endTime: string = "";
+  protected repeatTime: string = "";
+
+  private createSeries() : ReservationSeries {
+    if(this.step3ReservationForm.controls.repeats.value) {
+      return {
+        id: " ",
+        reservations: [],
+        reservationRepeat: this.createSeriesForm.controls.repeatType.value!,
+        repeatDaysBetween: this.createSeriesForm.controls.repeatDaysBetween.value!,
+        repeatUntil: this.createSeriesForm.controls.repeatUntil.value!
+      } as ReservationSeries
+    } else {
+      return {
+        id: " ",
+        reservations: [],
+        reservationRepeat: ReservationRepeat.NO_REPEAT,
+        repeatDaysBetween: 0,
+        repeatUntil: this.util.toLocalIsoDateTime(addDays(new Date(),1))
+      }
+    }
+  }
+
 }
 
 

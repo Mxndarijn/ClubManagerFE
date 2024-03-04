@@ -181,6 +181,20 @@ export class UtilityFunctions {
       return this.formatDateTime(undefined);
     }
   }
+
+  calculateDuration(date1: string, date2: string) {
+    const startDate = new Date(date1);
+    const endDate = new Date(date2);
+    const diff = endDate.getTime() - startDate.getTime();
+
+    // Omzetten naar dagen, uren, minuten
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+    // Formatteer het resultaat
+    return `${days != 0 ? days + ' Dag(en),' : ''} ${hours} Uur(en) en ${minutes} Minu(u)t(en)`;
+  }
 }
 
 export enum Day {
