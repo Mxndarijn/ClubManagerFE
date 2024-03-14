@@ -64,7 +64,7 @@ export class UtilityFunctions {
           }
 
           // Formatteer de tijd volgens de lokale instellingen en de opgegeven opties
-          resolve(Intl.DateTimeFormat(locale, options).format(date));
+          resolve(Intl.DateTimeFormat(locale, options).format(date));A
         }
       })
     });
