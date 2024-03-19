@@ -17,8 +17,6 @@ export class AuthenticationService {
   private userKey = 'userID';
 
   constructor(
-    private authenticationClient: AuthenticationClient,
-    private router: Router,
     private graphQLService: GraphQLCommunication
   ) { }
 

@@ -53,6 +53,7 @@ export class TrackConfigurationPageComponent {
   protected SetCurrentTrack= new EventEmitter<Track>();
   protected SetCurrentReservation= new EventEmitter<Reservation>();
   protected tracks: Track[] = []
+  protected reservations: Reservation[] = []
   private associationID: string;
 
   private selectedTrack : Track | undefined;
@@ -60,6 +61,9 @@ export class TrackConfigurationPageComponent {
   updateCalendarItemsEvent = new EventEmitter<CalenderEvent[]>;
   private calendarItems: CalenderEvent[] = [];
   SetSelectedItemForView = new EventEmitter<CalenderEvent>();
+  ReservationCreatedEvent = new EventEmitter<Reservation[]>;
+  ReservationEditedEvent = new EventEmitter<Reservation[]>;
+  ReservationDeleteEvent = new EventEmitter<Reservation[]>;
 
 
   constructor(
@@ -88,6 +92,17 @@ export class TrackConfigurationPageComponent {
         this.tracks = response.data.getTracksOfAssociation;
       }
     })
+
+    this.ReservationCreatedEvent.subscribe({
+      next: (reservations: Reservation[]) => {
+        reservations.forEach(r => {
+          this.reservations.push(r);
+        })
+        this.createCalendarItems(this.reservations);
+        this.updateCalendarItemsEvent.emit(this.calendarItems);
+    }
+    })
+    //TODO other subscriptions
 
   }
 
@@ -161,13 +176,9 @@ export class TrackConfigurationPageComponent {
         console.log(response)
         const dto = response.data.getReservationsBetween as GetWeaponMaintenancesDTO;
         if (dto.success) {
-          const reservations = dto.reservations
-          const newEvents: CalenderEvent[] = []
-          reservations.forEach(reservation => {
-            newEvents.push(this.convertReservationToCalendarEvent(reservation))
-          });
-          this.updateCalendarItemsEvent?.next(newEvents);
-          this.calendarItems = newEvents;
+          this.reservations = dto.reservations
+          this.createCalendarItems(this.reservations);
+          this.updateCalendarItemsEvent?.next(this.calendarItems);
 
 
         } else {
@@ -178,6 +189,15 @@ export class TrackConfigurationPageComponent {
       }
     })
 
+  }
+
+  createCalendarItems(list : Reservation[]) {
+    const newEvents: CalenderEvent[] = []
+    list.forEach(reservation => {
+      newEvents.push(this.convertReservationToCalendarEvent(reservation))
+    });
+
+    this.calendarItems = newEvents;
   }
 
   calendarItemClicked(item: CalenderEvent) {

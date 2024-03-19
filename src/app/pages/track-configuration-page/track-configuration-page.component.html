@@ -68,7 +68,7 @@
                   (ButtonClickedEvent)="createNewTrackReservation()" [buttonTitle]="'Plan reservering'"
                   class="w-full"></app-calender>
     <app-create-track-reservation-modal
-      [SetCurrentReservation]="SetCurrentReservation"></app-create-track-reservation-modal>
+      [SetCurrentReservation]="SetCurrentReservation" [ReservationCreatedEvent]="ReservationCreatedEvent" [ReservationEditedEvent]="ReservationEditedEvent" [ReservationDeleteEvent]="ReservationDeleteEvent"></app-create-track-reservation-modal>
     <app-view-track-reservation-modal [SetSelectedItem]="SetSelectedItemForView"  [SetEditingReservation]="SetCurrentReservation"></app-view-track-reservation-modal>
   </div>
 

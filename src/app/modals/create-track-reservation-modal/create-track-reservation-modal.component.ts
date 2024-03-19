@@ -77,9 +77,9 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
 
   @Input() SetCurrentReservation!: EventEmitter<Reservation>;
 
-  @Output() ReservationCreatedEvent = new EventEmitter<Reservation[]>
-  @Output() ReservationEditedEvent = new EventEmitter<Reservation[]>
-  @Output() ReservationDeleteEvent = new EventEmitter<Reservation[]>
+  @Input() ReservationCreatedEvent! : EventEmitter<Reservation[]>
+  @Input() ReservationEditedEvent! : EventEmitter<Reservation[]>
+  @Input() ReservationDeleteEvent!: EventEmitter<Reservation[]>
 
   protected step1ReservationForm: FormGroup<{
     title: FormControl<string | null>;
@@ -266,7 +266,6 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
       next: (response) => {
         const dto = response.data.createReservations as CreateTrackReservationDTO
         if(dto.success) {
-          this.ReservationCreatedEvent.emit(dto.reservations);
           this.alertService.showAlert({
             title: "Succesvol",
             subTitle: "Baan reservering is toegevoegd.",
@@ -274,6 +273,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
             duration: 4000,
             alertClass: AlertClass.CORRECT_CLASS
           });
+          this.ReservationCreatedEvent.emit(dto.reservations);
         } else {
           this.alertService.showAlert({
             title: "Fout opgetreden",

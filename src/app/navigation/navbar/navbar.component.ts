@@ -86,4 +86,8 @@ export class NavbarComponent {
       alertClass: AlertClass.INFO_CLASS
     });
   }
+
+  goToProfile() {
+    this.router.navigate(["/profile"]);
+  }
 }
