@@ -1146,4 +1146,36 @@ export class GraphQLCommunication {
 
     return this.sendGraphQLRequest(query);
   }
+
+  changeWeapon(associationID: string, weaponID: string, weaponName: string, weaponStatusInterface: WeaponStatusInterface, weaponType: WeaponType) {
+    const query = {
+      query: `
+         mutation changeWeapon($dto: ChangeWeaponDTO!, $associationID: ID!) {
+          changeWeapon(dto: $dto, associationID: $associationID) {
+            success,
+            message,
+            weapon {
+              id,
+              name,
+              type {
+                id,
+                name
+              }
+              status,
+            }
+          }
+        }
+      `,
+      variables: {
+        dto: {
+          weaponName: weaponName,
+          weaponType: weaponType.id,
+          weaponStatus: weaponStatusInterface.id,
+          weaponID: weaponID
+        },
+        associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+  }
 }

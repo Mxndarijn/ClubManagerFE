@@ -89,6 +89,7 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
 
     let beginTime = this.hours[0].hourNumber; // bijvoorbeeld 10
     let endTime = this.hours[this.hours.length - 1].hourNumber; // bijvoorbeeld 20
+    console.log(endTime);
     let multipleDayEvents = this.calculateMultiDayEvents(beginTime, endTime)
 
     this.assignWidthsToEvents(multipleDayEvents);
@@ -97,8 +98,33 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
       return a.startDate.getTime() - b.startDate.getTime();
     })
 
-    multipleDayEvents.forEach(e => {
-      e.columnIndex = 2;
+    multipleDayEvents.forEach(event => {
+      let availableSpace = Array.from(Array(100).keys());
+      const allEventsOnTime = this.getAllEventsOnSpecificTime(multipleDayEvents, event.startDate);
+
+      allEventsOnTime.forEach(e => {
+        if (e.columnIndex != -1 && e != event) {
+          for (let i = e.columnIndex; i < e.columnIndex + e.width; i++) {
+            availableSpace = availableSpace.filter(item => item !== i);
+          }
+        }
+      })
+
+      let index = this.findEarliestPossibleLocation(availableSpace, event)
+      if (index == -1) {
+        index = this.findBiggestPossibleLocation(availableSpace);
+      }
+      if (index == -1) {
+        console.log("Could not find a place for event: " + JSON.stringify(event))
+      } else {
+        event.columnIndex = index;
+        for (let i = event.columnIndex; i <= event.columnIndex + event.width; i++) {
+          for (let i = event.columnIndex; i < event.columnIndex + event.width; i++) {
+            availableSpace = availableSpace.filter(item => item !== i);
+          }
+
+        }
+      }
     })
     this.weekEvents = multipleDayEvents
   }
@@ -151,6 +177,7 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
   assignWidthsToEvents(multipleDayEvents: CalenderEvent[]) {
     let currentTime = new Date(this.selectedDay);
     currentTime.setHours(1)
+    console.log(currentTime)
 
     let endDate = new Date(this.selectedDay);
     endDate.setHours(23)
@@ -173,6 +200,63 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
       })
       currentTime = addMinutes(currentTime, 5)
     }
+  }
+
+  private findBiggestPossibleLocation(availableSpace: number[]): number {
+    let maxSegmentSize = 0;
+    let maxSegmentStartIndex = -1;
+    let currentSegmentSize = 0;
+    let currentSegmentStartIndex = -1;
+
+    for (let i = 0; i < availableSpace.length; i++) {
+      if (i === 0 || availableSpace[i] !== availableSpace[i - 1] + 1) {
+        // Begin van een nieuw segment
+        if (currentSegmentSize > maxSegmentSize) {
+          maxSegmentSize = currentSegmentSize;
+          maxSegmentStartIndex = currentSegmentStartIndex;
+        }
+        currentSegmentSize = 1;
+        currentSegmentStartIndex = availableSpace[i];
+      } else {
+        // Voortzetting van het huidige segment
+        currentSegmentSize++;
+      }
+    }
+
+    // Controleer aan het einde nogmaals voor het laatste segment
+    if (currentSegmentSize > maxSegmentSize) {
+      maxSegmentSize = currentSegmentSize;
+      maxSegmentStartIndex = currentSegmentStartIndex;
+    }
+
+    return maxSegmentStartIndex;
+  }
+
+  private findEarliestPossibleLocation(freeSpace: number[], event: { width: number }): number {
+    let requiredLength = event.width;
+    let startingIndex = -1;
+    let count = 0;
+
+    let min = Math.min(...freeSpace)
+    let max = Math.max(...freeSpace)
+
+
+    for (let currentValue = min; currentValue <= max; currentValue++) {
+      if (freeSpace.includes(currentValue)) {
+        if (startingIndex === -1) {
+          startingIndex = currentValue;
+        }
+        count++;
+        if (count === requiredLength) {
+          return startingIndex;
+        }
+      } else {
+        startingIndex = -1;
+        count = 0;
+      }
+    }
+
+    return -1;
   }
 
   eventsOverlap(startA: Date, endA: Date, startB: Date, endB: Date): boolean {

@@ -147,6 +147,7 @@ export class WeaponPageComponent {
   protected changeWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
   protected deleteWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
   protected calendarItems: CalenderEvent[] = []
+  setCurrentWeapon: EventEmitter<Weapon> = new EventEmitter<Weapon>();
 
   updateEvents(date: Date) {
     this.graphQLService.getAssociationMaintenances(this.associationID, date).subscribe({
@@ -201,5 +202,24 @@ export class WeaponPageComponent {
       endDate: maintenance.endDate != null && maintenance.endDate.length > 0 ? new Date(maintenance!.endDate!) : e
     }
 
+  }
+
+  generateNewWeapon() {
+    return {
+      status: "",
+      type: {},
+      name: "",
+      id: ""
+    } as Weapon;
+  }
+
+  changeWeaponEvent(weapon: Weapon) {
+    this.weaponList.forEach(w => {
+      if(w.id == weapon.id) {
+        w.type = weapon.type;
+        w.name = weapon.name;
+        w.status = weapon.status;
+      }
+    })
   }
 }

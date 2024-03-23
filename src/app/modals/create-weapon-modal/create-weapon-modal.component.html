@@ -1,7 +1,11 @@
 <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
         [ngClass]="{ 'modal-open': showModal}">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">Nieuw wapen</h3>
+    <ng-container *ngIf="currentWeapon">
+      <h3 *ngIf="currentWeapon.id.length <= 0" class="font-bold text-lg">Nieuw wapen</h3>
+      <h3 *ngIf="currentWeapon.id.length > 0" class="font-bold text-lg">Wijzig wapen</h3>
+    </ng-container>
+
     <div class="flex flex-row items-center mt-5">
       <div class="flex flex-col w-full">
         <form class="flex flex-col items-start justify-evenly mt-5" [formGroup]="createWeaponForm">
@@ -39,9 +43,14 @@
         <button class="btn border-error border-2 bg-base-100"
                 (click)="closeModal()">Annuleer
         </button>
-        <button [disabled]="!createWeaponForm.valid" class="btn border-success border-2 bg-base-100"
-                (click)="createWeapon()">Voeg toe
-        </button>
+        <ng-container *ngIf="currentWeapon">
+          <button *ngIf="currentWeapon.id.length <= 0" [disabled]="!createWeaponForm.valid" class="btn border-success border-2 bg-base-100"
+                  (click)="createWeapon()">Voeg toe
+          </button>
+          <button *ngIf="currentWeapon.id.length > 0" [disabled]="!createWeaponForm.valid" class="btn border-success border-2 bg-base-100"
+                  (click)="changeWeapon()">Wijzig
+          </button>
+        </ng-container>
       </form>
     </div>
   </div>

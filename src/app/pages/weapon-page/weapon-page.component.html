@@ -9,10 +9,10 @@
 </div>
 <div *ngIf="activeTab === Tab.WEAPON_OVERVIEW">
   <div class="w-full flex justify-end">
-    <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON)">
+    <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="this.setCurrentWeapon.emit(generateNewWeapon());this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON)">
       Voeg wapen toe
     </button>
-    <app-create-weapon-modal (CreateWeaponEvent)="createWeaponEvent($event)"></app-create-weapon-modal>
+    <app-create-weapon-modal (CreateWeaponEvent)="createWeaponEvent($event)" (ChangeWeaponEvent)="changeWeaponEvent($event)" [SetCurrentWeapon]="setCurrentWeapon"></app-create-weapon-modal>
   </div>
   <div class="overflow-x-auto">
     <table class="table">
@@ -36,7 +36,7 @@
           <p>{{ getWeaponStatus(weapon.status) }}</p>
         </td>
         <td>
-          <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10">
+          <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10" (click)="this.setCurrentWeapon.emit(weapon);this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON)">
             Wijzig
           </button>
           <button class="btn border-error border-2 bg-base-100  btn-sm ml-10">

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {DefaultModalInformation} from "../../helpers/default-modal-information";
 import {NgClass} from "@angular/common";
@@ -18,7 +18,7 @@ import {UtilityFunctions} from "../../helpers/utility-functions";
   templateUrl: './weapon-information-modal.component.html',
   styleUrl: './weapon-information-modal.component.css'
 })
-export class WeaponInformationModalComponent extends DefaultModalInformation implements OnInit {
+export class WeaponInformationModalComponent extends DefaultModalInformation implements OnInit, OnDestroy {
   protected selectedMaintenanceEvent : WeaponMaintenance | undefined
   @Input() changeSelectedEvent?: EventEmitter<WeaponMaintenance>
   @Input() changeCurrentWeaponMaintenance?: EventEmitter<WeaponMaintenance>;
@@ -51,6 +51,12 @@ export class WeaponInformationModalComponent extends DefaultModalInformation imp
       }
     })
   }
+
+  ngOnDestroy(): void {
+
+  }
+
+
 
 
 
