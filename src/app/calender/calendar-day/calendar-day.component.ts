@@ -89,7 +89,6 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
 
     let beginTime = this.hours[0].hourNumber; // bijvoorbeeld 10
     let endTime = this.hours[this.hours.length - 1].hourNumber; // bijvoorbeeld 20
-    console.log(endTime);
     let multipleDayEvents = this.calculateMultiDayEvents(beginTime, endTime)
 
     this.assignWidthsToEvents(multipleDayEvents);
@@ -177,7 +176,6 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
   assignWidthsToEvents(multipleDayEvents: CalenderEvent[]) {
     let currentTime = new Date(this.selectedDay);
     currentTime.setHours(1)
-    console.log(currentTime)
 
     let endDate = new Date(this.selectedDay);
     endDate.setHours(23)

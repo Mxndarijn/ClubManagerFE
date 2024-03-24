@@ -129,5 +129,12 @@
       "step3": "Datum",
       "step4": "Overzicht"
     }
+  },
+  "weaponsPage": {
+    "titleHeader": "Wapen-Beheer"
+  },
+  "trackConfigurationPage": {
+    "titleHeader": "Banen-Beheer"
   }
+
 }
