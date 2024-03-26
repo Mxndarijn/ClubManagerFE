@@ -84,5 +84,10 @@ export const routes: Routes = [
     component: TrackConfigurationPageComponent,
     canActivate: [AuthGuard, AssociationManagerGuard],
   },
+  {
+    path: 'association/:associationID/book',
+    component: ReservationPageComponent,
+    canActivate: [AuthGuard, AssociationManagerGuard],
+  },
 
 ];

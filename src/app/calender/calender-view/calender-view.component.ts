@@ -16,7 +16,7 @@ import {ColorPreset} from "../../../model/color-preset.model";
 import {addHours} from "date-fns";
 import {BehaviorSubject} from "rxjs";
 import {CalendarDayComponent} from "../calendar-day/calendar-day.component";
-import {KeyValuePipe, NgForOf, NgSwitch, NgSwitchCase} from "@angular/common";
+import {KeyValuePipe, NgForOf, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CalendarMonthComponent} from "../calendar-month/calendar-month.component";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UtilityFunctions} from "../../helpers/utility-functions";
@@ -45,6 +45,7 @@ import {CalendarEvent} from "angular-calendar";
     KeyValuePipe,
     FormsModule,
     ReactiveFormsModule,
+    NgIf,
   ],
     templateUrl: './calender-view.component.html',
     styleUrl: './calender-view.component.css'
@@ -109,6 +110,7 @@ export class CalenderViewComponent implements OnInit {
 
   protected readonly Modal = Modal;
   protected readonly CalendarView = CalendarView;
+  @Input() showButton = true;
 
   setCurrentView(key: string) {
     this.currentView = this.CalendarView[key as keyof typeof CalendarView]
