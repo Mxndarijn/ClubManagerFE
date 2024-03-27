@@ -1,18 +1,18 @@
 import {Component} from '@angular/core';
-import {NavigationService} from "../../services/navigation.service";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NgForOf, NgIf} from "@angular/common";
 import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
 import {SliderComponent} from "../../input-fields/toggle-slider/slider.component";
 import {faPencil} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
-import {User} from "../../../model/user.model";
-import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
+import {User} from "../../CoreModule/models/user.model";
+import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
-import {AlertService} from "../../services/alert.service";
+import {AlertService} from "../../CoreModule/services/alert.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {ValidationUtils} from "../../helpers/validation-utils";
+import {ValidationUtils} from "../../utilities/validation-utils";
 import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
 import {DefaultInputFieldComponent} from "../../input-fields/default-input-field/default-input-field.component";
 

@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {CalenderEvent} from "../calender-view/calender-view.component";
 import {NgClass, NgForOf} from "@angular/common";
-import {UtilityFunctions} from "../../helpers/utility-functions";
+import {UtilityFunctions} from "../../utilities/utility-functions";
 import {CalenderUpcomingEventComponent} from "../calender-upcoming-event/calender-upcoming-event.component";
 
 @Component({

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {CalenderEvent} from "../calender-view/calender-view.component";
 import {NgClass, NgStyle} from "@angular/common";
-import {UtilityFunctions} from "../../helpers/utility-functions";
+import {UtilityFunctions} from "../../utilities/utility-functions";
 
 @Component({
   selector: 'app-calender-week-event',

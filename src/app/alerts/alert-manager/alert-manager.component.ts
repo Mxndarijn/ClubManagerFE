@@ -1,6 +1,6 @@
 import {Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {AlertClass, AlertIcon, AlertInfoComponent} from "../alert-info/alert-info.component";
-import {AlertService} from "../../services/alert.service";
+import {AlertService} from "../../CoreModule/services/alert.service";
 
 @Component({
   selector: 'app-alert-manager',

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthenticationClient } from '../../communication/authentication';
+import { AuthenticationClient } from '../../../communication/authentication';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import {firstValueFrom, Observable} from 'rxjs';
@@ -7,7 +7,7 @@ import {GraphQLCommunication} from "./graphql-communication.service";
 import {
   DefaultBooleanResponseDTO,
   DefaultBooleanResponseWithAnyMessageDTO
-} from "../../model/dto/default-boolean-response-dto";
+} from "../models/dto/default-boolean-response-dto";
 
 @Injectable({
   providedIn: 'root',

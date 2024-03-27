@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import {GraphQLCommunication} from "./graphql-communication.service";
 import {AuthenticationService} from "./authentication.service";
 import {BehaviorSubject} from "rxjs";
-import {AccountPermission} from "../../model/account-role.model";
-import {AssociationRole} from "../../model/association-role.model";
-import {UserAssociation} from "../../model/user-association.model";
-import {AssociationPermission} from "../helpers/permission/association-permission";
+import {AccountPermission} from "../models/account-role.model";
+import {UserAssociation} from "../models/user-association.model";
+import {AssociationPermission} from "../enums/association-permission";
 
 
 @Injectable({

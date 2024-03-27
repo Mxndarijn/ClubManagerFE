@@ -1,5 +1,5 @@
 
-import { AuthenticationService } from '../../services/authentication.service';
+import { AuthenticationService } from '../services/authentication.service';
 import { Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
@@ -8,8 +8,8 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import {Observable} from "rxjs";
-import {PermissionService} from "../../services/permission.service";
-import {AssociationPermission} from "../permission/association-permission";
+import {PermissionService} from "../services/permission.service";
+import {AssociationPermission} from "../enums/association-permission";
 import {authGuard} from "./auth.guard";
 
 @Injectable({

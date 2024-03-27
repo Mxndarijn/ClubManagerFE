@@ -15,7 +15,7 @@ import {addDays, addMinutes} from "date-fns";
 import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-event.component";
 import {ColumnDay, HourRow} from "../calender-week/calender-week.component";
 import {NgClass, NgForOf, NgStyle} from "@angular/common";
-import {UtilityFunctions} from "../../helpers/utility-functions";
+import {UtilityFunctions} from "../../utilities/utility-functions";
 
 @Component({
   selector: 'app-calendar-day',

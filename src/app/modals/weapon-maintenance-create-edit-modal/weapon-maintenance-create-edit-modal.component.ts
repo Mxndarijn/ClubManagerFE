@@ -1,29 +1,29 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {DefaultModalInformation} from "../../helpers/default-modal-information";
-import {Modal, ModalService} from '../../services/modal.service';
-import {WeaponMaintenance} from "../../../model/weapon-maintenance.model";
+import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
+import {Modal, ModalService} from '../../CoreModule/services/modal.service';
+import {WeaponMaintenance} from "../../CoreModule/models/weapon-maintenance.model";
 import {DefaultInputFieldComponent} from "../../input-fields/default-input-field/default-input-field.component";
 import {DefaultTextAreaComponent} from "../../input-fields/default-text-area/default-text-area.component";
-import {Weapon} from '../../../model/weapon.model';
+import {Weapon} from '../../CoreModule/models/weapon.model';
 import {DateTimeSelectorComponent} from "../../input-fields/date-time-selector/date-time-selector.component";
 import {TextareaModalComponent} from "../../input-fields/textarea-modal/textarea-modal.component";
-import {GraphQLCommunication} from '../../services/graphql-communication.service';
-import {ColorPreset} from "../../../model/color-preset.model";
+import {GraphQLCommunication} from '../../CoreModule/services/graphql-communication.service';
+import {ColorPreset} from "../../CoreModule/models/color-preset.model";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {
   InputFieldWeaponModalComponent
 } from "../../input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
-import {UtilityFunctions} from "../../helpers/utility-functions";
+import {UtilityFunctions} from "../../utilities/utility-functions";
 import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
-import {ValidationUtils} from '../../helpers/validation-utils';
+import {ValidationUtils} from '../../utilities/validation-utils';
 import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
-import {CreateWeaponMaintenanceResponseDTO} from "../../../model/dto/create-weapon-maintenance-response-dto.model";
+import {CreateWeaponMaintenanceResponseDTO} from "../../CoreModule/models/dto/create-weapon-maintenance-response-dto.model";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
-import {AlertService} from '../../services/alert.service';
-import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
+import {AlertService} from '../../CoreModule/services/alert.service';
+import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
 
 @Component({
   selector: 'app-weapon-maintenance-create-edit-modal',

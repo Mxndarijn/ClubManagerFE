@@ -1,17 +1,17 @@
-import {environment} from '../../environment/environment';
+import {environment} from '../../../environment/environment';
 import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthenticationService} from "./authentication.service";
-import {AssociationInvite, AssociationInviteID} from "../../model/association-invite";
+import {AssociationInvite, AssociationInviteID} from "../models/association-invite";
 import {query} from "@angular/animations";
-import {WeaponStatusInterface} from "../modals/create-weapon-modal/create-weapon-modal.component";
-import {WeaponType} from "../../model/weapon-type.model";
+import {WeaponStatusInterface} from "../../modals/create-weapon-modal/create-weapon-modal.component";
+import {WeaponType} from "../models/weapon-type.model";
 import {addMonths, subMonths} from 'date-fns';
-import {UtilityFunctions} from "../helpers/utility-functions";
-import {WeaponMaintenance} from "../../model/weapon-maintenance.model";
-import {Track} from "../../model/track.model";
-import {Reservation, ReservationSeries} from "../../model/reservation.model";
+import {UtilityFunctions} from "../../utilities/utility-functions";
+import {WeaponMaintenance} from "../models/weapon-maintenance.model";
+import {Track} from "../models/track.model";
+import {Reservation, ReservationSeries} from "../models/reservation.model";
 
 @Injectable({
   providedIn: 'root',

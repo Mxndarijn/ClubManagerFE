@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {CalendarEvent} from "angular-calendar";
 import {CalenderEvent} from "../calender-view/calender-view.component";
-import {UtilityFunctions} from "../../helpers/utility-functions";
+import {UtilityFunctions} from "../../utilities/utility-functions";
 import {NgClass} from "@angular/common";
 
 @Component({

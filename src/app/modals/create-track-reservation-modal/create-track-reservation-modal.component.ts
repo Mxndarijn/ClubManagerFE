@@ -4,14 +4,14 @@ import {
   ReservationRepeat,
   ReservationRepeatLabels,
   ReservationSeries
-} from "../../../model/reservation.model";
-import {Modal, ModalService} from "../../services/modal.service";
+} from "../../CoreModule/models/reservation.model";
+import {Modal, ModalService} from "../../CoreModule/services/modal.service";
 import {ActivatedRoute} from "@angular/router";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
-import {AlertService} from "../../services/alert.service";
-import {DefaultModalInformation} from "../../helpers/default-modal-information";
-import {WeaponType} from '../../../model/weapon-type.model';
-import {Track} from "../../../model/track.model";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
+import {AlertService} from "../../CoreModule/services/alert.service";
+import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
+import {WeaponType} from '../../CoreModule/models/weapon-type.model';
+import {Track} from "../../CoreModule/models/track.model";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {
   InputFieldWeaponModalComponent
@@ -24,13 +24,13 @@ import {
 } from "../../input-fields/default-checkbox-input-field/default-checkbox-input-field.component";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {Subscription} from "rxjs";
-import {ColorPreset} from "../../../model/color-preset.model";
-import {ValidationUtils} from '../../helpers/validation-utils';
+import {ColorPreset} from "../../CoreModule/models/color-preset.model";
+import {ValidationUtils} from '../../utilities/validation-utils';
 import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
-import {UtilityFunctions} from "../../helpers/utility-functions";
+import {UtilityFunctions} from "../../utilities/utility-functions";
 import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
 import {addDays} from "date-fns";
-import {CreateTrackReservationDTO} from "../../../model/dto/create-track-reservation-dto";
+import {CreateTrackReservationDTO} from "../../CoreModule/models/dto/create-track-reservation-dto";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 
 enum Step {

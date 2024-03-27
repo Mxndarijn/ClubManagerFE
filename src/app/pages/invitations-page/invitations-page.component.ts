@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavigationService} from "../../services/navigation.service";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {TranslateService} from "@ngx-translate/core";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {AsyncPipe, formatDate, NgForOf, NgIf} from "@angular/common";
@@ -7,14 +7,14 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {SearchBoxComponent} from "../../input-fields/search-box/search-box.component";
 import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-user-modal.component";
 import {map, Observable} from "rxjs";
-import {AssociationInvite, AssociationInviteID} from "../../../model/association-invite";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
-import {Modal, ModalService} from "../../services/modal.service";
+import {AssociationInvite, AssociationInviteID} from "../../CoreModule/models/association-invite";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
+import {Modal, ModalService} from "../../CoreModule/services/modal.service";
 import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confirmation-modal.component";
-import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
-import {PermissionService} from "../../services/permission.service";
+import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
+import {PermissionService} from "../../CoreModule/services/permission.service";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
-import {AlertService} from "../../services/alert.service";
+import {AlertService} from "../../CoreModule/services/alert.service";
 
 @Component({
   selector: 'app-invitations-page',

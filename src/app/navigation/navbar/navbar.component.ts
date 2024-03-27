@@ -4,13 +4,13 @@ import {NgClass, NgStyle} from "@angular/common"
 import {FormsModule} from "@angular/forms";
 import {ThemeControllerComponent} from "../simple-navbar/theme-controller/theme-controller.component";
 import {LanguageComponent} from "../simple-navbar/language/language.component";
-import {Theme, ThemeService} from "../../services/theme.service";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
-import {User} from "../../../model/user.model";
-import {NavigationService} from "../../services/navigation.service";
-import {AuthenticationService} from "../../services/authentication.service";
+import {Theme, ThemeService} from "../../CoreModule/services/theme.service";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
+import {User} from "../../CoreModule/models/user.model";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
+import {AuthenticationService} from "../../CoreModule/services/authentication.service";
 import {Router} from "@angular/router";
-import {AlertService} from "../../services/alert.service";
+import {AlertService} from "../../CoreModule/services/alert.service";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 
 @Component({

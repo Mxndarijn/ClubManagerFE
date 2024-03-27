@@ -1,19 +1,18 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf} from "@angular/common";
-import {AssociationRole} from "../../../model/association-role.model";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
+import {AssociationRole} from "../../CoreModule/models/association-role.model";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {TranslateService} from "@ngx-translate/core";
 import {ActivatedRoute} from "@angular/router";
-import {Modal, ModalChange, ModalService, ModalStatus} from "../../services/modal.service";
+import {Modal, ModalChange, ModalService, ModalStatus} from "../../CoreModule/services/modal.service";
 import {AssociationMembersPageComponent} from "../../pages/association-members-page/association-members-page.component";
-import {AlertService} from "../../services/alert.service";
+import {AlertService} from "../../CoreModule/services/alert.service";
 import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
-import {ChangeUserAssociationResponseDTO} from "../../../model/dto/change-user-association-response-dto.model";
 import {AlertInfo} from "../../alerts/alert-manager/alert-manager.component";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
-import {AssociationInvite} from "../../../model/association-invite";
-import {SendAssociationInviteResponseDTO} from "../../../model/dto/send-association-invite-response-dto";
+import {AssociationInvite} from "../../CoreModule/models/association-invite";
+import {SendAssociationInviteResponseDTO} from "../../CoreModule/models/dto/send-association-invite-response-dto";
 
 @Component({
   selector: 'app-send-invitation-modal',

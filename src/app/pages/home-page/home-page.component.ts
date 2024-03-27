@@ -1,16 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {SideBarComponent} from "../../navigation/side-bar/side-bar.component";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {NgForOf} from "@angular/common";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
-import {TokenInterceptor} from "../../helpers/intercceptors/token.interceptor";
+import {TokenInterceptor} from "../../CoreModule/interceptors/token.interceptor";
 import {environment} from "../../../environment/environment";
 import {RouterOutlet} from "@angular/router";
-import {NavigationService} from "../../services/navigation.service";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {NavbarComponent} from "../../navigation/navbar/navbar.component";
 import {TranslateService} from "@ngx-translate/core";
-import {Association} from "../../../model/association.model";
-import {UserAssociation} from "../../../model/user-association.model";
+import {Association} from "../../CoreModule/models/association.model";
+import {UserAssociation} from "../../CoreModule/models/user-association.model";
 
 @Component({
   selector: 'app-home-page',

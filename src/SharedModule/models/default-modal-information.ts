@@ -1,6 +1,6 @@
-import {Modal, ModalChange, ModalService, ModalStatus} from "../services/modal.service";
-import {GraphQLCommunication} from "../services/graphql-communication.service";
-import {AlertService} from "../services/alert.service";
+import {Modal, ModalChange, ModalService, ModalStatus} from "../../app/CoreModule/services/modal.service";
+import {GraphQLCommunication} from "../../app/CoreModule/services/graphql-communication.service";
+import {AlertService} from "../../app/CoreModule/services/alert.service";
 import {EventEmitter} from "@angular/core";
 
 export class DefaultModalInformation {

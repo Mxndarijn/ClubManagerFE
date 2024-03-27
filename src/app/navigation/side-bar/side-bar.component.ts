@@ -5,17 +5,17 @@ import {environment} from "../../../environment/environment";
 import {AssociationNameComponent} from "../../association-name/association-name.component";
 import {ConfirmButtonComponent} from "../../buttons/confirm-button/confirm-button.component";
 import {RouterOutlet} from "@angular/router";
-import {AssociationPermission} from "../../helpers/permission/association-permission";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
-import {NavigationService} from "../../services/navigation.service";
+import {AssociationPermission} from "../../CoreModule/enums/association-permission";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {
   SideBarIconAssociation,
   SideBarItemAssociationComponent
 } from "../side-bar-item-association/side-bar-item-association.component";
-import {PermissionService} from "../../services/permission.service";
-import {UserAssociation} from "../../../model/user-association.model";
-import {Association} from "../../../model/association.model";
-import {AssociationInvite} from "../../../model/association-invite";
+import {PermissionService} from "../../CoreModule/services/permission.service";
+import {UserAssociation} from "../../CoreModule/models/user-association.model";
+import {Association} from "../../CoreModule/models/association.model";
+import {AssociationInvite} from "../../CoreModule/models/association-invite";
 
 //Voeg items to voor nieuwe gegevens in de nav
 const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [

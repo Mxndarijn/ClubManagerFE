@@ -1,31 +1,31 @@
 import {Component, EventEmitter} from '@angular/core';
 import {NgForOf, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
-import {getWeaponStatus} from "../../../model/weapon.model";
-import {Modal, ModalService} from "../../services/modal.service";
+import {getWeaponStatus} from "../../CoreModule/models/weapon.model";
+import {Modal, ModalService} from "../../CoreModule/services/modal.service";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {CreateTrackModalComponent} from "../../modals/create-track-modal/create-track-modal.component";
-import {Track} from "../../../model/track.model";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
+import {Track} from "../../CoreModule/models/track.model";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {ActivatedRoute} from "@angular/router";
-import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
+import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
-import {AlertService} from '../../services/alert.service';
+import {AlertService} from '../../CoreModule/services/alert.service';
 import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confirmation-modal.component";
 import {CalenderEvent, CalenderViewComponent} from "../../calender/calender-view/calender-view.component";
-import {NavigationService} from "../../services/navigation.service";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {TranslateService} from "@ngx-translate/core";
 import {
   convertReservationToCalendarEvent,
   Reservation,
   ReservationRepeat,
   ReservationStatus
-} from "../../../model/reservation.model";
+} from "../../CoreModule/models/reservation.model";
 import {
   CreateTrackReservationModalComponent
 } from "../../modals/create-track-reservation-modal/create-track-reservation-modal.component";
-import {GetWeaponMaintenancesDTO} from "../../../model/dto/get-reservations-between-dto";
+import {GetWeaponMaintenancesDTO} from "../../CoreModule/models/dto/get-reservations-between-dto";
 import {
   ViewTrackReservationModalComponent
 } from "../../modals/view-track-reservation-modal/view-track-reservation-modal.component";
@@ -55,13 +55,13 @@ export class TrackConfigurationPageComponent {
   protected readonly getWeaponStatus = getWeaponStatus;
   protected readonly Modal = Modal;
   protected readonly faTrashCan = faTrashCan;
-  protected SetCurrentTrack= new EventEmitter<Track>();
-  protected SetCurrentReservation= new EventEmitter<Reservation>();
+  protected SetCurrentTrack = new EventEmitter<Track>();
+  protected SetCurrentReservation = new EventEmitter<Reservation>();
   protected tracks: Track[] = []
   protected reservations: Reservation[] = []
   private associationID: string;
 
-  private selectedTrack : Track | undefined;
+  private selectedTrack: Track | undefined;
   confirmModalMessage: string = "";
   updateCalendarItemsEvent = new EventEmitter<CalenderEvent[]>;
   private calendarItems: CalenderEvent[] = [];
@@ -77,7 +77,7 @@ export class TrackConfigurationPageComponent {
     protected route: ActivatedRoute,
     private alertService: AlertService,
     navigationService: NavigationService,
-    private translate : TranslateService,
+    private translate: TranslateService,
     private graphQLCommunication: GraphQLCommunication
   ) {
     this.associationID = route.snapshot.params['associationID'];
@@ -105,7 +105,7 @@ export class TrackConfigurationPageComponent {
         })
         this.createCalendarItems(this.reservations);
         this.updateCalendarItemsEvent.emit(this.calendarItems);
-    }
+      }
     })
     //TODO other subscriptions
 
@@ -125,12 +125,12 @@ export class TrackConfigurationPageComponent {
   }
 
   generateNewTrack(): Track {
-      return {
-        id: "",
-        name: "",
-        description: "",
-        allowedWeaponTypes: []
-      };
+    return {
+      id: "",
+      name: "",
+      description: "",
+      allowedWeaponTypes: []
+    };
   }
 
   openModal(track: Track) {
@@ -140,12 +140,12 @@ export class TrackConfigurationPageComponent {
 
   deleteTrack() {
     this.modalService.hideModal(Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE)
-    if(this.selectedTrack == null)
+    if (this.selectedTrack == null)
       return;
     this.graphQLService.deleteTrack(this.associationID, this.selectedTrack!).subscribe({
       next: (response) => {
         const rDTO = response.data.deleteTrackForAssociation as DefaultBooleanResponseDTO;
-        if(rDTO.success) {
+        if (rDTO.success) {
           this.alertService.showAlert({
             title: "Succesvol",
             subTitle: "De baan is succesvol verwijderd.",
@@ -195,7 +195,7 @@ export class TrackConfigurationPageComponent {
     })
   }
 
-  createCalendarItems(list : Reservation[]) {
+  createCalendarItems(list: Reservation[]) {
     const newEvents: CalenderEvent[] = []
     list.forEach(reservation => {
       newEvents.push(convertReservationToCalendarEvent(reservation))
@@ -238,7 +238,8 @@ export class TrackConfigurationPageComponent {
   }
 
 }
+
 enum Tab {
-  TRACKS= 0,
-  CALENDAR= 1
+  TRACKS = 0,
+  CALENDAR = 1
 }

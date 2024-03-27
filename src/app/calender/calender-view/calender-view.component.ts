@@ -10,17 +10,17 @@ import {
 } from '@angular/core';
 import {UpcomingEventsComponent} from "../upcoming-events/upcoming-events.component";
 import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
-import {Modal} from "../../services/modal.service";
+import {Modal} from "../../CoreModule/services/modal.service";
 import {CalenderWeekComponent} from "../calender-week/calender-week.component";
-import {ColorPreset} from "../../../model/color-preset.model";
+import {ColorPreset} from "../../CoreModule/models/color-preset.model";
 import {addHours} from "date-fns";
 import {BehaviorSubject} from "rxjs";
 import {CalendarDayComponent} from "../calendar-day/calendar-day.component";
 import {KeyValuePipe, NgForOf, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CalendarMonthComponent} from "../calendar-month/calendar-month.component";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {UtilityFunctions} from "../../helpers/utility-functions";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
+import {UtilityFunctions} from "../../utilities/utility-functions";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {ActivatedRoute} from "@angular/router";
 
 

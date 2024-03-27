@@ -15,7 +15,7 @@ import {NgClass, NgComponentOutlet, NgForOf, NgIf, NgStyle} from "@angular/commo
 import {addDays, addHours, addMinutes, differenceInMinutes} from "date-fns";
 import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-event.component";
 import {BehaviorSubject} from "rxjs";
-import {UtilityFunctions} from "../../helpers/utility-functions"
+import {UtilityFunctions} from "../../utilities/utility-functions"
 
 
 @Component({

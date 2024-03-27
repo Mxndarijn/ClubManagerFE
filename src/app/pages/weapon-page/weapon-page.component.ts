@@ -4,24 +4,23 @@ import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {AlertService} from "../../services/alert.service";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
-import {NavigationService} from "../../services/navigation.service";
+import {AlertService} from "../../CoreModule/services/alert.service";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {ActivatedRoute} from "@angular/router";
-import {Modal, ModalService} from "../../services/modal.service";
-import {AuthenticationService} from "../../services/authentication.service";
+import {Modal, ModalService} from "../../CoreModule/services/modal.service";
+import {AuthenticationService} from "../../CoreModule/services/authentication.service";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
-import {AssociationInvite} from "../../../model/association-invite";
-import {getWeaponStatus, Weapon, WeaponStatus} from "../../../model/weapon.model";
+import {getWeaponStatus, Weapon, WeaponStatus} from "../../CoreModule/models/weapon.model";
 import {CalenderEvent, CalenderViewComponent} from "../../calender/calender-view/calender-view.component";
 import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
-import {GetWeaponMaintenancesDTO} from "../../../model/dto/get-weapon-maintenances-dto";
+import {GetWeaponMaintenancesDTO} from "../../CoreModule/models/dto/get-weapon-maintenances-dto";
 import {CalendarEvent} from "angular-calendar";
 import {
   WeaponInformationModalComponent
 } from "../../modals/weapon-information-modal/weapon-information-modal.component";
-import {generateDefaultWeaponMaintenance, WeaponMaintenance} from "../../../model/weapon-maintenance.model";
+import {generateDefaultWeaponMaintenance, WeaponMaintenance} from "../../CoreModule/models/weapon-maintenance.model";
 import {
   WeaponMaintenanceCreateEditModalComponent
 } from "../../modals/weapon-maintenance-create-edit-modal/weapon-maintenance-create-edit-modal.component";

@@ -1,16 +1,16 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgClass, NgForOf} from "@angular/common";
-import {UserAssociation} from "../../../model/user-association.model";
-import {AssociationRole} from "../../../model/association-role.model";
-import {ChangeUserAssociationResponseDTO} from "../../../model/dto/change-user-association-response-dto.model";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
-import {NavigationService} from "../../services/navigation.service";
+import {UserAssociation} from "../../CoreModule/models/user-association.model";
+import {AssociationRole} from "../../CoreModule/models/association-role.model";
+import {ChangeUserAssociationResponseDTO} from "../../CoreModule/models/dto/change-user-association-response-dto.model";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {TranslateService} from "@ngx-translate/core";
 import {ActivatedRoute} from "@angular/router";
-import {Modal, ModalChange, ModalService, ModalStatus} from "../../services/modal.service";
+import {Modal, ModalChange, ModalService, ModalStatus} from "../../CoreModule/services/modal.service";
 import {AssociationMembersPageComponent} from "../../pages/association-members-page/association-members-page.component";
-import {AlertService} from "../../services/alert.service";
+import {AlertService} from "../../CoreModule/services/alert.service";
 import {AlertInfo} from "../../alerts/alert-manager/alert-manager.component";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
 

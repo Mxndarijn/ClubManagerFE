@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthenticationService } from '../../services/authentication.service';
+import { AuthenticationService } from '../../CoreModule/services/authentication.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ConfirmButtonComponent } from '../../buttons/confirm-button/confirm-button.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -12,11 +12,11 @@ import {ErrorMessageComponent} from "../../error-messages/error-message/error-me
 import {ErrorMessageManualComponent} from "../../error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {NavigationService} from "../../services/navigation.service";
-import {PermissionService} from "../../services/permission.service";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
+import {PermissionService} from "../../CoreModule/services/permission.service";
 import {NavbarMinimalComponent} from "../../navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
 import {DefaultInputFieldComponent} from "../../input-fields/default-input-field/default-input-field.component";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 
 
 

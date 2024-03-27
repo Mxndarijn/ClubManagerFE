@@ -1,24 +1,20 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {DefaultModalInformation} from "../../helpers/default-modal-information";
+import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
 import {
   InputFieldWeaponModalComponent
 } from "../../input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
 import {TextareaModalComponent} from "../../input-fields/textarea-modal/textarea-modal.component";
-import {ColorPreset} from "../../../model/color-preset.model";
-import {Weapon} from "../../../model/weapon.model";
-import { WeaponType } from '../../../model/weapon-type.model';
-import { Modal, ModalService } from '../../services/modal.service';
-import {Track} from "../../../model/track.model";
+import { WeaponType } from '../../CoreModule/models/weapon-type.model';
+import { Modal, ModalService } from '../../CoreModule/services/modal.service';
+import {Track} from "../../CoreModule/models/track.model";
 import {ActivatedRoute} from "@angular/router";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {list} from "postcss";
-import {CreateTrackResponseDTO} from "../../../model/dto/create-track-response-dto";
+import {CreateTrackResponseDTO} from "../../CoreModule/models/dto/create-track-response-dto";
 import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
-import {AlertService} from "../../services/alert.service";
-import {DefaultBooleanResponseDTO} from "../../../model/dto/default-boolean-response-dto";
-
+import {AlertService} from "../../CoreModule/services/alert.service";
 
 @Component({
   selector: 'app-create-track-modal',

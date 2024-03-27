@@ -3,11 +3,11 @@ import {SideBarComponent} from "../../navigation/side-bar/side-bar.component";
 import {CalenderEvent, CalenderViewComponent} from "../../calender/calender-view/calender-view.component";
 import {NgSwitch, NgSwitchCase} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
-import {NavigationService} from "../../services/navigation.service";
+import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {TranslateService} from "@ngx-translate/core";
-import {GraphQLCommunication} from "../../services/graphql-communication.service";
-import {convertReservationToCalendarEvent, Reservation} from "../../../model/reservation.model";
-import {GetWeaponMaintenancesDTO} from "../../../model/dto/get-reservations-between-dto";
+import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
+import {convertReservationToCalendarEvent, Reservation} from "../../CoreModule/models/reservation.model";
+import {GetWeaponMaintenancesDTO} from "../../CoreModule/models/dto/get-reservations-between-dto";
 
 @Component({
   selector: 'app-reservation-page',

@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {AlertInfo} from "../alerts/alert-manager/alert-manager.component";
+import {AlertInfo} from "../../alerts/alert-manager/alert-manager.component";
 
 
 @Injectable({

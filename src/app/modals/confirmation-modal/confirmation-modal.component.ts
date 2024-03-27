@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgClass} from "@angular/common";
-import {Modal, ModalChange, ModalService, ModalStatus} from "../../services/modal.service";
+import {Modal, ModalChange, ModalService, ModalStatus} from "../../CoreModule/services/modal.service";
 
 @Component({
   selector: 'app-confirmation-modal',
