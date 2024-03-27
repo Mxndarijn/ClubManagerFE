@@ -16,7 +16,12 @@ import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confir
 import {CalenderEvent, CalenderViewComponent} from "../../calender/calender-view/calender-view.component";
 import {NavigationService} from "../../services/navigation.service";
 import {TranslateService} from "@ngx-translate/core";
-import {Reservation, ReservationRepeat, ReservationStatus} from "../../../model/reservation.model";
+import {
+  convertReservationToCalendarEvent,
+  Reservation,
+  ReservationRepeat,
+  ReservationStatus
+} from "../../../model/reservation.model";
 import {
   CreateTrackReservationModalComponent
 } from "../../modals/create-track-reservation-modal/create-track-reservation-modal.component";
@@ -188,13 +193,12 @@ export class TrackConfigurationPageComponent {
 
       }
     })
-
   }
 
   createCalendarItems(list : Reservation[]) {
     const newEvents: CalenderEvent[] = []
     list.forEach(reservation => {
-      newEvents.push(this.convertReservationToCalendarEvent(reservation))
+      newEvents.push(convertReservationToCalendarEvent(reservation))
     });
 
     this.calendarItems = newEvents;
@@ -233,24 +237,6 @@ export class TrackConfigurationPageComponent {
     };
   }
 
-  private convertReservationToCalendarEvent(reservation: Reservation) {
-    const s = new Date();
-    s.setSeconds(0,0);
-
-    const e = new Date();
-    e.setSeconds(0,0);
-    return {
-      title: reservation!.title!,
-      description: reservation!.description!,
-      id: reservation.id!,
-      color: reservation.colorPreset!,
-      data: reservation,
-      width: 100,
-      columnIndex: -1,
-      startDate: reservation.startDate != null && reservation.startDate.length > 0 ? new Date(reservation!.startDate!) : s,
-      endDate: reservation.endDate != null && reservation.endDate.length > 0 ? new Date(reservation!.endDate!) : e
-    }
-  }
 }
 enum Tab {
   TRACKS= 0,

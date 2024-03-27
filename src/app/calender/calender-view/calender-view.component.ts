@@ -22,12 +22,6 @@ import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UtilityFunctions} from "../../helpers/utility-functions";
 import {GraphQLCommunication} from "../../services/graphql-communication.service";
 import {ActivatedRoute} from "@angular/router";
-import {
-  GetWeaponMaintenancesDTO
-} from "../../../model/dto/get-weapon-maintenances-dto";
-import {CalendarEvent} from "angular-calendar";
-
-// import {addDays, addHours, endOfMonth, isSameDay, isSameMonth, startOfDay, subDays} from 'date-fns';
 
 
 @Component({

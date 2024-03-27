@@ -46,3 +46,22 @@ export const ReservationRepeatLabels = {
   [ReservationRepeat.WEEKLY.valueOf()]: {label: "config.settings.repeat.weekly", value: 7},
   [ReservationRepeat.NO_REPEAT.valueOf()]: {label: "config.settings.repeat.NO_REPEAT", value: 7},
 };
+
+export function convertReservationToCalendarEvent(reservation: Reservation) {
+  const s = new Date();
+  s.setSeconds(0,0);
+
+  const e = new Date();
+  e.setSeconds(0,0);
+  return {
+    title: reservation!.title!,
+    description: reservation!.description!,
+    id: reservation.id!,
+    color: reservation.colorPreset!,
+    data: reservation,
+    width: 100,
+    columnIndex: -1,
+    startDate: reservation.startDate != null && reservation.startDate.length > 0 ? new Date(reservation!.startDate!) : s,
+    endDate: reservation.endDate != null && reservation.endDate.length > 0 ? new Date(reservation!.endDate!) : e
+  }
+}
