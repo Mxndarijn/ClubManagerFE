@@ -10,7 +10,7 @@ import {Track} from "../../CoreModule/models/track.model";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {ActivatedRoute} from "@angular/router";
 import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from '../../CoreModule/services/alert.service';
 import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confirmation-modal.component";
 import {NavigationService} from "../../CoreModule/services/navigation.service";

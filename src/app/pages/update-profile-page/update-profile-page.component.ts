@@ -2,19 +2,19 @@ import {Component} from '@angular/core';
 import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NgForOf, NgIf} from "@angular/common";
-import {UpdateButtonComponent} from "../../../SharedModule/components/buttons/update-button/update-button.component";
+import {UpdateButtonComponent} from "../../SharedModule/components/buttons/update-button/update-button.component";
 import {faPencil} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {User} from "../../CoreModule/models/user.model";
 import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../CoreModule/services/alert.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {ValidationUtils} from "../../../SharedModule/utilities/validation-utils";
+import {ValidationUtils} from "../../SharedModule/utilities/validation-utils";
 import {
   ErrorMessageComponent
-} from "../../../SharedModule/components/error-messages/error-message/error-message.component";
+} from "../../SharedModule/components/error-messages/error-message/error-message.component";
 import {SliderComponent} from "../../../SharedModule/components/input-fields/toggle-slider/slider.component";
 import {
   DefaultInputFieldComponent

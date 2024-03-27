@@ -3,24 +3,23 @@ import {ControlValueAccessor, FormControl, FormsModule, ReactiveFormsModule} fro
 import {NgForOf, NgIf} from "@angular/common";
 import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
+import { ErrorSetting } from '../default-input-field/default-input-field.component';
+import {SingleErrorMessageComponent} from "../../../../app/SharedModule/components/error-messages/single-error-message/single-error-message.component";
 
 @Component({
-  selector: 'app-default-input-field',
+  selector: 'app-inputfield-weapon-modal',
   standalone: true,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    SingleErrorMessageComponent,
-    NgForOf,
     FaIconComponent,
-    NgIf
+    NgForOf,
+    NgIf,
+    ReactiveFormsModule,
+    SingleErrorMessageComponent
   ],
-  templateUrl: './default-input-field.component.html',
-  styleUrl: './default-input-field.component.css'
+  templateUrl: './input-field-weapon-modal.component.html',
+  styleUrl: './input-field-weapon-modal.component.css'
 })
-
-export class DefaultInputFieldComponent {
+export class InputFieldWeaponModalComponent {
   onTouch: any = () => {};
 
 
@@ -41,7 +40,4 @@ export class DefaultInputFieldComponent {
   @Input() hideErrorsWhenEmpty: boolean = false;
 }
 
-export interface ErrorSetting {
-  errorMessage: string,
-  errorName: string,
-}
+

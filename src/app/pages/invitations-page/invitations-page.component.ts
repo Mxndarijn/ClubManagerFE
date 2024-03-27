@@ -11,7 +11,7 @@ import {Modal, ModalService} from "../../CoreModule/services/modal.service";
 import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confirmation-modal.component";
 import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
 import {PermissionService} from "../../CoreModule/services/permission.service";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../CoreModule/services/alert.service";
 import {SearchBoxComponent} from "../../../SharedModule/components/input-fields/search-box/search-box.component";
 

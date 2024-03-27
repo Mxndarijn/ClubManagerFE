@@ -10,9 +10,9 @@ import {AssociationMembersPageComponent} from "../../pages/association-members-p
 import {AlertService} from "../../CoreModule/services/alert.service";
 import {
   SingleErrorMessageComponent
-} from "../../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
-import {AlertInfo} from "../../../SharedModule/components/alerts/alert-manager/alert-manager.component";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+} from "../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
+import {AlertInfo} from "../../SharedModule/components/alerts/alert-manager/alert-manager.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AssociationInvite} from "../../CoreModule/models/association-invite";
 import {SendAssociationInviteResponseDTO} from "../../CoreModule/models/dto/send-association-invite-response-dto";
 

@@ -4,7 +4,7 @@ import {LanguageComponent} from "../language/language.component";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NgClass, NgStyle} from "@angular/common"
 import {FormsModule} from "@angular/forms";
-import {Theme, ThemeService} from "../../../../../app/CoreModule/services/theme.service";
+import {Theme, ThemeService} from "../../../../../CoreModule/services/theme.service";
 
 @Component({
   selector: 'app-navbar-minimal',

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
-import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
+import {DefaultModalInformation} from "../../SharedModule/models/default-modal-information";
 import {Modal, ModalService} from "../../CoreModule/services/modal.service";
 import {Reservation} from "../../CoreModule/models/reservation.model";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";

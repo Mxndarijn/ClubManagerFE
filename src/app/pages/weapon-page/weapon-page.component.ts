@@ -9,10 +9,10 @@ import {GraphQLCommunication} from "../../CoreModule/services/graphql-communicat
 import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {ActivatedRoute} from "@angular/router";
 import {Modal, ModalService} from "../../CoreModule/services/modal.service";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
 import {getWeaponStatus, Weapon, WeaponStatus} from "../../CoreModule/models/weapon.model";
-import {UpdateButtonComponent} from "../../../SharedModule/components/buttons/update-button/update-button.component";
+import {UpdateButtonComponent} from "../../SharedModule/components/buttons/update-button/update-button.component";
 import {GetWeaponMaintenancesDTO} from "../../CoreModule/models/dto/get-weapon-maintenances-dto";
 import {
   WeaponInformationModalComponent

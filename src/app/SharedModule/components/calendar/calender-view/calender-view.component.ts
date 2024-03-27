@@ -9,7 +9,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {UpcomingEventsComponent} from "../upcoming-events/upcoming-events.component";
-import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
+import {UpdateButtonComponent} from "../../../../app/SharedModule/components/buttons/update-button/update-button.component";
 import {CalenderWeekComponent} from "../calender-week/calender-week.component";
 import {addHours} from "date-fns";
 import {BehaviorSubject} from "rxjs";

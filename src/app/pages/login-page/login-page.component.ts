@@ -2,23 +2,23 @@ import {Component, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {AuthenticationService} from '../../CoreModule/services/authentication.service';
-import {ConfirmButtonComponent} from '../../../SharedModule/components/buttons/confirm-button/confirm-button.component';
+import {ConfirmButtonComponent} from '../../SharedModule/components/buttons/confirm-button/confirm-button.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {
   ErrorMessageComponent
-} from "../../../SharedModule/components/error-messages/error-message/error-message.component";
+} from "../../SharedModule/components/error-messages/error-message/error-message.component";
 import {
   ErrorMessageManualComponent
-} from "../../../SharedModule/components/error-messages/error-message-manual/error-message-manual.component";
+} from "../../SharedModule/components/error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {PermissionService} from "../../CoreModule/services/permission.service";
 import {
   NavbarMinimalComponent
-} from "../../../SharedModule/components/navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
+} from "../../SharedModule/components/navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {
   DefaultInputFieldComponent

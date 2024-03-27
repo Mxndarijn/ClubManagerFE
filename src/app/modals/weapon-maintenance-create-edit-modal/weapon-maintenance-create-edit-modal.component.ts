@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
+import {DefaultModalInformation} from "../../SharedModule/models/default-modal-information";
 import {Modal, ModalService} from '../../CoreModule/services/modal.service';
 import {WeaponMaintenance} from "../../CoreModule/models/weapon-maintenance.model";
 import {Weapon} from '../../CoreModule/models/weapon.model';
@@ -9,18 +9,18 @@ import {GraphQLCommunication} from '../../CoreModule/services/graphql-communicat
 import {ColorPreset} from "../../CoreModule/models/color-preset.model";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {UtilityFunctions} from "../../../SharedModule/utilities/utility-functions";
+import {UtilityFunctions} from "../../SharedModule/utilities/utility-functions";
 import {
   SingleErrorMessageComponent
-} from "../../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
-import {ValidationUtils} from '../../../SharedModule/utilities/validation-utils';
+} from "../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
+import {ValidationUtils} from '../../SharedModule/utilities/validation-utils';
 import {
   ErrorMessageComponent
-} from "../../../SharedModule/components/error-messages/error-message/error-message.component";
+} from "../../SharedModule/components/error-messages/error-message/error-message.component";
 import {
   CreateWeaponMaintenanceResponseDTO
 } from "../../CoreModule/models/dto/create-weapon-maintenance-response-dto.model";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from '../../CoreModule/services/alert.service';
 import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
 import {

@@ -1,14 +1,14 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
+import {DefaultModalInformation} from "../../SharedModule/models/default-modal-information";
 import {WeaponType} from '../../CoreModule/models/weapon-type.model';
 import {Modal, ModalService} from '../../CoreModule/services/modal.service';
 import {Track} from "../../CoreModule/models/track.model";
 import {ActivatedRoute} from "@angular/router";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {CreateTrackResponseDTO} from "../../CoreModule/models/dto/create-track-response-dto";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../CoreModule/services/alert.service";
 import {
   InputFieldWeaponModalComponent

@@ -3,14 +3,14 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {
   SingleErrorMessageComponent
-} from "../../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
+} from "../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {Weapon, WeaponStatus} from "../../CoreModule/models/weapon.model";
 import {WeaponType} from "../../CoreModule/models/weapon-type.model";
 import {Modal, ModalChange, ModalService, ModalStatus} from "../../CoreModule/services/modal.service";
 import {CreateWeaponResponseDTO} from "../../CoreModule/models/dto/create-weapon-response-dto";
 import {AlertService} from "../../CoreModule/services/alert.service";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
 import {

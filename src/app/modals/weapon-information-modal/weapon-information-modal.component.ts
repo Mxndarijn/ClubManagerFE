@@ -1,12 +1,12 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
-import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
+import {DefaultModalInformation} from "../../SharedModule/models/default-modal-information";
 import {NgClass} from "@angular/common";
 import {Modal, ModalService} from '../../CoreModule/services/modal.service';
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {AlertService} from "../../CoreModule/services/alert.service";
 import {WeaponMaintenance} from "../../CoreModule/models/weapon-maintenance.model";
-import {UtilityFunctions} from "../../../SharedModule/utilities/utility-functions";
+import {UtilityFunctions} from "../../SharedModule/utilities/utility-functions";
 
 @Component({
   selector: 'app-weapon-information-modal',

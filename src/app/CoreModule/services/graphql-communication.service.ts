@@ -6,7 +6,7 @@ import {AssociationInviteID} from "../models/association-invite";
 import {WeaponStatusInterface} from "../../modals/create-weapon-modal/create-weapon-modal.component";
 import {WeaponType} from "../models/weapon-type.model";
 import {addMonths, subMonths} from 'date-fns';
-import {UtilityFunctions} from "../../../SharedModule/utilities/utility-functions";
+import {UtilityFunctions} from "../../SharedModule/utilities/utility-functions";
 import {WeaponMaintenance} from "../models/weapon-maintenance.model";
 import {Track} from "../models/track.model";
 import {Reservation, ReservationSeries} from "../models/reservation.model";

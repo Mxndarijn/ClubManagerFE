@@ -9,7 +9,7 @@ import {Modal, ModalService} from "../../CoreModule/services/modal.service";
 import {ActivatedRoute} from "@angular/router";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {AlertService} from "../../CoreModule/services/alert.service";
-import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
+import {DefaultModalInformation} from "../../SharedModule/models/default-modal-information";
 import {WeaponType} from '../../CoreModule/models/weapon-type.model';
 import {Track} from "../../CoreModule/models/track.model";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
@@ -17,17 +17,17 @@ import {AsyncPipe, KeyValuePipe, NgClass, NgForOf, NgIf, NgStyle, NgSwitch, NgSw
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {Subscription} from "rxjs";
 import {ColorPreset} from "../../CoreModule/models/color-preset.model";
-import {ValidationUtils} from '../../../SharedModule/utilities/validation-utils';
+import {ValidationUtils} from '../../SharedModule/utilities/validation-utils';
 import {
   SingleErrorMessageComponent
-} from "../../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
-import {UtilityFunctions} from "../../../SharedModule/utilities/utility-functions";
+} from "../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
+import {UtilityFunctions} from "../../SharedModule/utilities/utility-functions";
 import {
   ErrorMessageComponent
-} from "../../../SharedModule/components/error-messages/error-message/error-message.component";
+} from "../../SharedModule/components/error-messages/error-message/error-message.component";
 import {addDays} from "date-fns";
 import {CreateTrackReservationDTO} from "../../CoreModule/models/dto/create-track-reservation-dto";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {
   InputFieldWeaponModalComponent
 } from "../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";

@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {RouterOutlet} from '@angular/router';
 import {HomePageComponent} from "./pages/home-page/home-page.component";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {AlertManagerComponent} from "../SharedModule/components/alerts/alert-manager/alert-manager.component";
+import {AlertManagerComponent} from "./SharedModule/components/alerts/alert-manager/alert-manager.component";
 import {SideBarComponent} from "../SharedModule/components/navigation/side-bar/side-bar.component";
 import {NavbarComponent} from "../SharedModule/components/navigation/navbar/navbar.component";
 

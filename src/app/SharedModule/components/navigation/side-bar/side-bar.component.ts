@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import { SideBarIconStandard, SideBarItemComponent } from '../side-bar-item/side-bar-item.component';
-import {AssociationNameComponent} from "../../association-name/association-name.component";
-import {ConfirmButtonComponent} from "../../buttons/confirm-button/confirm-button.component";
+import {AssociationNameComponent} from "../../../../app/SharedModule/components/association-name/association-name.component";
+import {ConfirmButtonComponent} from "../../../../app/SharedModule/components/buttons/confirm-button/confirm-button.component";
 import {RouterOutlet} from "@angular/router";
 import {
   SideBarIconAssociation,

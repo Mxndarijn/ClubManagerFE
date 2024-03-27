@@ -14,8 +14,8 @@ import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-us
 import {AuthenticationService} from "../../CoreModule/services/authentication.service";
 import {AssociationInvite, AssociationInviteID} from "../../CoreModule/models/association-invite";
 import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
-import {AlertInfo} from "../../../SharedModule/components/alerts/alert-manager/alert-manager.component";
-import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertInfo} from "../../SharedModule/components/alerts/alert-manager/alert-manager.component";
+import {AlertClass, AlertIcon} from "../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../CoreModule/services/alert.service";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
 import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confirmation-modal.component";

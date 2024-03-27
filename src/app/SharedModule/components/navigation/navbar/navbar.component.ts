@@ -5,7 +5,7 @@ import {FormsModule} from "@angular/forms";
 import {ThemeControllerComponent} from "../simple-navbar/theme-controller/theme-controller.component";
 import {LanguageComponent} from "../simple-navbar/language/language.component";
 import {Router} from "@angular/router";
-import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../../../appSharedModule/components/alerts/alert-info/alert-info.component";
 import {Theme, ThemeService} from "../../../../app/CoreModule/services/theme.service";
 import {GraphQLCommunication} from "../../../../app/CoreModule/services/graphql-communication.service";
 import {NavigationService} from "../../../../app/CoreModule/services/navigation.service";
