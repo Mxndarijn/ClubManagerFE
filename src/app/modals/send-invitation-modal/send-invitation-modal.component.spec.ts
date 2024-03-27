@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SendInvitationModalComponent } from './send-invitation-modal.component';
+import {SendInvitationModalComponent} from './send-invitation-modal.component';
 
 describe('SendInvitationModalComponent', () => {
   let component: SendInvitationModalComponent;
@@ -11,7 +11,7 @@ describe('SendInvitationModalComponent', () => {
       imports: [SendInvitationModalComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(SendInvitationModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

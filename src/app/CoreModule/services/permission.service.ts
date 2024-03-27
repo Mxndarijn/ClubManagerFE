@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {GraphQLCommunication} from "./graphql-communication.service";
 import {AuthenticationService} from "./authentication.service";
 import {BehaviorSubject} from "rxjs";

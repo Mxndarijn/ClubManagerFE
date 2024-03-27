@@ -2,19 +2,20 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
-import {
-  InputFieldWeaponModalComponent
-} from "../../input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
-import {TextareaModalComponent} from "../../input-fields/textarea-modal/textarea-modal.component";
-import { WeaponType } from '../../CoreModule/models/weapon-type.model';
-import { Modal, ModalService } from '../../CoreModule/services/modal.service';
+import {WeaponType} from '../../CoreModule/models/weapon-type.model';
+import {Modal, ModalService} from '../../CoreModule/services/modal.service';
 import {Track} from "../../CoreModule/models/track.model";
 import {ActivatedRoute} from "@angular/router";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
-import {list} from "postcss";
 import {CreateTrackResponseDTO} from "../../CoreModule/models/dto/create-track-response-dto";
-import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../CoreModule/services/alert.service";
+import {
+  InputFieldWeaponModalComponent
+} from "../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
+import {
+  TextareaModalComponent
+} from "../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
 
 @Component({
   selector: 'app-create-track-modal',

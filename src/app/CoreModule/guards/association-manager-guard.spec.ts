@@ -1,16 +1,8 @@
-
-import { AuthenticationService } from '../services/authentication.service';
-import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
-import {Observable} from "rxjs";
+import {AuthenticationService} from '../services/authentication.service';
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot,} from '@angular/router';
 import {PermissionService} from "../services/permission.service";
 import {AssociationPermission} from "../enums/association-permission";
-import {authGuard} from "./auth.guard";
 
 @Injectable({
   providedIn: 'root',

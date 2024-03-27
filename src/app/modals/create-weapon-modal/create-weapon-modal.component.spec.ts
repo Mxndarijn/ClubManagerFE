@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CreateWeaponModalComponent } from './create-weapon-modal.component';
+import {CreateWeaponModalComponent} from './create-weapon-modal.component';
 
 describe('CreateWeaponModalComponent', () => {
   let component: CreateWeaponModalComponent;
@@ -11,7 +11,7 @@ describe('CreateWeaponModalComponent', () => {
       imports: [CreateWeaponModalComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(CreateWeaponModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

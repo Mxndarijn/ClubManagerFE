@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { TrackConfigurationPageComponent } from './track-configuration-page.component';
+import {TrackConfigurationPageComponent} from './track-configuration-page.component';
 
 describe('TrackConfigurationPageComponent', () => {
   let component: TrackConfigurationPageComponent;
@@ -11,7 +11,7 @@ describe('TrackConfigurationPageComponent', () => {
       imports: [TrackConfigurationPageComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(TrackConfigurationPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

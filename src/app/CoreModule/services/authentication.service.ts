@@ -1,7 +1,4 @@
-import { Injectable } from '@angular/core';
-import { AuthenticationClient } from '../../../communication/authentication';
-import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {firstValueFrom, Observable} from 'rxjs';
 import {GraphQLCommunication} from "./graphql-communication.service";
 import {

@@ -2,21 +2,27 @@ import {Component} from '@angular/core';
 import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NgForOf, NgIf} from "@angular/common";
-import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
-import {SliderComponent} from "../../input-fields/toggle-slider/slider.component";
+import {UpdateButtonComponent} from "../../../SharedModule/components/buttons/update-button/update-button.component";
 import {faPencil} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
-import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../CoreModule/services/alert.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
-import {DefaultInputFieldComponent} from "../../input-fields/default-input-field/default-input-field.component";
-import {DefaultTextAreaComponent} from "../../input-fields/default-text-area/default-text-area.component";
+import {
+  ErrorMessageComponent
+} from "../../../SharedModule/components/error-messages/error-message/error-message.component";
 import {Association} from "../../CoreModule/models/association.model";
 import {AssociationStatistics} from "../../CoreModule/models/association-statistics.model";
 import {ActivatedRoute} from "@angular/router";
+import {SliderComponent} from "../../../SharedModule/components/input-fields/toggle-slider/slider.component";
+import {
+  DefaultInputFieldComponent
+} from "../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
+import {
+  DefaultTextAreaComponent
+} from "../../../SharedModule/components/input-fields/default-text-area/default-text-area.component";
 
 @Component({
   selector: 'app-settings-page',

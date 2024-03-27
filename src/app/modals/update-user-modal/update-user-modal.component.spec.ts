@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { UpdateUserModalComponent } from './update-user-modal.component';
+import {UpdateUserModalComponent} from './update-user-modal.component';
 
 describe('UpdateUserModalComponent', () => {
   let component: UpdateUserModalComponent;
@@ -11,7 +11,7 @@ describe('UpdateUserModalComponent', () => {
       imports: [UpdateUserModalComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(UpdateUserModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

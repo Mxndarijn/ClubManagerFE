@@ -10,10 +10,9 @@ import {Track} from "../../CoreModule/models/track.model";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {ActivatedRoute} from "@angular/router";
 import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
-import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from '../../CoreModule/services/alert.service';
 import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confirmation-modal.component";
-import {CalenderEvent, CalenderViewComponent} from "../../calender/calender-view/calender-view.component";
 import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {TranslateService} from "@ngx-translate/core";
 import {
@@ -29,6 +28,10 @@ import {GetWeaponMaintenancesDTO} from "../../CoreModule/models/dto/get-reservat
 import {
   ViewTrackReservationModalComponent
 } from "../../modals/view-track-reservation-modal/view-track-reservation-modal.component";
+import {
+  CalenderEvent,
+  CalenderViewComponent
+} from "../../../SharedModule/components/calendar/calender-view/calender-view.component";
 
 @Component({
   selector: 'app-track-configuration-page',

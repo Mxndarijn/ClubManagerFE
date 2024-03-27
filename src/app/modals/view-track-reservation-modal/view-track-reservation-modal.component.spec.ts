@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ViewTrackReservationModalComponent } from './view-track-reservation-modal.component';
+import {ViewTrackReservationModalComponent} from './view-track-reservation-modal.component';
 
 describe('ViewTrackReservationModalComponent', () => {
   let component: ViewTrackReservationModalComponent;
@@ -11,7 +11,7 @@ describe('ViewTrackReservationModalComponent', () => {
       imports: [ViewTrackReservationModalComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ViewTrackReservationModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

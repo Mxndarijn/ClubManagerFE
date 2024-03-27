@@ -1,14 +1,12 @@
 import {environment} from '../../../environment/environment';
-import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {AuthenticationService} from "./authentication.service";
-import {AssociationInvite, AssociationInviteID} from "../models/association-invite";
-import {query} from "@angular/animations";
+import {AssociationInviteID} from "../models/association-invite";
 import {WeaponStatusInterface} from "../../modals/create-weapon-modal/create-weapon-modal.component";
 import {WeaponType} from "../models/weapon-type.model";
 import {addMonths, subMonths} from 'date-fns';
-import {UtilityFunctions} from "../../utilities/utility-functions";
+import {UtilityFunctions} from "../../../SharedModule/utilities/utility-functions";
 import {WeaponMaintenance} from "../models/weapon-maintenance.model";
 import {Track} from "../models/track.model";
 import {Reservation, ReservationSeries} from "../models/reservation.model";

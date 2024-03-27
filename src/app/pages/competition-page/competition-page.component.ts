@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import {SideBarComponent} from "../../navigation/side-bar/side-bar.component";
-
+import {Component} from '@angular/core';
+import {SideBarComponent} from "../../../SharedModule/components/navigation/side-bar/side-bar.component";
 @Component({
   selector: 'app-competition-page',
   standalone: true,

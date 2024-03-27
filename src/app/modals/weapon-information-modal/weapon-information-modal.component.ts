@@ -6,7 +6,7 @@ import {Modal, ModalService} from '../../CoreModule/services/modal.service';
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {AlertService} from "../../CoreModule/services/alert.service";
 import {WeaponMaintenance} from "../../CoreModule/models/weapon-maintenance.model";
-import {UtilityFunctions} from "../../utilities/utility-functions";
+import {UtilityFunctions} from "../../../SharedModule/utilities/utility-functions";
 
 @Component({
   selector: 'app-weapon-information-modal',

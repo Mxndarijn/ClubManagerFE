@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
 import {DefaultModalInformation} from "../../../SharedModule/models/default-modal-information";
 import {Modal, ModalService} from "../../CoreModule/services/modal.service";
-import {CalenderEvent} from "../../calender/calender-view/calender-view.component";
 import {Reservation} from "../../CoreModule/models/reservation.model";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgClass} from "@angular/common";
 import {Subscription} from "rxjs";
+import {CalenderEvent} from "../../../SharedModule/components/calendar/calender-view/calender-view.component";
 
 @Component({
   selector: 'app-view-track-reservation-modal',

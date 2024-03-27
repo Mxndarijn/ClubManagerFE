@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import {Component, EventEmitter} from '@angular/core';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
@@ -9,14 +9,11 @@ import {GraphQLCommunication} from "../../CoreModule/services/graphql-communicat
 import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {ActivatedRoute} from "@angular/router";
 import {Modal, ModalService} from "../../CoreModule/services/modal.service";
-import {AuthenticationService} from "../../CoreModule/services/authentication.service";
-import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
 import {getWeaponStatus, Weapon, WeaponStatus} from "../../CoreModule/models/weapon.model";
-import {CalenderEvent, CalenderViewComponent} from "../../calender/calender-view/calender-view.component";
-import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
+import {UpdateButtonComponent} from "../../../SharedModule/components/buttons/update-button/update-button.component";
 import {GetWeaponMaintenancesDTO} from "../../CoreModule/models/dto/get-weapon-maintenances-dto";
-import {CalendarEvent} from "angular-calendar";
 import {
   WeaponInformationModalComponent
 } from "../../modals/weapon-information-modal/weapon-information-modal.component";
@@ -24,6 +21,10 @@ import {generateDefaultWeaponMaintenance, WeaponMaintenance} from "../../CoreMod
 import {
   WeaponMaintenanceCreateEditModalComponent
 } from "../../modals/weapon-maintenance-create-edit-modal/weapon-maintenance-create-edit-modal.component";
+import {
+  CalenderEvent,
+  CalenderViewComponent
+} from "../../../SharedModule/components/calendar/calender-view/calender-view.component";
 
 enum Tab {
   WEAPON_OVERVIEW,

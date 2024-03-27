@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AssociationMembersPageComponent } from './association-members-page.component';
+import {AssociationMembersPageComponent} from './association-members-page.component';
 
 describe('AssociationMembersPageComponentComponent', () => {
   let component: AssociationMembersPageComponent;

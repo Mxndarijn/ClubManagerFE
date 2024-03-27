@@ -1,6 +1,4 @@
-import { Injectable } from '@angular/core';
-
-import daisyui from "daisyui";
+import {Injectable} from '@angular/core';
 
 export enum Theme {
   LIGHT = 'light',

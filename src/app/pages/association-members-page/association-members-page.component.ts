@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
 import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
@@ -12,14 +12,14 @@ import {Modal, ModalService} from "../../CoreModule/services/modal.service";
 import {FormsModule} from "@angular/forms";
 import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-user-modal.component";
 import {AuthenticationService} from "../../CoreModule/services/authentication.service";
-import {SearchBoxComponent} from "../../input-fields/search-box/search-box.component";
 import {AssociationInvite, AssociationInviteID} from "../../CoreModule/models/association-invite";
 import {DefaultBooleanResponseDTO} from "../../CoreModule/models/dto/default-boolean-response-dto";
-import {AlertInfo} from "../../alerts/alert-manager/alert-manager.component";
-import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertInfo} from "../../../SharedModule/components/alerts/alert-manager/alert-manager.component";
+import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../CoreModule/services/alert.service";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
 import {ConfirmationModalComponent} from "../../modals/confirmation-modal/confirmation-modal.component";
+import {SearchBoxComponent} from "../../../SharedModule/components/input-fields/search-box/search-box.component";
 
 enum Tab {
   MEMBERS,

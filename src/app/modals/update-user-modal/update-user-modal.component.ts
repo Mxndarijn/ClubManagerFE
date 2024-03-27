@@ -11,8 +11,8 @@ import {ActivatedRoute} from "@angular/router";
 import {Modal, ModalChange, ModalService, ModalStatus} from "../../CoreModule/services/modal.service";
 import {AssociationMembersPageComponent} from "../../pages/association-members-page/association-members-page.component";
 import {AlertService} from "../../CoreModule/services/alert.service";
-import {AlertInfo} from "../../alerts/alert-manager/alert-manager.component";
-import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertInfo} from "../../../SharedModule/components/alerts/alert-manager/alert-manager.component";
+import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
 
 @Component({
   selector: 'app-update-user-modal',

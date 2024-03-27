@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { WeaponMaintenanceCreateEditModalComponent } from './weapon-maintenance-create-edit-modal.component';
+import {WeaponMaintenanceCreateEditModalComponent} from './weapon-maintenance-create-edit-modal.component';
 
 describe('WeaponCreateEditModalComponent', () => {
   let component: WeaponMaintenanceCreateEditModalComponent;

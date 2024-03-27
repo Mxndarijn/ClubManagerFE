@@ -1,25 +1,28 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { AuthenticationService } from '../../CoreModule/services/authentication.service';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ConfirmButtonComponent } from '../../buttons/confirm-button/confirm-button.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEye } from '@fortawesome/free-solid-svg-icons';
-import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import {Component, ViewChild} from '@angular/core';
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {AuthenticationService} from '../../CoreModule/services/authentication.service';
+import {ConfirmButtonComponent} from '../../../SharedModule/components/buttons/confirm-button/confirm-button.component';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
-import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
-import {ErrorMessageManualComponent} from "../../error-messages/error-message-manual/error-message-manual.component";
+import {
+  ErrorMessageComponent
+} from "../../../SharedModule/components/error-messages/error-message/error-message.component";
+import {
+  ErrorMessageManualComponent
+} from "../../../SharedModule/components/error-messages/error-message-manual/error-message-manual.component";
 import {environment} from "../../../environment/environment";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NavigationService} from "../../CoreModule/services/navigation.service";
 import {PermissionService} from "../../CoreModule/services/permission.service";
-import {NavbarMinimalComponent} from "../../navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
-import {DefaultInputFieldComponent} from "../../input-fields/default-input-field/default-input-field.component";
+import {
+  NavbarMinimalComponent
+} from "../../../SharedModule/components/navigation/simple-navbar/navbar-minimal/navbar-minimal.component";
 import {GraphQLCommunication} from "../../CoreModule/services/graphql-communication.service";
-
-
-
+import {
+  DefaultInputFieldComponent
+} from "../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 
 
 @Component({

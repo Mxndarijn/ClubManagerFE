@@ -2,7 +2,6 @@ import {WeaponType} from "./weapon-type.model";
 import {Track} from "./track.model";
 import {User} from "./user.model";
 import {Association} from "./association.model";
-import {DAYS_OF_WEEK} from "angular-calendar";
 import {ColorPreset} from "./color-preset.model";
 
 export interface Reservation {

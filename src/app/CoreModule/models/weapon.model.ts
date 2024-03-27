@@ -1,4 +1,3 @@
-import {Association} from "./association.model";
 import {WeaponType} from "./weapon-type.model";
 
 export interface Weapon {

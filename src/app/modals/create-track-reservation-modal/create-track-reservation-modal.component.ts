@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
 import {
   Reservation,
   ReservationRepeat,
@@ -13,25 +13,33 @@ import {DefaultModalInformation} from "../../../SharedModule/models/default-moda
 import {WeaponType} from '../../CoreModule/models/weapon-type.model';
 import {Track} from "../../CoreModule/models/track.model";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {
-  InputFieldWeaponModalComponent
-} from "../../input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
-import {TextareaModalComponent} from "../../input-fields/textarea-modal/textarea-modal.component";
 import {AsyncPipe, KeyValuePipe, NgClass, NgForOf, NgIf, NgStyle, NgSwitch, NgSwitchCase} from "@angular/common";
-import {DateTimeSelectorComponent} from "../../input-fields/date-time-selector/date-time-selector.component";
-import {
-  DefaultCheckboxInputFieldComponent
-} from "../../input-fields/default-checkbox-input-field/default-checkbox-input-field.component";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {Subscription} from "rxjs";
 import {ColorPreset} from "../../CoreModule/models/color-preset.model";
-import {ValidationUtils} from '../../utilities/validation-utils';
-import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
-import {UtilityFunctions} from "../../utilities/utility-functions";
-import {ErrorMessageComponent} from "../../error-messages/error-message/error-message.component";
+import {ValidationUtils} from '../../../SharedModule/utilities/validation-utils';
+import {
+  SingleErrorMessageComponent
+} from "../../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
+import {UtilityFunctions} from "../../../SharedModule/utilities/utility-functions";
+import {
+  ErrorMessageComponent
+} from "../../../SharedModule/components/error-messages/error-message/error-message.component";
 import {addDays} from "date-fns";
 import {CreateTrackReservationDTO} from "../../CoreModule/models/dto/create-track-reservation-dto";
-import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+import {AlertClass, AlertIcon} from "../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {
+  InputFieldWeaponModalComponent
+} from "../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
+import {
+  TextareaModalComponent
+} from "../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
+import {
+  DateTimeSelectorComponent
+} from "../../../SharedModule/components/input-fields/date-time-selector/date-time-selector.component";
+import {
+  DefaultCheckboxInputFieldComponent
+} from "../../../SharedModule/components/input-fields/default-checkbox-input-field/default-checkbox-input-field.component";
 
 enum Step {
   STEP_1,

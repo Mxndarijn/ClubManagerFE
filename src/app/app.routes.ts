@@ -1,6 +1,5 @@
 import {Routes} from '@angular/router';
 import {AuthGuard} from './CoreModule/guards/auth.guard.spec';
-import {HttpClientModule} from '@angular/common/http';
 import {LoginPageComponent} from './pages/login-page/login-page.component';
 import {RegisterPageComponent} from "./pages/register-page/register-page.component";
 import {HomePageComponent} from "./pages/home-page/home-page.component";
