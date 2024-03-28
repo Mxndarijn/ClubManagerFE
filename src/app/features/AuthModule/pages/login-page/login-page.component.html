@@ -1,0 +1,54 @@
+<div class="flex row h-screen">
+  <div class="w-6/12">
+    <img class="h-full w-full object-cover relative" src="../../../../../assets/4824879.jpg" alt="main-image">
+  </div>
+  <div class="flex flex-col w-6/12 justify-start items-center space-y-24">
+    <app-navbar-minimal class="w-full"></app-navbar-minimal>
+    <div class="justify-center space-y-16">
+      <div class="flex flex-col ">
+        <h1 class="text-3xl font-bold m-0" translate [translateParams]="{companyName: environment.companyName}">
+          loginPage.titleHeader</h1>
+        <p class="text-lg" translate>loginPage.accessInformation</p>
+      </div>
+      <form class="mt-2 flex flex-col items-start gap-y-3" [formGroup]="loginForm">
+        <app-default-input-field
+          [_formControl]="loginForm.controls.email"
+          [autocomplete]="'email'"
+          [placeholder]="'loginPage.emailPlaceholder' | translate"
+          [labelText]="'loginPage.emailHeader' | translate"
+          [inputId]="'emailId'"
+          [type]="'text'"
+          [errorSettings]="[{
+          errorMessage: 'loginPage.errors.noValidEmail' | translate,
+          errorName: ''
+         }]">
+        </app-default-input-field>
+        <app-default-input-field
+          [autocomplete]="'current-password'"
+          [_formControl]="loginForm.controls.password"
+          [placeholder]="'loginPage.passwordPlaceholder' | translate"
+          [labelText]="'loginPage.passwordHeader' | translate"
+          [inputId]="'password'"
+          [type]="showPassword ? 'text' : 'password'"
+          [errorSettings]="[{
+          errorMessage: 'loginPage.errors.noValidPassword' | translate,
+          errorName: ''
+         }]"
+          [visibilityCanBeToggled]="true">
+        </app-default-input-field>
+        <button class=" mb-2 underline text-sm hover:text-accent" routerLink="/forgot-password"
+          routerLinkActive="active" translate>
+          loginPage.forgotPassword
+        </button>
+        <app-error-message-manual #loginErrorMessage></app-error-message-manual>
+        <app-confirm-button class="mt-3" [label]="'Log in'" (onClick)="onSubmit()"></app-confirm-button>
+        <button class="text-info mt-3 underline text-sm hover:text-accent" routerLink="/register"
+                routerLinkActive="active" translate>
+          loginPage.noAccount
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+</div>

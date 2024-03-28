@@ -1,21 +1,21 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import { SideBarIconStandard, SideBarItemComponent } from '../side-bar-item/side-bar-item.component';
-import {AssociationNameComponent} from "../../../../app/SharedModule/components/association-name/association-name.component";
-import {ConfirmButtonComponent} from "../../../../app/SharedModule/components/buttons/confirm-button/confirm-button.component";
 import {RouterOutlet} from "@angular/router";
 import {
   SideBarIconAssociation,
   SideBarItemAssociationComponent
 } from "../side-bar-item-association/side-bar-item-association.component";
-import {AssociationPermission} from "../../../../app/CoreModule/enums/association-permission";
-import {Association} from "../../../../app/CoreModule/models/association.model";
-import {UserAssociation} from "../../../../app/CoreModule/models/user-association.model";
-import {AssociationInvite} from "../../../../app/CoreModule/models/association-invite";
-import {GraphQLCommunication} from "../../../../app/CoreModule/services/graphql-communication.service";
-import {NavigationService} from "../../../../app/CoreModule/services/navigation.service";
-import {PermissionService} from "../../../../app/CoreModule/services/permission.service";
-import {environment} from "../../../../environment/environment";
+import {AssociationPermission} from "../../../../CoreModule/enums/association-permission";
+import {AssociationNameComponent} from "../../association-name/association-name.component";
+import {ConfirmButtonComponent} from "../../buttons/confirm-button/confirm-button.component";
+import {environment} from "../../../../../environment/environment";
+import {Association} from "../../../../CoreModule/models/association.model";
+import {UserAssociation} from "../../../../CoreModule/models/user-association.model";
+import {AssociationInvite} from "../../../../CoreModule/models/association-invite";
+import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
+import {NavigationService} from "../../../../CoreModule/services/navigation.service";
+import {PermissionService} from "../../../../CoreModule/services/permission.service";
 
 //Voeg items to voor nieuwe gegevens in de nav
 const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [

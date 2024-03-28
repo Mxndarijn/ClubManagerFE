@@ -9,7 +9,6 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {UpcomingEventsComponent} from "../upcoming-events/upcoming-events.component";
-import {UpdateButtonComponent} from "../../../../app/SharedModule/components/buttons/update-button/update-button.component";
 import {CalenderWeekComponent} from "../calender-week/calender-week.component";
 import {addHours} from "date-fns";
 import {BehaviorSubject} from "rxjs";
@@ -19,8 +18,9 @@ import {CalendarMonthComponent} from "../calendar-month/calendar-month.component
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {UtilityFunctions} from "../../../utilities/utility-functions";
-import { Modal } from '../../../../app/CoreModule/services/modal.service';
-import {ColorPreset} from "../../../../app/CoreModule/models/color-preset.model";
+import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
+import {ColorPreset} from "../../../../CoreModule/models/color-preset.model";
+import {Modal} from "../../../../CoreModule/services/modal.service";
 
 
 @Component({

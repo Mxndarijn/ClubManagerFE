@@ -3,7 +3,7 @@ import {ControlValueAccessor, FormControl, FormsModule, ReactiveFormsModule} fro
 import {NgForOf, NgIf} from "@angular/common";
 import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {SingleErrorMessageComponent} from "../../../../app/SharedModule/components/error-messages/single-error-message/single-error-message.component";
+import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
 
 @Component({
   selector: 'app-default-input-field',

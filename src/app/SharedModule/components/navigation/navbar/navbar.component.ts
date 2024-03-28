@@ -5,13 +5,14 @@ import {FormsModule} from "@angular/forms";
 import {ThemeControllerComponent} from "../simple-navbar/theme-controller/theme-controller.component";
 import {LanguageComponent} from "../simple-navbar/language/language.component";
 import {Router} from "@angular/router";
-import {AlertClass, AlertIcon} from "../../../../appSharedModule/components/alerts/alert-info/alert-info.component";
-import {Theme, ThemeService} from "../../../../app/CoreModule/services/theme.service";
-import {GraphQLCommunication} from "../../../../app/CoreModule/services/graphql-communication.service";
-import {NavigationService} from "../../../../app/CoreModule/services/navigation.service";
-import {AuthenticationService} from "../../../../app/CoreModule/services/authentication.service";
-import {AlertService} from "../../../../app/CoreModule/services/alert.service";
-import {User} from "../../../../app/CoreModule/models/user.model";
+import {User} from "../../../../CoreModule/models/user.model";
+import {Theme, ThemeService} from "../../../../CoreModule/services/theme.service";
+import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
+import {NavigationService} from "../../../../CoreModule/services/navigation.service";
+import {AuthenticationService} from "../../../../CoreModule/services/authentication.service";
+import {AlertService} from "../../../../CoreModule/services/alert.service";
+import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+
 
 @Component({
   selector: 'app-navbar',

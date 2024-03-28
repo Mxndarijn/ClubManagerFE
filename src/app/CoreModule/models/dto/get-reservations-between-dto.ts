@@ -1,6 +1,6 @@
 import {Reservation} from "../reservation.model";
 
-export interface GetWeaponMaintenancesDTO {
+export interface GetReservationsDTO {
   success: boolean;
   reservations: Reservation[];
 }
