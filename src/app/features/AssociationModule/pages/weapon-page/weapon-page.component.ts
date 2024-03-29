@@ -13,7 +13,7 @@ import {
   WeaponMaintenanceCreateEditModalComponent
 } from "../../modals/weapon-maintenance-create-edit-modal/weapon-maintenance-create-edit-modal.component";
 import {
-  CalenderEvent,
+  CalendarEvent,
   CalenderViewComponent
 } from "../../../../SharedModule/components/calendar/calender-view/calender-view.component";
 import {UpdateButtonComponent} from "../../../../SharedModule/components/buttons/update-button/update-button.component";
@@ -141,15 +141,15 @@ export class WeaponPageComponent {
 
   protected readonly WeaponStatus = WeaponStatus;
   protected readonly getWeaponStatus = getWeaponStatus;
-  protected updateCalendarItemsEvent = new EventEmitter<CalenderEvent[]>();
-  protected calendarItemClickedEvent?: EventEmitter<CalenderEvent>;
+  protected updateCalendarItemsEvent = new EventEmitter<CalendarEvent[]>();
+  protected calendarItemClickedEvent?: EventEmitter<CalendarEvent>;
   selectedMaintenanceEvent?: WeaponMaintenance;
   changeSelectedWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
   changeCurrentWeaponMaintenance: EventEmitter<WeaponMaintenance> = new EventEmitter<WeaponMaintenance>();
   protected addWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
   protected changeWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
   protected deleteWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
-  protected calendarItems: CalenderEvent[] = []
+  protected calendarItems: CalendarEvent[] = []
   setCurrentWeapon: EventEmitter<Weapon> = new EventEmitter<Weapon>();
 
   updateEvents(date: Date) {
@@ -157,7 +157,7 @@ export class WeaponPageComponent {
       next: (response) => {
         const dto: GetWeaponMaintenancesDTO = response.data.getWeaponMaintenancesBetween;
         if (dto.success) {
-          const newEvents: CalenderEvent[] = []
+          const newEvents: CalendarEvent[] = []
           dto.maintenances.forEach(maintenance => {
             newEvents.push(this.convertWeaponMaintenanceToCalendarEvent(maintenance))
           });
@@ -174,7 +174,7 @@ export class WeaponPageComponent {
     })
   }
 
-  calendarItemClicked(event: CalenderEvent) {
+  calendarItemClicked(event: CalendarEvent) {
     this.selectedMaintenanceEvent = event.data as WeaponMaintenance;
     this.changeSelectedWeaponMaintenanceEvent.emit(this.selectedMaintenanceEvent)
     this.modalService.showModal(Modal.ASSOCIATION_WEAPON_INFORMATION)
@@ -187,7 +187,7 @@ export class WeaponPageComponent {
     this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_EDIT_WEAPON_MAINTENANCE)
   }
 
-  convertWeaponMaintenanceToCalendarEvent(maintenance: WeaponMaintenance) : CalenderEvent {
+  convertWeaponMaintenanceToCalendarEvent(maintenance: WeaponMaintenance) : CalendarEvent {
     const s = new Date();
     s.setSeconds(0,0);
 

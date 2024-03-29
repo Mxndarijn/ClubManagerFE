@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
-import {CalendarEvent} from "angular-calendar";
-import {CalenderEvent} from "../calender-view/calender-view.component";
+import {CalendarEvent} from "../calender-view/calender-view.component";
 import {NgClass} from "@angular/common";
 import {UtilityFunctions} from "../../../utilities/utility-functions";
 
@@ -14,9 +13,9 @@ import {UtilityFunctions} from "../../../utilities/utility-functions";
   styleUrl: './calender-upcoming-event.component.css'
 })
 export class CalenderUpcomingEventComponent implements OnInit {
-  @Input() calendarEvent!: CalenderEvent
+  @Input() calendarEvent!: CalendarEvent
   @Input() index!: number
-  @Input() calendarItemClickedEvent? : EventEmitter<CalenderEvent>
+  @Input() calendarItemClickedEvent? : EventEmitter<CalendarEvent>
 
   protected time: string = ""
 

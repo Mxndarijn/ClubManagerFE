@@ -15,7 +15,7 @@ import {
   ConfirmationModalComponent
 } from "../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
 import {
-  CalenderEvent,
+  CalendarEvent,
   CalenderViewComponent
 } from "../../../../SharedModule/components/calendar/calender-view/calender-view.component";
 import {getWeaponStatus} from "../../../../CoreModule/models/weapon.model";
@@ -68,9 +68,9 @@ export class TrackConfigurationPageComponent {
 
   private selectedTrack: Track | undefined;
   confirmModalMessage: string = "";
-  updateCalendarItemsEvent = new EventEmitter<CalenderEvent[]>;
-  private calendarItems: CalenderEvent[] = [];
-  SetSelectedItemForView = new EventEmitter<CalenderEvent>();
+  updateCalendarItemsEvent = new EventEmitter<CalendarEvent[]>;
+  private calendarItems: CalendarEvent[] = [];
+  SetSelectedItemForView = new EventEmitter<CalendarEvent>();
   ReservationCreatedEvent = new EventEmitter<Reservation[]>;
   ReservationEditedEvent = new EventEmitter<Reservation[]>;
   ReservationDeleteEvent = new EventEmitter<Reservation[]>;
@@ -201,7 +201,7 @@ export class TrackConfigurationPageComponent {
   }
 
   createCalendarItems(list: Reservation[]) {
-    const newEvents: CalenderEvent[] = []
+    const newEvents: CalendarEvent[] = []
     list.forEach(reservation => {
       newEvents.push(convertReservationToCalendarEvent(reservation))
     });
@@ -209,7 +209,7 @@ export class TrackConfigurationPageComponent {
     this.calendarItems = newEvents;
   }
 
-  calendarItemClicked(item: CalenderEvent) {
+  calendarItemClicked(item: CalendarEvent) {
     this.SetSelectedItemForView?.emit(item);
     this.modalService.showModal(Modal.ASSOCIATION_CONFIGURE_TRACK_VIEW_RESERVATION);
 

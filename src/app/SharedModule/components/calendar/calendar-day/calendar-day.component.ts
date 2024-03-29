@@ -9,13 +9,14 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {BehaviorSubject} from "rxjs";
-import {CalenderEvent} from "../calender-view/calender-view.component";
+import {CalendarEvent} from "../calender-view/calender-view.component";
 import {TranslateService} from "@ngx-translate/core";
 import {addDays, addMinutes} from "date-fns";
-import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-event.component";
+import {CalenderEventComponent} from "../calender-week-event/calender-event.component";
 import {ColumnDay, HourRow} from "../calender-week/calender-week.component";
 import {NgClass, NgForOf, NgStyle} from "@angular/common";
 import {UtilityFunctions} from "../../../utilities/utility-functions";
+import {CalendarEventCommonComponent} from "../events/calendar-event-common/calendar-event-common.component";
 
 @Component({
   selector: 'app-calendar-day',
@@ -23,7 +24,7 @@ import {UtilityFunctions} from "../../../utilities/utility-functions";
   imports: [
     NgForOf,
     NgClass,
-    CalenderWeekEventComponent,
+    CalenderEventComponent,
     NgStyle
   ],
   templateUrl: './calendar-day.component.html',
@@ -31,20 +32,20 @@ import {UtilityFunctions} from "../../../utilities/utility-functions";
 })
 export class CalendarDayComponent implements AfterViewInit, OnInit {
   @Input() focusDayChangedEvent! : BehaviorSubject<Date>
-  @Input() eventsChangedEvent! : BehaviorSubject<CalenderEvent[]>
+  @Input() eventsChangedEvent! : BehaviorSubject<CalendarEvent[]>
   @Input() currentDay!: Date
-  @Input() calendarItemClickedEvent? : EventEmitter<CalenderEvent>
+  @Input() calendarItemClickedEvent? : EventEmitter<CalendarEvent>
 
   @ViewChild('eventTemplate', { read: ViewContainerRef }) eventTemplateHolder!: ViewContainerRef
 
-  private events: CalenderEvent[] = []
+  private events: CalendarEvent[] = []
   protected hours: HourRow[] = [];
   private startHour = 7;
   private endHour = 22;
   protected title = "";
 
   protected selectedDay: Date = new Date();
-  protected weekEvents: CalenderEvent[] = [];
+  protected weekEvents: CalendarEvent[] = [];
 
 
   constructor(
@@ -64,7 +65,7 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
     setTimeout(() => {
       this.events.length = 0
       this.eventsChangedEvent.subscribe({
-        next: (events: CalenderEvent[]) => {
+        next: (events: CalendarEvent[]) => {
           this.events.length = 0
           this.events = events
           this.refreshEvents();
@@ -129,7 +130,7 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
   }
 
   calculateMultiDayEvents(beginTime: number, endTime: number) {
-    let multipleDayEvents: CalenderEvent[] = [];
+    let multipleDayEvents: CalendarEvent[] = [];
 
     this.events.forEach(event => {
       if (event.startDate.getDay() !== event.endDate.getDay()) {
@@ -173,7 +174,7 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
     return multipleDayEvents;
   }
 
-  assignWidthsToEvents(multipleDayEvents: CalenderEvent[]) {
+  assignWidthsToEvents(multipleDayEvents: CalendarEvent[]) {
     let currentTime = new Date(this.selectedDay);
     currentTime.setHours(1)
 
@@ -280,10 +281,11 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
     return hours + minutes + 2;
   }
 
-  private getAllEventsOnSpecificTime(eventsOnSpecificDay: CalenderEvent[], currentTime: Date) {
+  private getAllEventsOnSpecificTime(eventsOnSpecificDay: CalendarEvent[], currentTime: Date) {
     return eventsOnSpecificDay.filter(event => {
       return currentTime < event.endDate && event.startDate <= currentTime
     });
   }
 
+  protected readonly CalendarEventCommonComponent = CalendarEventCommonComponent;
 }

@@ -48,18 +48,18 @@ import {Modal} from "../../../../CoreModule/services/modal.service";
 
 export class CalenderViewComponent implements OnInit {
   @Output() readonly RequestNewCalendarItemsEvent = new EventEmitter<Date>();
-  @Output() readonly CalendarItemClickedEvent = new EventEmitter<CalenderEvent>();
+  @Output() readonly CalendarItemClickedEvent = new EventEmitter<CalendarEvent>();
   @Output() readonly ButtonClickedEvent = new EventEmitter<void>();
-  @Input() NewCalendarItemsEvent : EventEmitter<CalenderEvent[]> | undefined
+  @Input() NewCalendarItemsEvent : EventEmitter<CalendarEvent[]> | undefined
   @Input()  buttonTitle: string = "";
 
   protected focusDayChangedEvent = new BehaviorSubject<Date>(new Date());
-  protected eventsChangedEvent = new BehaviorSubject<CalenderEvent[]>([]);
+  protected eventsChangedEvent = new BehaviorSubject<CalendarEvent[]>([]);
   protected focusDay = new Date()
   protected currentDay = new Date()
   protected currentView = CalendarView.WEEK;
   protected associationID: string;
-  @Input() events: CalenderEvent[] = []
+  @Input() events: CalendarEvent[] = []
   @ViewChild('viewSelector') myDetails!: ElementRef;
 
   protected timeFormControl: FormControl
@@ -93,7 +93,7 @@ export class CalenderViewComponent implements OnInit {
 
   ngOnInit(): void {
         this.NewCalendarItemsEvent?.subscribe({
-          next: (events: CalenderEvent[]) => {
+          next: (events: CalendarEvent[]) => {
             this.events = events
             this.eventsChangedEvent.next(this.events);
           }
@@ -112,7 +112,7 @@ export class CalenderViewComponent implements OnInit {
   }
 }
 
-export interface CalenderEvent {
+export interface CalendarEvent {
   startDate: Date,
   endDate: Date,
   title: string,

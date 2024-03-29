@@ -9,13 +9,14 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {CalenderEvent} from "../calender-view/calender-view.component";
+import {CalendarEvent} from "../calender-view/calender-view.component";
 import {TranslateService} from "@ngx-translate/core";
 import {NgClass, NgComponentOutlet, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {addDays, addHours, addMinutes, differenceInMinutes} from "date-fns";
-import {CalenderWeekEventComponent} from "../calender-week-event/calender-week-event.component";
+import {CalenderEventComponent} from "../calender-week-event/calender-event.component";
 import {BehaviorSubject} from "rxjs";
 import {UtilityFunctions} from "../../../utilities/utility-functions";
+import {CalendarEventCommonComponent} from "../events/calendar-event-common/calendar-event-common.component";
 
 
 @Component({
@@ -27,7 +28,7 @@ import {UtilityFunctions} from "../../../utilities/utility-functions";
     NgIf,
     NgStyle,
     NgComponentOutlet,
-    CalenderWeekEventComponent,
+    CalenderEventComponent,
   ],
   templateUrl: './calender-week.component.html',
   styleUrls: ['./calender-week.component.css']
@@ -35,11 +36,11 @@ import {UtilityFunctions} from "../../../utilities/utility-functions";
 
 export class CalenderWeekComponent implements AfterViewInit, OnInit {
   @Input() focusDayChangedEvent!: BehaviorSubject<Date>
-  @Input() eventsChangedEvent!: BehaviorSubject<CalenderEvent[]>
-  @Input() calendarItemClickedEvent? : EventEmitter<CalenderEvent>
+  @Input() eventsChangedEvent!: BehaviorSubject<CalendarEvent[]>
+  @Input() calendarItemClickedEvent? : EventEmitter<CalendarEvent>
   @Input() currentDay!: Date
 
-  private events: CalenderEvent[] = []
+  private events: CalendarEvent[] = []
   protected hours: HourRow[] = [];
   protected days: ColumnDay[] = [];
   protected dayStrings: string[] = ["Ma", "Di", "Woe", "Do", "Vr", "Za", "Zo"]
@@ -47,7 +48,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   private endHour = 22;
   private weekStartDay!: Date
 
-  protected weekEvents: CalenderEvent[] = [];
+  protected weekEvents: CalendarEvent[] = [];
 
 
   constructor(
@@ -64,7 +65,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     setTimeout(() => {
       this.eventsChangedEvent.subscribe({
-        next: (events: CalenderEvent[]) => {
+        next: (events: CalendarEvent[]) => {
           this.events = events
           this.refreshEvents();
         }
@@ -105,7 +106,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   }
 
   calculateMultiDayEvents(beginTime: number, endTime: number) {
-    let multipleDayEvents: CalenderEvent[] = [];
+    let multipleDayEvents: CalendarEvent[] = [];
 
     this.events.forEach(event => {
       if (event.startDate.getDay() !== event.endDate.getDay()) {
@@ -149,7 +150,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
     return multipleDayEvents;
   }
 
-  assignWidthsToEvents(multipleDayEvents: CalenderEvent[]) {
+  assignWidthsToEvents(multipleDayEvents: CalendarEvent[]) {
     let currentTime = new Date(this.weekStartDay);
 
     let endDate = addDays(new Date(this.weekStartDay), 7);
@@ -182,7 +183,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
     return startA < endB && endA > startB;
   }
 
-  assignColumnsToEvents(multipleDayEvents: CalenderEvent[]) {
+  assignColumnsToEvents(multipleDayEvents: CalendarEvent[]) {
     multipleDayEvents.forEach(event => {
 
       let availableSpace = Array.from(Array(100).keys());
@@ -234,7 +235,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   }
 
 
-  private getAllEventsOnSpecificTime(multipleDayEvents: CalenderEvent[], currentTime: Date) {
+  private getAllEventsOnSpecificTime(multipleDayEvents: CalendarEvent[], currentTime: Date) {
     return multipleDayEvents.filter(event => {
       return currentTime < event.endDate && event.startDate <= currentTime
     });
@@ -318,6 +319,8 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
       date1.getMonth() === date2.getMonth() &&
       date1.getFullYear() === date2.getFullYear();
   }
+
+  protected readonly CalendarEventCommonComponent = CalendarEventCommonComponent;
 }
 
 

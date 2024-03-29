@@ -3,7 +3,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgClass} from "@angular/common";
 import {Subscription} from "rxjs";
 import {DefaultModalInformation} from "../../../../SharedModule/models/default-modal-information";
-import {CalenderEvent} from "../../../../SharedModule/components/calendar/calender-view/calender-view.component";
+import {CalendarEvent} from "../../../../SharedModule/components/calendar/calender-view/calender-view.component";
 import {Reservation} from "../../../../CoreModule/models/reservation.model";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 
@@ -25,9 +25,9 @@ export class ViewTrackReservationModalComponent extends DefaultModalInformation 
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  protected selected?: CalenderEvent;
+  protected selected?: CalendarEvent;
   private currentDate = new Date();
-  @Input() SetSelectedItem!: EventEmitter<CalenderEvent>;
+  @Input() SetSelectedItem!: EventEmitter<CalendarEvent>;
   @Input() SetEditingReservation!: EventEmitter<Reservation>;
 
   constructor(private modalService: ModalService) {
@@ -36,7 +36,7 @@ export class ViewTrackReservationModalComponent extends DefaultModalInformation 
 
   ngOnInit(): void {
     this.subscriptions.push(this.SetSelectedItem.subscribe({
-      next: (i: CalenderEvent) => {
+      next: (i: CalendarEvent) => {
         this.selected = i;
       }
     }))

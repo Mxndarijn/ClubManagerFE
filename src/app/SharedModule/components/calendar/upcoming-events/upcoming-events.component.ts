@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
-import {CalenderEvent} from "../calender-view/calender-view.component";
+import {CalendarEvent} from "../calender-view/calender-view.component";
 import {NgClass, NgForOf} from "@angular/common";
 import {CalenderUpcomingEventComponent} from "../calender-upcoming-event/calender-upcoming-event.component";
 
@@ -16,11 +16,11 @@ import {CalenderUpcomingEventComponent} from "../calender-upcoming-event/calende
   styleUrl: './upcoming-events.component.css'
 })
 export class UpcomingEventsComponent implements OnInit {
-  @Input() eventsChangedEvent! : BehaviorSubject<CalenderEvent[]>
+  @Input() eventsChangedEvent! : BehaviorSubject<CalendarEvent[]>
   @Input() currentDay!: Date
-  @Input() calendarItemClickedEvent? : EventEmitter<CalenderEvent>
+  @Input() calendarItemClickedEvent? : EventEmitter<CalendarEvent>
 
-  protected events: CalenderEvent[] = [];
+  protected events: CalendarEvent[] = [];
 
   constructor(
   ) {

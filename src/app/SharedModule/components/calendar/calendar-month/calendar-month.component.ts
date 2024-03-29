@@ -1,8 +1,7 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
-import { CalenderEvent } from '../calender-view/calender-view.component';
+import { CalendarEvent } from '../calender-view/calender-view.component';
 import {BehaviorSubject} from "rxjs";
 import {addDays, subDays} from "date-fns";
-import {CalendarEvent} from "angular-calendar";
 import {NgClass, NgForOf, NgStyle} from "@angular/common";
 import {TranslateService} from "@ngx-translate/core";
 
@@ -20,12 +19,12 @@ import {TranslateService} from "@ngx-translate/core";
 export class CalendarMonthComponent implements OnInit {
   title: string = "Titel";
   @Input() focusDayChangedEvent!: BehaviorSubject<Date>
-  @Input() eventsChangedEvent!: BehaviorSubject<CalenderEvent[]>
+  @Input() eventsChangedEvent!: BehaviorSubject<CalendarEvent[]>
   @Input() currentDay!: Date
   @Input() monthItems: MonthItem[] = []
-  @Input() calendarItemClickedEvent? : EventEmitter<CalenderEvent>
+  @Input() calendarItemClickedEvent? : EventEmitter<CalendarEvent>
 
-  private events: CalenderEvent[] = []
+  private events: CalendarEvent[] = []
   private focusDay: Date = new Date()
   protected days: string[] = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"]
   private startingRow = 3;
@@ -41,7 +40,7 @@ export class CalendarMonthComponent implements OnInit {
   ngOnInit(): void {
     setTimeout(() => {
       this.eventsChangedEvent.subscribe({
-        next: (events: CalenderEvent[]) => {
+        next: (events: CalendarEvent[]) => {
           this.events = events
           this.refreshEvents();
         }
@@ -112,11 +111,11 @@ export class CalendarMonthComponent implements OnInit {
 
   }
 
-  private getEventsForDate(date: Date): CalenderEvent[] {
+  private getEventsForDate(date: Date): CalendarEvent[] {
     // Creëer een nieuwe datum met alleen de jaar, maand, en dag componenten
     const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
-    return this.events.filter((event: CalenderEvent) => {
+    return this.events.filter((event: CalendarEvent) => {
       // Normaliseer de start- en einddatum van het evenement
       const startDate = new Date(event.startDate.getFullYear(), event.startDate.getMonth(), event.startDate.getDate());
       const endDate = new Date(event.endDate.getFullYear(), event.endDate.getMonth(), event.endDate.getDate());
@@ -149,7 +148,7 @@ export class CalendarMonthComponent implements OnInit {
 export interface MonthItem {
   column: number,
   row: number,
-  events: CalenderEvent[],
+  events: CalendarEvent[],
   date: Date,
   isInScope: boolean
 

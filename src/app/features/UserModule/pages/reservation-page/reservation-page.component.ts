@@ -8,7 +8,7 @@ import {convertReservationToCalendarEvent, Reservation} from "../../../../CoreMo
 import {GetReservationsDTO} from "../../../../CoreModule/models/dto/get-reservations-between-dto";
 import {SideBarComponent} from "../../../../SharedModule/components/navigation/side-bar/side-bar.component";
 import {
-  CalenderEvent,
+  CalendarEvent,
   CalenderViewComponent
 } from "../../../../SharedModule/components/calendar/calender-view/calender-view.component";
 
@@ -28,10 +28,10 @@ export class ReservationPageComponent {
 
   protected readonly Tab = Tab;
   protected activeTab = Tab.RESERVATIONS;
-  updateWeaponCalendarEvent = new  EventEmitter<CalenderEvent[]>();
-  updateReservationsCalendarEvent = new  EventEmitter<CalenderEvent[]>();
+  updateWeaponCalendarEvent = new  EventEmitter<CalendarEvent[]>();
+  updateReservationsCalendarEvent = new  EventEmitter<CalendarEvent[]>();
   private associationID: string;
-  private calendarItems: CalenderEvent[] = [];
+  private calendarItems: CalendarEvent[] = [];
   private reservations: Reservation[] = [];
 
 
@@ -59,7 +59,7 @@ export class ReservationPageComponent {
 
   }
 
-  weaponCalendarItemClicked(event: CalenderEvent) {
+  weaponCalendarItemClicked(event: CalendarEvent) {
 
   }
 
@@ -89,13 +89,13 @@ export class ReservationPageComponent {
     })
   }
 
-  reservationCalendarItemClicked(event: CalenderEvent) {
+  reservationCalendarItemClicked(event: CalendarEvent) {
 
   }
 
 
   createCalendarItems(list : Reservation[]) {
-    const newEvents: CalenderEvent[] = []
+    const newEvents: CalendarEvent[] = []
     list.forEach(reservation => {
       newEvents.push(convertReservationToCalendarEvent(reservation))
     });
