@@ -33,18 +33,20 @@ export class UpdateUserModalComponent {
   @Input() selectedUser: UserAssociation | undefined;
   @Input() selectedRole: string | undefined;
   userRoles: AssociationRole[] = [];
-
+  //
   @Output() updateUserAssociationEvent= new EventEmitter<UserAssociation>();
-
+  //
+  private associationID: string;
   constructor(
     private graphQLCommunication: GraphQLCommunication,
     navigationService: NavigationService,
     private translate: TranslateService,
     private route: ActivatedRoute,
     protected modalService: ModalService,
-    private associationMembersPage: AssociationMembersPageComponent,
     private alertService: AlertService
   ) {
+    this.associationID = route.snapshot.params['associationID'];
+
     this.graphQLCommunication.getAssociationRoles().subscribe({
       next: (response) => {
         this.userRoles = response.data.getAssociationRoles
@@ -61,7 +63,7 @@ export class UpdateUserModalComponent {
   protected updateUserRole() {
     const selectedRoleObj = this.userRoles.find(role => role.name === this.selectedRole);
     if (selectedRoleObj) {
-      this.graphQLCommunication.changeUserAssociation(this.associationMembersPage.associationID, this.selectedUser!.user.id, selectedRoleObj.id)
+      this.graphQLCommunication.changeUserAssociation(this.associationID, this.selectedUser!.user.id, selectedRoleObj.id)
         .subscribe({
           next: (response) => {
             const changedUserDTO: ChangeUserAssociationResponseDTO = response.data.changeUserAssociation

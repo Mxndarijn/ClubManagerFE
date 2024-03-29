@@ -6,7 +6,6 @@ import {map, Observable} from "rxjs";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
-import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-user-modal.component";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
 import {SearchBoxComponent} from "../../../../SharedModule/components/input-fields/search-box/search-box.component";
 import {
@@ -22,6 +21,7 @@ import {AuthenticationService} from "../../../../CoreModule/services/authenticat
 import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
 import {AlertInfo} from "../../../../SharedModule/components/alerts/alert-manager/alert-manager.component";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-user-modal.component";
 
 enum Tab {
   MEMBERS,
