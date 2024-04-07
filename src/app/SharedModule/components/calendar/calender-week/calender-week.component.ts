@@ -5,7 +5,7 @@ import {
   ElementRef, EventEmitter,
   Input,
   OnInit,
-  Renderer2,
+  Renderer2, Type,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -17,6 +17,7 @@ import {CalenderEventComponent} from "../calender-week-event/calender-event.comp
 import {BehaviorSubject} from "rxjs";
 import {UtilityFunctions} from "../../../utilities/utility-functions";
 import {CalendarEventCommonComponent} from "../events/calendar-event-common/calendar-event-common.component";
+import {CalendarEventData} from "../models/CalendarEventData";
 
 
 @Component({
@@ -38,6 +39,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   @Input() focusDayChangedEvent!: BehaviorSubject<Date>
   @Input() eventsChangedEvent!: BehaviorSubject<CalendarEvent[]>
   @Input() calendarItemClickedEvent? : EventEmitter<CalendarEvent>
+  @Input() CalendarEventCommonComponent: Type<CalendarEventData> = CalendarEventCommonComponent;
   @Input() currentDay!: Date
 
   private events: CalendarEvent[] = []
@@ -319,8 +321,6 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
       date1.getMonth() === date2.getMonth() &&
       date1.getFullYear() === date2.getFullYear();
   }
-
-  protected readonly CalendarEventCommonComponent = CalendarEventCommonComponent;
 }
 
 

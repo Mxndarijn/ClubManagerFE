@@ -226,7 +226,7 @@ export class TrackConfigurationPageComponent {
       association: undefined,
       id: "", maxSize: 1,
       tracks: [],
-      users: [],
+      reservationUsers: [],
       title: "",
       startDate: "",
       endDate: "",

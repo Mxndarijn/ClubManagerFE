@@ -182,7 +182,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     this.createSeriesForm = new FormGroup({
       repeatUntil: new FormControl("", Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
       repeatType: new FormControl(undefined, Validators.required),
-      repeatDaysBetween: new FormControl(0, Validators.min(1))
+      repeatDaysBetween: new FormControl(1, Validators.min(1))
     }, );
 
     this.step3ReservationForm.controls.startDate.valueChanges.subscribe({
@@ -270,6 +270,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   createReservation() {
     this.setCurrentValues(true);
     const series = this.createSeries();
+    console.log(this.currentReservation)
     this.graphQLService.createTrackReservation(this.currentReservation!, this.associationID, series).subscribe({
       next: (response) => {
         const dto = response.data.createReservations as CreateTrackReservationDTO

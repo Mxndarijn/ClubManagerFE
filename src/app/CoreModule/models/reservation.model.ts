@@ -13,7 +13,7 @@ export interface Reservation {
   description: string;
   status: ReservationStatus;
   maxSize: number;
-  users: User[];
+  reservationUsers: User[];
   tracks: Track[];
   allowedWeaponTypes: WeaponType[];
   reservationSerie?: ReservationSeries;

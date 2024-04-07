@@ -29,6 +29,7 @@
       <app-calender-week *ngSwitchCase="CalendarView.WEEK" [currentDay]="currentDay"
                          [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent"
                          [calendarItemClickedEvent]="CalendarItemClickedEvent"
+                         [CalendarEventCommonComponent]="CalendarEventComponent"
                          class=""></app-calender-week>
       <app-calendar-day *ngSwitchCase="CalendarView.DAY" [currentDay]="currentDay"
                         [eventsChangedEvent]="eventsChangedEvent" [focusDayChangedEvent]="focusDayChangedEvent"

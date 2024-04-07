@@ -11,6 +11,9 @@ import {
   CalendarEvent,
   CalenderViewComponent
 } from "../../../../SharedModule/components/calendar/calender-view/calender-view.component";
+import {
+  CalendarEventRegisterReservationComponent
+} from "../../../../SharedModule/components/calendar/events/calendar-event-register-reservation/calendar-event-register-reservation.component";
 
 @Component({
   selector: 'app-reservation-page',
@@ -102,6 +105,8 @@ export class ReservationPageComponent {
 
     this.calendarItems = newEvents;
   }
+
+  protected readonly CalendarEventRegisterReservationComponent = CalendarEventRegisterReservationComponent;
 }
 
 enum Tab {

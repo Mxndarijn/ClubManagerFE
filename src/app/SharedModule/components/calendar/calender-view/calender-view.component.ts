@@ -4,7 +4,7 @@ import {
   EventEmitter,
   Input,
   OnInit, Output,
-  Renderer2,
+  Renderer2, Type,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -21,6 +21,8 @@ import {UtilityFunctions} from "../../../utilities/utility-functions";
 import {UpdateButtonComponent} from "../../buttons/update-button/update-button.component";
 import {ColorPreset} from "../../../../CoreModule/models/color-preset.model";
 import {Modal} from "../../../../CoreModule/services/modal.service";
+import {CalendarEventData} from "../models/CalendarEventData";
+import {CalendarEventCommonComponent} from "../events/calendar-event-common/calendar-event-common.component";
 
 
 @Component({
@@ -104,6 +106,7 @@ export class CalenderViewComponent implements OnInit {
   protected readonly Modal = Modal;
   protected readonly CalendarView = CalendarView;
   @Input() showButton = true;
+  @Input() CalendarEventComponent: Type<CalendarEventData> = CalendarEventCommonComponent;
 
   setCurrentView(key: string) {
     this.currentView = this.CalendarView[key as keyof typeof CalendarView]
