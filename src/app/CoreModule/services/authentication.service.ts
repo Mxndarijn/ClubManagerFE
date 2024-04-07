@@ -46,9 +46,9 @@ export class AuthenticationService {
     })
   }
 
-  public register(email: string, password: string, fullName: string): Observable<any> {
+  public register(email: string, password: string, fullName: string, language: string): Observable<any> {
     return new Observable(subscriber => {
-      this.graphQLService.register(email, password, fullName).subscribe({
+      this.graphQLService.register(email, password, fullName, language).subscribe({
         next: (response) => {
           const dto = response.data.register as DefaultBooleanResponseDTO;
           if (dto.success) {

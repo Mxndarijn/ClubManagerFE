@@ -3,7 +3,6 @@ import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NgClass, NgStyle} from "@angular/common"
 import {FormsModule} from "@angular/forms";
 import {ThemeControllerComponent} from "../simple-navbar/theme-controller/theme-controller.component";
-import {LanguageComponent} from "../simple-navbar/language/language.component";
 import {Router} from "@angular/router";
 import {User} from "../../../../CoreModule/models/user.model";
 import {Theme, ThemeService} from "../../../../CoreModule/services/theme.service";
@@ -17,7 +16,7 @@ import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.componen
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [ThemeControllerComponent, LanguageComponent, TranslateModule, NgStyle, NgClass, FormsModule],
+  imports: [ThemeControllerComponent, TranslateModule, NgStyle, NgClass, FormsModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -69,6 +68,12 @@ export class NavbarComponent {
 
   changeTranslation(language: string) {
     this.translate.use(language);
+    this.graphQL.changeLanguage(language).subscribe({
+      error: (e) => {
+        console.error("Could not update language to Server: " + e);
+      }
+    });
+
   }
 
   onCheckboxChange() {

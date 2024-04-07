@@ -2,7 +2,9 @@ import {Component, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {AuthenticationService} from '../../../../CoreModule/services/authentication.service';
-import {ConfirmButtonComponent} from '../../../../SharedModule/components/buttons/confirm-button/confirm-button.component';
+import {
+  ConfirmButtonComponent
+} from '../../../../SharedModule/components/buttons/confirm-button/confirm-button.component';
 import {
   ErrorMessageComponent
 } from "../../../../SharedModule/components/error-messages/error-message/error-message.component";
@@ -57,7 +59,8 @@ export class RegisterPageComponent {
       this.authenticationService.register(
         this.registerForm.controls.email.value!,
         this.registerForm.controls.password.value!,
-        this.registerForm.controls.fullName.value!
+        this.registerForm.controls.fullName.value!,
+        this.translate.currentLang
       ).subscribe({
         next: (registerRequest) => {
           if (!registerRequest.success) {

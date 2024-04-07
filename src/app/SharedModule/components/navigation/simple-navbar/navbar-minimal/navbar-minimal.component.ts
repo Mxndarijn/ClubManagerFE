@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import {ThemeControllerComponent} from "../theme-controller/theme-controller.component";
-import {LanguageComponent} from "../language/language.component";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NgClass, NgStyle} from "@angular/common"
 import {FormsModule} from "@angular/forms";
 import {Theme, ThemeService} from "../../../../../CoreModule/services/theme.service";
+import {GraphQLCommunication} from "../../../../../CoreModule/services/graphql-communication.service";
 
 @Component({
   selector: 'app-navbar-minimal',
   standalone: true,
-  imports: [ThemeControllerComponent, LanguageComponent, TranslateModule, NgStyle, NgClass, FormsModule],
+  imports: [ThemeControllerComponent, TranslateModule, NgStyle, NgClass, FormsModule],
   templateUrl: './navbar-minimal.component.html',
   styleUrl: './navbar-minimal.component.css'
 })
@@ -17,13 +17,19 @@ export class NavbarMinimalComponent {
   isChecked: boolean;
 
   constructor(protected translate: TranslateService,
-              private themeService: ThemeService) {
+              private themeService: ThemeService,
+              private graphQL : GraphQLCommunication) {
     this.isChecked = themeService.getCurrentTheme() != Theme.LIGHT;
 
   }
 
   changeTranslation(language: string) {
     this.translate.use(language);
+    this.graphQL.changeLanguage(language).subscribe({
+      error: (e) => {
+        console.error("Could not update language to Server: " + e);
+      }
+    });
   }
 
   onCheckboxChange() {

@@ -980,7 +980,7 @@ export class GraphQLCommunication {
 
   }
 
-  register(email: string, password: string, fullName: string) {
+  register(email: string, password: string, fullName: string, language: string) {
     const query = {
       query: `
         mutation register($registerRequest: RegisterDTOInput!) {
@@ -994,7 +994,8 @@ export class GraphQLCommunication {
         registerRequest: {
           email: email,
           password: password,
-          fullName: fullName
+          fullName: fullName,
+          language: language
         }
       }
     };
@@ -1174,6 +1175,23 @@ export class GraphQLCommunication {
           weaponID: weaponID
         },
         associationID: associationID
+      }
+    };
+    return this.sendGraphQLRequest(query);
+  }
+
+  changeLanguage(language: string) {
+    const query = {
+      query: `
+         mutation updateLanguage($language: String!) {
+          updateLanguage(language: $language) {
+            success,
+            message,
+          }
+        }
+      `,
+      variables: {
+        language: language
       }
     };
     return this.sendGraphQLRequest(query);
