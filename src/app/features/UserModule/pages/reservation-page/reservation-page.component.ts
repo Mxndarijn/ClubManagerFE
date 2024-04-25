@@ -14,6 +14,10 @@ import {
 import {
   CalendarEventRegisterReservationComponent
 } from "../../../../SharedModule/components/calendar/events/calendar-event-register-reservation/calendar-event-register-reservation.component";
+import {
+  EnrollAtReservationModalComponent
+} from "../../modals/enroll-at-reservation-modal/enroll-at-reservation-modal.component";
+import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 
 @Component({
   selector: 'app-reservation-page',
@@ -22,7 +26,8 @@ import {
     SideBarComponent,
     CalenderViewComponent,
     NgSwitchCase,
-    NgSwitch
+    NgSwitch,
+    EnrollAtReservationModalComponent
   ],
   templateUrl: './reservation-page.component.html',
   styleUrl: './reservation-page.component.css'
@@ -42,7 +47,8 @@ export class ReservationPageComponent {
     private route : ActivatedRoute,
     private navigationService: NavigationService,
     private translate : TranslateService,
-    private graphQLService: GraphQLCommunication
+    private graphQLService: GraphQLCommunication,
+    private modalService: ModalService
   ) {
     this.associationID = route.snapshot.params['associationID'];
 
@@ -93,7 +99,8 @@ export class ReservationPageComponent {
   }
 
   reservationCalendarItemClicked(event: CalendarEvent) {
-
+    this.SetCurrentReservation.emit(event.data as Reservation);
+    this.modalService.showModal(Modal.ASSOCIATION_RESERVE_ENROLL_AT_RESERVATION);
   }
 
 
@@ -107,6 +114,7 @@ export class ReservationPageComponent {
   }
 
   protected readonly CalendarEventRegisterReservationComponent = CalendarEventRegisterReservationComponent;
+  SetCurrentReservation = new EventEmitter<Reservation>;
 }
 
 enum Tab {
