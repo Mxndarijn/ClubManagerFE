@@ -1212,7 +1212,7 @@ export class GraphQLCommunication {
       query: `
         mutation createReservations($dto: CreateReservationDTO!) {
           associationMutations {
-    associationTrackMutations {
+    associationReservationMutations {
       createReservations(dto: $dto) {
             success,
             message,
@@ -1290,7 +1290,7 @@ export class GraphQLCommunication {
       }
     };
 
-    return this.solvePromise(query, v => v.data.associationMutations.associationTrackMutations.createReservations);
+    return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.createReservations);
   }
 
   changeWeapon(associationID: string, weaponID: string, weaponName: string, weaponStatusInterface: WeaponStatusInterface, weaponType: WeaponType) {

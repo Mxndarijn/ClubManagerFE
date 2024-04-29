@@ -104,7 +104,7 @@
             </thead>
             <tbody>
             <!--          <td></td>Voor als het leeg is-->
-            <tr *ngFor="let track of tracksList">
+            <tr *ngFor="let track of getTrackList(true)">
               <td>
                 <input type="checkbox" class="align-middle border-2 border-accent  checkbox checkbox-md"
                        [checked]="containsTrackInList(track)"
@@ -120,6 +120,25 @@
                 </div>
               </td>
             </tr>
+
+            <tr *ngFor="let track of getTrackList(false)">
+              <td>
+                <input type="checkbox" class="align-middle border-2 border-accent  checkbox checkbox-md"
+                       [checked]="containsTrackInList(track)"
+                       [disabled]="true"
+                       [value]="track" (change)="onTrackChange(track, $event)"/>
+              </td>
+              <td> {{ track.name }}</td>
+              <td class="max-w-36 break-words"> {{ track.description }}</td>
+              <td>
+                <div class="flex flex-row max-w-36 items-center flex-wrap">
+                  <ng-container *ngFor="let value of track.allowedWeaponTypes; let last = last">
+                    <p>{{ value.name }}{{ !last ? ', &nbsp;' : '' }}</p>
+                  </ng-container>
+                </div>
+              </td>
+            </tr>
+
             </tbody>
           </table>
         </div>

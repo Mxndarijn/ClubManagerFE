@@ -369,6 +369,9 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
       this.step1ReservationForm.controls.weaponTypes.setValue(this.step1ReservationForm.controls.weaponTypes.value!.filter(type => type !== weaponType));
     }
 
+    this.getTrackList(false).forEach(track => {
+      this.step2ReservationForm.controls.tracks.setValue(this.step2ReservationForm.controls.tracks.value!.filter(type => type !== track));
+    })
   }
 
   containsWeaponTypeInList(weaponType: WeaponType) {
@@ -433,6 +436,11 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     }
   }
 
+  getTrackList(b: boolean) {
+    return this.tracksList.filter(item => {
+      return b === this.step1ReservationForm.controls.weaponTypes.value?.some(weaponType => item.allowedWeaponTypes.some(i => i.id === weaponType.id));
+    });
+  }
 }
 
 
