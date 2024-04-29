@@ -76,10 +76,8 @@ export class WeaponPageComponent {
         navigationService.setTitle(res);
       }
     )
-    this.graphQLCommunication.getAssociationName(this.associationID).subscribe({
-      next: (response) => {
-        navigationService.setSubTitle(response.data.getAssociationDetails.name);
-      }
+    this.graphQLCommunication.getAssociationName(this.associationID).then( r=> {
+        navigationService.setSubTitle(r.name);
     })
 
     this.addWeaponMaintenanceEvent.subscribe({
@@ -123,19 +121,16 @@ export class WeaponPageComponent {
   protected readonly Modal = Modal;
 
   private reloadData() {
-    this.graphQLCommunication.getAllWeapons(this.associationID).subscribe({
-      next: (response) => {
-        this.weaponList = response.data.getAllWeapons
-      },
-      error: (e) => {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Wapens konden niet worden opgehaald.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
+    this.graphQLCommunication.getAllWeapons(this.associationID).then( r =>{
+        this.weaponList = r
+    }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Wapens konden niet worden opgehaald.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
     })
   }
 
@@ -153,9 +148,7 @@ export class WeaponPageComponent {
   setCurrentWeapon: EventEmitter<Weapon> = new EventEmitter<Weapon>();
 
   updateEvents(date: Date) {
-    this.graphQLService.getAssociationMaintenances(this.associationID, date).subscribe({
-      next: (response) => {
-        const dto: GetWeaponMaintenancesDTO = response.data.getWeaponMaintenancesBetween;
+    this.graphQLService.getAssociationMaintenances(this.associationID, date).then( (dto: GetWeaponMaintenancesDTO) => {
         if (dto.success) {
           const newEvents: CalendarEvent[] = []
           dto.maintenances.forEach(maintenance => {
@@ -167,10 +160,8 @@ export class WeaponPageComponent {
 
         } else {
           console.error("Could not request events")
-          console.error(response)
+          console.error(dto)
         }
-
-      }
     })
   }
 

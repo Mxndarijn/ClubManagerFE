@@ -67,10 +67,8 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
       trackWeaponTypes: new FormControl([], Validators.required),
     });
 
-    this.graphQLService.getAllWeaponTypes(this.associationID).subscribe({
-      next: (response) => {
-        this.weaponTypeList = response.data.getAllWeaponTypes
-      }
+    this.graphQLService.getAllWeaponTypes().then(r=>{
+        this.weaponTypeList = r
     })
   }
 
@@ -100,10 +98,8 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
 
   createTrack() {
     this.setCurrentTrack();
-    this.graphQLService.createTrack(this.associationID, this.currentTrack!).subscribe({
-      next: (response) => {
+    this.graphQLService.createTrack(this.associationID, this.currentTrack!).then((rDTO: CreateTrackResponseDTO) =>{
         this.hideModal()
-        const rDTO = response.data.createTrackForAssociation as CreateTrackResponseDTO;
         if(rDTO.success) {
           this.alertService.showAlert({
             title: "Succesvol",
@@ -123,25 +119,21 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
           });
 
         }
-      },
-      error: (e) => {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een onbekende fout opgetreden bij het aanmaken van de baan.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
-    })
+    }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Er is een onbekende fout opgetreden bij het aanmaken van de baan.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
+  })
   }
 
   saveTrack() {
     this.setCurrentTrack();
-    this.graphQLService.editTrack(this.associationID, this.currentTrack!).subscribe({
-      next: (response) => {
+    this.graphQLService.editTrack(this.associationID, this.currentTrack!).then(( rDTO: CreateTrackResponseDTO) => {
         this.hideModal();
-        const rDTO = response.data.editTrackForAssociation as CreateTrackResponseDTO;
         if(rDTO.success) {
           this.alertService.showAlert({
             title: "Succesvol",
@@ -161,7 +153,6 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
           });
 
         }
-      }
     })
   }
 

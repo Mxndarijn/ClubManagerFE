@@ -79,17 +79,13 @@ export class SettingsPageComponent {
   }
 
   reloadData() {
-    this.graphQL.getAssociationSettings(this.associationID).subscribe({
-      next: (response) => {
-        this.associationDetails = response.data.getAssociationDetails;
+    this.graphQL.getAssociationSettings(this.associationID).then(r =>{
+        this.associationDetails = r;
         this.setValuesInControls()
-        }
     })
 
-    this.graphQL.getAssociationStatistics(this.associationID).subscribe({
-      next: (response) => {
-        this.associationStatistics = response.data.getAssociationStatistics;
-      }
+    this.graphQL.getAssociationStatistics(this.associationID).then(r =>{
+        this.associationStatistics = r;
     })
   }
 
@@ -107,9 +103,7 @@ export class SettingsPageComponent {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const imageURL = e.target?.result as string;
-        this.graphQL.updateAssociationPicture(this.associationID, imageURL).subscribe({
-          next: (response) => {
-            const rDTO: DefaultBooleanResponseDTO = response.data.updateAssociationPicture
+        this.graphQL.updateAssociationPicture(this.associationID, imageURL).then( (rDTO: DefaultBooleanResponseDTO) => {
             if (rDTO.success) {
               this.navigationService.refreshNavigation();
               this.alertService.showAlert({
@@ -128,12 +122,8 @@ export class SettingsPageComponent {
                 alertClass: AlertClass.INCORRECT_CLASS
               });
             }
-            console.log(response);
-          },
-          error: (e) => {
-            console.log(e)
-          }
-        });
+            console.log(rDTO);
+        }).catch(e => {console.log(e)});
         this.associationDetails!.image!.encoded = imageURL;
       };
       reader.readAsDataURL(input.files[0])
@@ -167,10 +157,7 @@ export class SettingsPageComponent {
       this.updateAssociationDataForm.controls.associationDescription.value!,
       this.updateAssociationDataForm.controls.email.value!,
       this.associationID
-    ).subscribe({
-      next: (response) => {
-        console.log(response)
-        const rDTO = response.data.updateAssociationSettings as DefaultBooleanResponseDTO
+    ).then( (rDTO: DefaultBooleanResponseDTO) => {
         if(rDTO.success) {
           this.reloadData()
           this.alertService.showAlert({
@@ -189,17 +176,15 @@ export class SettingsPageComponent {
             alertClass: AlertClass.INCORRECT_CLASS
           });
         }
-      },
-      error: (e) => {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een fout opgetreden bij het bijwerken van de instellingen.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
-    })
+    }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Er is een fout opgetreden bij het bijwerken van de instellingen.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
+  })
 
 
   }

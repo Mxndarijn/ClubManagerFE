@@ -19,50 +19,35 @@ export class AuthenticationService {
 
   public login(email: string, password: string): Observable<any> {
     return new Observable(subscriber => {
-      this.graphQLService.login(email, password).subscribe( {
-        next: (response) => {
-          console.log(response)
-          const dto = response.data.login as DefaultBooleanResponseWithAnyMessageDTO;
+      this.graphQLService.login(email, password).then((dto: DefaultBooleanResponseWithAnyMessageDTO) => {
           if(dto.success) {
             localStorage.setItem(this.tokenKey, dto.message)
             this.updateUserID();
           }
           subscriber.next(dto);
           subscriber.complete();
-      },
-        error: (error) => {
-          // console.error('Er is een fout opgetreden', error);
-          subscriber.error(error);
-        }
-    });
+    }).catch(e => {
+        subscriber.error(e);
+      });
   });
   }
 
   private updateUserID() {
-    this.graphQLService.getMyID().subscribe({
-      next: (idResponse) => {
-        localStorage.setItem(this.userKey, idResponse.data.getMyProfile.id)
-      }
+    this.graphQLService.getMyID().then( r=>{
+        localStorage.setItem(this.userKey, r.id)
     })
   }
 
   public register(email: string, password: string, fullName: string, language: string): Observable<any> {
     return new Observable(subscriber => {
-      this.graphQLService.register(email, password, fullName, language).subscribe({
-        next: (response) => {
-          const dto = response.data.register as DefaultBooleanResponseDTO;
+      this.graphQLService.register(email, password, fullName, language).then((dto: DefaultBooleanResponseDTO) =>{
           if (dto.success) {
             localStorage.setItem(this.tokenKey, dto.message);
             this.updateUserID();
           }
           subscriber.next(dto);
           subscriber.complete();
-        },
-        error: (error) => {
-          // console.error('Fout bij registreren', error);
-          subscriber.error(error);
-        }
-      });
+      }).catch(e => subscriber.error(e));
     });
   }
 
@@ -78,8 +63,8 @@ export class AuthenticationService {
       return false;
     }
     try {
-      const response = await firstValueFrom(this.graphQLService.validateToken());
-      return response.data.validateToken.success;
+      const response = await this.graphQLService.validateToken();
+      return response.success;
     } catch (error) {
       return false;
     }

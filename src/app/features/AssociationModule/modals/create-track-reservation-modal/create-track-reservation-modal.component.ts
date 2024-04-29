@@ -128,21 +128,16 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     super(Modal.ASSOCIATION_CONFIGURE_TRACK_CREATE_RESERVATION, modalService);
     this.associationID = route.snapshot.params['associationID'];
 
-    this.graphQLService.getAllWeaponTypes(this.associationID).subscribe({
-      next: (response) => {
-        this.weaponTypeList = response.data.getAllWeaponTypes
-      }
+    this.graphQLService.getAllWeaponTypes().then(r=>{
+        this.weaponTypeList = r
     })
 
-    this.graphQLService.getTracksOfAssociation(this.associationID).subscribe({
-      next: (response) => {
-        this.tracksList = response.data.getTracksOfAssociation;
-      }
+    this.graphQLService.getTracksOfAssociation(this.associationID).then(r=>{
+        this.tracksList = r;
     })
 
-    graphQLService.getAllColorPresets().subscribe({
-      next: (response) => {
-        this.colorPresets = response.data.getAllColorPresets
+    graphQLService.getAllColorPresets().then(r=>{
+        this.colorPresets = r
 
         this.colorPresets.forEach(preset => {
           translate.get(preset.colorName).subscribe({
@@ -151,7 +146,6 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
             }
           })
         })
-      }
     })
 
     // @ts-ignore
@@ -271,9 +265,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     this.setCurrentValues(true);
     const series = this.createSeries();
     console.log(this.currentReservation)
-    this.graphQLService.createTrackReservation(this.currentReservation!, this.associationID, series).subscribe({
-      next: (response) => {
-        const dto = response.data.createReservations as CreateTrackReservationDTO
+    this.graphQLService.createTrackReservation(this.currentReservation!, this.associationID, series).then( (dto: CreateTrackReservationDTO) =>{
         if(dto.success) {
           this.alertService.showAlert({
             title: "Succesvol",
@@ -292,20 +284,17 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
             alertClass: AlertClass.INCORRECT_CLASS
           });
         }
-        console.log(response)
         this.hideModal()
-      },
-      error: (e) => {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een fout opgetreden.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-        console.log(e)
-        this.hideModal()
-      }
+    }).catch(e=> {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Er is een fout opgetreden.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
+      console.log(e)
+      this.hideModal()
     });
   }
 

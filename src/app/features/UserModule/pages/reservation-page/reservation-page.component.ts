@@ -57,10 +57,8 @@ export class ReservationPageComponent {
         navigationService.setTitle(res);
       }
     )
-    this.graphQLService.getAssociationName(this.associationID).subscribe({
-      next: (response) => {
-        navigationService.setSubTitle(response.data.getAssociationDetails.name);
-      }
+    this.graphQLService.getAssociationName(this.associationID).then(r =>{
+        navigationService.setSubTitle(r.name);
     })
   }
 
@@ -77,24 +75,18 @@ export class ReservationPageComponent {
   }
 
   updateReservationEvent(date: Date) {
-    this.graphQLService.getReservations(this.associationID, date).subscribe({
-      next: (response) => {
-        console.log(response)
-        const dto = response.data.getReservationsBetween as GetReservationsDTO;
+    this.graphQLService.getReservations(this.associationID, date).then((dto: GetReservationsDTO)=> {
         if (dto.success) {
           this.reservations = dto.reservations
           this.createCalendarItems(this.reservations);
           this.updateReservationsCalendarEvent?.next(this.calendarItems);
         } else {
           console.error("Could not request events")
-          console.error(response)
         }
 
-      },
-      error: (e) => {
+      }).catch(e => {
         console.error("Could not request events")
         console.error(e)
-      }
     })
   }
 

@@ -79,11 +79,9 @@ export class AssociationMembersPageComponent {
     private authService: AuthenticationService,) {
     this.associationID = route.snapshot.params['associationID'];
 
-    this.graphQLCommunication.getAssociationName(this.associationID).subscribe({
-      next: (response) => {
-        navigationService.setSubTitle(response.data.getAssociationDetails.name);
-        this.associationName = response.data.getAssociationDetails.name;
-      }
+    this.graphQLCommunication.getAssociationName(this.associationID).then(r=>{
+        navigationService.setSubTitle(r.name);
+        this.associationName = r.name;
     })
 
     navigationService.showNavigation();
@@ -92,17 +90,13 @@ export class AssociationMembersPageComponent {
       }
     )
     this.userID = this.authService.getUserID();
-    this.graphQLCommunication.getAssociationMembers(this.associationID).subscribe({
-      next: (response) => {
-        this.userAssociations = response.data.getAssociationDetails.users
+    this.graphQLCommunication.getAssociationMembers(this.associationID).then(r=>{
+        this.userAssociations = r.users
         this.searchUser(this.latestSearchParam);
-    }
     })
 
-    this.graphQLCommunication.getAssociationInvites(this.associationID).subscribe({
-      next: (response) => {
-        this.associationInvites = response.data.getAssociationDetails.invites
-      }
+    this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
+        this.associationInvites = r.invites
     })
   }
 
@@ -161,9 +155,7 @@ export class AssociationMembersPageComponent {
   }
 
   deleteSelectedInvite(id: AssociationInviteID) {
-    this.graphQLCommunication.deleteAssociationInvite(id).subscribe({
-      next: (response) => {
-        const responseObject: DefaultBooleanResponseDTO = response.data.removeAssociationInvite;
+    this.graphQLCommunication.deleteAssociationInvite(id).then((responseObject: DefaultBooleanResponseDTO) =>{
         if(responseObject.success) {
           const index = this.associationInvites.findIndex(value => value.id === id)
           if (index !== -1) {
@@ -190,18 +182,16 @@ export class AssociationMembersPageComponent {
           }
           this.alertService.showAlert(alert)
         }
-      },
-      error: (e) => {
-        const alert: AlertInfo = {
-          duration: 4000,
-          title: "Error",
-          subTitle: "Er is een fout opgetreden bij het intrekken van de uitnodiging.",
-          alertClass: AlertClass.INCORRECT_CLASS,
-          icon: AlertIcon.XMARK
+    }).catch(e => {
+      const alert: AlertInfo = {
+        duration: 4000,
+        title: "Error",
+        subTitle: "Er is een fout opgetreden bij het intrekken van de uitnodiging.",
+        alertClass: AlertClass.INCORRECT_CLASS,
+        icon: AlertIcon.XMARK
 
-        }
-        this.alertService.showAlert(alert)
-    }
+      }
+      this.alertService.showAlert(alert)
     });
 
   }
@@ -218,9 +208,7 @@ export class AssociationMembersPageComponent {
 
   removeUser() {
     this.graphQLCommunication.deleteUserAssociation(this.associationID, this.selectedUser!.user.id)
-      .subscribe({
-        next: (response) => {
-          const changedUserDTO: DefaultBooleanResponseDTO = response.data.removeUserAssociation;
+      .then((changedUserDTO: DefaultBooleanResponseDTO) =>{
           if (changedUserDTO.success) {
             this.userAssociationDeleted(this.selectedUser!)
             const alert: AlertInfo = {
@@ -234,7 +222,6 @@ export class AssociationMembersPageComponent {
             this.alertService.showAlert(alert)
 
           }
-        }
       })
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
   }

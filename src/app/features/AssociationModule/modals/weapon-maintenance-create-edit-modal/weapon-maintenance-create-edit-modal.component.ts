@@ -85,9 +85,8 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     super(Modal.ASSOCIATION_WEAPONS_CREATE_EDIT_WEAPON_MAINTENANCE, modalService);
     this.associationID = route.snapshot.params['associationID'];
 
-    graphQLService.getAllColorPresets().subscribe({
-      next: (response) => {
-        this.colorPresets = response.data.getAllColorPresets
+    graphQLService.getAllColorPresets().then(r=>{
+        this.colorPresets = r
 
         this.colorPresets.forEach(preset => {
           translate.get(preset.colorName).subscribe({
@@ -96,7 +95,6 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
             }
           })
         })
-      }
     })
 
     // @ts-ignore
@@ -110,10 +108,8 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     }, {validators: ValidationUtils.validateDatesFactory("maintenanceStartDate", "maintenanceEndDate")});
 
 
-    graphQLService.getAllWeapons(this.associationID).subscribe({
-      next: (response) => {
-        this.weapons = response.data.getAllWeapons
-      }
+    graphQLService.getAllWeapons(this.associationID).then(r=>{
+        this.weapons = r
     })
 
   }
@@ -163,9 +159,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     this.setValues()
 
 
-    this.graphQLService.createWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).subscribe({
-      next: (response) => {
-        const dto: CreateWeaponMaintenanceResponseDTO = response.data.createWeaponMaintenance
+    this.graphQLService.createWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).then( (dto: CreateWeaponMaintenanceResponseDTO) =>{
         if (dto.success) {
           this.addWeaponMaintenanceEvent.emit(dto.maintenance)
           this.alertService.showAlert({
@@ -186,16 +180,14 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
           });
 
         }
-      },
-      error: (e) => {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een fout opgetreden.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
+    }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Er is een fout opgetreden.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
     });
     this.hideModal()
 
@@ -227,9 +219,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     this.setValues()
 
 
-    this.graphQLService.changeWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).subscribe({
-      next: (response) => {
-        const dto: CreateWeaponMaintenanceResponseDTO = response.data.changeWeaponMaintenance
+    this.graphQLService.changeWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).then( (dto: CreateWeaponMaintenanceResponseDTO) =>{
         if (dto.success) {
           this.changeWeaponMaintenanceEvent.emit(dto.maintenance)
           this.alertService.showAlert({
@@ -250,16 +240,14 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
           });
 
         }
-      },
-      error: (e) => {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een fout opgetreden.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
+    }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Er is een fout opgetreden.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
     });
     this.hideModal()
 
@@ -269,9 +257,7 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     if (!this.currentWeaponMaintenance?.id)
 
       return;
-    this.graphQLService.deleteWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).subscribe({
-      next: (response) => {
-        const dto: DefaultBooleanResponseDTO = response.data.deleteWeaponMaintenance
+    this.graphQLService.deleteWeaponMaintenance(this.associationID, this.currentWeaponMaintenance!).then( (dto: DefaultBooleanResponseDTO) =>{
         if (dto.success) {
           this.deleteWeaponMaintenanceEvent.emit(this.currentWeaponMaintenance)
           this.alertService.showAlert({
@@ -292,16 +278,14 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
           });
 
         }
-      },
-      error: (e) => {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een fout opgetreden.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
+    }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Er is een fout opgetreden.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
     });
     this.hideModal()
   }

@@ -59,14 +59,12 @@ export class SendInvitationModalComponent {
     })
 
 
-    this.graphQLCommunication.getAssociationRoles().subscribe({
-      next: (response) => {
-        this.userRoles = response.data.getAssociationRoles;
+    this.graphQLCommunication.getAssociationRoles().then( r=>{
+        this.userRoles = r;
 
         // reorder the array so 'User' is first
         this.userRoles = this.userRoles.sort((a, b) =>
           a.name === 'User' ? -1 : b.name === 'User' ? 1 : 0);
-      }
     })
   }
 
@@ -85,10 +83,7 @@ export class SendInvitationModalComponent {
     return;
   }
   this.graphQLCommunication.createAssociationInvite(this.associationID, this.emailFormControl.value,selectedRoleObj.id )
-    .subscribe({
-      next: (response) => {
-        console.log(response)
-        const dto: SendAssociationInviteResponseDTO = response.data.sendAssociationInvite;
+    .then((dto: SendAssociationInviteResponseDTO) =>{
         this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE)
         if(dto.success) {
           const alert: AlertInfo = {
@@ -130,17 +125,15 @@ export class SendInvitationModalComponent {
 
           }
         }
-      },
-      error: (e) => {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Probeer het later opnieuw.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
-    })
+    }).catch(e => {
+    this.alertService.showAlert({
+      title: "Fout opgetreden",
+      subTitle: "Probeer het later opnieuw.",
+      icon: AlertIcon.XMARK,
+      duration: 4000,
+      alertClass: AlertClass.INCORRECT_CLASS
+    });
+  })
     this.emailFormControl.reset();
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE)
 

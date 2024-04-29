@@ -59,19 +59,15 @@ export class NavbarComponent {
 
   }
   reload() {
-    this.graphQL.getMyProfile().subscribe({
-      next: (data) => {
-        this.profile = data.data.getMyProfile;
-      }
+    this.graphQL.getMyProfile().then(r=>{
+        this.profile = r;
     })
   }
 
   changeTranslation(language: string) {
     this.translate.use(language);
-    this.graphQL.changeLanguage(language).subscribe({
-      error: (e) => {
+    this.graphQL.changeLanguage(language).then(e =>{
         console.error("Could not update language to Server: " + e);
-      }
     });
 
   }

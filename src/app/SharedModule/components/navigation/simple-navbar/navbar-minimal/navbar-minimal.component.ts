@@ -25,11 +25,9 @@ export class NavbarMinimalComponent {
 
   changeTranslation(language: string) {
     this.translate.use(language);
-    this.graphQL.changeLanguage(language).subscribe({
-      error: (e) => {
-        console.error("Could not update language to Server: " + e);
-      }
-    });
+    this.graphQL.changeLanguage(language).catch(e => {
+      console.error("Could not update language to Server: " + e);
+    })
   }
 
   onCheckboxChange() {

@@ -26,20 +26,12 @@ export class PermissionService {
   }
 
   async refreshPermissions() {
-    this.graphQL.getMyPermissions().subscribe({
-      next: (response) => {
-        if(response.data == null)
-          return;
-        this.accountPermissions = response.data.getMyProfile.role.permissions
-      },
+    this.graphQL.getMyPermissions().then(r=>{
+        this.accountPermissions = r.role.permissions
     })
 
-    this.graphQL.getMyAssociationPermissions().subscribe({
-      next: (response: any) => {
-        if(response.data == null)
-          return;
-        this.associationPermissionsSubject.next(response.data.getMyProfile.associations);
-      },
+    this.graphQL.getMyAssociationPermissions().then(r=>{
+        this.associationPermissionsSubject.next(r.associations);
     })
   }
 

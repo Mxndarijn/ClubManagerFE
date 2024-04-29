@@ -127,20 +127,12 @@ export class SideBarComponent implements OnInit {
 
 
   private reload() {
-    this.graphQLCommunication.getMyAssociations().subscribe({
-      next: (response) => {
-        if(response.data == null)
-          return;
-        this.associations = response.data.getMyProfile.associations.map((assoc: UserAssociation) => assoc.association);
-      },
-      error: (error) => {
-      }
+    this.graphQLCommunication.getMyAssociations().then(r =>{
+        this.associations = r.associations.map((assoc: UserAssociation) => assoc.association);
     });
 
-    this.graphQLCommunication.getUserInvites().subscribe({
-      next: (response) => {
-        this.associationInvitesList = response.data.getMyProfile.invites
-      }
+    this.graphQLCommunication.getUserInvites().then(r =>{
+        this.associationInvitesList = r.invites
     });
   }
 }

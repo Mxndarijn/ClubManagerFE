@@ -7,7 +7,9 @@ import {map, Observable} from "rxjs";
 import {AssociationInvite, AssociationInviteID} from "../../../../CoreModule/models/association-invite";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
-import {ConfirmationModalComponent} from "../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
+import {
+  ConfirmationModalComponent
+} from "../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
 import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
 import {PermissionService} from "../../../../CoreModule/services/permission.service";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
@@ -42,7 +44,7 @@ export class InvitationsPageComponent {
     private graphQLService: GraphQLCommunication,
     protected modalService: ModalService,
     private permissionService: PermissionService,
-    private alertService : AlertService
+    private alertService: AlertService
   ) {
     navigationService.showNavigation();
     this.translate.get('invitationsPage.titleHeader').subscribe((res: string) => {
@@ -50,11 +52,9 @@ export class InvitationsPageComponent {
       }
     )
 
-    this.graphQLService.getUserInvites().subscribe({
-      next: (response) => {
-        this.associationInvites = response.data.getMyProfile.invites
-      }
-    })
+    this.graphQLService.getUserInvites().then(invites => {
+      this.associationInvites = invites;
+    });
 
 
   }
@@ -77,30 +77,18 @@ export class InvitationsPageComponent {
 
   declineInvite(associationInviteId: AssociationInviteID) {
     this.graphQLService.rejectAssociationInvite(associationInviteId)
-      .subscribe({
-        next: (response) => {
-          const dto : DefaultBooleanResponseDTO = response.data.rejectAssociationInvite
-          if(dto.success) {
-            this.associationInvites = this.associationInvites.filter(invite => invite.id !== associationInviteId);
-            this.navigationService.refreshNavigation();
-            this.alertService.showAlert({
-              title: "Succesvol",
-              subTitle: "Je hebt de uitnodiging afgewezen.",
-              icon: AlertIcon.CHECK,
-              duration: 4000,
-              alertClass: AlertClass.CORRECT_CLASS
-            });
-          } else {
-            this.alertService.showAlert({
-              title: "Fout opgetreden",
-              subTitle: "Probeer het later opnieuw.",
-              icon: AlertIcon.XMARK,
-              duration: 4000,
-              alertClass: AlertClass.INCORRECT_CLASS
-            });
-          }
-        },
-        error: (e) => {
+      .then((dto: DefaultBooleanResponseDTO) => {
+        if (dto.success) {
+          this.associationInvites = this.associationInvites.filter(invite => invite.id !== associationInviteId);
+          this.navigationService.refreshNavigation();
+          this.alertService.showAlert({
+            title: "Succesvol",
+            subTitle: "Je hebt de uitnodiging afgewezen.",
+            icon: AlertIcon.CHECK,
+            duration: 4000,
+            alertClass: AlertClass.CORRECT_CLASS
+          });
+        } else {
           this.alertService.showAlert({
             title: "Fout opgetreden",
             subTitle: "Probeer het later opnieuw.",
@@ -109,35 +97,32 @@ export class InvitationsPageComponent {
             alertClass: AlertClass.INCORRECT_CLASS
           });
         }
-      })
+      }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Probeer het later opnieuw.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
+    })
   }
+
   acceptInvite(associationInviteId: AssociationInviteID) {
     this.graphQLService.acceptAssociationInvite(associationInviteId)
-      .subscribe({
-        next: (response) => {
-          const dto : DefaultBooleanResponseDTO = response.data.acceptAssociationInvite
-          if(dto.success) {
-            this.associationInvites = this.associationInvites.filter(invite => invite.id !== associationInviteId);
-            this.permissionService.refreshPermissions();
-            this.navigationService.refreshNavigation();
-            this.alertService.showAlert({
-              title: "Succesvol",
-              subTitle: "Je hebt de uitnodiging geaccepteert.",
-              icon: AlertIcon.CHECK,
-              duration: 4000,
-              alertClass: AlertClass.CORRECT_CLASS
-            });
-          } else {
-            this.alertService.showAlert({
-              title: "Fout opgetreden",
-              subTitle: "Probeer het later opnieuw.",
-              icon: AlertIcon.XMARK,
-              duration: 4000,
-              alertClass: AlertClass.INCORRECT_CLASS
-            });
-          }
-        },
-        error: (e) => {
+      .then((dto: DefaultBooleanResponseDTO) => {
+        if (dto.success) {
+          this.associationInvites = this.associationInvites.filter(invite => invite.id !== associationInviteId);
+          this.permissionService.refreshPermissions();
+          this.navigationService.refreshNavigation();
+          this.alertService.showAlert({
+            title: "Succesvol",
+            subTitle: "Je hebt de uitnodiging geaccepteert.",
+            icon: AlertIcon.CHECK,
+            duration: 4000,
+            alertClass: AlertClass.CORRECT_CLASS
+          });
+        } else {
           this.alertService.showAlert({
             title: "Fout opgetreden",
             subTitle: "Probeer het later opnieuw.",
@@ -146,6 +131,14 @@ export class InvitationsPageComponent {
             alertClass: AlertClass.INCORRECT_CLASS
           });
         }
-      })
+      }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Probeer het later opnieuw.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
+    })
   }
 }

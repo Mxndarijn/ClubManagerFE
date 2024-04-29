@@ -82,12 +82,10 @@ export class UpdateProfilePageComponent {
   }
 
   reloadData() {
-    this.graphQL.getMyFullProfile().subscribe({
-      next: (data) => {
-        this.profile = data.data.getMyProfile;
+    this.graphQL.getMyFullProfile().then(p => {
+        this.profile = p;
         this.updateDataForm.controls.email.setValue(this.profile?.email + "");
         this.updateDataForm.controls.fullName.setValue(this.profile?.fullName + "");
-      }
     })
   }
 
@@ -98,9 +96,7 @@ export class UpdateProfilePageComponent {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const imageURL = e.target?.result as string;
-        this.graphQL.uploadProfilePicture(imageURL).subscribe({
-          next: (response) => {
-            const rDTO: DefaultBooleanResponseDTO = response.data.updateMyProfilePicture
+        this.graphQL.uploadProfilePicture(imageURL).then(rDTO => {
             if (rDTO.success) {
               this.navigationService.refreshNavigation();
               this.alertService.showAlert({
@@ -119,11 +115,9 @@ export class UpdateProfilePageComponent {
                 alertClass: AlertClass.INCORRECT_CLASS
               });
             }
-            console.log(response);
-          },
-          error: (e) => {
-            console.log(e)
-          }
+
+        }).catch(e => {
+          console.log(e)
         });
         this.profile!.image!.encoded = imageURL;
       };
@@ -148,10 +142,7 @@ export class UpdateProfilePageComponent {
       this.updateDataForm.controls.email.value,
       this.updateDataForm.controls.password.value,
       this.checkPasswordForm.value
-    ).subscribe({
-      next: (response) => {
-        console.log(response)
-        const rDTO: DefaultBooleanResponseDTO = response.data.updateMyProfile
+    ).then(rDTO => {
         if (rDTO.success) {
           this.reloadData();
           this.alertService.showAlert({
@@ -186,16 +177,14 @@ export class UpdateProfilePageComponent {
 
           }
         }
-      },
-      error: (e) => {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
+    }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
     });
   }
 

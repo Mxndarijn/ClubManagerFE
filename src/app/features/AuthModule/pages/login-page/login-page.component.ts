@@ -60,6 +60,7 @@ export class LoginPageComponent {
     if(this.loginForm.valid) {
       this.authenticationService.login(this.loginForm.controls.email.value!, this.loginForm.controls.password.value!).subscribe({
         next: (dto) => {
+          console.log(dto)
           if(!dto.success) {
             if (typeof dto.message === 'string') {
               this.translate.get('loginPage.errors.serverResponses.' + dto.message).subscribe((res: string) => {
@@ -77,6 +78,7 @@ export class LoginPageComponent {
             this.permissionService.refreshPermissions();
             this.navigationService.refreshNavigation();
             this.router.navigate(['/home']);
+            console.log("e")
             // navigate to home
 
           }

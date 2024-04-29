@@ -84,10 +84,8 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
       status: new FormControl(this.weaponStatuses[0], Validators.required),
       type: new FormControl(null, Validators.required),
     });
-    this.graphQLService.getAllWeaponTypes(this.associationID).subscribe({
-      next: (response) => {
-        this.weaponTypeList = response.data.getAllWeaponTypes
-      }
+    this.graphQLService.getAllWeaponTypes().then(r=>{
+        this.weaponTypeList = r
     })
   }
 
@@ -125,9 +123,7 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
         this.createWeaponForm.controls.name.value!,
         this.createWeaponForm.controls.status.value!,
         this.createWeaponForm.controls.type.value!
-      ).subscribe({
-        next: (response) => {
-          const weaponDTO: CreateWeaponResponseDTO = response.data.createWeapon
+      ).then( (weaponDTO: CreateWeaponResponseDTO) =>{
           if(weaponDTO.success) {
             this.CreateWeaponEvent.emit(weaponDTO.weapon);
             this.alertService.showAlert({
@@ -146,17 +142,14 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
               alertClass: AlertClass.INCORRECT_CLASS
             });
           }
-
-        },
-        error: (e) => {
-          this.alertService.showAlert({
-            title: "Fout opgetreden",
-            subTitle: "Er is een fout opgetreden.",
-            icon: AlertIcon.XMARK,
-            duration: 4000,
-            alertClass: AlertClass.INCORRECT_CLASS
-          });
-        }
+      }).catch(e => {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een fout opgetreden.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
       });
       this.modalService.hideModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON);
     }
@@ -179,10 +172,7 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
         this.createWeaponForm.controls.name.value!,
         this.createWeaponForm.controls.status.value!,
         this.createWeaponForm.controls.type.value!
-      ).subscribe({
-        next: (response) => {
-          console.log(response)
-          const weaponDTO: CreateWeaponResponseDTO = response.data.changeWeapon
+      ).then((weaponDTO: CreateWeaponResponseDTO) =>{
           if(weaponDTO.success) {
             this.ChangeWeaponEvent.emit(weaponDTO.weapon);
             this.alertService.showAlert({
@@ -201,18 +191,15 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
               alertClass: AlertClass.INCORRECT_CLASS
             });
           }
-
-        },
-        error: (e) => {
-          this.alertService.showAlert({
-            title: "Fout opgetreden",
-            subTitle: "Er is een fout opgetreden.",
-            icon: AlertIcon.XMARK,
-            duration: 4000,
-            alertClass: AlertClass.INCORRECT_CLASS
-          });
-        }
-      });
+      }).catch(e => {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een fout opgetreden.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+    });
       this.modalService.hideModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON);
     }
   }

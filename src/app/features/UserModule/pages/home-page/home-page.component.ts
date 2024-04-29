@@ -36,12 +36,8 @@ export class HomePageComponent {
       }
     )
     navigationService.setSubTitle("");
-    graphQLCommunication.getMyAssociations().subscribe({
-      next: (response) => {
-        this.associations = response.data.getMyProfile.associations.map((assoc: UserAssociation) => assoc.association);
-      },
-      error: (error) => {
-      }
+    graphQLCommunication.getMyAssociations().then( dto =>{
+        this.associations = dto.associations.map((assoc: UserAssociation) => assoc.association);
     });
 
 

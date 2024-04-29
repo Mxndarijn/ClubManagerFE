@@ -92,15 +92,11 @@ export class TrackConfigurationPageComponent {
         navigationService.setTitle(res);
       }
     )
-    this.graphQLCommunication.getAssociationName(this.associationID).subscribe({
-      next: (response) => {
-        navigationService.setSubTitle(response.data.getAssociationDetails.name);
-      }
+    this.graphQLCommunication.getAssociationName(this.associationID).then(r =>{
+        navigationService.setSubTitle(r.name);
     })
-    this.graphQLService.getTracksOfAssociation(this.associationID).subscribe({
-      next: (response) => {
-        this.tracks = response.data.getTracksOfAssociation;
-      }
+    this.graphQLService.getTracksOfAssociation(this.associationID).then( r =>{
+        this.tracks = r;
     })
 
     this.ReservationCreatedEvent.subscribe({
@@ -147,9 +143,7 @@ export class TrackConfigurationPageComponent {
     this.modalService.hideModal(Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE)
     if (this.selectedTrack == null)
       return;
-    this.graphQLService.deleteTrack(this.associationID, this.selectedTrack!).subscribe({
-      next: (response) => {
-        const rDTO = response.data.deleteTrackForAssociation as DefaultBooleanResponseDTO;
+    this.graphQLService.deleteTrack(this.associationID, this.selectedTrack!).then( (rDTO:DefaultBooleanResponseDTO) =>{
         if (rDTO.success) {
           this.alertService.showAlert({
             title: "Succesvol",
@@ -167,9 +161,7 @@ export class TrackConfigurationPageComponent {
             duration: 4000,
             alertClass: AlertClass.INCORRECT_CLASS
           });
-
         }
-      }
     })
   }
 
@@ -181,10 +173,7 @@ export class TrackConfigurationPageComponent {
   }
 
   updateEvents(date: Date) {
-    this.graphQLService.getReservations(this.associationID, date).subscribe({
-      next: (response) => {
-        console.log(response)
-        const dto = response.data.getReservationsBetween as GetReservationsDTO;
+    this.graphQLService.getReservations(this.associationID, date).then((dto: GetReservationsDTO) => {
         if (dto.success) {
           this.reservations = dto.reservations
           this.createCalendarItems(this.reservations);
@@ -193,10 +182,8 @@ export class TrackConfigurationPageComponent {
 
         } else {
           console.error("Could not request events")
-          console.error(response)
+          console.error(dto)
         }
-
-      }
     })
   }
 

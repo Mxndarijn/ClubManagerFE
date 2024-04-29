@@ -47,10 +47,8 @@ export class UpdateUserModalComponent {
   ) {
     this.associationID = route.snapshot.params['associationID'];
 
-    this.graphQLCommunication.getAssociationRoles().subscribe({
-      next: (response) => {
-        this.userRoles = response.data.getAssociationRoles
-      }
+    this.graphQLCommunication.getAssociationRoles().then(r=>{
+        this.userRoles = r
     })
 
     this.modalService.modalVisibilityEvent.subscribe({
@@ -64,9 +62,7 @@ export class UpdateUserModalComponent {
     const selectedRoleObj = this.userRoles.find(role => role.name === this.selectedRole);
     if (selectedRoleObj) {
       this.graphQLCommunication.changeUserAssociation(this.associationID, this.selectedUser!.user.id, selectedRoleObj.id)
-        .subscribe({
-          next: (response) => {
-            const changedUserDTO: ChangeUserAssociationResponseDTO = response.data.changeUserAssociation
+        .then((changedUserDTO: ChangeUserAssociationResponseDTO) => {
             if(changedUserDTO.success) {
               this.updateUserAssociationEvent.emit(changedUserDTO.userAssociation)
               const alert: AlertInfo = {
@@ -80,7 +76,6 @@ export class UpdateUserModalComponent {
               this.alertService.showAlert(alert)
 
             }
-          }
         })
     } else {
       const alert: AlertInfo = {
