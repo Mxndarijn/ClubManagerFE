@@ -353,9 +353,10 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
 
   canSubmit() {
     let valid = this.step1ReservationForm.valid && this.step2ReservationForm.valid && this.step3ReservationForm.valid
-    if (this.step3ReservationForm.controls.repeats) {
+    if (this.step3ReservationForm.controls.repeats.value!) {
       valid = valid && this.createSeriesForm.valid;
     }
+    console.log(valid)
     return valid;
   }
 

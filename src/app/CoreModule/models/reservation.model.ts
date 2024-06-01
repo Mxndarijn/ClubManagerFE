@@ -35,15 +35,15 @@ export interface ReservationSeries {
 }
 
 export enum ReservationRepeat {
-  DAILY = "DAILY",
-  WEEKLY = "WEEKLY",
+  DAY = "DAY",
+  WEEK = "WEEK",
   NO_REPEAT = "NO_REPEAT"
 }
 
 export const ReservationRepeatLabels = {
-  [ReservationRepeat.DAILY.valueOf()]: {label: "config.settings.repeat.daily", value: 1},
-  [ReservationRepeat.WEEKLY.valueOf()]: {label: "config.settings.repeat.weekly", value: 7},
-  [ReservationRepeat.NO_REPEAT.valueOf()]: {label: "config.settings.repeat.NO_REPEAT", value: 7},
+  [ReservationRepeat.DAY.valueOf()]: {label: "config.settings.repeat.daily", value: 1},
+  [ReservationRepeat.WEEK.valueOf()]: {label: "config.settings.repeat.weekly", value: 7},
+  [ReservationRepeat.NO_REPEAT.valueOf()]: {label: "config.settings.repeat.NO_REPEAT", value: 0},
 };
 
 export function convertReservationToCalendarEvent(reservation: Reservation) {

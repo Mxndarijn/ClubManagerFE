@@ -222,7 +222,7 @@ export class TrackConfigurationPageComponent {
       reservationSerie: {
         id: "",
         reservations: [],
-        reservationRepeat: ReservationRepeat.DAILY,
+        reservationRepeat: ReservationRepeat.DAY,
         repeatDaysBetween: 1,
         repeatUntil: "",
       },

@@ -257,7 +257,7 @@
         </button>
         <button *ngIf="step == Step.STEP_4" class="btn border-success border-2 bg-base-100"
                 (click)="createReservation()"
-                [disabled]="canSubmit()"
+                [disabled]="!canSubmit()"
         >Opslaan
         </button>
 
