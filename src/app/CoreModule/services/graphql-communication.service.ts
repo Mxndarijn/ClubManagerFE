@@ -343,7 +343,7 @@ export class GraphQLCommunication {
     }
   `
     };
-    return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+    return this.solvePromise(query, v => v.data.userQueries.getMyProfile.invites);
 
   }
 

@@ -113,6 +113,8 @@ export class SideBarComponent implements OnInit {
   }
 
   hasAssociationPermission(associationID: string, perm: string): boolean {
+    0
+
     if (perm === AssociationPermission.NO_PERMISSION) {
       return true;
     }
@@ -132,7 +134,7 @@ export class SideBarComponent implements OnInit {
     });
 
     this.graphQLCommunication.getUserInvites().then(r =>{
-        this.associationInvitesList = r.invites
+        this.associationInvitesList = r
     });
   }
 }
