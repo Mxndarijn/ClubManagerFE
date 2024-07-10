@@ -264,7 +264,6 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   createReservation() {
     this.setCurrentValues(true);
     const series = this.createSeries();
-    console.log(this.currentReservation)
     this.graphQLService.createTrackReservation(this.currentReservation!, this.associationID, series).then( (dto: CreateTrackReservationDTO) =>{
         if(dto.success) {
           this.alertService.showAlert({

@@ -13,11 +13,24 @@ export interface Reservation {
   description: string;
   status: ReservationStatus;
   maxSize: number;
-  reservationUsers: User[];
+  reservationUsers: ReservationUser[];
   tracks: Track[];
   allowedWeaponTypes: WeaponType[];
   reservationSerie?: ReservationSeries;
   colorPreset?: ColorPreset;
+}
+
+export interface ReservationUser {
+  id: ReservationUserId;
+  user: User;
+  reservation: Reservation;
+  registerDate: Date
+
+}
+
+export interface ReservationUserId {
+  userId: string;
+  reservationId: string;
 }
 
 

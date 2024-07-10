@@ -347,6 +347,70 @@ export class GraphQLCommunication {
 
   }
 
+  enrollAtReservation(associationID: string, reservationID: string, joinBoolean : boolean) {
+    const query = {
+      query: `
+    mutation MyMutation($associationID : ID!, $reservationID : ID!, $join: Boolean!) {
+      associationMutations {
+        associationReservationMutations {
+          participateReservation(associationID: $associationID, reservationID: $reservationID, join: $join) {
+            success
+            reservation {
+              id,
+              association {
+                id
+              },
+              startDate,
+              endDate,
+              title,
+              description,
+              status,
+              maxSize,
+              reservationUsers {
+                id {
+                userId,
+                reservationId
+                }
+              },
+              tracks {
+                id,
+                name
+              },
+              allowedWeaponTypes {
+                id,
+                name
+              },
+              reservationSeries {
+                id,
+                title,
+                description,
+                maxUsers,
+                reservations {
+                  id
+                }
+
+              },
+              colorPreset {
+                  id,
+                colorName,
+                primaryColor,
+                secondaryColor
+              }
+            }
+          }
+        }
+      }
+    }
+  `, variables: {
+        associationID: associationID,
+        reservationID: reservationID,
+        join: joinBoolean
+      }
+    };
+    return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.participateReservation);
+
+  }
+
   deleteAssociationInvite(id: AssociationInviteID): Promise<any> {
     const query = {
       query: `
