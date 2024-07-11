@@ -414,7 +414,8 @@ export class GraphQLCommunication {
   deleteAssociationInvite(id: AssociationInviteID): Promise<any> {
     const query = {
       query: `
-      associationMutations {
+      mutation MyMutation($inviteID :AssociationInviteInput! ) {
+      associationMutations{
     associationMemberMutations {
       removeAssociationInvite(inviteId: $inviteID) {
     success,
@@ -422,7 +423,7 @@ export class GraphQLCommunication {
   }
     }
   }
-}
+  }
     `,
       variables: {
         inviteID: {
