@@ -7,6 +7,7 @@ import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-comm
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-weapon-information-modal',
@@ -25,6 +26,7 @@ export class WeaponInformationModalComponent extends DefaultModalInformation imp
   protected startTime = "";
   protected endTime = "";
   protected currentDate = new Date()
+  private subscriptions: Subscription[] = [];
 
 
   constructor(
@@ -43,17 +45,33 @@ export class WeaponInformationModalComponent extends DefaultModalInformation imp
   }
 
   ngOnInit(): void {
-    this.changeSelectedEvent?.subscribe({
-      next: (event: WeaponMaintenance) => {
-        this.selectedMaintenanceEvent = event;
-        this.util.formatDateTimeAsString(event.startDate).then(t => this.startTime = t);
-        this.util.formatDateTimeAsString(event.endDate).then(t => this.endTime = t);
-      }
-    })
-  }
+    if(this.changeSelectedEvent != null) {
+      this.subscriptions.push(this.changeSelectedEvent.subscribe({
+        next: (event: WeaponMaintenance) => {
+          this.selectedMaintenanceEvent = event;
+          this.subscriptions.push(
+            this.util.formatDateTimeAsString(event.startDate).subscribe({
+              next: (r) => this.startTime = r,
+              error: (err) => console.error('Error formatting start date', err)
+            })
+          );
+
+          this.subscriptions.push(
+            this.util.formatDateTimeAsString(event.endDate).subscribe({
+              next: (r) => this.endTime = r,
+              error: (err) => console.error('Error formatting end date', err)
+            })
+          );
+        }
+      }));
+    }
+
+    }
 
   ngOnDestroy(): void {
-
+    this.subscriptions.forEach(s => {
+      s.unsubscribe();
+    })
   }
 
 

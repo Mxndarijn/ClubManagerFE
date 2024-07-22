@@ -56,8 +56,19 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
     this.subscriptions.push(this.setCurrentReservation.subscribe({
       next: (value: Reservation) => {
         this.reservation = value;
-        this.util.formatDateTime(new Date(value.startDate)).then(r => this.startTime = r);
-        this.util.formatDateTime(new Date(value.endDate)).then(r => this.endTime = r);
+        this.subscriptions.push(
+          this.util.formatDateTimeAsString(value.startDate).subscribe({
+            next: (r) => this.startTime = r,
+            error: (err) => console.error('Error formatting start date', err)
+          })
+        );
+
+        this.subscriptions.push(
+          this.util.formatDateTimeAsString(value.endDate).subscribe({
+            next: (r) => this.endTime = r,
+            error: (err) => console.error('Error formatting end date', err)
+          })
+        );
 
         console.log(value)
       }

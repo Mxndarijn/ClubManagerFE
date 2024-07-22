@@ -71,7 +71,7 @@ export class AssociationMembersPageComponent {
   }
   constructor(
     private alertService: AlertService,
-  private graphQLCommunication: GraphQLCommunication,
+    private graphQLCommunication: GraphQLCommunication,
     navigationService: NavigationService,
     private translate: TranslateService,
     route: ActivatedRoute,

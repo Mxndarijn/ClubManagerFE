@@ -1,5 +1,6 @@
 import {TranslateService} from "@ngx-translate/core";
 import {Injectable} from "@angular/core";
+import {map, Observable} from "rxjs";
 
 /**
  * UtilityFunctions class provides utility functions for formatting dates and times.
@@ -69,29 +70,6 @@ export class UtilityFunctions {
       })
     });
   }
-
-  /**
-   * Formats a given Date object into a string representation based on the current locale.
-   *
-   * @param {Date} date - The Date object to be formatted.
-   * @returns {Promise<string>} A promise that resolves to the formatted date string.
-   */
-  formatDate(date: Date) {
-    return new Promise<string>((resolve) => {
-      this.translate.get("config.language").subscribe({
-        next: (locale) => {
-          const options: Intl.DateTimeFormatOptions = {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-          };
-
-          resolve(Intl.DateTimeFormat(locale, options).format(date));
-        }
-      })
-    })
-  }
-
   /**
    * Formats a Date object into a string suitable for a form control.
    *
@@ -115,18 +93,18 @@ export class UtilityFunctions {
    *
    * @return {Promise<string>} - A Promise that resolves to the formatted date string.
    */
-  formatDateTime(date: Date | undefined) {
-    return new Promise<string>((resolve) => {
-      if(date == null) {
-        resolve(" ");
+  formatDateTime(date: Date | undefined): Observable<string> {
+    return new Observable<string>((observer) => {
+      if (date == null) {
+        observer.next(" ");
+        observer.complete();
         return;
       }
+
       this.translate.get("config.language").subscribe({
         next: (locale) => {
-          let options: Intl.DateTimeFormatOptions = {
-            day: 'numeric',
-            month: 'long',
-          };
+          let options: Intl.DateTimeFormatOptions;
+
           if (locale === 'nl-NL') {
             options = {
               hour: '2-digit',
@@ -146,10 +124,33 @@ export class UtilityFunctions {
             };
           }
 
-          resolve(Intl.DateTimeFormat(locale, options).format(date));
+          const formattedDate = Intl.DateTimeFormat(locale, options).format(date);
+          observer.next(formattedDate);
+          observer.complete();
+        },
+        error: (err) => {
+          observer.error(err);
         }
+      });
+    });
+  }
+
+  formatDate(date: Date): Observable<string> {
+    return this.translate.get("config.language").pipe(
+      map(locale => {
+        return date.toLocaleDateString(locale, {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
       })
-    })
+    );
+  }
+
+  formatDateFromString(dateString: string): Observable<string> {
+    const date = new Date(dateString);
+
+    return this.formatDate(date)
   }
 
   /**
@@ -174,7 +175,7 @@ export class UtilityFunctions {
       ':' + pad(date.getSeconds());
   }
 
-  formatDateTimeAsString(startDate: string | undefined): Promise<string> {
+  formatDateTimeAsString(startDate: string | undefined): Observable<string> {
     if(startDate != null) {
       return this.formatDateTime(new Date(startDate))
     } else {

@@ -78,9 +78,14 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
           this.selectedDay.setHours(0)
           this.selectedDay.setMinutes(0)
 
-            this.utility.formatDate(this.selectedDay).then(result => {
+          this.utility.formatDate(this.selectedDay).subscribe({
+            next: (result) => {
               this.title = result;
-            })
+            },
+            error: (err) => {
+              console.error('Error formatting date', err);
+            }
+          });
         }
       })
     });

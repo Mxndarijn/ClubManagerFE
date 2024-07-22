@@ -86,5 +86,10 @@ export const routes: Routes = [
     component: ReservationPageComponent,
     canActivate: [AuthGuard, AssociationManagerGuard],
   },
+  {
+    path: 'association/:associationID/competitions',
+    component: CompetitionPageComponent,
+    canActivate: [AuthGuard],
+  },
 
 ];

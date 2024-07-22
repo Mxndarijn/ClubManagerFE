@@ -1412,4 +1412,53 @@ export class GraphQLCommunication {
     };
     return this.solvePromise(query, v => v.data.userMutations.updateLanguage);
   }
+
+  getAssociationCompetitions(associationID: string) {
+    const query = {
+      query: `
+        query MyQuery($id: ID!) {
+  associationQueries {
+    getAssociationDetails(associationID: $id) {
+      competitions {
+        active
+        description
+        endDate
+        id
+        name
+        ranking
+        scoreType
+        startDate
+        competitionUsers {
+          competitionRank
+          id {
+            competitionId
+            userId
+          }
+          scores {
+            competitionRank
+            id
+            score
+            scoreDate
+          }
+          user {
+            id
+            fullName
+            image {
+              encoded
+            }
+            email
+          }
+        }
+      }
+    }
+  }
+}
+      `,
+      variables: {
+        id: associationID
+      }
+    }
+
+  return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
+  }
 }

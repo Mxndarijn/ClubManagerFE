@@ -182,19 +182,40 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     this.step3ReservationForm.controls.startDate.valueChanges.subscribe({
       next: async (value) => {
         if(value == null) return;
-        this.startTime = await this.util.formatDateTimeAsString(value!);
+        this.util.formatDateTimeAsString(value!).subscribe({
+          next: (formattedDate) => {
+            this.startTime = formattedDate;
+          },
+          error: (err) => {
+            console.error('Error formatting date', err);
+          }
+        });
       }
     })
     this.step3ReservationForm.controls.endDate.valueChanges.subscribe({
       next: async (value) => {
         if(value == null) return;
-        this.endTime = await this.util.formatDateTimeAsString(value!);
+        this.util.formatDateTimeAsString(value!).subscribe({
+          next: (formattedDate) => {
+            this.endTime = formattedDate;
+          },
+          error: (err) => {
+            console.error('Error formatting date', err);
+          }
+        });
       }
     })
     this.createSeriesForm.controls.repeatUntil.valueChanges.subscribe({
       next: async (value) => {
         if(value == null) return;
-        this.repeatTime = await this.util.formatDateTimeAsString(value!);
+        this.util.formatDateTimeAsString(value!).subscribe({
+          next: (formattedDate) => {
+            this.repeatTime = formattedDate;
+          },
+          error: (err) => {
+            console.error('Error formatting date', err);
+          }
+        });
       }
     })
   }

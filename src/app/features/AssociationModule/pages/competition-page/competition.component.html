@@ -1,1 +1,28 @@
-<p>competition works!</p>
+<app-search-box [placeholder]="'Zoek Competitie'" (SearchEvent)="searchCompetition($event)"></app-search-box>
+<table class="table">
+  <thead>
+  <tr>
+    <th>Competitienaam</th>
+    <th>Periode</th>
+  </tr>
+  </thead>
+  <tbody>
+  <td *ngIf="filteredCompetitions.length === 0" colspan="4" class="text-center text-md">Geen competities gevonden
+  </td>
+  <tr *ngFor="let competition of filteredCompetitions" class="items-center">
+    <td>
+        <div>
+          <div class="font-bold">{{ competition.name}}</div>
+          <div class="text-sm opacity-50">{{ competition.description}}</div>
+        </div>
+    </td>
+    <td>
+      <p>{{ this.utility.formatDateTimeAsString(competition.startDate)}} - {{ this.utility.formatDateTimeAsString(competition.endDate)}}</p>
+    </td>
+    <td>
+      <button class="btn border-info border-2 btn-sm bg-base-100" (click)="viewCompetition(competition)">Bekijk
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
