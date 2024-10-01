@@ -196,6 +196,13 @@ export class UtilityFunctions {
     // Formatteer het resultaat
     return `${days != 0 ? days + ' Dag(en),' : ''} ${hours} Uur(en) en ${minutes} Minu(u)t(en)`;
   }
+
+  convertIsoDateToDate(date1: string) {
+    return new Date(date1);
+  }
+  getCurrentDate() {
+    return new Date();
+  }
 }
 
 export enum Day {

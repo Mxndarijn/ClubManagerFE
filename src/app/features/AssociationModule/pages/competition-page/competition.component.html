@@ -1,9 +1,13 @@
-<app-search-box [placeholder]="'Zoek Competitie'" (SearchEvent)="searchCompetition($event)"></app-search-box>
-<table class="table">
+<div class="flex flex-col">
+  <app-search-box [placeholder]="'Zoek Competitie'" (SearchEvent)="searchCompetition($event)"></app-search-box>
+  <button class="">Nieuwe competitie</button>
+</div>
+  <table class="table">
   <thead>
   <tr>
     <th>Competitienaam</th>
-    <th>Periode</th>
+    <th>Start datum</th>
+    <th>Eindigt over</th>
   </tr>
   </thead>
   <tbody>
@@ -17,10 +21,13 @@
         </div>
     </td>
     <td>
-      <p>{{ this.utility.formatDateTimeAsString(competition.startDate)}} - {{ this.utility.formatDateTimeAsString(competition.endDate)}}</p>
+      <p>{{ this.utility.formatDateTimeAsString(competition.startDate) | async}}</p>
     </td>
     <td>
-      <button class="btn border-info border-2 btn-sm bg-base-100" (click)="viewCompetition(competition)">Bekijk
+      <p *ngIf="this.utility.getCurrentDate().getTime() <= this.utility.convertIsoDateToDate(competition.endDate).getTime() "> {{this.utility.calculateDuration(Date().toString(), competition.endDate)}}</p>
+    </td>
+      <td>
+      <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="viewCompetition(competition)">Bekijk
       </button>
     </td>
   </tr>

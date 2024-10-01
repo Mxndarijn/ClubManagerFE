@@ -15,6 +15,10 @@ import {UserAssociation} from "../../../../CoreModule/models/user-association.mo
 import {AssociationCompetition} from "../../../../CoreModule/models/association-competition";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {NavigationService} from "../../../../CoreModule/services/navigation.service";
+import {
+  callInitializeIfNeeded
+} from "@angular-devkit/build-angular/src/utils/server-rendering/esm-in-memory-loader/node-18-utils";
+
 
 @Component({
   selector: 'app-competition-page',
@@ -78,4 +82,7 @@ export class CompetitionPageComponent {
   viewCompetition(competition: AssociationCompetition) {
 
   }
+
+  protected readonly Date = Date;
+  protected readonly callInitializeIfNeeded = callInitializeIfNeeded;
 }
