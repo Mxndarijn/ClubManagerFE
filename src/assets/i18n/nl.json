@@ -135,6 +135,8 @@
   },
   "trackConfigurationPage": {
     "titleHeader": "Banen-Beheer"
+  },
+  "associationCompetitionPage": {
+    "titleHeader": "Competities-Overzicht"
   }
-
 }

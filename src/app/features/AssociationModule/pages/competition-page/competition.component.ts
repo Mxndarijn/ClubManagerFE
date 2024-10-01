@@ -54,7 +54,7 @@ export class CompetitionPageComponent {
       navigationService.setSubTitle(r.name);
       this.associationName = r.name;
     })
-    this.translate.get('associationCompetition.titleHeader').subscribe((res: string) => {
+    this.translate.get('associationCompetitionPage.titleHeader').subscribe((res: string) => {
         navigationService.setTitle(res);
       }
     )
