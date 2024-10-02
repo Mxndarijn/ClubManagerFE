@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
-import {Modal} from "../../../../CoreModule/services/modal.service";
+import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {
   ConfirmationModalComponent
@@ -18,6 +18,9 @@ import {NavigationService} from "../../../../CoreModule/services/navigation.serv
 import {
   callInitializeIfNeeded
 } from "@angular-devkit/build-angular/src/utils/server-rendering/esm-in-memory-loader/node-18-utils";
+import {
+  CreateCompetitionModalComponent,
+} from "../../modals/create-competition-modal/create-competition-modal.component";
 
 
 @Component({
@@ -31,7 +34,7 @@ import {
     NgIf,
     SearchBoxComponent,
     TranslateModule,
-    UpdateUserModalComponent
+    CreateCompetitionModalComponent
   ],
   templateUrl: './competition.component.html',
   styleUrl: './competition.component.css'
@@ -50,9 +53,11 @@ export class CompetitionPageComponent {
     protected utility: UtilityFunctions,
     private graphQLCommunication: GraphQLCommunication,
     private translate: TranslateService,
-    navigationService: NavigationService,
+    private navigationService: NavigationService,
+    protected modalService: ModalService,
     route: ActivatedRoute,
   ) {
+    this.navigationService.showNavigation();
     this.associationID = route.snapshot.params['associationID'];
     this.graphQLCommunication.getAssociationName(this.associationID).then(r=>{
       navigationService.setSubTitle(r.name);

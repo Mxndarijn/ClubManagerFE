@@ -1,0 +1,5 @@
+<label for="type-selection" class="mb-2">Selecteer hier het type van het wapen</label>
+<select id="type-selection" class="select select-accent w-full  border-2"
+        [formControl]="_formControl">
+  <option [ngValue]="weaponType" *ngFor="let weaponType of weaponTypeList">{{ weaponType.name }}</option>
+</select>
