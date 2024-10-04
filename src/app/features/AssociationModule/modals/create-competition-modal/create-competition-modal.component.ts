@@ -28,6 +28,9 @@ import {ErrorMessageComponent} from "../../../../SharedModule/components/error-m
 import {
   InputFieldWeaponModalComponent
 } from "../../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
+import {
+  InputFieldSingleSelectComponent
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
 
 @Component({
   selector: 'create-competition-modal',
@@ -42,7 +45,8 @@ import {
     ErrorMessageComponent,
     NgIf,
     InputFieldWeaponModalComponent,
-    NgForOf
+    NgForOf,
+    InputFieldSingleSelectComponent
   ],
   templateUrl: './create-competition-modal.component.html',
   styleUrl: './create-competition-modal.component.css'
@@ -134,5 +138,25 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
     const startDateTime = new Date(startDate);
     return startDateTime.getTime() > this.currentDate.getTime();
 
+  }
+
+  protected readonly Object = Object;
+  protected readonly CompetitionScoreType = CompetitionScoreType;
+  protected readonly CompetitionRanking = CompetitionRanking;
+
+  convertScoreTypeToText(input: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // Simuleer een asynchrone bewerking
+      console.log(input);
+      resolve(input);
+    });
+  }
+
+  convertRankingToText(input: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // Simuleer een asynchrone bewerking
+      console.log(input);
+      resolve(input);
+    });
   }
 }
