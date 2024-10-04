@@ -34,11 +34,9 @@ export class InputFieldSingleSelectComponent implements OnInit {
     const newItems = await Promise.all(
       this.inputList.map(async item => {
         const processed = await this.processItem(item);
-        return { original: item, processed }; // Behoud de originele en verwerkte waarde
+        return { original: item, processed };
       })
     );
-
-    // Voeg de nieuwe items toe aan de bestaande lijst, zonder de oude te overschrijven
     this.processedItems = [...this.processedItems, ...newItems];
   }
 }

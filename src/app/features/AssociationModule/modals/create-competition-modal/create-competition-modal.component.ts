@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {DefaultModalInformation} from "../../../../SharedModule/models/default-modal-information";
@@ -16,7 +16,11 @@ import {
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 import {WeaponType} from "../../../../CoreModule/models/weapon-type.model";
 import {WeaponStatusInterface} from "../create-weapon-modal/create-weapon-modal.component";
-import {CompetitionRanking, CompetitionScoreType} from "../../../../CoreModule/models/competition.model";
+import {
+  CompetitionDTO,
+  CompetitionRanking,
+  CompetitionScoreType
+} from "../../../../CoreModule/models/competition.model";
 import {ValidationUtils} from "../../../../SharedModule/utilities/validation-utils";
 import {
   TextareaModalComponent
@@ -31,6 +35,8 @@ import {
 import {
   InputFieldSingleSelectComponent
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
+import {ActivatedRoute} from "@angular/router";
+import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 
 @Component({
   selector: 'create-competition-modal',
@@ -52,13 +58,9 @@ import {
   styleUrl: './create-competition-modal.component.css'
 })
 export class CreateCompetitionModalComponent extends DefaultModalInformation implements OnInit, OnDestroy {
-  protected selectedMaintenanceEvent : WeaponMaintenance | undefined
-  @Input() changeSelectedEvent?: EventEmitter<WeaponMaintenance>
-  @Input() changeCurrentWeaponMaintenance?: EventEmitter<WeaponMaintenance>;
-  protected startTime = "";
-  protected endTime = "";
-  protected currentDate = new Date()
+  private associationID: string;
   private subscriptions: Subscription[] = [];
+  @Output() CompetitionCreatedEvent = new EventEmitter<CompetitionDTO>;
 
   protected createCompetitionForm: FormGroup<{
     name: FormControl<string | null>;
@@ -74,13 +76,13 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
     private graphQLService: GraphQLCommunication,
     protected modalService: ModalService,
     private alertService: AlertService,
-    protected util: UtilityFunctions
+    protected util: UtilityFunctions,
+    route: ActivatedRoute,
   ) {
     super(Modal.ASSOCIATION_CREATE_COMPETITION, modalService);
+    this.associationID = route.snapshot.params['associationID'];
     this.OnModalShowEvent.subscribe({
       next: () => {
-        console.log(this.selectedMaintenanceEvent)
-        this.title = this.selectedMaintenanceEvent?.title + " "
       }
     })
 
@@ -96,27 +98,6 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
   }
 
   ngOnInit(): void {
-    if(this.changeSelectedEvent != null) {
-      this.subscriptions.push(this.changeSelectedEvent.subscribe({
-        next: (event: WeaponMaintenance) => {
-          this.selectedMaintenanceEvent = event;
-          this.subscriptions.push(
-            this.util.formatDateTimeAsString(event.startDate).subscribe({
-              next: (r) => this.startTime = r,
-              error: (err) => console.error('Error formatting start date', err)
-            })
-          );
-
-          this.subscriptions.push(
-            this.util.formatDateTimeAsString(event.endDate).subscribe({
-              next: (r) => this.endTime = r,
-              error: (err) => console.error('Error formatting end date', err)
-            })
-          );
-        }
-      }));
-    }
-
   }
 
   ngOnDestroy(): void {
@@ -136,7 +117,7 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
       return false;
     }
     const startDateTime = new Date(startDate);
-    return startDateTime.getTime() > this.currentDate.getTime();
+    return startDateTime.getTime() > new Date().getTime();
 
   }
 
@@ -146,17 +127,70 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
 
   convertScoreTypeToText(input: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      // Simuleer een asynchrone bewerking
-      console.log(input);
       resolve(input);
     });
   }
 
   convertRankingToText(input: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      // Simuleer een asynchrone bewerking
-      console.log(input);
       resolve(input);
     });
+  }
+
+  createCompetition(): void {
+    if (this.createCompetitionForm.valid) {
+      const name = this.createCompetitionForm.controls.name.value;
+      const description = this.createCompetitionForm.controls.description.value;
+      const startDate = this.createCompetitionForm.controls.startDate.value;
+      const endDate = this.createCompetitionForm.controls.endDate.value;
+      const compScoreType = this.createCompetitionForm.controls.compScoreType.value;
+      const compRankingType = this.createCompetitionForm.controls.compRankingType.value;
+
+      if (
+        name && name.length <= 255 &&
+        description && description.length <= 255 &&
+        startDate && endDate &&
+        compScoreType && compRankingType
+      ) {
+        const comp: CompetitionDTO = {
+          name,
+          description,
+          startDate,
+          endDate,
+          competitionScoreType: compScoreType,
+          competitionRanking: compRankingType
+        };
+        this.graphQLService.createCompetition(comp, this.associationID).then(response => {
+          if(response.success) {
+            const competition : CompetitionDTO = response.competition!
+            this.alertService.showAlert({
+              title: "Succesvol",
+              subTitle: "De competitie is succesvol aangemaakt.",
+              icon: AlertIcon.CHECK,
+              duration: 4000,
+              alertClass: AlertClass.CORRECT_CLASS
+            });
+            this.CompetitionCreatedEvent.emit(competition)
+            this.hideModal()
+          } else {
+            this.alertService.showAlert({
+              title: "Fout opgetreden",
+              subTitle: "Er is een fout opgetreden bij het aanmaken van de competitie.",
+              icon: AlertIcon.XMARK,
+              duration: 4000,
+              alertClass: AlertClass.INCORRECT_CLASS
+            });
+            this.hideModal()
+          }
+        })
+
+        // Use the comp object for further processing here
+
+      } else {
+        console.warn('Form fields do not meet the required conditions.');
+      }
+    } else {
+      console.warn("Could press button while invalid create competition");
+    }
   }
 }

@@ -6,10 +6,8 @@
   </select>
   <div *ngIf="(_formControl.value == null || _formControl.value.length == 0) ? hideErrorsWhenEmpty : true">
     <app-single-error-message
-
                                [errorMessage]="errorSetting.errorMessage"
                                [specificFormControl]="_formControl">
-
     </app-single-error-message>
   </div>
 

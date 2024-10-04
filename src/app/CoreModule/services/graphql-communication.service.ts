@@ -12,6 +12,7 @@ import {Reservation, ReservationSeries} from "../models/reservation.model";
 import {
   WeaponStatusInterface
 } from "../../features/AssociationModule/modals/create-weapon-modal/create-weapon-modal.component";
+import {CompetitionDTO} from "../models/competition.model";
 
 
 @Injectable({
@@ -28,6 +29,8 @@ export class GraphQLCommunication {
   associationSettingsMutations =0;
   associationTrackMutations =0;
   associationWeaponMutations =0;
+  associationCOmpetitionMutations =0;
+
   constructor(private http: HttpClient,
               private util: UtilityFunctions) {
   }
@@ -1460,5 +1463,59 @@ export class GraphQLCommunication {
     }
 
   return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
+  }
+
+  createCompetition(comp: CompetitionDTO, associationID: string) {
+    const query = {
+      query: `
+      mutation MyMutation($associationID: ID!, $dto: CompetitionDTO!) {
+  associationMutations {
+    associationCompetitionMutations {
+      createCompetition(associationID: $associationID, dto: $dto) {
+        message
+        success
+        competition {
+        active
+        description
+        endDate
+        id
+        name
+        ranking
+        scoreType
+        startDate
+        competitionUsers {
+          competitionRank
+          id {
+            competitionId
+            userId
+          }
+          scores {
+            competitionRank
+            id
+            score
+            scoreDate
+          }
+          user {
+            id
+            fullName
+            image {
+              encoded
+            }
+            email
+          }
+          }
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        dto: comp
+      }
+    }
+
+    return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.createCompetition);
+
   }
 }

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
@@ -21,6 +21,7 @@ import {
 import {
   CreateCompetitionModalComponent,
 } from "../../modals/create-competition-modal/create-competition-modal.component";
+import {CompetitionDTO} from "../../../../CoreModule/models/competition.model";
 
 
 @Component({
@@ -40,7 +41,6 @@ import {
   styleUrl: './competition.component.css'
 })
 export class CompetitionPageComponent {
-
   protected readonly faTrashCan = faTrashCan;
   protected readonly Modal = Modal;
   private associationID: string;
@@ -67,14 +67,17 @@ export class CompetitionPageComponent {
         navigationService.setTitle(res);
       }
     )
+    this.updateCompetitions()
+
+
+
+  }
+
+  updateCompetitions() {
     this.graphQLCommunication.getAssociationCompetitions(this.associationID).then(r=>{
       this.allCompetitions = r.competitions
-      console.log(r)
       this.searchCompetition(this.latestSearchParam);
     })
-
-
-
   }
   searchCompetition(searchString: string) {
     this.latestSearchParam = searchString;
@@ -90,4 +93,8 @@ export class CompetitionPageComponent {
 
   protected readonly Date = Date;
   protected readonly callInitializeIfNeeded = callInitializeIfNeeded;
+
+  CompetitionCreatedEvent($event: CompetitionDTO) {
+    this.updateCompetitions()
+  }
 }
