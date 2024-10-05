@@ -16,9 +16,6 @@ import {AssociationCompetition} from "../../../../CoreModule/models/association-
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {NavigationService} from "../../../../CoreModule/services/navigation.service";
 import {
-  callInitializeIfNeeded
-} from "@angular-devkit/build-angular/src/utils/server-rendering/esm-in-memory-loader/node-18-utils";
-import {
   CreateCompetitionModalComponent,
 } from "../../modals/create-competition-modal/create-competition-modal.component";
 import {CompetitionDTO} from "../../../../CoreModule/models/competition.model";
@@ -92,7 +89,6 @@ export class CompetitionPageComponent {
   }
 
   protected readonly Date = Date;
-  protected readonly callInitializeIfNeeded = callInitializeIfNeeded;
 
   CompetitionCreatedEvent($event: CompetitionDTO) {
     this.updateCompetitions()
