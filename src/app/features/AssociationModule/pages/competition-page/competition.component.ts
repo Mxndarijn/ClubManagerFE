@@ -10,7 +10,7 @@ import {SearchBoxComponent} from "../../../../SharedModule/components/input-fiel
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-user-modal.component";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {UserAssociation} from "../../../../CoreModule/models/user-association.model";
 import {AssociationCompetition} from "../../../../CoreModule/models/association-competition";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
@@ -32,7 +32,8 @@ import {CompetitionDTO} from "../../../../CoreModule/models/competition.model";
     NgIf,
     SearchBoxComponent,
     TranslateModule,
-    CreateCompetitionModalComponent
+    CreateCompetitionModalComponent,
+    RouterLink
   ],
   templateUrl: './competition.component.html',
   styleUrl: './competition.component.css'
@@ -80,12 +81,23 @@ export class CompetitionPageComponent {
     this.latestSearchParam = searchString;
     this.filteredCompetitions = this.allCompetitions.filter(competition => {
       return competition.name.includes(searchString) || competition.name.includes(searchString);
+    }).sort((a, b) => {
+      const currentDate = new Date();
+      const aEndDate = new Date(a.endDate);
+      const bEndDate = new Date(b.endDate);
+      if (aEndDate < currentDate && bEndDate >= currentDate) {
+        return 1;
+      } else if (aEndDate >= currentDate && bEndDate < currentDate) {
+        return -1;
+      }
+      return aEndDate.getTime() - bEndDate.getTime();
     });
-
   }
 
-  viewCompetition(competition: AssociationCompetition) {
 
+
+  protected getRouterLink(competitionID : any) {
+    return ['/association', this.associationID, 'competition', competitionID];
   }
 
   protected readonly Date = Date;

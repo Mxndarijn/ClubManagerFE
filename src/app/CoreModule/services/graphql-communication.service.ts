@@ -29,7 +29,8 @@ export class GraphQLCommunication {
   associationSettingsMutations =0;
   associationTrackMutations =0;
   associationWeaponMutations =0;
-  associationCOmpetitionMutations =0;
+  associationCompetitionMutations =0;
+  associationCompetitionQueries =0;
 
   constructor(private http: HttpClient,
               private util: UtilityFunctions) {
@@ -1517,5 +1518,52 @@ export class GraphQLCommunication {
 
     return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.createCompetition);
 
+  }
+
+  getCompetitionDetails(associationID: string, competitionID: string) {
+    const query = {
+      query: `
+     query MyQuery($associationID: ID!, $competitionID: ID!) {
+  associationQueries {
+    associationCompetitionQueries {
+      getCompetitionInformation(associationID: $associationID, competitionID: $competitionID) {
+        success
+        competition {
+          active
+          description
+          endDate
+          id
+          name
+          ranking
+          scoreType
+          startDate
+          competitionUsers {
+            calculatedScore
+            competitionRank
+            id {
+              competitionId
+              userId
+            }
+            user {
+              fullName
+              id
+              image {
+                encoded
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        competitionID: competitionID
+      }
+    }
+
+    return this.solvePromise(query, v => v.data.associationQueries.associationCompetitionQueries.getCompetitionInformation);
   }
 }

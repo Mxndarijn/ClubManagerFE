@@ -11,8 +11,8 @@
   <thead>
   <tr>
     <th>Competitienaam</th>
-    <th>Start datum</th>
-    <th>Eindigt over</th>
+    <th>Startdatum</th>
+    <th>Einddatum</th>
   </tr>
   </thead>
   <tbody>
@@ -29,10 +29,10 @@
       <p>{{ this.utility.formatDateTimeAsString(competition.startDate) | async}}</p>
     </td>
     <td>
-      <p *ngIf="this.utility.getCurrentDate().getTime() <= this.utility.convertIsoDateToDate(competition.endDate).getTime() "> {{this.utility.calculateDuration(Date().toString(), competition.endDate)}}</p>
+      <p> {{this.utility.formatDateTimeAsString(competition.endDate) |async }}</p>
     </td>
       <td>
-      <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="viewCompetition(competition)">Bekijk
+      <button class="btn border-accent border-2 btn-sm bg-base-100" [routerLink]="getRouterLink(competition.id)" >Bekijk
       </button>
     </td>
   </tr>

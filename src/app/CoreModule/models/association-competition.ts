@@ -37,6 +37,7 @@ export interface CompetitionUser {
   competition: AssociationCompetition;
   competitionRank: number;
   scores?: CompetitionScore[];
+  calculatedScore: string;
 }
 
 export interface CompetitionUserId {
