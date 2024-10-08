@@ -138,5 +138,8 @@
   },
   "associationCompetitionPage": {
     "titleHeader": "Competities-Overzicht"
+  },
+  "associationViewCompetitionPage": {
+    "titleHeader": "Competitie-overzicht"
   }
 }

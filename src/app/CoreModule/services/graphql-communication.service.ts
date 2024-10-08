@@ -24,13 +24,13 @@ export class GraphQLCommunication {
   userQueries = 0;
   userMutations = 0;
 
-  associationMemberMutations =0;
-  associationReservationMutations =0;
-  associationSettingsMutations =0;
-  associationTrackMutations =0;
-  associationWeaponMutations =0;
-  associationCompetitionMutations =0;
-  associationCompetitionQueries =0;
+  associationMemberMutations = 0;
+  associationReservationMutations = 0;
+  associationSettingsMutations = 0;
+  associationTrackMutations = 0;
+  associationWeaponMutations = 0;
+  associationCompetitionMutations = 0;
+  associationCompetitionQueries = 0;
 
   constructor(private http: HttpClient,
               private util: UtilityFunctions) {
@@ -49,12 +49,12 @@ export class GraphQLCommunication {
     return new Promise<any>((resolve, reject) => {
       this.sendGraphQLRequest(query).subscribe({
         next: (v) => {
-          if(v.data === null || v.errors != null || fun(v) == null) {
+          if (v.data === null || v.errors != null || fun(v) == null) {
             console.error(v);
           }
           resolve(fun(v))
         },
-        error:(e) => {
+        error: (e) => {
           reject(e);
         }
       })
@@ -351,7 +351,7 @@ export class GraphQLCommunication {
 
   }
 
-  enrollAtReservation(associationID: string, reservationID: string, joinBoolean : boolean) {
+  enrollAtReservation(associationID: string, reservationID: string, joinBoolean: boolean) {
     const query = {
       query: `
     mutation MyMutation($associationID : ID!, $reservationID : ID!, $join: Boolean!) {
@@ -497,7 +497,6 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
 
   }
-
 
 
   acceptAssociationInvite(id: AssociationInviteID): Promise<any> {
@@ -1463,7 +1462,7 @@ export class GraphQLCommunication {
       }
     }
 
-  return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
+    return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
   }
 
   createCompetition(comp: CompetitionDTO, associationID: string) {
@@ -1565,5 +1564,35 @@ export class GraphQLCommunication {
     }
 
     return this.solvePromise(query, v => v.data.associationQueries.associationCompetitionQueries.getCompetitionInformation);
+  }
+
+  getAllAssociationMembers(associationID: string) {
+    const query = {
+      query: `
+     query MyQuery($associationID: ID!) {
+  associationQueries {
+    getAssociationDetails(associationID: $associationID) {
+      users {
+        id {
+          userId
+        }
+        user {
+          fullName
+          id
+          image {
+            id
+            encoded
+          }
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
+
   }
 }
