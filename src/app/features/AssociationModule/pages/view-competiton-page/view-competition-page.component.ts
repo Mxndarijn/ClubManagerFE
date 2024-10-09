@@ -15,18 +15,18 @@ import {
 } from "../../modals/competition-member-overview-modal/competition-member-overview-modal.component";
 
 @Component({
-  selector: 'app-view-competiton-page',
+  selector: 'app-view-competition-page',
   standalone: true,
   imports: [
     NgForOf,
     CompetitionMemberOverviewModalComponent
   ],
-  templateUrl: './view-competiton-page.component.html',
-  styleUrl: './view-competiton-page.component.css'
+  templateUrl: './view-competition-page.component.html',
+  styleUrl: './view-competition-page.component.css'
 })
-export class ViewCompetitonPageComponent {
+export class ViewCompetitionPageComponent {
   private associationID: string;
-  private competitionID: string;
+  private readonly competitionID: string;
   protected competition?: AssociationCompetition;
   private associationUsers: UserAssociation[] = [];
   NewUsersEvent: EventEmitter<UserAssociation[]> = new EventEmitter;
@@ -67,12 +67,13 @@ export class ViewCompetitonPageComponent {
       }
     })
 
-    console.log(route.snapshot.params);
-    console.log(this.competitionID);
+    this.updateCompetition()
+  }
+
+  updateCompetition() {
     this.graphQLCommunication.getCompetitionDetails(this.associationID, this.competitionID).then(res=>{
       if(res.success){
         this.competition = res.competition;
-        console.log(this.competition);
       } else {
         this.alertService.showAlert({
           title: "Fout opgetreden",
@@ -83,13 +84,43 @@ export class ViewCompetitonPageComponent {
         });
       }
     })
-
   }
 
 
   addMemberToCompetition() {
-    console.log('working')
-    this.NewUsersEvent.emit(this.associationUsers);
+    const usersNotInCompetition = this.associationUsers.filter(user =>
+      !this.competition?.competitionUsers?.some(compUser => compUser.user.id === user.user.id)
+    );
+    this.NewUsersEvent.emit(usersNotInCompetition);
     this.modalService.showModal(Modal.ASSOCIATION_COMPETITION_MEMBERS_OVERVIEW)
+  }
+
+  addUsers(usersToAdd: UserAssociation[]) {
+    Promise.all(
+      usersToAdd.map(user =>
+        this.graphQLCommunication.addUserToCompetition(this.associationID, this.competitionID, user.user.id)
+      )
+    ).then(responses => {
+      const allSucceeded = responses.every(response => response.success);
+      if (allSucceeded) {
+        this.updateCompetition()
+        this.alertService.showAlert({
+          title: "Succesvol",
+          subTitle: "De gekozen leden zijn succesvol toegevoegd.",
+          icon: AlertIcon.CHECK,
+          duration: 4000,
+          alertClass: AlertClass.CORRECT_CLASS
+        });
+      } else {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een fout opgetreden bij het toevoegen van leden.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+      }
+    });
+
   }
 }

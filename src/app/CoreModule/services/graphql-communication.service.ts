@@ -1595,4 +1595,29 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
 
   }
+
+  addUserToCompetition(associationID: string, competitionID: string, userID: string) {
+    const query = {
+      query: `
+     mutation MyMutation($associationID: ID!, $dto: CompetitionUserDTO!) {
+  associationMutations {
+    associationCompetitionMutations {
+      addUser(associationID: $associationID, dto: $dto) {
+        success
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        dto: {
+          userID: userID,
+          competitionID: competitionID,
+        }
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.addUser);
+
+
+  }
 }

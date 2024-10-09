@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {DefaultModalInformation} from "../../../../SharedModule/models/default-modal-information";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {Subscription} from "rxjs";
@@ -50,7 +50,9 @@ export class CompetitionMemberOverviewModalComponent extends DefaultModalInforma
   private latestSearchParam: string = "";
 
   @Input() NewUsersEvent!: EventEmitter <UserAssociation[]> ;
+  @Output() UsersSelected = new EventEmitter<UserAssociation[]>();
   filteredUserAssociations: UserAssociation[] = [];
+  protected checkboxMap: Map<UserAssociation, boolean> = new Map;
 
   constructor(
   protected modalService: ModalService,
@@ -67,6 +69,12 @@ export class CompetitionMemberOverviewModalComponent extends DefaultModalInforma
     this.subscriptions.push(this.NewUsersEvent.subscribe({
       next: (u :UserAssociation[])=> {
         this.users = u;
+
+        this.checkboxMap = new Map<UserAssociation, boolean>();
+
+        this.users.forEach(userAssociation => {
+          this.checkboxMap.set(userAssociation, false);
+        });
         console.log(this.users);
         this.searchUser(this.latestSearchParam);
       }
@@ -87,5 +95,13 @@ export class CompetitionMemberOverviewModalComponent extends DefaultModalInforma
     });
 
 
+  }
+
+  configChoices() {
+    const selectedUsers = Array.from(this.checkboxMap.entries())
+      .filter(([userAssociation, isSelected]) => isSelected)
+      .map(([userAssociation, isSelected]) => userAssociation);
+    this.UsersSelected.emit(selectedUsers)
+    this.hideModal()
   }
 }

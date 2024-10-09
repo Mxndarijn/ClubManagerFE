@@ -94,8 +94,6 @@ export class CompetitionPageComponent {
     });
   }
 
-
-
   protected getRouterLink(competitionID : any) {
     return ['/association', this.associationID, 'competition', competitionID];
   }

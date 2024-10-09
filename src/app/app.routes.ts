@@ -17,8 +17,8 @@ import {
   TrackConfigurationPageComponent
 } from "./features/AssociationModule/pages/track-configuration-page/track-configuration-page.component";
 import {
-  ViewCompetitonPageComponent
-} from "./features/AssociationModule/pages/view-competiton-page/view-competiton-page.component";
+  ViewCompetitionPageComponent
+} from "./features/AssociationModule/pages/view-competiton-page/view-competition-page.component";
 
 export const routes: Routes = [
   {
@@ -96,7 +96,7 @@ export const routes: Routes = [
   },
   {
   path: 'association/:associationID/competition/:competitionID',
-  component: ViewCompetitonPageComponent ,
+  component: ViewCompetitionPageComponent ,
   canActivate: [AuthGuard],
 },
 

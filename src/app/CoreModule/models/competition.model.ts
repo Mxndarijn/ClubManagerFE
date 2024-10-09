@@ -1,3 +1,5 @@
+import {CompetitionUser} from "./association-competition";
+
 export interface CompetitionDTO {
   name: string;  // maximum length 255
   description: string;  // maximum length 255
