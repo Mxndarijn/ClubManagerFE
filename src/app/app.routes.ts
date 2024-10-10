@@ -7,7 +7,7 @@ import {ReservationPageComponent} from "./features/UserModule/pages/reservation-
 import {AssociationManagerGuard} from "./CoreModule/guards/association-manager-guard.spec";
 import {InvitationsPageComponent} from "./features/UserModule/pages/invitations-page/invitations-page.component";
 import {UpdateProfilePageComponent} from "./features/UserModule/pages/update-profile-page/update-profile-page.component";
-import {CompetitionPageComponent} from "./features/AssociationModule/pages/competition-page/competition.component";
+import {CompetitionPageComponent} from "./features/AssociationModule/pages/competition/competition-page/competition.component";
 import {
   AssociationMembersPageComponent
 } from "./features/AssociationModule/pages/association-members-page/association-members-page.component";
@@ -17,8 +17,8 @@ import {
   TrackConfigurationPageComponent
 } from "./features/AssociationModule/pages/track-configuration-page/track-configuration-page.component";
 import {
-  ViewCompetitionPageComponent
-} from "./features/AssociationModule/pages/view-competiton-page/view-competition-page.component";
+  CompetitionDetailsPage
+} from "./features/AssociationModule/pages/competition/competition-details-page/competition-details-page";
 
 export const routes: Routes = [
   {
@@ -96,7 +96,7 @@ export const routes: Routes = [
   },
   {
   path: 'association/:associationID/competition/:competitionID',
-  component: ViewCompetitionPageComponent ,
+  component: CompetitionDetailsPage ,
   canActivate: [AuthGuard],
 },
 

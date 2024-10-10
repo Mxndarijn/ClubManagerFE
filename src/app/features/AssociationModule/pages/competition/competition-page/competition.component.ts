@@ -1,24 +1,24 @@
 import {Component, EventEmitter, OnInit} from '@angular/core';
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
-import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
+import {Modal, ModalService} from "../../../../../CoreModule/services/modal.service";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {
   ConfirmationModalComponent
-} from "../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
+} from "../../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {SearchBoxComponent} from "../../../../SharedModule/components/input-fields/search-box/search-box.component";
+import {SearchBoxComponent} from "../../../../../SharedModule/components/input-fields/search-box/search-box.component";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-user-modal.component";
-import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
+import {UpdateUserModalComponent} from "../../../modals/update-user-modal/update-user-modal.component";
+import {UtilityFunctions} from "../../../../../SharedModule/utilities/utility-functions";
 import {ActivatedRoute, RouterLink} from "@angular/router";
-import {UserAssociation} from "../../../../CoreModule/models/user-association.model";
-import {AssociationCompetition} from "../../../../CoreModule/models/association-competition";
-import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
-import {NavigationService} from "../../../../CoreModule/services/navigation.service";
+import {UserAssociation} from "../../../../../CoreModule/models/user-association.model";
+import {AssociationCompetition} from "../../../../../CoreModule/models/association-competition";
+import {GraphQLCommunication} from "../../../../../CoreModule/services/graphql-communication.service";
+import {NavigationService} from "../../../../../CoreModule/services/navigation.service";
 import {
   CreateCompetitionModalComponent,
-} from "../../modals/create-competition-modal/create-competition-modal.component";
-import {CompetitionDTO} from "../../../../CoreModule/models/competition.model";
+} from "../../../modals/create-competition-modal/create-competition-modal.component";
+import {CompetitionDTO} from "../../../../../CoreModule/models/competition.model";
 
 
 @Component({

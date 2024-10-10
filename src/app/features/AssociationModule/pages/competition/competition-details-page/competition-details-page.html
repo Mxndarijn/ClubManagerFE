@@ -1,0 +1,50 @@
+<app-select-multiple-users-modal [NewUsersEvent]="NewUsersEvent" (UsersSelected)="addUsers($event)"></app-select-multiple-users-modal>
+<button class="btm btm-accent btm-sm" (click)="addMemberToCompetition()">Leden toevoegen</button>
+<div class="overflow-x-auto">
+  <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Lid</th>
+      <th>Rank</th>
+      <th>Score</th>
+      <th> </th>
+    </tr>
+    </thead>
+    <tbody>
+    <td *ngIf="filteredCompetitionUsers.length === 0" colspan="4" class="text-center text-md">{{'associationMembers.noResult' | translate}}
+    </td>
+    <tr *ngFor="let competitionUser of filteredCompetitionUsers" class="items-center">
+      <td>
+        <div class="flex items-center gap-3">
+          <div class="avatar">
+            <div class="mask mask-squircle w-12 h-12 rounded-full">
+              <img src="{{competitionUser.user.image?.encoded}}" alt="{{competitionUser.user.fullName}}"/>
+            </div>
+          </div>
+          <div>
+            <div class="font-bold">{{ competitionUser.user.fullName }}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        {{competitionUser.competitionRank}}
+      </td>
+      <td>
+        <div *ngIf="competition?.scoreType == CompetitionScoreType.POINT">
+          <p *ngIf="competitionUser.calculatedScore != '0.0'">{{competitionUser.calculatedScore}}</p>
+          <p *ngIf="competitionUser.calculatedScore == '0.0'">Geen</p>
+        </div >
+        <p *ngIf="competition?.scoreType == CompetitionScoreType.POINT">{{ competitionUser.calculatedScore}}</p>
+        <div *ngIf="competition?.scoreType == CompetitionScoreType.TIME">
+          <p *ngIf="competitionUser.calculatedScore != '0.0'">ADD TIME ONDERSTEUNING</p>
+          <p *ngIf="competitionUser.calculatedScore == '0.0'">Geen</p>
+        </div >
+      </td>
+      <td>
+        <button class="btn border-accent border-2 btn-sm bg-base-100">Bekijk</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

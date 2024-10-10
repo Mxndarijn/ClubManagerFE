@@ -1,34 +1,53 @@
 import {Component, EventEmitter} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {NavigationService} from "../../../../CoreModule/services/navigation.service";
-import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
-import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
-import {TranslateService} from "@ngx-translate/core";
-import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
-import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
-import {AlertService} from "../../../../CoreModule/services/alert.service";
-import {AssociationCompetition} from "../../../../CoreModule/models/association-competition";
-import {NgForOf} from "@angular/common";
-import {UserAssociation} from "../../../../CoreModule/models/user-association.model";
+import {NavigationService} from "../../../../../CoreModule/services/navigation.service";
+import {UtilityFunctions} from "../../../../../SharedModule/utilities/utility-functions";
+import {GraphQLCommunication} from "../../../../../CoreModule/services/graphql-communication.service";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {Modal, ModalService} from "../../../../../CoreModule/services/modal.service";
+import {AlertClass, AlertIcon} from "../../../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {AlertService} from "../../../../../CoreModule/services/alert.service";
 import {
-  CompetitionMemberOverviewModalComponent
-} from "../../modals/competition-member-overview-modal/competition-member-overview-modal.component";
+  AssociationCompetition,
+  CompetitionScoreType,
+  CompetitionUser
+} from "../../../../../CoreModule/models/association-competition";
+import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
+import {UserAssociation} from "../../../../../CoreModule/models/user-association.model";
+import {
+  SelectMultipleUsersModal
+} from "../../../modals/select-multiple-users-modal/select-multiple-users-modal";
+import {
+  ConfirmationModalComponent
+} from "../../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {SearchBoxComponent} from "../../../../../SharedModule/components/input-fields/search-box/search-box.component";
+import {UpdateUserModalComponent} from "../../../modals/update-user-modal/update-user-modal.component";
+import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-view-competition-page',
   standalone: true,
   imports: [
     NgForOf,
-    CompetitionMemberOverviewModalComponent
+    SelectMultipleUsersModal,
+    AsyncPipe,
+    ConfirmationModalComponent,
+    FaIconComponent,
+    NgIf,
+    SearchBoxComponent,
+    TranslateModule,
+    UpdateUserModalComponent
   ],
-  templateUrl: './view-competition-page.component.html',
-  styleUrl: './view-competition-page.component.css'
+  templateUrl: './competition-details-page.html',
+  styleUrl: './competition-details-page.css'
 })
-export class ViewCompetitionPageComponent {
+export class CompetitionDetailsPage {
   private associationID: string;
   private readonly competitionID: string;
   protected competition?: AssociationCompetition;
   private associationUsers: UserAssociation[] = [];
+  protected filteredCompetitionUsers: CompetitionUser[] = [];
   NewUsersEvent: EventEmitter<UserAssociation[]> = new EventEmitter;
 
   constructor(
@@ -56,6 +75,7 @@ export class ViewCompetitionPageComponent {
     this.graphQLCommunication.getAllAssociationMembers(this.associationID).then(res=>{
       if(res != null && res.users != null) {
         this.associationUsers = res.users;
+        this.searchUser("")
       } else {
         this.alertService.showAlert({
           title: "Fout opgetreden",
@@ -74,6 +94,7 @@ export class ViewCompetitionPageComponent {
     this.graphQLCommunication.getCompetitionDetails(this.associationID, this.competitionID).then(res=>{
       if(res.success){
         this.competition = res.competition;
+        this.searchUser("")
       } else {
         this.alertService.showAlert({
           title: "Fout opgetreden",
@@ -122,5 +143,14 @@ export class ViewCompetitionPageComponent {
       }
     });
 
+  }
+
+  protected readonly faTrashCan = faTrashCan;
+  protected readonly CompetitionScoreType = CompetitionScoreType;
+
+  searchUser(searchParam: string) {
+    this.filteredCompetitionUsers = this.competition?.competitionUsers
+      ?.filter(user => user.user.fullName.toLowerCase().includes(searchParam.toLowerCase()))
+      ?.sort((a, b) => a.competitionRank - b.competitionRank) || []
   }
 }

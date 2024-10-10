@@ -1,5 +1,0 @@
-<app-competition-member-overview-modal [NewUsersEvent]="NewUsersEvent" (UsersSelected)="addUsers($event)"></app-competition-member-overview-modal>
-<button class="btm btm-accent btm-sm" (click)="addMemberToCompetition()">Leden toevoegen</button>
-<ul>
-  <li *ngFor="let participant of competition?.competitionUsers">{{participant.user.fullName}}</li>
-</ul>

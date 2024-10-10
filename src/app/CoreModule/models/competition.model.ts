@@ -1,4 +1,4 @@
-import {CompetitionUser} from "./association-competition";
+import {CompetitionRanking, CompetitionScoreType, CompetitionUser} from "./association-competition";
 
 export interface CompetitionDTO {
   name: string;  // maximum length 255
@@ -9,12 +9,3 @@ export interface CompetitionDTO {
   endDate: string;  // should be in the future or present
 }
 
-export enum CompetitionScoreType {
-  TIME = "TIME",
-  POINT = "POINT"
-}
-export enum CompetitionRanking {
-  BEST = "BEST",
-  AVERAGE = "AVERAGE",
-  AVERAGE_TOP_3 = "AVERAGE_TOP_3"
-}

@@ -18,8 +18,6 @@ import {WeaponType} from "../../../../CoreModule/models/weapon-type.model";
 import {WeaponStatusInterface} from "../create-weapon-modal/create-weapon-modal.component";
 import {
   CompetitionDTO,
-  CompetitionRanking,
-  CompetitionScoreType
 } from "../../../../CoreModule/models/competition.model";
 import {ValidationUtils} from "../../../../SharedModule/utilities/validation-utils";
 import {
@@ -37,6 +35,7 @@ import {
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
 import {ActivatedRoute} from "@angular/router";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {CompetitionRanking, CompetitionScoreType } from '../../../../CoreModule/models/association-competition';
 
 @Component({
   selector: 'create-competition-modal',

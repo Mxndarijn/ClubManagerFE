@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CompetitionMemberOverviewModalComponent } from './competition-member-overview-modal.component';
+import { SelectMultipleUsersModal } from './select-multiple-users-modal';
 
 describe('CompetitionMemberOverviewModalComponent', () => {
-  let component: CompetitionMemberOverviewModalComponent;
-  let fixture: ComponentFixture<CompetitionMemberOverviewModalComponent>;
+  let component: SelectMultipleUsersModal;
+  let fixture: ComponentFixture<SelectMultipleUsersModal>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CompetitionMemberOverviewModalComponent]
+      imports: [SelectMultipleUsersModal]
     })
     .compileComponents();
-    
-    fixture = TestBed.createComponent(CompetitionMemberOverviewModalComponent);
+
+    fixture = TestBed.createComponent(SelectMultipleUsersModal);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

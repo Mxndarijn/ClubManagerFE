@@ -25,7 +25,7 @@ import {
 } from "../../../../SharedModule/components/input-fields/auto-update-search-box/auto-update-search-box.component";
 
 @Component({
-  selector: 'app-competition-member-overview-modal',
+  selector: 'app-select-multiple-users-modal',
   standalone: true,
   imports: [
     DateTimeSelectorComponent,
@@ -41,15 +41,15 @@ import {
     AutoUpdateSearchBoxComponent,
     NgForOf
   ],
-  templateUrl: './competition-member-overview-modal.component.html',
-  styleUrl: './competition-member-overview-modal.component.css'
+  templateUrl: './select-multiple-users-modal.html',
+  styleUrl: './select-multiple-users-modal.css'
 })
-export class CompetitionMemberOverviewModalComponent extends DefaultModalInformation implements OnInit, OnDestroy {
+export class SelectMultipleUsersModal extends DefaultModalInformation implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   protected users: UserAssociation[] = [];
   private latestSearchParam: string = "";
 
-  @Input() NewUsersEvent!: EventEmitter <UserAssociation[]> ;
+  @Input() NewUsersEvent!: EventEmitter <UserAssociation[]>;
   @Output() UsersSelected = new EventEmitter<UserAssociation[]>();
   filteredUserAssociations: UserAssociation[] = [];
   protected checkboxMap: Map<UserAssociation, boolean> = new Map;

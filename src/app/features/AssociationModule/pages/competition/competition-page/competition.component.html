@@ -1,6 +1,6 @@
 <div class="flex flex-col">
   <app-search-box [placeholder]="'Zoek Competitie'" (SearchEvent)="searchCompetition($event)"></app-search-box>
-  <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="this.modalService.showModal(Modal.ASSOCIATION_CREATE_COMPETITION)
+  <button class="btn border-accent border-2 btn-sm bg-base-100 no-animation" (click)="this.modalService.showModal(Modal.ASSOCIATION_CREATE_COMPETITION)
 ">Nieuwe competitie</button>
 <create-competition-modal
 (CompetitionCreatedEvent)="CompetitionCreatedEvent($event)" >
