@@ -1,0 +1,31 @@
+<button class="btm btm-accent btm-sm" (click)="addScores()">Scores toevoegen</button>
+<div class="overflow-x-auto">
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Datum</th>
+      <th>Score</th>
+      <th> </th>
+    </tr>
+    </thead>
+    <tbody>
+    <td *ngIf="competitionUser?.scores?.length === 0" colspan="4" class="text-center text-md">{{'associationMembers.noResult' | translate}}
+    </td>
+    <tr *ngFor="let score of competitionUser?.scores" class="items-center">
+      <td>
+        <div class="flex items-center gap-3">
+          <div>
+            <div class="font-bold">{{ score.scoreDate }}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        {{score.score}}
+      </td>
+      <td>
+        <button class="btn border-accent border-2 btn-sm bg-base-100" >Verwijder</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

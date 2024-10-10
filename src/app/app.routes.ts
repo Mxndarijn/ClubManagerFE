@@ -19,6 +19,9 @@ import {
 import {
   CompetitionDetailsPage
 } from "./features/AssociationModule/pages/competition/competition-details-page/competition-details-page";
+import {
+  CompetitionDetailMemberPageComponent
+} from "./features/AssociationModule/pages/competition/competition-detail-member-page/competition-detail-member-page.component";
 
 export const routes: Routes = [
   {
@@ -92,12 +95,17 @@ export const routes: Routes = [
   {
     path: 'association/:associationID/competitions',
     component: CompetitionPageComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AssociationManagerGuard],
   },
   {
-  path: 'association/:associationID/competition/:competitionID',
-  component: CompetitionDetailsPage ,
-  canActivate: [AuthGuard],
-},
+    path: 'association/:associationID/competition/:competitionID',
+    component: CompetitionDetailsPage ,
+    canActivate: [AuthGuard, AssociationManagerGuard],
+  },
+  {
+    path: 'association/:associationID/competition/:competitionID/member/:competitionMemberID',
+    component: CompetitionDetailMemberPageComponent,
+    canActivate: [AuthGuard, AssociationManagerGuard],
+  },
 
 ];

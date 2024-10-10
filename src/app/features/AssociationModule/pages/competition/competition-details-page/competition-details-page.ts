@@ -1,5 +1,5 @@
 import {Component, EventEmitter} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {NavigationService} from "../../../../../CoreModule/services/navigation.service";
 import {UtilityFunctions} from "../../../../../SharedModule/utilities/utility-functions";
 import {GraphQLCommunication} from "../../../../../CoreModule/services/graphql-communication.service";
@@ -37,7 +37,8 @@ import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
     NgIf,
     SearchBoxComponent,
     TranslateModule,
-    UpdateUserModalComponent
+    UpdateUserModalComponent,
+    RouterLink
   ],
   templateUrl: './competition-details-page.html',
   styleUrl: './competition-details-page.css'
@@ -152,5 +153,9 @@ export class CompetitionDetailsPage {
     this.filteredCompetitionUsers = this.competition?.competitionUsers
       ?.filter(user => user.user.fullName.toLowerCase().includes(searchParam.toLowerCase()))
       ?.sort((a, b) => a.competitionRank - b.competitionRank) || []
+  }
+
+  getRouterLink(id: string) {
+    return ['/association', this.associationID, 'competition', this.competitionID, "member", id];
   }
 }
