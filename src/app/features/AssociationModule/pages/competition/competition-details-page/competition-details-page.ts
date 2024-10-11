@@ -16,7 +16,7 @@ import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {UserAssociation} from "../../../../../CoreModule/models/user-association.model";
 import {
   SelectMultipleUsersModal
-} from "../../../modals/select-multiple-users-modal/select-multiple-users-modal";
+} from "../../../../../SharedModule/modals/select-multiple-users-modal/select-multiple-users-modal";
 import {
   ConfirmationModalComponent
 } from "../../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";

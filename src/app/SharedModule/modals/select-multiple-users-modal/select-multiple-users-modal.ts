@@ -1,28 +1,28 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {DefaultModalInformation} from "../../../../SharedModule/models/default-modal-information";
-import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
+import {DefaultModalInformation} from "../../models/default-modal-information";
+import {Modal, ModalService} from "../../../CoreModule/services/modal.service";
 import {Subscription} from "rxjs";
-import {UserAssociation} from "../../../../CoreModule/models/user-association.model";
+import {UserAssociation} from "../../../CoreModule/models/user-association.model";
 import {
   DateTimeSelectorComponent
-} from "../../../../SharedModule/components/input-fields/date-time-selector/date-time-selector.component";
-import {ErrorMessageComponent} from "../../../../SharedModule/components/error-message/error-message.component";
+} from "../../components/input-fields/date-time-selector/date-time-selector.component";
+import {ErrorMessageComponent} from "../../components/error-message/error-message.component";
 import {FormsModule} from "@angular/forms";
 import {
   InputFieldSingleSelectComponent
-} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
+} from "../../components/input-fields/input-field-single-select/input-field-single-select.component";
 import {
   InputFieldWeaponModalComponent
-} from "../../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
+} from "../../components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {
   TextareaModalComponent
-} from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
-import {SearchBoxComponent} from "../../../../SharedModule/components/input-fields/search-box/search-box.component";
+} from "../../components/input-fields/textarea-modal/textarea-modal.component";
+import {SearchBoxComponent} from "../../components/input-fields/search-box/search-box.component";
 import {TranslateModule} from "@ngx-translate/core";
 import {
   AutoUpdateSearchBoxComponent
-} from "../../../../SharedModule/components/input-fields/auto-update-search-box/auto-update-search-box.component";
+} from "../../components/input-fields/auto-update-search-box/auto-update-search-box.component";
 
 @Component({
   selector: 'app-select-multiple-users-modal',
