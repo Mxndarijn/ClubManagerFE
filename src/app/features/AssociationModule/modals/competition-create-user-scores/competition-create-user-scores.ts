@@ -42,6 +42,9 @@ import {
 } from '../../../../CoreModule/models/association-competition';
 import {User} from "../../../../CoreModule/models/user.model";
 import {TranslateModule} from "@ngx-translate/core";
+import {
+  InputFieldDurationComponent
+} from "../../../../SharedModule/components/input-fields/input-field-duration/input-field-duration.component";
 
 @Component({
   selector: 'app-competition-create-user-scores',
@@ -58,7 +61,8 @@ import {TranslateModule} from "@ngx-translate/core";
     InputFieldWeaponModalComponent,
     NgForOf,
     InputFieldSingleSelectComponent,
-    TranslateModule
+    TranslateModule,
+    InputFieldDurationComponent
   ],
   templateUrl: './competition-create-user-scores.html',
   styleUrl: './competition-create-user-scores.css'
@@ -69,8 +73,10 @@ export class CompetitionCreateUserScores extends DefaultModalInformation impleme
   private subscriptions: Subscription[] = [];
   protected scores : SmallCompetitionScore[] = []
   private currentUser : User | undefined;
+  protected currentType: CompetitionScoreType | undefined;
   @Output() UserScoresAddedEvent = new EventEmitter<null>;
   @Input() SetCurrentUser : EventEmitter<User> | undefined;
+  @Input() SetCurrentType: EventEmitter<CompetitionScoreType> | undefined;
 
   protected addScoreFormGroup: FormGroup<{
     date: FormControl<string | null>;
@@ -105,6 +111,13 @@ export class CompetitionCreateUserScores extends DefaultModalInformation impleme
       this.subscriptions.push(
         this.SetCurrentUser.subscribe({next: (user : User) => {
            this.currentUser = user;
+          }})
+      )
+    }
+    if(this.SetCurrentType != null) {
+      this.subscriptions.push(
+        this.SetCurrentType.subscribe({next: (type: CompetitionScoreType) => {
+            this.currentType = type;
           }})
       )
     }
@@ -169,4 +182,6 @@ export class CompetitionCreateUserScores extends DefaultModalInformation impleme
     }
 
   }
+
+  protected readonly CompetitionScoreType = CompetitionScoreType;
 }

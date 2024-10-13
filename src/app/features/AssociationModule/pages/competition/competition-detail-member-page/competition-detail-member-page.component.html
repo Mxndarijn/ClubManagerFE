@@ -1,5 +1,5 @@
 <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="addScores()">Scores toevoegen</button>
-<app-competition-create-user-scores (UserScoresAddedEvent)="updateCompetition()" [SetCurrentUser]="SetCurrentUser"></app-competition-create-user-scores>
+<app-competition-create-user-scores (UserScoresAddedEvent)="updateCompetition()" [SetCurrentUser]="SetCurrentUser" [SetCurrentType]="SetCurrentType"></app-competition-create-user-scores>
 <div class="overflow-x-auto">
   <table class="table">
     <thead>

@@ -17,7 +17,7 @@
               errorName: ''
             }]">
           </app-date-time-selector>
-          <app-default-input-field class="w-3/6"
+          <app-default-input-field *ngIf="currentType == CompetitionScoreType.POINT" class="w-3/6"
             [labelText]="'Score'"
             [type]="'number'"
             [_formControl]="addScoreFormGroup.controls.score"
@@ -27,6 +27,7 @@
               errorName: ''
             }]">
           </app-default-input-field>
+          <app-input-field-duration *ngIf="currentType == CompetitionScoreType.TIME" [_formControl]="addScoreFormGroup.controls.score"></app-input-field-duration>
         </div>
         <button class="btn border-accent border-2 bg-base-100"
                 [disabled]="!addScoreFormGroup.valid"

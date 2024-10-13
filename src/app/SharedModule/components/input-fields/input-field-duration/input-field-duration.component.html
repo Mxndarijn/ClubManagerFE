@@ -1,0 +1,12 @@
+<div class="flex space-x-2">
+  <input class="input input-primary w-20" type="number" [min]="0" [max]="59"
+         [(ngModel)]="minuteValue" (blur)="updateDuration()" placeholder="0-59"
+  />
+  <input class="input input-primary w-20" type="number" [min]="0" [max]="59"
+         [(ngModel)]="secondValue" (blur)="updateDuration()" placeholder="0-59"
+  />
+  <input class="input input-primary w-24" type="number" [min]="0" [max]="999"
+         [(ngModel)]="millisecondValue" (blur)="updateDuration()" placeholder="0-999"
+  />
+</div>
+

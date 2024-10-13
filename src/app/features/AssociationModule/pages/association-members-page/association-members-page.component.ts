@@ -22,6 +22,9 @@ import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/defau
 import {AlertInfo} from "../../../../SharedModule/components/alerts/alert-manager/alert-manager.component";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-user-modal.component";
+import {
+  InputFieldDurationComponent
+} from "../../../../SharedModule/components/input-fields/input-field-duration/input-field-duration.component";
 
 enum Tab {
   MEMBERS,
@@ -42,7 +45,8 @@ enum Tab {
     SearchBoxComponent,
     SendInvitationModalComponent,
     ConfirmationModalComponent,
-    TranslateModule
+    TranslateModule,
+    InputFieldDurationComponent
   ],
   templateUrl: './association-members-page.component.html',
   styleUrl: './association-members-page.component.css'

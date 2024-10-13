@@ -85,9 +85,11 @@ export class CompetitionDetailMemberPageComponent {
 
   protected readonly CompetitionScoreType = CompetitionScoreType;
   SetCurrentUser: EventEmitter<User> = new EventEmitter<User>;
+  SetCurrentType: EventEmitter<CompetitionScoreType> = new EventEmitter<CompetitionScoreType>;
 
   addScores() {
     this.SetCurrentUser.emit(this.competitionUser?.user!);
+    this.SetCurrentType.emit(this.competition?.scoreType)
     this.modalService.showModal(Modal.ASSOCIATION_COMPETITION_MEMBERS_ADD_USER_SCORE)
   }
 }
