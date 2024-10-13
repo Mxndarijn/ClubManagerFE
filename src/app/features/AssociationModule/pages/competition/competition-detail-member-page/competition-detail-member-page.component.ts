@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter} from '@angular/core';
 import {
   AssociationCompetition,
   CompetitionScoreType,
@@ -9,11 +9,15 @@ import {UtilityFunctions} from "../../../../../SharedModule/utilities/utility-fu
 import {GraphQLCommunication} from "../../../../../CoreModule/services/graphql-communication.service";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NavigationService} from "../../../../../CoreModule/services/navigation.service";
-import {ModalService} from "../../../../../CoreModule/services/modal.service";
+import {Modal, ModalService} from "../../../../../CoreModule/services/modal.service";
 import {AlertService} from "../../../../../CoreModule/services/alert.service";
 import {AlertClass, AlertIcon} from "../../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {SearchBoxComponent} from "../../../../../SharedModule/components/input-fields/search-box/search-box.component";
+import {
+  CompetitionCreateUserScores
+} from "../../../modals/competition-create-user-scores/competition-create-user-scores";
+import {User} from "../../../../../CoreModule/models/user.model";
 
 @Component({
   selector: 'app-competition-detail-member-page',
@@ -22,7 +26,8 @@ import {SearchBoxComponent} from "../../../../../SharedModule/components/input-f
     NgForOf,
     NgIf,
     SearchBoxComponent,
-    TranslateModule
+    TranslateModule,
+    CompetitionCreateUserScores
   ],
   templateUrl: './competition-detail-member-page.component.html',
   styleUrl: './competition-detail-member-page.component.css'
@@ -46,7 +51,7 @@ export class CompetitionDetailMemberPageComponent {
     this.navigationService.showNavigation();
     this.associationID = route.snapshot.params['associationID'];
     this.competitionID = route.snapshot.params['competitionID'];
-    this.competitionUserID = route.snapshot.params['competitionUserID'];
+    this.competitionUserID = route.snapshot.params['competitionMemberID'];
 
     this.graphQLCommunication.getAssociationName(this.associationID).then(r=>{
       navigationService.setSubTitle(r.name);
@@ -65,6 +70,7 @@ export class CompetitionDetailMemberPageComponent {
         this.competitionUser = this.competition?.competitionUsers?.find(u => {
           return u.user.id == this.competitionUserID
         })
+        console.log(this.competitionUser)
       } else {
         this.alertService.showAlert({
           title: "Fout opgetreden",
@@ -78,8 +84,10 @@ export class CompetitionDetailMemberPageComponent {
   }
 
   protected readonly CompetitionScoreType = CompetitionScoreType;
+  SetCurrentUser: EventEmitter<User> = new EventEmitter<User>;
 
   addScores() {
-
+    this.SetCurrentUser.emit(this.competitionUser?.user!);
+    this.modalService.showModal(Modal.ASSOCIATION_COMPETITION_MEMBERS_ADD_USER_SCORE)
   }
 }

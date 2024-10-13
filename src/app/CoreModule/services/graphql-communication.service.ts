@@ -13,6 +13,7 @@ import {
   WeaponStatusInterface
 } from "../../features/AssociationModule/modals/create-weapon-modal/create-weapon-modal.component";
 import {CompetitionDTO} from "../models/competition.model";
+import {SmallCompetitionScore} from "../models/association-competition";
 
 
 @Injectable({
@@ -1431,27 +1432,6 @@ export class GraphQLCommunication {
         ranking
         scoreType
         startDate
-        competitionUsers {
-          competitionRank
-          id {
-            competitionId
-            userId
-          }
-          scores {
-            competitionRank
-            id
-            score
-            scoreDate
-          }
-          user {
-            id
-            fullName
-            image {
-              encoded
-            }
-            email
-          }
-        }
       }
     }
   }
@@ -1543,6 +1523,12 @@ export class GraphQLCommunication {
               competitionId
               userId
             }
+            scores {
+              competitionRank
+              id
+              score
+              scoreDate
+            }
             user {
               fullName
               id
@@ -1618,6 +1604,35 @@ export class GraphQLCommunication {
     }
     return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.addUser);
 
+
+  }
+
+  createCompetitionUserScores(associationID: string, competitionID: string, id: string, scores: SmallCompetitionScore[]) {
+    const query = {
+      query: `
+     mutation MyMutation($dto : CompetitionScoresDTO!, $associationID: ID!) {
+  associationMutations {
+    associationCompetitionMutations {
+      addUserScores(
+        associationID: $associationID
+        dto: $dto
+      ) {
+        success
+        message
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        dto: {
+          userID: id,
+          competitionID: competitionID,
+          scores: scores
+        }
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.addUserScores);
 
   }
 }

@@ -26,4 +26,5 @@ export class DateTimeSelectorComponent {
   @Input() hideErrorsWhenEmpty: boolean = false;
   @Input() errorSettings: ErrorSetting[] = [];
   @Input() minDate: string | null = "";
+  @Input() type = "datetime-local"
 }

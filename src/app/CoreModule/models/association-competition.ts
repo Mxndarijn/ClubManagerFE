@@ -79,3 +79,8 @@ export interface CompetitionScoreDTO {
   score: number; // Assuming Long is represented as a number
   scoreDate: string; // Assuming LocalDateTime is represented as a string
 }
+
+export interface SmallCompetitionScore {
+  score: number; // Assuming Long is represented as a number
+  scoreDate: string; // Assuming LocalDateTime is represented as a string
+}

@@ -7,7 +7,7 @@
     <tr>
       <th>Lid</th>
       <th>Rank</th>
-      <th>Score</th>
+      <th>Gemiddelde Score</th>
       <th> </th>
     </tr>
     </thead>
@@ -35,7 +35,6 @@
           <p *ngIf="competitionUser.calculatedScore != '0.0'">{{competitionUser.calculatedScore}}</p>
           <p *ngIf="competitionUser.calculatedScore == '0.0'">Geen</p>
         </div >
-        <p *ngIf="competition?.scoreType == CompetitionScoreType.POINT">{{ competitionUser.calculatedScore}}</p>
         <div *ngIf="competition?.scoreType == CompetitionScoreType.TIME">
           <p *ngIf="competitionUser.calculatedScore != '0.0'">ADD TIME ONDERSTEUNING</p>
           <p *ngIf="competitionUser.calculatedScore == '0.0'">Geen</p>

@@ -24,6 +24,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {SearchBoxComponent} from "../../../../../SharedModule/components/input-fields/search-box/search-box.component";
 import {UpdateUserModalComponent} from "../../../modals/update-user-modal/update-user-modal.component";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
+import {ReactiveFormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-view-competition-page',
@@ -38,7 +39,8 @@ import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
     SearchBoxComponent,
     TranslateModule,
     UpdateUserModalComponent,
-    RouterLink
+    RouterLink,
+    ReactiveFormsModule
   ],
   templateUrl: './competition-details-page.html',
   styleUrl: './competition-details-page.css'
