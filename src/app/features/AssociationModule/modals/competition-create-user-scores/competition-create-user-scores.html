@@ -27,7 +27,7 @@
               errorName: ''
             }]">
           </app-default-input-field>
-          <app-input-field-duration *ngIf="currentType == CompetitionScoreType.TIME" [_formControl]="addScoreFormGroup.controls.score"></app-input-field-duration>
+          <app-input-field-duration *ngIf="currentType == CompetitionScoreType.TIME" [_formControl]="addScoreFormGroup.controls.score" [OnFormReset]="OnFormReset"></app-input-field-duration>
         </div>
         <button class="btn border-accent border-2 bg-base-100"
                 [disabled]="!addScoreFormGroup.valid"
@@ -55,7 +55,8 @@
               <div class="font-bold">{{ score.scoreDate }}</div>
           </td>
           <td>
-            {{score.score}}
+            <p *ngIf="currentType == CompetitionScoreType.POINT"> {{score.score}} </p>
+            <p *ngIf="currentType == CompetitionScoreType.TIME"> {{this.utility.formatNanoseconds(score.score)}} </p>
           </td>
           <td>
             <button class="btn border-warning border-2 btn-sm bg-base-100" (click)="removeScore(score)">Verwijder</button>

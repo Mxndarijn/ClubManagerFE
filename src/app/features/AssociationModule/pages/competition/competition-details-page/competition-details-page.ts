@@ -160,4 +160,7 @@ export class CompetitionDetailsPage {
   getRouterLink(id: string) {
     return ['/association', this.associationID, 'competition', this.competitionID, "member", id];
   }
+
+  protected readonly parseInt = parseInt;
+  protected readonly parseFloat = parseFloat;
 }

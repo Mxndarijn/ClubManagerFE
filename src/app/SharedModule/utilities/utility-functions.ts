@@ -203,6 +203,21 @@ export class UtilityFunctions {
   getCurrentDate() {
     return new Date();
   }
+
+  formatNanoseconds(nanoseconds: number) {
+    let milliseconds = Math.floor(nanoseconds / 1e6);
+    let minutes = Math.floor(milliseconds / 60000);
+    milliseconds %= 60000;
+    let seconds = Math.floor(milliseconds / 1000);
+    milliseconds %= 1000;
+
+    let formattedMinutes = String(minutes).padStart(2, '0');
+    let formattedSeconds = String(seconds).padStart(2, '0');
+    let formattedMilliseconds = String(milliseconds).padStart(3, '0');
+
+    return `${formattedMinutes}:${formattedSeconds}:${formattedMilliseconds}`;
+
+  }
 }
 
 export enum Day {

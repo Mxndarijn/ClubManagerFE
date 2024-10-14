@@ -36,7 +36,7 @@
           <p *ngIf="competitionUser.calculatedScore == '0.0'">Geen</p>
         </div >
         <div *ngIf="competition?.scoreType == CompetitionScoreType.TIME">
-          <p *ngIf="competitionUser.calculatedScore != '0.0'">ADD TIME ONDERSTEUNING</p>
+          <p *ngIf="competitionUser.calculatedScore != '0.0'">{{this.utility.formatNanoseconds(parseFloat(competitionUser.calculatedScore))}}</p>
           <p *ngIf="competitionUser.calculatedScore == '0.0'">Geen</p>
         </div >
       </td>

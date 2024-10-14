@@ -1,7 +1,7 @@
 import {FormControl, FormsModule} from "@angular/forms";
 import {NgForOf} from "@angular/common";
 import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
-import {Component, Input} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit} from "@angular/core";
 
 @Component({
   selector: 'app-input-field-duration',
@@ -14,17 +14,27 @@ import {Component, Input} from "@angular/core";
   templateUrl: './input-field-duration.component.html',
   styleUrl: './input-field-duration.component.css'
 })
-export class InputFieldDurationComponent {
+export class InputFieldDurationComponent implements OnInit {
   minuteValue?: number;
   secondValue?: number;
   millisecondValue?: number;
   @Input() _formControl!: FormControl;
+  @Input() OnFormReset?: EventEmitter<null>;
 
+  ngOnInit(): void {
+      this.OnFormReset?.subscribe({ next: () => {
+          this.minuteValue = undefined
+          this.secondValue = undefined
+          this.millisecondValue = undefined
+        }})
+  }
 
   updateDuration() {
     this.minuteValue = this.checkValue(this.minuteValue, 59)
     this.secondValue = this.checkValue(this.secondValue, 59)
     this.millisecondValue = this.checkValue(this.millisecondValue, 999)
+
+    console.log("m" + this.minuteValue,"s" +  this.secondValue, "mil" + this.millisecondValue);
 
     const minutesInMilliseconds = this.getValue(this.minuteValue) * 60 * 1000;
     const secondsInMilliseconds = this.getValue(this.secondValue) * 1000;
@@ -33,7 +43,6 @@ export class InputFieldDurationComponent {
     const nanoseconds = (minutesInMilliseconds + secondsInMilliseconds + milliseconds) * 1_000_000;
     this._formControl.setValue(nanoseconds)
 
-    // this._formControl.setValue(nanoseconds);
   }
 
   checkValue(value?: number, max = 59) {
@@ -57,18 +66,5 @@ export class InputFieldDurationComponent {
     return value!
   }
 
-  onInputChange(event: any, type: string) {
-    const value = event.target.valueAsNumber;
-
-    if (type === 'minute') {
-      this.minuteValue = this.checkValue(value);
-    } else if (type === 'second') {
-      this.secondValue = this.checkValue(value);
-    } else if (type === 'millisecond') {
-      this.millisecondValue = this.checkValue(value, 999);
-    }
-
-    // event.target.value = this[type + 'Value'];  // Zet de waarde terug naar de aangepaste waarde
-  }
 
 }

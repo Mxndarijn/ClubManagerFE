@@ -88,7 +88,7 @@ export class CompetitionCreateUserScores extends DefaultModalInformation impleme
     private graphQLService: GraphQLCommunication,
     protected modalService: ModalService,
     private alertService: AlertService,
-    protected util: UtilityFunctions,
+    protected utility: UtilityFunctions,
     route: ActivatedRoute,
   ) {
     super(Modal.ASSOCIATION_COMPETITION_MEMBERS_ADD_USER_SCORE, modalService);
@@ -132,7 +132,6 @@ export class CompetitionCreateUserScores extends DefaultModalInformation impleme
 
 
 
-
   protected readonly Modal = Modal;
 
   addScore(): void {
@@ -144,6 +143,8 @@ export class CompetitionCreateUserScores extends DefaultModalInformation impleme
         }
       )
       this.addScoreFormGroup.reset()
+      this.OnFormReset.emit()
+
     }
   }
 
@@ -184,4 +185,5 @@ export class CompetitionCreateUserScores extends DefaultModalInformation impleme
   }
 
   protected readonly CompetitionScoreType = CompetitionScoreType;
+  OnFormReset: EventEmitter<null> = new EventEmitter;
 }

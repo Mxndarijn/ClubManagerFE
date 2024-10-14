@@ -47,7 +47,9 @@ export class CompetitionDetailMemberPageComponent {
     private navigationService: NavigationService,
     protected modalService: ModalService,
     private alertService: AlertService,
-  ) {
+
+
+) {
     this.navigationService.showNavigation();
     this.associationID = route.snapshot.params['associationID'];
     this.competitionID = route.snapshot.params['competitionID'];
@@ -86,6 +88,7 @@ export class CompetitionDetailMemberPageComponent {
   protected readonly CompetitionScoreType = CompetitionScoreType;
   SetCurrentUser: EventEmitter<User> = new EventEmitter<User>;
   SetCurrentType: EventEmitter<CompetitionScoreType> = new EventEmitter<CompetitionScoreType>;
+
 
   addScores() {
     this.SetCurrentUser.emit(this.competitionUser?.user!);

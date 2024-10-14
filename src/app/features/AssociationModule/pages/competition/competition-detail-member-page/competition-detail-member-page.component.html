@@ -19,7 +19,8 @@
         </div>
       </td>
       <td>
-        {{score.score}}
+        <p *ngIf="this.competition?.scoreType == CompetitionScoreType.POINT"> {{score.score}} </p>
+        <p *ngIf="this.competition?.scoreType == CompetitionScoreType.TIME"> {{this.utility.formatNanoseconds(score.score)}} </p>
       </td>
     </tr>
     </tbody>
