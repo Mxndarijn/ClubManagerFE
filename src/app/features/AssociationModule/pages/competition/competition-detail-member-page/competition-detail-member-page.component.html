@@ -1,4 +1,6 @@
 <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="addScores()">Scores toevoegen</button>
+<button class="btn border-accent border-2 btn-sm bg-base-100" (click)="removeScores()">Geselecteerde scores verwijderen</button>
+
 <app-competition-create-user-scores (UserScoresAddedEvent)="updateCompetition()" [SetCurrentUser]="SetCurrentUser" [SetCurrentType]="SetCurrentType"></app-competition-create-user-scores>
 <div class="overflow-x-auto">
   <table class="table">
@@ -14,7 +16,7 @@
     <tr *ngFor="let score of competitionUser?.scores" class="items-center">
       <td>
         <div class="flex items-center">
-          <input type="checkbox" class="checkbox checkbox-primary mr-2"/>
+          <input type="checkbox" [ngModel]="this.checkboxMap.get(score)" (ngModelChange)="checkboxMap.set(score, $event)" class="checkbox checkbox-primary mr-2"/>
           <div class="">{{ score.scoreDate }}</div>
         </div>
       </td>

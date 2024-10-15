@@ -1,6 +1,6 @@
 import {Component, EventEmitter} from '@angular/core';
 import {
-  AssociationCompetition,
+  AssociationCompetition, CompetitionScore,
   CompetitionScoreType,
   CompetitionUser
 } from "../../../../../CoreModule/models/association-competition";
@@ -18,6 +18,8 @@ import {
   CompetitionCreateUserScores
 } from "../../../modals/competition-create-user-scores/competition-create-user-scores";
 import {User} from "../../../../../CoreModule/models/user.model";
+import {FormsModule} from "@angular/forms";
+import {UserAssociation} from "../../../../../CoreModule/models/user-association.model";
 
 @Component({
   selector: 'app-competition-detail-member-page',
@@ -27,7 +29,8 @@ import {User} from "../../../../../CoreModule/models/user.model";
     NgIf,
     SearchBoxComponent,
     TranslateModule,
-    CompetitionCreateUserScores
+    CompetitionCreateUserScores,
+    FormsModule
   ],
   templateUrl: './competition-detail-member-page.component.html',
   styleUrl: './competition-detail-member-page.component.css'
@@ -38,6 +41,8 @@ export class CompetitionDetailMemberPageComponent {
   private readonly competitionUserID: string;
   protected competition?: AssociationCompetition;
   protected competitionUser? : CompetitionUser;
+  protected checkboxMap: Map<CompetitionScore, boolean> = new Map;
+
 
   constructor(
     route: ActivatedRoute,
@@ -94,5 +99,20 @@ export class CompetitionDetailMemberPageComponent {
     this.SetCurrentUser.emit(this.competitionUser?.user!);
     this.SetCurrentType.emit(this.competition?.scoreType)
     this.modalService.showModal(Modal.ASSOCIATION_COMPETITION_MEMBERS_ADD_USER_SCORE)
+  }
+
+  removeScores() {
+    const selectedScoreIds = Array.from(this.checkboxMap.entries())
+      .filter(([CompetitionScore, isSelected]) => isSelected)
+      .map(([CompetitionScore, isSelected]) => CompetitionScore.id);
+  console.log(selectedScoreIds);
+    this.graphQLCommunication.removeScores(this.associationID, this.competitionID, this.competitionUserID,  selectedScoreIds).then(res=>{
+
+      console.log(res);
+      this.updateCompetition();
+    })
+
+    // console.log(selectedScores);
+  console.log(this.checkboxMap);
   }
 }
