@@ -1,0 +1,35 @@
+<dialog id="my_modal_4" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <div>
+      <h2>{{reservation?.title}}</h2>
+      <p>{{reservation?.description}}</p>
+      <p>Er zijn {{reservation?.reservationUsers?.length}} / {{reservation?.maxSize}} aanmeldingen</p>
+    </div>
+    <div>
+      <h2>Banen</h2>
+      <p *ngFor="let track of reservation?.tracks">{{track.name}} {{track.allowedWeaponTypes}}</p>
+    </div>
+    <div>
+      <p>Begint op {{startTime}} - Eindigt op {{endTime}}</p>
+      <p>Evenement duurt {{ util.calculateDuration(reservation?.startDate!, reservation?.endDate!) }}</p>
+
+    </div>
+    <div class="modal-action">
+
+      <form method="dialog" class="w-full flex justify-between">
+        <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+        >Sluit
+        </button>
+        <button *ngIf="!isEnrolled()" class="btn border-success border-2 bg-base-100" [disabled]="!timeIsAfterCurrentDate(reservation?.startDate!)"
+                (click)="enrollAtReservation()"
+        >Aanmelden
+        </button>
+        <button *ngIf="isEnrolled()" class="btn border-error border-2 bg-base-100" [disabled]="!timeIsAfterCurrentDate(reservation?.startDate!)"
+                (click)="unrollAtReservation()"
+        >Afmelden
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>

@@ -1,0 +1,40 @@
+<div class="flex flex-col">
+  <app-search-box [placeholder]="'Zoek Competitie'" (SearchEvent)="searchCompetition($event)"></app-search-box>
+  <button class="btn border-accent border-2 btn-sm bg-base-100 no-animation" (click)="this.modalService.showModal(Modal.ASSOCIATION_CREATE_COMPETITION)
+">Nieuwe competitie</button>
+<create-competition-modal
+(CompetitionCreatedEvent)="CompetitionCreatedEvent($event)" >
+
+</create-competition-modal>
+</div>
+  <table class="table">
+  <thead>
+  <tr>
+    <th>Competitienaam</th>
+    <th>Startdatum</th>
+    <th>Einddatum</th>
+  </tr>
+  </thead>
+  <tbody>
+  <td *ngIf="filteredCompetitions.length === 0" colspan="4" class="text-center text-md">Geen competities gevonden
+  </td>
+  <tr *ngFor="let competition of filteredCompetitions" class="items-center">
+    <td>
+        <div>
+          <div class="font-bold">{{ competition.name}}</div>
+          <div class="text-sm opacity-50">{{ competition.description}}</div>
+        </div>
+    </td>
+    <td>
+      <p>{{ this.utility.formatDateTimeAsString(competition.startDate) | async}}</p>
+    </td>
+    <td>
+      <p> {{this.utility.formatDateTimeAsString(competition.endDate) |async }}</p>
+    </td>
+      <td>
+      <button class="btn border-accent border-2 btn-sm bg-base-100" [routerLink]="getRouterLink(competition.id)" >Bekijk
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>

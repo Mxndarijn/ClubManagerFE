@@ -6,6 +6,22 @@
       "yellow": "Geel",
       "blue": "Blauw",
       "red": "Rood"
+    },
+    "settings": {
+      "repeat": {
+        "daily": "Dagen",
+        "weekly": "Weken"
+      },
+      "days": {
+        "MONDAY": "Maandag",
+        "TUESDAY": "Dinsdag",
+        "WEDNESDAY": "Woensdag",
+        "THURSDAY": "Donderdag",
+        "FRIDAY": "Vrijdag",
+        "SATURDAY": "Zaterdag",
+        "SUNDAY": "Zondag"
+
+      }
     }
   },
   "loginPage": {
@@ -105,5 +121,25 @@
   },
   "associationSettingsPage": {
     "titleHeader": "Mijn vereniging"
+  },
+  "createTrackReservationModal": {
+    "steps": {
+      "step1": "Gegevens",
+      "step2": "Banen",
+      "step3": "Datum",
+      "step4": "Overzicht"
+    }
+  },
+  "weaponsPage": {
+    "titleHeader": "Wapen-Beheer"
+  },
+  "trackConfigurationPage": {
+    "titleHeader": "Banen-Beheer"
+  },
+  "associationCompetitionPage": {
+    "titleHeader": "Competities-Overzicht"
+  },
+  "associationViewCompetitionPage": {
+    "titleHeader": "Competitie-overzicht"
   }
 }

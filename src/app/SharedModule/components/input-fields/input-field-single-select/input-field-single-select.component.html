@@ -1,0 +1,14 @@
+<div class="flex flex-col w-96  items-start justify-evenly mt-5">
+  <label for="{{_id}}" class="mb-2">{{ _label }}</label>
+  <select id="{{_id}}" class="select select-accent w-full  border-2"
+          [formControl]="_formControl">
+    <option [ngValue]="listItem.original" *ngFor="let listItem of processedItems">{{ listItem.processed}}</option>
+  </select>
+  <div *ngIf="(_formControl.value == null || _formControl.value.length == 0) ? hideErrorsWhenEmpty : true">
+    <app-single-error-message
+                               [errorMessage]="errorSetting.errorMessage"
+                               [specificFormControl]="_formControl">
+    </app-single-error-message>
+  </div>
+
+</div>

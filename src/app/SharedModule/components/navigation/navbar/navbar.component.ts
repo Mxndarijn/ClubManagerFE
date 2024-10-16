@@ -1,0 +1,95 @@
+import { Component } from '@angular/core';
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {NgClass, NgStyle} from "@angular/common"
+import {FormsModule} from "@angular/forms";
+import {ThemeControllerComponent} from "../simple-navbar/theme-controller/theme-controller.component";
+import {Router} from "@angular/router";
+import {User} from "../../../../CoreModule/models/user.model";
+import {Theme, ThemeService} from "../../../../CoreModule/services/theme.service";
+import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
+import {NavigationService} from "../../../../CoreModule/services/navigation.service";
+import {AuthenticationService} from "../../../../CoreModule/services/authentication.service";
+import {AlertService} from "../../../../CoreModule/services/alert.service";
+import {AlertClass, AlertIcon} from "../../alerts/alert-info/alert-info.component";
+
+
+@Component({
+  selector: 'app-navbar',
+  standalone: true,
+  imports: [ThemeControllerComponent, TranslateModule, NgStyle, NgClass, FormsModule],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.css'
+})
+export class NavbarComponent {
+  isChecked: boolean;
+  isVisible: boolean = false;
+  profile: User | undefined;
+  title: string = "";
+  subTitle: string = "";
+
+  constructor(protected translate: TranslateService,
+              private themeService: ThemeService,
+              private graphQL: GraphQLCommunication,
+              private navigationService: NavigationService,
+              private authService: AuthenticationService,
+              private router: Router,
+              private alertService: AlertService) {
+    this.navigationService.NavigationVisibilityChangedEvent.subscribe({
+      next: (visible: boolean) => {
+        this.isVisible = visible;
+      }
+    })
+    this.navigationService.NavigationReloadEvent.subscribe({
+      next: () => {
+        this.reload()
+      }
+    })
+    this.navigationService.NavigationTitleChangedEvent.subscribe({
+      next: (title: string) => {
+        this.title = title;
+      }
+    })
+    this.navigationService.NavigationSubTitleChangedEvent.subscribe({
+      next: (subTitle: string) => {
+        this.subTitle = subTitle;
+      }
+    })
+    this.reload()
+    this.isChecked = themeService.getCurrentTheme() != Theme.LIGHT;
+
+  }
+  reload() {
+    this.graphQL.getMyProfile().then(r=>{
+        this.profile = r;
+    })
+  }
+
+  changeTranslation(language: string) {
+    this.translate.use(language);
+    this.graphQL.changeLanguage(language).then(e =>{
+        console.error("Could not update language to Server: " + e);
+    });
+
+  }
+
+  onCheckboxChange() {
+    this.themeService.setTheme(this.isChecked ? Theme.DARK : Theme.LIGHT);
+
+  }
+
+  logoutUser() {
+    this.authService.logout();
+    this.router.navigate(["/login"]);
+    this.alertService.showAlert({
+      title: "Informatie",
+      subTitle: "Je bent uitgelogd.",
+      icon: AlertIcon.INFO,
+      duration: 4000,
+      alertClass: AlertClass.INFO_CLASS
+    });
+  }
+
+  goToProfile() {
+    this.router.navigate(["/profile"]);
+  }
+}

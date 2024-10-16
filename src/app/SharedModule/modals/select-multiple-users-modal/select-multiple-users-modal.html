@@ -1,0 +1,38 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Competitie leden</h3>
+    <div class="flex flex-row gap-x-1 mt-5">
+      <div class="flex flex-col">
+      <app-auto-update-search-box [placeholder]="'Zoek leden'" (SearchEvent)="searchUser($event)"></app-auto-update-search-box>
+        <ul>
+          <li *ngFor="let user of filteredUserAssociations">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" class="checkbox checkbox-primary" [ngModel]="this.checkboxMap.get(user)" (ngModelChange)="checkboxMap.set(user, $event)"/>
+              <div class="avatar">
+                <div class="mask mask-squircle w-12 h-12 rounded-full">
+                  <img src="{{user.user.image?.encoded}}" alt="{{user.user.fullName}}"/>
+                </div>
+              </div>
+              <div>
+                <div class="font-bold">{{ user.user.fullName }}</div>
+              </div>
+
+            </div>
+
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between">
+        <button class="btn border-error border-2 bg-base-100 " (click)="hideModal()"
+        >Annuleer
+        </button>
+        <button class="btn border-accent border-2 bg-base-100" (click)="configChoices()"
+        >Bevestig
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>

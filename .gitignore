@@ -650,3 +650,5 @@ Thumbs.db
 
 # Exception for all files in src/assets/i18n directory
 !/src/assets/i18n/*
+
+.env

@@ -1,0 +1,81 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Nieuwe Competitie</h3>
+    <div class="flex flex-row gap-x-1 mt-5">
+      <div class="flex flex-col">
+
+
+        <div class="flex flex-row w-full space-x-2">
+          <app-date-time-selector class="w-3/6"
+            [labelText]="'Datum'"
+            [_formControl]="addScoreFormGroup.controls.date"
+            [type]="'date'"
+            [errorSettings]="[
+            {
+              errorMessage: 'Je moet geldige datum instellen.',
+              errorName: ''
+            }]">
+          </app-date-time-selector>
+          <app-default-input-field *ngIf="currentType == CompetitionScoreType.POINT" class="w-3/6"
+            [labelText]="'Score'"
+            [type]="'number'"
+            [_formControl]="addScoreFormGroup.controls.score"
+            [errorSettings]="[
+            {
+              errorMessage: 'Je moet geldig getal invullen.',
+              errorName: ''
+            }]">
+          </app-default-input-field>
+          <app-input-field-duration *ngIf="currentType == CompetitionScoreType.TIME" [_formControl]="addScoreFormGroup.controls.score" [OnFormReset]="OnFormReset"></app-input-field-duration>
+        </div>
+        <button class="btn border-accent border-2 bg-base-100"
+                [disabled]="!addScoreFormGroup.valid"
+                (click)="addScore()"
+        >Score toevoegen
+        </button>
+
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Score</th>
+          <th> </th>
+        </tr>
+        </thead>
+        <tbody>
+        <td *ngIf="scores.length === 0" colspan="4" class="text-center text-md">Leeg
+        </td>
+        <tr *ngFor="let score of scores" class="items-center">
+          <td>
+              <div class="font-bold">{{ score.scoreDate }}</div>
+          </td>
+          <td>
+            <p *ngIf="currentType == CompetitionScoreType.POINT"> {{score.score}} </p>
+            <p *ngIf="currentType == CompetitionScoreType.TIME"> {{this.utility.formatNanoseconds(score.score)}} </p>
+          </td>
+          <td>
+            <button class="btn border-warning border-2 btn-sm bg-base-100" (click)="removeScore(score)">Verwijder</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between">
+        <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+        >Sluit
+        </button>
+        <button class="btn border-accent border-2 bg-base-100"
+                [disabled]="!(scores.length > 0)" (click)="sendScores()"
+        >Bevestig
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>
