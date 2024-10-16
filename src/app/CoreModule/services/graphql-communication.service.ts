@@ -375,7 +375,8 @@ export class GraphQLCommunication {
                 id {
                 userId,
                 reservationId
-                }
+                },
+                position
               },
               tracks {
                 id,
@@ -400,7 +401,8 @@ export class GraphQLCommunication {
                 colorName,
                 primaryColor,
                 secondaryColor
-              }
+              },
+              membersCanChooseTheirOwnPosition
             }
           }
         }
@@ -1233,8 +1235,9 @@ export class GraphQLCommunication {
               reservationUsers {
                 id {
                 userId,
-                reservationId
-                }
+                reservationId,
+                },
+                position
               },
               tracks {
                 id,
@@ -1259,7 +1262,8 @@ export class GraphQLCommunication {
                 colorName,
                 primaryColor,
                 secondaryColor
-              }
+              },
+              membersCanChooseTheirOwnPosition
             },
           }
     }
@@ -1309,7 +1313,8 @@ export class GraphQLCommunication {
                 id {
                 userId,
                 reservationId
-                }
+                },
+                position
               },
               tracks {
                 id,
@@ -1334,7 +1339,8 @@ export class GraphQLCommunication {
                 colorName,
                 primaryColor,
                 secondaryColor
-              }
+              },
+              membersCanChooseTheirOwnPosition
             },
           }
     }
@@ -1354,7 +1360,8 @@ export class GraphQLCommunication {
           associationID: associationID,
           tracks: reservation.tracks.map(r => r.id),
           allowedWeaponTypes: reservation.allowedWeaponTypes.map(a => a.id),
-          colorPreset: reservation.colorPreset?.id ? reservation.colorPreset.id : ""
+          colorPreset: reservation.colorPreset?.id ? reservation.colorPreset.id : "",
+          userCanChooseOwnPosition : reservation.membersCanChooseTheirOwnPosition
         }
       }
     };

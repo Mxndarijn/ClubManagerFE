@@ -5,6 +5,14 @@
       <h2>{{reservation?.title}}</h2>
       <p>{{reservation?.description}}</p>
       <p>Er zijn {{reservation?.reservationUsers?.length}} / {{reservation?.maxSize}} aanmeldingen</p>
+      <app-input-field-single-select *ngIf="reservation?.membersCanChooseTheirOwnPosition"  [inputList]="items" [_formControl]="selectPosition" [NewItemsEvent]="NewItemsEvent" [processItem]="convertNumberToText"
+                                     [errorSetting]="
+            {
+              errorMessage: 'Je moet een waarde selecteren.',
+              errorName: ''
+            }">
+
+      </app-input-field-single-select>
     </div>
     <div>
       <h2>Banen</h2>
@@ -21,7 +29,7 @@
         <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
         >Sluit
         </button>
-        <button *ngIf="!isEnrolled()" class="btn border-success border-2 bg-base-100" [disabled]="!timeIsAfterCurrentDate(reservation?.startDate!)"
+        <button *ngIf="!isEnrolled()" class="btn border-success border-2 bg-base-100" [disabled]="!timeIsAfterCurrentDate(reservation?.startDate!) || (reservation?.membersCanChooseTheirOwnPosition  ? !selectPosition.valid : false)"
                 (click)="enrollAtReservation()"
         >Aanmelden
         </button>

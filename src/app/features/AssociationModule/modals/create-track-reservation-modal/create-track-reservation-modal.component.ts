@@ -267,7 +267,8 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     this.currentReservation.startDate = this.step3ReservationForm.controls.startDate.value!;
     this.currentReservation.endDate = this.step3ReservationForm.controls.endDate.value!;
     this.currentReservation.maxSize = this.step1ReservationForm.controls.maxSize.value!;
-    this.currentReservation.colorPreset = this.step1ReservationForm.controls.color.value!
+    this.currentReservation.colorPreset = this.step1ReservationForm.controls.color.value!;
+    this.currentReservation.membersCanChooseTheirOwnPosition = this.step1ReservationForm.controls.chooseTime.value!;
     if (!setSerie)
       return;
 

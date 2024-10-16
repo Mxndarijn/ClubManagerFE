@@ -209,6 +209,7 @@ export class TrackConfigurationPageComponent {
 
   private generateNewReservation(): Reservation {
     return {
+      membersCanChooseTheirOwnPosition: true,
       allowedWeaponTypes: [],
       association: undefined,
       id: "", maxSize: 1,
