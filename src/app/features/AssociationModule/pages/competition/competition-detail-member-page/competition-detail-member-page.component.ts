@@ -77,7 +77,7 @@ export class CompetitionDetailMemberPageComponent {
         this.competitionUser = this.competition?.competitionUsers?.find(u => {
           return u.user.id == this.competitionUserID
         })
-        console.log(this.competitionUser)
+        this.competitionUser?.scores?.sort((a, b) => new Date(b.scoreDate).getTime() - new Date(a.scoreDate).getTime())
       } else {
         this.alertService.showAlert({
           title: "Fout opgetreden",
@@ -105,14 +105,17 @@ export class CompetitionDetailMemberPageComponent {
     const selectedScoreIds = Array.from(this.checkboxMap.entries())
       .filter(([CompetitionScore, isSelected]) => isSelected)
       .map(([CompetitionScore, isSelected]) => CompetitionScore.id);
-  console.log(selectedScoreIds);
     this.graphQLCommunication.removeScores(this.associationID, this.competitionID, this.competitionUserID,  selectedScoreIds).then(res=>{
-
-      console.log(res);
       this.updateCompetition();
-    })
+      this.alertService.showAlert({
+        title: "Succesvol",
+        subTitle: "De score(s), zijn succesvol verwijderd.",
+        icon: AlertIcon.CHECK,
+        duration: 4000,
+        alertClass: AlertClass.CORRECT_CLASS
+      });
 
-    // console.log(selectedScores);
-  console.log(this.checkboxMap);
+
+    })
   }
 }
