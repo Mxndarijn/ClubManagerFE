@@ -90,6 +90,10 @@
               </div>
             </div>
           </div>
+          <app-default-checkbox-input-field
+            [_formControl]="step1ReservationForm.controls.chooseTime"
+            [labelText]="'Zelf positie kiezen'">
+          </app-default-checkbox-input-field>
         </div>
 
         <div *ngSwitchCase="Step.STEP_2">

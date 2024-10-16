@@ -148,6 +148,7 @@ export class CompetitionDetailsPage {
 
   }
 
+
   protected readonly faTrashCan = faTrashCan;
   protected readonly CompetitionScoreType = CompetitionScoreType;
 
@@ -163,4 +164,6 @@ export class CompetitionDetailsPage {
 
   protected readonly parseInt = parseInt;
   protected readonly parseFloat = parseFloat;
+
+
 }

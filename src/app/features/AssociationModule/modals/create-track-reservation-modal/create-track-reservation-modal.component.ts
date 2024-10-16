@@ -95,6 +95,8 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     weaponTypes: FormControl<WeaponType[] | null>;
     maxSize: FormControl<number>;
     color: FormControl<ColorPreset | null>;
+    chooseTime: FormControl<boolean | undefined>;
+
   }>;
   protected step2ReservationForm: FormGroup<{
     tracks: FormControl<Track[] | null>;
@@ -155,7 +157,9 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
 
       weaponTypes: new FormControl([], Validators.required),
       maxSize: new FormControl(1, Validators.compose([Validators.required, Validators.min(1)])),
-      color: new FormControl(null, Validators.required)
+      color: new FormControl(null, Validators.required),
+      chooseTime: new FormControl(true, Validators.required)
+
     });
 
     // @ts-ignore

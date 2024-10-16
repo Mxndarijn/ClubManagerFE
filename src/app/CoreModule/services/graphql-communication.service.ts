@@ -1635,6 +1635,7 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.addUserScores);
 
   }
+
   removeScores(associationID: string, competitionID: string, id: string, scoreIDs: string[]) {
     const query = {
       query: `
@@ -1661,5 +1662,31 @@ export class GraphQLCommunication {
     }
     return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.removeUserScores);
 
+  }
+
+  removeMemberFromCompetition(associationID: string, competitionID: string, id: string) {
+    const query = {
+      query: `
+   mutation MyMutation($dto :  CompetitionUserDTO!, $associationID: ID!) {
+  associationMutations {
+    associationCompetitionMutations {
+      removeUser(
+       associationID: $associationID
+        dto: $dto
+        ){
+        success
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        dto: {
+          userID: id,
+          competitionID: competitionID,
+        }
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.removeUser);
   }
 }

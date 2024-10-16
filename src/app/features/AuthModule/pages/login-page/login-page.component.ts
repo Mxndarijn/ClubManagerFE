@@ -78,7 +78,6 @@ export class LoginPageComponent {
             this.permissionService.refreshPermissions();
             this.navigationService.refreshNavigation();
             this.router.navigate(['/home']);
-            console.log("e")
             // navigate to home
 
           }
