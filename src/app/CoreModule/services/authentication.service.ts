@@ -34,6 +34,7 @@ export class AuthenticationService {
 
   private updateUserID() {
     this.graphQLService.getMyID().then( r=>{
+      console.log(r)
         localStorage.setItem(this.userKey, r.id)
     })
   }

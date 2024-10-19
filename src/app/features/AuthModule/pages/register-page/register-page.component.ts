@@ -63,6 +63,7 @@ export class RegisterPageComponent {
         this.translate.currentLang
       ).subscribe({
         next: (registerRequest) => {
+          console.log(registerRequest)
           if (!registerRequest.success) {
             if (typeof registerRequest.error === 'string') {
               this.translate.get('registerPage.errors.serverResponses.' + registerRequest.error).subscribe((res: string) => {

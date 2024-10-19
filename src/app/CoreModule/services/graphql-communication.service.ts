@@ -589,7 +589,7 @@ export class GraphQLCommunication {
         }
       }
     };
-    return this.solvePromise(query, v => v.data.associationMutations.userMutations.updateMyProfilePicture);
+    return this.solvePromise(query, v => v.data.userMutations.updateMyProfilePicture);
   }
 
   public getMyFullProfile(): Promise<any> {
@@ -1210,6 +1210,7 @@ export class GraphQLCommunication {
         }
       }
     };
+    console.log(query)
 
     return this.solvePromise(query, v => v.data.authenticationMutations.register);
   }
