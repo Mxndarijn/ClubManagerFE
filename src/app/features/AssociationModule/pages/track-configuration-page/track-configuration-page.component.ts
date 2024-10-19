@@ -172,7 +172,9 @@ export class TrackConfigurationPageComponent {
 
   }
 
+  private lastUsedDate? : Date
   updateEvents(date: Date) {
+    this.lastUsedDate = date;
     this.graphQLService.getReservations(this.associationID, date).then((dto: GetReservationsDTO) => {
         if (dto.success) {
           this.reservations = dto.reservations
@@ -230,6 +232,10 @@ export class TrackConfigurationPageComponent {
     };
   }
 
+  refreshEvents() {
+    if(this.lastUsedDate)
+      this.updateEvents(this.lastUsedDate)
+  }
 }
 
 enum Tab {

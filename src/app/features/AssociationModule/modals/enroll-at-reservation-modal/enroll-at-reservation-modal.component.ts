@@ -109,7 +109,8 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
 
   enrollAtReservation() {
     if(this.reservation != null) {
-      this.graphQLService.enrollAtReservation(this.associationID, this.reservation.id, true).then(data => {
+      const position = this.selectPosition.value || -1
+      this.graphQLService.enrollAtReservation(this.associationID, this.reservation.id, true, position).then(data => {
         if(data.success == true) {
           this.alertService.showAlert({
             title: "Succesvol",
@@ -136,20 +137,20 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
   isEnrolled() {
     const userKey = this.authService.getUserID();
     return this.reservation?.reservationUsers.some(u => {
-      console.log(u)
       return u.id.userId === userKey
     });
   }
 
   updateReservation(reservation : Reservation) {
     if(this.reservation != null) {
-      this.reservation.reservationUsers = reservation.reservationUsers;
+      this.reservation.reservationUsers = reservation?.reservationUsers || [];
     }
   }
 
   unrollAtReservation() {
     if(this.reservation != null) {
-      this.graphQLService.enrollAtReservation(this.associationID, this.reservation.id, false).then(data => {
+      this.graphQLService.enrollAtReservation(this.associationID, this.reservation.id, false, -1).then(data => {
+        console.log(data)
         if(data.success == true) {
           this.alertService.showAlert({
             title: "Succesvol",

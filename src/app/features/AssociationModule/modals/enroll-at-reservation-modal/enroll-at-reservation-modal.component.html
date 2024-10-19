@@ -5,13 +5,13 @@
       <h2>{{reservation?.title}}</h2>
       <p>{{reservation?.description}}</p>
       <p>Er zijn {{reservation?.reservationUsers?.length}} / {{reservation?.maxSize}} aanmeldingen</p>
+      <p *ngIf="reservation?.membersCanChooseTheirOwnPosition"> Je moet je eigen positie selecteren. </p>
       <app-input-field-single-select *ngIf="reservation?.membersCanChooseTheirOwnPosition"  [inputList]="items" [_formControl]="selectPosition" [NewItemsEvent]="NewItemsEvent" [processItem]="convertNumberToText"
                                      [errorSetting]="
             {
               errorMessage: 'Je moet een waarde selecteren.',
               errorName: ''
             }">
-
       </app-input-field-single-select>
     </div>
     <div>

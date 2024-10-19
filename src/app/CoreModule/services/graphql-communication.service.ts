@@ -352,13 +352,13 @@ export class GraphQLCommunication {
 
   }
 
-  enrollAtReservation(associationID: string, reservationID: string, joinBoolean: boolean) {
+  enrollAtReservation(associationID: string, reservationID: string, joinBoolean: boolean, position : number) {
     const query = {
       query: `
-    mutation MyMutation($associationID : ID!, $reservationID : ID!, $join: Boolean!) {
+    mutation MyMutation($associationID : ID!, $dto: CompetitionParticipateDTO!) {
       associationMutations {
         associationReservationMutations {
-          participateReservation(associationID: $associationID, reservationID: $reservationID, join: $join) {
+          participateReservation(associationID: $associationID, dto: $dto) {
             success
             reservation {
               id,
@@ -410,8 +410,11 @@ export class GraphQLCommunication {
     }
   `, variables: {
         associationID: associationID,
-        reservationID: reservationID,
-        join: joinBoolean
+        dto: {
+          reservationID: reservationID,
+          position: position,
+          join: joinBoolean
+        }
       }
     };
     return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.participateReservation);
@@ -1695,5 +1698,48 @@ export class GraphQLCommunication {
       }
     }
     return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.removeUser);
+  }
+
+  deleteReservation(id: string, associationID: string) {
+    const query = {
+      query: `
+   mutation MyMutation($associationID : ID!, $reservationID: ID!) {
+    associationMutations {
+        associationReservationMutations {
+            deleteReservation(associationID: $associationID, reservationID: $reservationID) {
+                message
+                success
+            }
+        }
+    }
+}`,
+      variables: {
+        associationID: associationID,
+        reservationID: id
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.deleteReservation);
+  }
+
+  deleteReservationSeries(id: string, associationID: string) {
+    const query = {
+      query: `
+   mutation MyMutation($associationID : ID!, $reservationSeriesID: ID!) {
+      associationMutations {
+    associationReservationMutations {
+      deleteReservationSeries(associationID: $associationID, seriesID: $reservationSeriesID) {
+        message
+        success
+      }
+
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        reservationSeriesID: id
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.deleteReservationSeries);
   }
 }

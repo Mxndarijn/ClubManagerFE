@@ -16,7 +16,7 @@ import {
 } from "../../../../SharedModule/components/calendar/events/calendar-event-register-reservation/calendar-event-register-reservation.component";
 import {
   EnrollAtReservationModalComponent
-} from "../../modals/enroll-at-reservation-modal/enroll-at-reservation-modal.component";
+} from "../../../AssociationModule/modals/enroll-at-reservation-modal/enroll-at-reservation-modal.component";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 
 @Component({
