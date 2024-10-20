@@ -51,3 +51,46 @@
     </table>
   </div>
 </div>
+<div *ngIf="activeTab === Tab.HISTORY" class="w-full">
+  <div class="overflow-x-auto">
+    <!--    <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box> #TODO Maybe add a date filter?-->
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Titel</th>
+        <th>Vereniging</th>
+        <th>Tijd</th>
+        <th>Baan</th>
+        <th>Positie</th>
+        <th> </th>
+      </tr>
+      </thead>
+      <tbody>
+      <td *ngIf="historyReservationsUsers.length === 0" colspan="4" class="text-center text-md">Geen aankomende aangemellde reservations PS. Dit nog aanpassen text
+      </td>
+      <tr *ngFor="let reservationUser of historyReservationsUsers" class="items-center">
+        <td>
+          <p> {{ reservationUser.reservation.title }}</p>
+        </td>
+        <td>
+          <p>{{ reservationUser.reservation.association?.name }}</p>
+        </td>
+        <td>
+          <p>Begint op {{this.util.formatDateTimeAsString(reservationUser.reservation.startDate) | async}} - Eindigt op {{this.util.formatDateTimeAsString(reservationUser.reservation.endDate) | async}}</p>
+        </td>
+        <td>
+          <p *ngFor="let track of reservationUser.reservation.tracks">{{ track.name}}</p>
+        </td>
+        <td>
+          <p *ngIf="reservationUser.reservation.membersCanChooseTheirOwnPosition">{{ reservationUser.position }}</p>
+          <p *ngIf="!reservationUser.reservation.membersCanChooseTheirOwnPosition">Geen</p>
+        </td>
+        <td>
+          <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="viewMoreInformation(reservationUser)">Info
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

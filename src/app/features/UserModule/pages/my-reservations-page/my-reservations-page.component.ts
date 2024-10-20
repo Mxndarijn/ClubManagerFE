@@ -45,6 +45,7 @@ export class MyReservationsPageComponent implements OnInit {
   activeTab: Tab = Tab.FUTURE;
   protected readonly Tab = Tab;
   protected futureReservationsUsers : ReservationUser[] = []
+  protected historyReservationsUsers : ReservationUser[] = []
 
 
   constructor(
@@ -63,9 +64,26 @@ export class MyReservationsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const startDate = new Date().toISOString();
+
+    this.refreshData()
+  }
+
+
+  setActiveTab(tab: Tab) {
+    this.activeTab = tab;
+
+  }
+
+  protected readonly Modal = Modal;
+  protected readonly faTrashCan = faTrashCan;
+
+  viewMoreInformation(reservationUser : ReservationUser) {
+
+  }
+
+  private refreshData() {
+    const startDate = this.util.toLocalIsoDateTime(new Date());
     this.graphQL.getMyReservations(startDate, "").then(response => {
-      console.log(response)
       if(response == null) {
         this.alertService.showAlert({
           title: "Fout opgetreden",
@@ -80,18 +98,20 @@ export class MyReservationsPageComponent implements OnInit {
         return new Date(a.reservation.startDate).getTime() - new Date(b.reservation.startDate).getTime();
       });
     })
-  }
-
-
-  setActiveTab(tab: Tab) {
-    this.activeTab = tab;
-
-  }
-
-  protected readonly Modal = Modal;
-  protected readonly faTrashCan = faTrashCan;
-
-  viewMoreInformation(reservationUser : ReservationUser) {
-
+    this.graphQL.getMyReservations("", startDate).then(response => {
+      if(response == null) {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er ging iets mis tijdens het ophalen van de gegevens.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+        return
+      }
+      this.historyReservationsUsers = response.reservations.sort((a: ReservationUser, b: ReservationUser) => {
+        return new Date(b.reservation.startDate).getTime() - new Date(a.reservation.startDate).getTime();
+      });
+    })
   }
 }
