@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
@@ -10,13 +10,16 @@ import {SearchBoxComponent} from "../../../../SharedModule/components/input-fiel
 import {
   UpdateUserModalComponent
 } from "../../../AssociationModule/modals/update-user-modal/update-user-modal.component";
-import {Modal} from "../../../../CoreModule/services/modal.service";
+import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {Reservation, ReservationUser} from "../../../../CoreModule/models/reservation.model";
 import {NavigationService} from "../../../../CoreModule/services/navigation.service";
+import {
+  MyReservationDetailModalComponent
+} from "../../modals/my-reservation-detail-modal/my-reservation-detail-modal.component";
 
 
 enum Tab {
@@ -36,7 +39,8 @@ enum Tab {
     NgForOf,
     NgIf,
     SearchBoxComponent,
-    UpdateUserModalComponent
+    UpdateUserModalComponent,
+    MyReservationDetailModalComponent
   ],
   templateUrl: './my-reservations-page.component.html',
   styleUrl: './my-reservations-page.component.css'
@@ -54,6 +58,7 @@ export class MyReservationsPageComponent implements OnInit {
     private alertService : AlertService,
     private navigationService : NavigationService,
     private translate: TranslateService,
+    private modalService: ModalService
   ) {
     navigationService.showNavigation();
     this.translate.get('myReservations.Title').subscribe((res: string) => {
@@ -76,12 +81,14 @@ export class MyReservationsPageComponent implements OnInit {
 
   protected readonly Modal = Modal;
   protected readonly faTrashCan = faTrashCan;
+  SetCurrentReservationUser: EventEmitter<ReservationUser> = new EventEmitter();
 
   viewMoreInformation(reservationUser : ReservationUser) {
-
+    this.SetCurrentReservationUser.emit(reservationUser);
+    this.modalService.showModal(Modal.MY_RESERVATIONS_VIEW_DETAIL);
   }
 
-  private refreshData() {
+  protected refreshData() {
     const startDate = this.util.toLocalIsoDateTime(new Date());
     this.graphQL.getMyReservations(startDate, "").then(response => {
       if(response == null) {

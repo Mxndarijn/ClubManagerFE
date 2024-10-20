@@ -218,6 +218,14 @@ export class UtilityFunctions {
     return `${formattedMinutes}:${formattedSeconds}:${formattedMilliseconds}`;
 
   }
+
+  timeIsAfterCurrentDate(startDate: string) {
+    if (!startDate) {
+      return false;
+    }
+    return new Date(startDate).getTime() > new Date().getTime();
+
+  }
 }
 
 export enum Day {
