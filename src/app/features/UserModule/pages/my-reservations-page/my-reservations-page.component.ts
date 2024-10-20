@@ -76,7 +76,9 @@ export class MyReservationsPageComponent implements OnInit {
         });
         return
       }
-      this.futureReservationsUsers = response.reservations;
+      this.futureReservationsUsers = response.reservations.sort((a: ReservationUser, b: ReservationUser) => {
+        return new Date(a.reservation.startDate).getTime() - new Date(b.reservation.startDate).getTime();
+      });
     })
   }
 
