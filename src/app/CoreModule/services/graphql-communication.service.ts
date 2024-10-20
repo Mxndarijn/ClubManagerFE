@@ -1743,4 +1743,46 @@ export class GraphQLCommunication {
     }
     return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.deleteReservationSeries);
   }
+
+  getMyReservations(startDate: string, endDate : string) {
+    const query = {
+      query: `
+   query MyQuery($endDate : LocalDateTime, $startDate : LocalDateTime) {
+  userQueries {
+    getMyProfile {
+      reservations(endDate: $endDate, startDate: $startDate) {
+        id {
+          reservationId
+          userId
+        }
+        position
+        registerDate
+        reservation {
+          description
+          startDate
+          endDate
+          id
+          membersCanChooseTheirOwnPosition
+          title
+          association {
+            name
+            id
+          }
+          tracks {
+            name
+            id
+            description
+          }
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        endDate: endDate,
+        startDate: startDate
+      }
+    }
+    return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+  }
 }

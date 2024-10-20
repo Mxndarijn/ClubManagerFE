@@ -244,13 +244,13 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
         this.step3ReservationForm.patchValue({
           startDate: this.currentReservation?.startDate,
           endDate: this.currentReservation?.endDate,
-          repeats: this.currentReservation.reservationSerie != null && this.currentReservation.reservationSerie.id.length > 0,
+          repeats: this.currentReservation.reservationSeries != null && this.currentReservation.reservationSeries.id.length > 0,
         });
 
         this.createSeriesForm.patchValue({
-          repeatUntil: this.currentReservation?.reservationSerie?.repeatUntil,
-          repeatDaysBetween: this.currentReservation?.reservationSerie?.repeatDaysBetween,
-          repeatType: this.currentReservation.reservationSerie?.reservationRepeat
+          repeatUntil: this.currentReservation?.reservationSeries?.repeatUntil,
+          repeatDaysBetween: this.currentReservation?.reservationSeries?.repeatDaysBetween,
+          repeatType: this.currentReservation.reservationSeries?.reservationRepeat
         });
       }
     }))
@@ -272,12 +272,12 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     if (!setSerie)
       return;
 
-    if (this.currentReservation.reservationSerie) {
-      this.currentReservation.reservationSerie.repeatUntil = this.createSeriesForm.controls.repeatUntil.value!;
-      this.currentReservation.reservationSerie.repeatDaysBetween = this.createSeriesForm.controls.repeatDaysBetween.value!;
-      this.currentReservation.reservationSerie.reservationRepeat = this.createSeriesForm.controls.repeatType.value!;
+    if (this.currentReservation.reservationSeries) {
+      this.currentReservation.reservationSeries.repeatUntil = this.createSeriesForm.controls.repeatUntil.value!;
+      this.currentReservation.reservationSeries.repeatDaysBetween = this.createSeriesForm.controls.repeatDaysBetween.value!;
+      this.currentReservation.reservationSeries.reservationRepeat = this.createSeriesForm.controls.repeatType.value!;
     } else {
-      this.currentReservation.reservationSerie = {
+      this.currentReservation.reservationSeries = {
         id: "", reservations: [],
         repeatUntil: this.createSeriesForm.controls.repeatUntil.value!,
         repeatDaysBetween: this.createSeriesForm.controls.repeatDaysBetween.value!,

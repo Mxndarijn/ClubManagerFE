@@ -51,6 +51,7 @@ export class ViewTrackReservationModalComponent extends DefaultModalInformation 
     this.subscriptions.push(this.SetSelectedItem.subscribe({
       next: (i: CalendarEvent) => {
         this.selected = i;
+        console.log(this.selected)
       }
     }))
   }
@@ -100,11 +101,12 @@ export class ViewTrackReservationModalComponent extends DefaultModalInformation 
 
   deleteReservationSeries() {
     const res : Reservation = this.selected?.data;
-    if(res.reservationSerie?.id == null) {
+    if(res.reservationSeries?.id == null) {
+      console.log("id is null")
       this.hideModal()
       return;
     }
-    this.graphQL.deleteReservationSeries(res.reservationSerie.id, this.associationID).then(res => {
+    this.graphQL.deleteReservationSeries(res.reservationSeries.id, this.associationID).then(res => {
       if(res.success) {
         this.alertService.showAlert({
           title: "Succesvol",

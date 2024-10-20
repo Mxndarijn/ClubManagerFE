@@ -222,7 +222,7 @@ export class TrackConfigurationPageComponent {
       endDate: "",
       description: "",
       status: ReservationStatus.IDK,
-      reservationSerie: {
+      reservationSeries: {
         id: "",
         reservations: [],
         reservationRepeat: ReservationRepeat.DAY,

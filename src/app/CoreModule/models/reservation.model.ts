@@ -16,7 +16,7 @@ export interface Reservation {
   reservationUsers: ReservationUser[];
   tracks: Track[];
   allowedWeaponTypes: WeaponType[];
-  reservationSerie?: ReservationSeries;
+  reservationSeries?: ReservationSeries;
   colorPreset?: ColorPreset;
   membersCanChooseTheirOwnPosition: boolean
 }

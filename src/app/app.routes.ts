@@ -22,6 +22,9 @@ import {
 import {
   CompetitionDetailMemberPageComponent
 } from "./features/AssociationModule/pages/competition/competition-detail-member-page/competition-detail-member-page.component";
+import {
+  MyReservationsPageComponent
+} from "./features/UserModule/pages/my-reservations-page/my-reservations-page.component";
 
 export const routes: Routes = [
   {
@@ -106,6 +109,11 @@ export const routes: Routes = [
     path: 'association/:associationID/competition/:competitionID/member/:competitionMemberID',
     component: CompetitionDetailMemberPageComponent,
     canActivate: [AuthGuard, AssociationManagerGuard],
+  },
+  {
+    path: 'myreservations',
+    component: MyReservationsPageComponent,
+    canActivate: [AuthGuard],
   },
 
 ];

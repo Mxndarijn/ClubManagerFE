@@ -66,18 +66,14 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
         this.reservation = value;
 // Retrieve the maximum size of the reservation
         const maxSize: number = this.reservation?.maxSize ?? 0;
-        console.log(`Maxsize: ${maxSize}`);
 
 // Haal de bezette posities op, of een lege array als reservationUsers niet beschikbaar is
         const occupiedPositions: number[] = this.reservation?.reservationUsers?.map(user => user.position) ?? [];
 
 // Converteer de bezette posities naar een Set voor snellere lookup
         const occupiedPositionsSet: Set<number> = new Set(occupiedPositions);
-        console.log("Occupied Positions: ", occupiedPositions);
-
 // Genereer beschikbare posities door te filteren op niet-bezette posities
         const availablePositions: number[] = Array.from({ length: maxSize }, (_, i) => i).filter(position => !occupiedPositionsSet.has(position));
-        console.log(`Available Positions: ${availablePositions}`);
         this.NewItemsEvent.emit(availablePositions);
         this.items = availablePositions
         this.subscriptions.push(
@@ -93,8 +89,6 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
             error: (err) => console.error('Error formatting end date', err)
           })
         );
-
-        console.log(value)
       }
     }));
   }
@@ -150,7 +144,6 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
   unrollAtReservation() {
     if(this.reservation != null) {
       this.graphQLService.enrollAtReservation(this.associationID, this.reservation.id, false, -1).then(data => {
-        console.log(data)
         if(data.success == true) {
           this.alertService.showAlert({
             title: "Succesvol",
