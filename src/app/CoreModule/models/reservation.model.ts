@@ -18,7 +18,8 @@ export interface Reservation {
   allowedWeaponTypes: WeaponType[];
   reservationSeries?: ReservationSeries;
   colorPreset?: ColorPreset;
-  membersCanChooseTheirOwnPosition: boolean
+  membersCanChooseTheirOwnPosition: boolean,
+  openPositions: number[]
 }
 
 export interface ReservationUser {

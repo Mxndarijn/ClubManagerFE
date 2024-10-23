@@ -47,7 +47,8 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
               private alertService: AlertService,
               private graphQLService : GraphQLCommunication,
               private route: ActivatedRoute,
-              protected util: UtilityFunctions) {
+              protected util: UtilityFunctions,
+              private auth : AuthenticationService) {
     super(Modal.ASSOCIATION_RESERVE_ENROLL_AT_RESERVATION, modalService);
     this.associationID = route.snapshot.params['associationID'];
     this.selectPosition = new FormControl(null, Validators.required)
@@ -64,18 +65,23 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
     this.subscriptions.push(this.setCurrentReservation.subscribe({
       next: (value: Reservation) => {
         this.reservation = value;
-// Retrieve the maximum size of the reservation
-        const maxSize: number = this.reservation?.maxSize ?? 0;
-
-// Haal de bezette posities op, of een lege array als reservationUsers niet beschikbaar is
-        const occupiedPositions: number[] = this.reservation?.reservationUsers?.map(user => user.position) ?? [];
-
-// Converteer de bezette posities naar een Set voor snellere lookup
-        const occupiedPositionsSet: Set<number> = new Set(occupiedPositions);
-// Genereer beschikbare posities door te filteren op niet-bezette posities
-        const availablePositions: number[] = Array.from({ length: maxSize }, (_, i) => i).filter(position => !occupiedPositionsSet.has(position));
-        this.NewItemsEvent.emit(availablePositions);
-        this.items = availablePositions
+        this.reservation.reservationUsers = []
+        this.graphQLService.getAssociationReservation(this.associationID, value.id, this.auth.getUserID()!).then(data => {
+          console.log(data)
+          if(data.success == true) {
+            this.reservation = data.reservation;
+            this.NewItemsEvent.emit(this.reservation!.openPositions);
+            this.items = this.reservation!.openPositions
+          } else {
+            this.alertService.showAlert({
+              title: "Fout opgetreden",
+              subTitle: "Er ging iets mis tijdens het ophalen van de reservering.",
+              icon: AlertIcon.XMARK,
+              duration: 4000,
+              alertClass: AlertClass.INCORRECT_CLASS
+            });
+          }
+        })
         this.subscriptions.push(
           this.util.formatDateTimeAsString(value.startDate).subscribe({
             next: (r) => this.startTime = r,
@@ -103,8 +109,11 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
 
   enrollAtReservation() {
     if(this.reservation != null) {
-      const position = this.selectPosition.value || -1
+      console.log(this.selectPosition)
+      console.log(this.selectPosition.value)
+      const position = this.selectPosition.value != null ? this.selectPosition.value! : -1
       this.graphQLService.enrollAtReservation(this.associationID, this.reservation.id, true, position).then(data => {
+        console.log(data)
         if(data.success == true) {
           this.alertService.showAlert({
             title: "Succesvol",

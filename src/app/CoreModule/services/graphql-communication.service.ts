@@ -417,6 +417,7 @@ export class GraphQLCommunication {
         }
       }
     };
+    console.log(query)
     return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.participateReservation);
 
   }
@@ -1224,47 +1225,17 @@ export class GraphQLCommunication {
   associationQueries {
     getAssociationDetails(associationID: $associationID) {
       reservations(endDate: $endDate, startDate: $startDate) {
-       id,
-        association {
-          id
-        },
+        id,
         startDate,
         endDate,
         title,
         description,
-        status,
-        maxSize,
-        reservationUsers {
-          id {
-          userId,
-          reservationId,
-          },
-          position
-        },
-        tracks {
-          id,
-          name
-        },
-        allowedWeaponTypes {
-          id,
-          name
-        },
-        reservationSeries {
-          id,
-          title,
-          description,
-          maxUsers,
-          reservations {
-            id
-          }
-        },
         colorPreset {
-            id,
+          id,
           colorName,
           primaryColor,
           secondaryColor
-        },
-        membersCanChooseTheirOwnPosition
+        }
       }
     }
   }
@@ -1779,5 +1750,49 @@ export class GraphQLCommunication {
       }
     }
     return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+  }
+
+  getAssociationReservation(associationID: string, id: string, userID : string) {
+    const query = {
+      query: `query MyQuery($associationID : ID!, $reservationID: ID!, $userID : ID) {
+  associationQueries {
+    associationReservationQueries {
+      getReservation(associationID: $associationID, reservationID: $reservationID) {
+        success
+        reservation {
+          description
+          endDate
+          id
+          maxSize
+          membersCanChooseTheirOwnPosition
+          startDate
+          status
+          title
+          tracks {
+            description
+            name
+          }
+          allowedWeaponTypes {
+            id
+            name
+          }
+          openPositions
+          reservationUsers(id: $userID) {
+            id {
+              reservationId
+              userId
+            }
+          }
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        reservationID: id
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationQueries.associationReservationQueries.getReservation);
   }
 }

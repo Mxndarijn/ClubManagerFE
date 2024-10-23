@@ -230,6 +230,7 @@ export class TrackConfigurationPageComponent {
         repeatDaysBetween: 1,
         repeatUntil: "",
       },
+      openPositions: []
     };
   }
 
