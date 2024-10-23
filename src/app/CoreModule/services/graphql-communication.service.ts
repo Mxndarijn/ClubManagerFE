@@ -1257,7 +1257,6 @@ export class GraphQLCommunication {
           reservations {
             id
           }
-
         },
         colorPreset {
             id,
