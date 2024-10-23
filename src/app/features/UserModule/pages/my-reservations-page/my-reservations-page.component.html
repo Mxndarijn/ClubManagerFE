@@ -40,7 +40,7 @@
           <p *ngFor="let track of reservationUser.reservation.tracks">{{ track.name}}</p>
         </td>
         <td>
-          <p *ngIf="reservationUser.reservation.membersCanChooseTheirOwnPosition">{{ reservationUser.position }}</p>
+          <p *ngIf="reservationUser.reservation.membersCanChooseTheirOwnPosition">{{ reservationUser.position + 1 }}</p>
           <p *ngIf="!reservationUser.reservation.membersCanChooseTheirOwnPosition">Geen</p>
         </td>
         <td>

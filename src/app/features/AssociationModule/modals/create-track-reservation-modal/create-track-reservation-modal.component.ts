@@ -309,7 +309,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
             alertClass: AlertClass.INCORRECT_CLASS
           });
         }
-        this.hideModal()
+        this.resetReservationModal();
     }).catch(e=> {
       this.alertService.showAlert({
         title: "Fout opgetreden",
@@ -318,13 +318,18 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
         duration: 4000,
         alertClass: AlertClass.INCORRECT_CLASS
       });
-      console.log(e)
-      this.hideModal()
+      this.resetReservationModal()
     });
   }
+  resetReservationModal() {
+    this.hideModal();
+    this.currentReservation = undefined;
+    this.step1ReservationForm.reset();
+    this.step2ReservationForm.reset();
+    this.step3ReservationForm.reset();
+    this.step = Step.STEP_1;
+    this.step1ReservationForm.controls.chooseTime.setValue(true);
 
-  saveReservation() {
-    this.setCurrentValues(false);
   }
 
   protected readonly ReservationRepeat = ReservationRepeat;
@@ -401,11 +406,14 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   }
 
   containsWeaponTypeInList(weaponType: WeaponType) {
-    return this.step1ReservationForm.controls.weaponTypes.value!.includes(weaponType);
-
+    if(this.step1ReservationForm.controls.weaponTypes.value != null) {
+      return this.step1ReservationForm.controls.weaponTypes.value!.includes(weaponType);
+    } else {
+      return false
+    }
   }
-
   getSubTitleForStep() {
+
     switch (this.step) {
       case Step.STEP_1:
         return "Vul de correcte gegevens in";

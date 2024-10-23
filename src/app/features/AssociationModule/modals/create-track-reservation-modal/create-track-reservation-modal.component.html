@@ -8,10 +8,8 @@
           <div>
             <h3 class="font-bold text-lg">{{ title }}</h3>
             <p class="text-md">{{ getSubTitleForStep() }}</p>
-
           </div>
-
-          <button class="btn btn-md border-error border-2 bg-base-100" (click)="hideModal()"
+          <button class="btn btn-md border-error border-2 bg-base-100" (click)="resetReservationModal()"
           >X
           </button>
         </div>
@@ -246,7 +244,7 @@
         </div>
       </div>
       <div class="flex flex-row justify-between mt-5">
-        <button *ngIf="step == Step.STEP_1" class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+        <button *ngIf="step == Step.STEP_1" class="btn border-error border-2 bg-base-100" (click)="resetReservationModal()"
         >Annuleer
         </button>
         <button *ngIf="step != Step.STEP_1" class="btn border-error border-2 bg-base-100" (click)="decreaseStep()"
