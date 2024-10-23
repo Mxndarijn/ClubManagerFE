@@ -1,5 +1,6 @@
 import {Image} from "./image.model";
 import {UserAssociation} from "./user-association.model";
+import {Reservation} from "./reservation.model";
 
 export interface Association {
   id: string;
@@ -9,4 +10,5 @@ export interface Association {
   contactEmail?: string;
   active: boolean;
   users?: UserAssociation[];
+  reservations?: Reservation[];
 }

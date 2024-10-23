@@ -34,6 +34,7 @@ import {NavigationService} from "../../../../CoreModule/services/navigation.serv
 import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {GetReservationsDTO} from "../../../../CoreModule/models/dto/get-reservations-between-dto";
+import {Association} from "../../../../CoreModule/models/association.model";
 
 @Component({
   selector: 'app-track-configuration-page',
@@ -175,8 +176,8 @@ export class TrackConfigurationPageComponent {
   private lastUsedDate? : Date
   updateEvents(date: Date) {
     this.lastUsedDate = date;
-    this.graphQLService.getReservations(this.associationID, date).then((dto: GetReservationsDTO) => {
-        if (dto.success) {
+    this.graphQLService.getReservations(this.associationID, date).then((dto: Association) => {
+        if (dto.reservations != null) {
           this.reservations = dto.reservations
           this.createCalendarItems(this.reservations);
           this.updateCalendarItemsEvent?.next(this.calendarItems);

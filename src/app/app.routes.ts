@@ -3,7 +3,7 @@ import {AuthGuard} from './CoreModule/guards/auth.guard.spec';
 import {LoginPageComponent} from './features/AuthModule/pages/login-page/login-page.component';
 import {RegisterPageComponent} from "./features/AuthModule/pages/register-page/register-page.component";
 import {HomePageComponent} from "./features/UserModule/pages/home-page/home-page.component";
-import {ReservationPageComponent} from "./features/UserModule/pages/reservation-page/reservation-page.component";
+import {ReservationPageComponent} from "./features/AssociationModule/pages/reservation-page/reservation-page.component";
 import {AssociationManagerGuard} from "./CoreModule/guards/association-manager-guard.spec";
 import {InvitationsPageComponent} from "./features/UserModule/pages/invitations-page/invitations-page.component";
 import {UpdateProfilePageComponent} from "./features/UserModule/pages/update-profile-page/update-profile-page.component";

@@ -16,8 +16,9 @@ import {
 } from "../../../../SharedModule/components/calendar/events/calendar-event-register-reservation/calendar-event-register-reservation.component";
 import {
   EnrollAtReservationModalComponent
-} from "../../../AssociationModule/modals/enroll-at-reservation-modal/enroll-at-reservation-modal.component";
+} from "../../modals/enroll-at-reservation-modal/enroll-at-reservation-modal.component";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
+import {Association} from "../../../../CoreModule/models/association.model";
 
 @Component({
   selector: 'app-reservation-page',
@@ -75,8 +76,9 @@ export class ReservationPageComponent {
   }
 
   updateReservationEvent(date: Date) {
-    this.graphQLService.getReservations(this.associationID, date).then((dto: GetReservationsDTO)=> {
-        if (dto.success) {
+    this.graphQLService.getReservations(this.associationID, date).then((dto: Association)=> {
+      console.log(dto)
+        if (dto.reservations != null) {
           this.reservations = dto.reservations
           this.createCalendarItems(this.reservations);
           this.updateReservationsCalendarEvent?.next(this.calendarItems);

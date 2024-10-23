@@ -1220,60 +1220,56 @@ export class GraphQLCommunication {
     const endDate = addMonths(date, 1);
     const query = {
       query: `
-        query getReservationsBetween($associationID: ID!, $startDate: LocalDateTime!, $endDate: LocalDateTime!) {
-          associationQueries {
-    associationReservationQueries {
-      getReservationsBetween(associationID: $associationID, startDate: $startDate, endDate: $endDate) {
-            success,
-            reservations {
-              id,
-              association {
-                id
-              },
-              startDate,
-              endDate,
-              title,
-              description,
-              status,
-              maxSize,
-              reservationUsers {
-                id {
-                userId,
-                reservationId,
-                },
-                position
-              },
-              tracks {
-                id,
-                name
-              },
-              allowedWeaponTypes {
-                id,
-                name
-              },
-              reservationSeries {
-                id,
-                title,
-                description,
-                maxUsers,
-                reservations {
-                  id
-                }
-
-              },
-              colorPreset {
-                  id,
-                colorName,
-                primaryColor,
-                secondaryColor
-              },
-              membersCanChooseTheirOwnPosition
-            },
+      query MyQuery($associationID: ID!, $startDate: LocalDateTime!, $endDate: LocalDateTime!) {
+  associationQueries {
+    getAssociationDetails(associationID: $associationID) {
+      reservations(endDate: $endDate, startDate: $startDate) {
+       id,
+        association {
+          id
+        },
+        startDate,
+        endDate,
+        title,
+        description,
+        status,
+        maxSize,
+        reservationUsers {
+          id {
+          userId,
+          reservationId,
+          },
+          position
+        },
+        tracks {
+          id,
+          name
+        },
+        allowedWeaponTypes {
+          id,
+          name
+        },
+        reservationSeries {
+          id,
+          title,
+          description,
+          maxUsers,
+          reservations {
+            id
           }
+
+        },
+        colorPreset {
+            id,
+          colorName,
+          primaryColor,
+          secondaryColor
+        },
+        membersCanChooseTheirOwnPosition
+      }
     }
   }
-        }
-      `,
+}`,
       variables: {
         associationID: associationID,
         startDate: this.util.toLocalIsoDateTime(startDate),
@@ -1281,7 +1277,7 @@ export class GraphQLCommunication {
       }
     };
 
-    return this.solvePromise(query, v => v.data.associationQueries.associationReservationQueries.getReservationsBetween);
+    return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
   }
 
   createTrackReservation(reservation: Reservation, associationID: string, series: ReservationSeries) {
