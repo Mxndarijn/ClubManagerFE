@@ -25,6 +25,9 @@ import {
 import {
   MyReservationsPageComponent
 } from "./features/UserModule/pages/my-reservations-page/my-reservations-page.component";
+import {
+  EmailVerifyEmailLinkPageComponent
+} from "./features/AuthModule/pages/email-verify-email-link-page/email-verify-email-link-page.component";
 
 export const routes: Routes = [
   {
@@ -114,6 +117,10 @@ export const routes: Routes = [
     path: 'myreservations',
     component: MyReservationsPageComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'verify-email/:verificationCode',
+    component: EmailVerifyEmailLinkPageComponent,
   },
 
 ];

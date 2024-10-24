@@ -1795,4 +1795,21 @@ export class GraphQLCommunication {
     }
     return this.solvePromise(query, v => v.data.associationQueries.associationReservationQueries.getReservation);
   }
+
+  verifyEmail(verificationCode: string) {
+    const query = {
+      query: `mutation MyMutation($verificationCode: ID!) {
+  authenticationMutations {
+    verifyEmail(verificationCode: $verificationCode) {
+      message
+      success
+    }
+  }
+}`,
+      variables: {
+        verificationCode: verificationCode,
+      }
+    }
+    return this.solvePromise(query, v => v.data.authenticationMutations.verifyEmail);
+  }
 }
