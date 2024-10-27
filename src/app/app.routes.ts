@@ -28,6 +28,9 @@ import {
 import {
   EmailVerifyEmailLinkPageComponent
 } from "./features/AuthModule/pages/email-verify-email-link-page/email-verify-email-link-page.component";
+import {
+  EmailVerificationPageComponent
+} from "./features/AuthModule/pages/email-verification-page/email-verification-page.component";
 
 export const routes: Routes = [
   {
@@ -121,6 +124,10 @@ export const routes: Routes = [
   {
     path: 'verify-email/:verificationCode',
     component: EmailVerifyEmailLinkPageComponent,
+  },
+  {
+    path: 'email-verification',
+    component: EmailVerificationPageComponent,
   },
 
 ];

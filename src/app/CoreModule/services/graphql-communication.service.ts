@@ -1812,4 +1812,50 @@ export class GraphQLCommunication {
     }
     return this.solvePromise(query, v => v.data.authenticationMutations.verifyEmail);
   }
+
+  isAccountVerified() {
+    const query = {
+      query: `query MyQuery {
+  userQueries {
+    getMyProfile {
+      hasEmailVerified
+    }
+  }
+}`,
+      variables: {}
+    }
+    return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+  }
+
+  changeEmailWhileInVerificationProcess(email: string) {
+    const query = {
+      query: `mutation MyMutation($email : String!) {
+  userVerificationMutations {
+    changeMyEmailInVerificationProcess(email: $email) {
+      success
+      message
+    }
+  }
+}`,
+      variables: {
+        email: email,
+      }
+    }
+    return this.solvePromise(query, v => v.data.userVerificationMutations.changeMyEmailInVerificationProcess);
+  }
+
+  getMyProfileEmail() {
+    const query = {
+      query: `query MyQuery {
+  userQueries {
+    getMyProfile {
+      email
+    }
+  }
+}`,
+      variables: {
+      }
+    }
+    return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+  }
 }

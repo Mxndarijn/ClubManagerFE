@@ -71,11 +71,29 @@ export class AuthenticationService {
     }
   }
 
+  public async isAccountVerified(): Promise<boolean> {
+    let token = localStorage.getItem(this.tokenKey);
+    if (!token) {
+      return false;
+    }
+    try {
+      const response = await this.graphQLService.isAccountVerified();
+      return response.hasEmailVerified;
+    } catch (error) {
+      return false;
+    }
+  }
+
   public getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 
   getUserID(): string | null {
     return localStorage.getItem(this.userKey);
+  }
+
+  setToken(token : string) {
+    localStorage.setItem(this.tokenKey, token);
+
   }
 }

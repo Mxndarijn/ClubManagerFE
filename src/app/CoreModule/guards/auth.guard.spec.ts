@@ -15,10 +15,19 @@ export class AuthGuard {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<boolean> {
-    const loggedIn = await this.authService.isLoggedIn();
+    const [loggedIn, accountVerified] = await Promise.all([
+      this.authService.isLoggedIn(),
+      this.authService.isAccountVerified()
+    ]);
     if (!loggedIn) {
       await this.router.navigate(['/login']);
+      return false;
     }
+    if (!accountVerified) {
+      await this.router.navigate(['/email-verification']);
+      return false;
+    }
+
 
     return true;
   }
