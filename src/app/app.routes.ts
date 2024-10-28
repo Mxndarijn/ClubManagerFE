@@ -1,10 +1,10 @@
 import {Routes} from '@angular/router';
-import {AuthGuard} from './CoreModule/guards/auth.guard.spec';
+import {AuthGuard} from './CoreModule/guards/auth-guard/auth.guard.spec';
 import {LoginPageComponent} from './features/AuthModule/pages/login-page/login-page.component';
 import {RegisterPageComponent} from "./features/AuthModule/pages/register-page/register-page.component";
 import {HomePageComponent} from "./features/UserModule/pages/home-page/home-page.component";
 import {ReservationPageComponent} from "./features/AssociationModule/pages/reservation-page/reservation-page.component";
-import {AssociationManagerGuard} from "./CoreModule/guards/association-manager-guard.spec";
+import {AssociationManagerGuard} from "./CoreModule/guards/association-manager-guard/association-manager-guard.spec";
 import {InvitationsPageComponent} from "./features/UserModule/pages/invitations-page/invitations-page.component";
 import {UpdateProfilePageComponent} from "./features/UserModule/pages/update-profile-page/update-profile-page.component";
 import {CompetitionPageComponent} from "./features/AssociationModule/pages/competition/competition-page/competition.component";
@@ -31,6 +31,12 @@ import {
 import {
   EmailVerificationPageComponent
 } from "./features/AuthModule/pages/email-verification-page/email-verification-page.component";
+import {
+  viewCompetitionPageGuardGuard
+} from "./CoreModule/guards/view-competition-page-guard/view-competition-page-guard.guard";
+import {
+  viewAssociationReservationPageGuardGuard
+} from "./CoreModule/guards/view-association-reservation-page-guard/view-association-reservation-page-guard.guard";
 
 export const routes: Routes = [
   {
@@ -99,22 +105,22 @@ export const routes: Routes = [
   {
     path: 'association/:associationID/book',
     component: ReservationPageComponent,
-    canActivate: [AuthGuard, AssociationManagerGuard],
+    canActivate: [AuthGuard, viewAssociationReservationPageGuardGuard],
   },
   {
     path: 'association/:associationID/competitions',
     component: CompetitionPageComponent,
-    canActivate: [AuthGuard, AssociationManagerGuard],
+    canActivate: [AuthGuard, viewCompetitionPageGuardGuard],
   },
   {
     path: 'association/:associationID/competition/:competitionID',
-    component: CompetitionDetailsPage ,
-    canActivate: [AuthGuard, AssociationManagerGuard],
+    component: CompetitionDetailsPage,
+    canActivate: [AuthGuard, viewCompetitionPageGuardGuard],
   },
   {
     path: 'association/:associationID/competition/:competitionID/member/:competitionMemberID',
     component: CompetitionDetailMemberPageComponent,
-    canActivate: [AuthGuard, AssociationManagerGuard],
+    canActivate: [AuthGuard, viewCompetitionPageGuardGuard],
   },
   {
     path: 'myreservations',

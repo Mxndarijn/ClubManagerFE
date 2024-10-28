@@ -52,12 +52,12 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
   {
     name: "Reserveren",
     link: "book",
-    permission: AssociationPermission.NO_PERMISSION
+    permission: AssociationPermission.VIEW_RESERVATIONS
   },
   {
     name: "Competities",
     link: "competitions",
-    permission: AssociationPermission.NO_PERMISSION
+    permission: AssociationPermission.VIEW_COMPETITIONS
   },
   {
     name: "Wapens",
