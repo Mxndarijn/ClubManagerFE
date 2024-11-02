@@ -1,10 +1,8 @@
 import {Injectable} from '@angular/core';
-import {firstValueFrom, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {GraphQLCommunication} from "./graphql-communication.service";
-import {
-  DefaultBooleanResponseDTO,
-  DefaultBooleanResponseWithAnyMessageDTO
-} from "../models/dto/default-boolean-response-dto";
+import {DefaultBooleanResponseDTO} from "../models/dto/default-boolean-response-dto";
+import {LoginResponseDTO} from "../models/dto/login-response-dto";
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +10,7 @@ import {
 export class AuthenticationService {
   private tokenKey = 'token';
   private userKey = 'userID';
+  private refreshTokenKey = 'refreshToken';
 
   constructor(
     private graphQLService: GraphQLCommunication
@@ -19,9 +18,11 @@ export class AuthenticationService {
 
   public login(email: string, password: string): Observable<any> {
     return new Observable(subscriber => {
-      this.graphQLService.login(email, password).then((dto: DefaultBooleanResponseWithAnyMessageDTO) => {
+      this.graphQLService.login(email, password).then((dto: LoginResponseDTO) => {
           if(dto.success) {
+            console.log(dto)
             localStorage.setItem(this.tokenKey, dto.message)
+            localStorage.setItem(this.refreshTokenKey, dto.refreshToken)
             this.updateUserID();
           }
           subscriber.next(dto);
@@ -56,6 +57,7 @@ export class AuthenticationService {
   public logout() {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.refreshTokenKey);
   }
 
   public async isLoggedIn(): Promise<boolean> {
@@ -65,6 +67,9 @@ export class AuthenticationService {
     }
     try {
       const response = await this.graphQLService.validateToken();
+      if(response.success == false) {
+        return await this.refreshToken();
+      }
       return response.success;
     } catch (error) {
       return false;
@@ -95,5 +100,46 @@ export class AuthenticationService {
   setToken(token : string) {
     localStorage.setItem(this.tokenKey, token);
 
+  }
+
+  getRefreshToken() {
+    return localStorage.getItem(this.refreshTokenKey);
+  }
+
+  private isRefreshing: Promise<boolean> | null = null;
+
+  async refreshToken(): Promise<boolean> {
+    // Controleer of er al een refresh bezig is
+    if (this.isRefreshing) {
+      return this.isRefreshing; // Geef dezelfde Promise terug aan andere aanroepen
+    }
+
+    // Begin met een nieuwe refresh en sla de Promise op
+    this.isRefreshing = new Promise<boolean>(async (resolve) => {
+      let token = localStorage.getItem(this.refreshTokenKey);
+      if (!token) {
+        console.log("no refresh token stored");
+        resolve(false);
+        this.isRefreshing = null; // Reset de lock
+        return;
+      }
+
+      try {
+        const response: LoginResponseDTO = await this.graphQLService.refreshToken(token);
+        if (response.success) {
+          console.log("Token refreshed!")
+          localStorage.setItem(this.tokenKey, response.message);
+          localStorage.setItem(this.refreshTokenKey, response.refreshToken);
+        }
+
+        resolve(response.success);
+      } catch (error) {
+        resolve(false);
+      } finally {
+        this.isRefreshing = null; // Reset de lock na voltooiing
+      }
+    });
+
+    return this.isRefreshing; // Return de lock-Promise voor alle aanroepen
   }
 }

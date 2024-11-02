@@ -1,6 +1,6 @@
 import {environment} from '../../../environment/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AssociationInviteID} from "../models/association-invite";
 import {WeaponType} from "../models/weapon-type.model";
@@ -14,6 +14,7 @@ import {
 } from "../../features/AssociationModule/modals/create-weapon-modal/create-weapon-modal.component";
 import {CompetitionDTO} from "../models/competition.model";
 import {SmallCompetitionScore} from "../models/association-competition";
+import {AuthenticationService} from "./authentication.service";
 
 
 @Injectable({
@@ -34,7 +35,8 @@ export class GraphQLCommunication {
   associationCompetitionQueries = 0;
 
   constructor(private http: HttpClient,
-              private util: UtilityFunctions) {
+              private util: UtilityFunctions,
+              private injector: Injector) {
   }
 
   public sendGraphQLRequest(request: any): Observable<any> {
@@ -46,21 +48,59 @@ export class GraphQLCommunication {
     );
   }
 
-  public solvePromise(query: any, fun: (arg: any) => any) {
+  public solvePromise(query: any, fun: (arg: any) => any, tryAgain = true) {
     return new Promise<any>((resolve, reject) => {
       this.sendGraphQLRequest(query).subscribe({
         next: (v) => {
-          if (v.data === null || v.errors != null || fun(v) == null) {
+          if (this.hasUnauthorizedError(v) && tryAgain) {
+            this.tryRefreshToken(query, fun, resolve, reject);
+          } else if (v.data === null || v.errors != null || fun(v) == null) {
             console.error(v);
+            resolve(null);
+          } else {
+            resolve(fun(v));
           }
-          resolve(fun(v))
         },
-        error: (e) => {
-          reject(e);
-        }
-      })
-    })
+        error: (e) => reject(e)
+      });
+    });
   }
+
+  private hasUnauthorizedError(v: any): boolean {
+    return v.errors != null && v.errors.length > 0 && v.errors[0].message === "Unauthorized";
+  }
+
+  private isRefreshingToken: Promise<void> | null = null;
+
+  private tryRefreshToken(query: any, fun: (arg: any) => any, resolve: any, reject: any) {
+    if (this.isRefreshingToken) {
+      this.isRefreshingToken.then(() => {
+        this.solvePromise(query, fun, false).then(resolve).catch(reject);
+      }).catch(reject);
+      return;
+    }
+
+    // Start een nieuwe refresh en sla de Promise op
+    this.isRefreshingToken = new Promise<void>((refreshResolve, refreshReject) => {
+      const auth = this.injector.get(AuthenticationService);
+      auth.isLoggedIn().then(isLoggedIn => {
+        if (isLoggedIn) {
+          refreshResolve();
+          this.solvePromise(query, fun, false).then(resolve).catch(reject);
+          this.isRefreshingToken = null; // Reset de lock na voltooiing
+        } else {
+          resolve(null); // Gebruiker is ingelogd of geen refresh token beschikbaar
+          refreshResolve();
+          this.isRefreshingToken = null;
+        }
+      }).catch(error => {
+        refreshReject(error);
+        reject(error);
+        this.isRefreshingToken = null;
+      });
+    });
+  }
+
 
   public getMyAssociations(): Promise<any> {
     const query = {
@@ -1128,6 +1168,7 @@ export class GraphQLCommunication {
     login(loginRequest: $loginRequest) {
             success,
             message,
+            refreshToken
           }
   }
         }
@@ -1857,5 +1898,24 @@ export class GraphQLCommunication {
       }
     }
     return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+  }
+
+  async refreshToken(token: string) {
+    const query = {
+      query: `mutation MyMutation($token : String!) {
+  authenticationMutations {
+    refreshToken(refreshToken: $token) {
+      message
+      refreshToken
+      success
+    }
+  }
+}`,
+      variables: {
+        token : token
+      }
+    }
+    return this.solvePromise(query, v => v.data.authenticationMutations.refreshToken);
+
   }
 }

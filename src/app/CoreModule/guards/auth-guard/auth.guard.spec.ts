@@ -23,7 +23,7 @@ export class AuthGuard {
       await this.router.navigate(['/login']);
       return false;
     }
-    if (!accountVerified) {
+    if (!accountVerified && loggedIn) {
       await this.router.navigate(['/email-verification']);
       return false;
     }

@@ -81,7 +81,7 @@ export class SideBarComponent implements OnInit {
   associations: Association[] = [];
   public isVisible: boolean = false;
   associationPermissions: UserAssociation[] = [];
-  associationInvitesList: AssociationInvite[] = [];
+  associationInvitesList: AssociationInvite[] | undefined = [];
 
   constructor(
         private graphQLCommunication: GraphQLCommunication, navigationService: NavigationService,
