@@ -17,7 +17,8 @@
 <div *ngIf="activeTab === Tab.INVITATIONS">
   <!-- Content for Uitnodigingen tab -->
   <div class="w-full flex justify-end">
-    <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);">
+    <button class="btn border-accent border-2 bg-base-300 text-accent mr-10 btn-md shadow-2xl" (click)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);">
+      <fa-icon [icon]="faEnvelope"></fa-icon>
       {{'associationMembers.tableInvitations.sendMessageButton' | translate}}
     </button>
     <app-send-invitation-modal [associationName]="associationName"
@@ -83,17 +84,20 @@
 </ng-template>
 
 <ng-template #actionsRowTemplate let-userAssociation="data">
-  <button class="btn border-warning border-2 btn-sm bg-base-100" (click)="changeSelectedUser(userAssociation)"
-      *ngIf="userAssociation.user.id !== userID">{{ 'associationMembers.tableMember.changeButton' | translate }}
+  <button class="btn btn-sm border-warning border-2 text-warning bg-base-300 drop-shadow-xl" (click)="changeSelectedUser(userAssociation)"
+      *ngIf="userAssociation.user.id !== userID">
+    <fa-icon [icon]="faPencil"></fa-icon>
+    {{ 'associationMembers.tableMember.changeButton' | translate }}
   </button>
   <app-update-user-modal
   (updateUserAssociationEvent)="updateUserAssociation($event)"
   [selectedRole]="selectedRole" [selectedUser]="selectedUser"></app-update-user-modal>
 
-  <button class="btn border-error border-2 bg-base-100  btn-sm ml-10"
+  <button class="btn btn-sm border-error border-2 text-error bg-base-300 drop-shadow-xl  ml-10"
         (click)="deleteSelectedUser(userAssociation)"
-        *ngIf="userAssociation.user.id !== userID">{{ 'associationMembers.tableMember.deleteButton' | translate }}
-  <fa-icon [icon]="faTrashCan"></fa-icon>
+        *ngIf="userAssociation.user.id !== userID">
+    <fa-icon [icon]="faTrashCan"></fa-icon>
+    {{ 'associationMembers.tableMember.deleteButton' | translate }}
   </button>
 </ng-template>
 
