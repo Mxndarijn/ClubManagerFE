@@ -56,7 +56,7 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
   },
   {
     name: "Competities",
-    link: "competitions",
+    link: "competition",
     permission: AssociationPermission.VIEW_COMPETITIONS
   },
   {
