@@ -84,6 +84,8 @@ export class AssociationMembersPageComponent implements OnInit{
   setActiveTab(tab: Tab) {
     this.activeTab = tab;
   }
+
+
   constructor(
     private alertService: AlertService,
     private graphQLCommunication: GraphQLCommunication,
