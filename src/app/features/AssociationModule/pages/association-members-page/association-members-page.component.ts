@@ -58,8 +58,6 @@ enum Tab {
   styleUrl: './association-members-page.component.css'
 })
 export class AssociationMembersPageComponent implements OnInit{
-  userAssociations: UserAssociation[] = [];
-  filteredAssociations: UserAssociation[] = [];
   associationID: string;
   selectedUser: UserAssociation | undefined;
   selectedRole: string | undefined;
@@ -114,7 +112,6 @@ export class AssociationMembersPageComponent implements OnInit{
     this.graphQLCommunication.getAssociationMembers(this.associationID).then(r=>{
       this.dataSource.dataRows.next(r.users);
       this.dataSource.isDataLoading = false
-        this.searchUser(this.latestSearchParam);
     })
 
     this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
@@ -148,33 +145,33 @@ export class AssociationMembersPageComponent implements OnInit{
     this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER);
   }
   updateUserAssociation(userAssociation: UserAssociation) {
-    const index = this.userAssociations.findIndex(value => value.user.id === userAssociation.user.id)
+    let list = this.dataSource.dataRows.value;
+    const index = list.findIndex(value => value.user.id === userAssociation.user.id)
     if (index !== -1) {
-      this.userAssociations[index] = userAssociation;
-      this.searchUser(this.latestSearchParam);
+      list[index] = userAssociation;
+      this.dataSource.dataRows.next(list)
     } else {
       // user association not found, zou niet moeteh gebeuren
     }
   }
 
   userAssociationDeleted(userAssociation: UserAssociation) {
-    const index = this.userAssociations.findIndex(value => value.user.id === userAssociation.user.id)
+    let list = this.dataSource.dataRows.value;
+    const index = list.findIndex(value => value.user.id === userAssociation.user.id)
     if (index !== -1) {
-      this.userAssociations.splice(index, 1);
-      this.searchUser(this.latestSearchParam);
+      list.splice(index, 1);
+      this.dataSource.dataRows.next(list);
     } else {
       // user association not found, zou niet moeteh gebeuren
     }
   }
 
-  searchUser(searchValue: string) {
-    this.latestSearchParam = searchValue;
-    this.filteredAssociations = this.userAssociations.filter(userAssociation => {
-      return userAssociation.user.fullName.includes(searchValue) || userAssociation.user.email.includes(searchValue);
-    });
-
-
-  }
+  // searchUser(searchValue: string) {
+  //   this.latestSearchParam = searchValue;
+  //   this.filteredAssociations = this.userAssociations.filter(userAssociation => {
+  //     return userAssociation.user.fullName.includes(searchValue) || userAssociation.user.email.includes(searchValue);
+  //   });
+  // }
 
   deleteSelectedInvite(id: AssociationInviteID) {
     this.graphQLCommunication.deleteAssociationInvite(id).then((responseObject: DefaultBooleanResponseDTO) =>{
