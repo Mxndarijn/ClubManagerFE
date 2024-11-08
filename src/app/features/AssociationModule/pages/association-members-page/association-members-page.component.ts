@@ -64,12 +64,9 @@ export class AssociationMembersPageComponent implements OnInit{
   userID: string | null;
 
   associationInvites:AssociationInvite[] = [];
-
-  private latestSearchParam: string = "";
   protected associationName: string = "";
 
   activeTab: Tab = Tab.MEMBERS;
-
   faTrashCan = faTrashCan;
 
   @ViewChild('memberHeaderTemplate', { static: true }) memberHeaderTemplate!: TemplateRef<any>;
@@ -215,10 +212,6 @@ export class AssociationMembersPageComponent implements OnInit{
 
   }
 
-  createNewAssociationInvite() {
-    this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);
-  }
-
   newAssociationInviteEvent(associationInvite: AssociationInvite) {
     this.associationInvites.push(associationInvite);
   }
@@ -257,11 +250,6 @@ export class AssociationMembersPageComponent implements OnInit{
       })
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
   }
-
-  cancelRemoveUser() {
-    this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
-  }
-
   ngOnInit(): void {
     this.dataSource.columns= [
       {

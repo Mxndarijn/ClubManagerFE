@@ -14,60 +14,12 @@
 <!--    <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box>-->
     <app-multi-column-list [dataSource]="dataSource">
     </app-multi-column-list>
-<!--    <table class="table">-->
-<!--      <thead>-->
-<!--      <tr>-->
-<!--        <th>{{ 'associationMembers.tableMember.memberHeader' | translate }}</th>-->
-<!--        <th> {{ 'associationMembers.tableMember.roleHeader' | translate }}</th>-->
-<!--        <th>{{ 'associationMembers.tableMember.memberSinceHeader' | translate }}</th>-->
-<!--      </tr>-->
-<!--      </thead>-->
-<!--      <tbody>-->
-<!--      <td *ngIf="filteredAssociations.length === 0" colspan="4" class="text-center text-md">{{'associationMembers.noResult' | translate}}-->
-<!--      </td>-->
-<!--      <tr *ngFor="let userAssociation of filteredAssociations" class="items-center">-->
-<!--        <td>-->
-<!--          <div class="flex items-center gap-3">-->
-<!--            <div class="avatar">-->
-<!--              <div class="mask mask-squircle w-12 h-12 rounded-full">-->
-<!--                <img src="{{userAssociation.user.image?.encoded}}" alt="{{userAssociation.user.fullName}}"/>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--              <div class="font-bold">{{ userAssociation.user.fullName }}</div>-->
-<!--              <div class="text-sm opacity-50">{{ userAssociation.user.email }}</div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <p>{{ userAssociation.associationRole.name }}</p>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <p>{{ formatDate(userAssociation.memberSince) | async }}</p>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <button class="btn border-warning border-2 btn-sm bg-base-100" (click)="changeSelectedUser(userAssociation)"-->
-<!--                  *ngIf="userAssociation.user.id !== userID">{{ 'associationMembers.tableMember.changeButton' | translate }}-->
-<!--          </button>-->
-<!--          <app-update-user-modal-->
-<!--            (updateUserAssociationEvent)="updateUserAssociation($event)"-->
-<!--            [selectedRole]="selectedRole" [selectedUser]="selectedUser"></app-update-user-modal>-->
-
-<!--          <button class="btn border-error border-2 bg-base-100  btn-sm ml-10"-->
-<!--                  (click)="deleteSelectedUser(userAssociation)"-->
-<!--                  *ngIf="userAssociation.user.id !== userID">{{ 'associationMembers.tableMember.deleteButton' | translate }}-->
-<!--            <fa-icon [icon]="faTrashCan"></fa-icon>-->
-<!--          </button>-->
-<!--        </td>-->
-<!--      </tr>-->
-<!--      </tbody>-->
-<!--    </table>-->
   </div>
 </div>
 <div *ngIf="activeTab === Tab.INVITATIONS">
   <!-- Content for Uitnodigingen tab -->
   <div class="w-full flex justify-end">
-    <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="createNewAssociationInvite()">
+    <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);">
       {{'associationMembers.tableInvitations.sendMessageButton' | translate}}
     </button>
     <app-send-invitation-modal [associationName]="associationName"
@@ -116,7 +68,7 @@
   [acceptButtonText]="'associationMembers.tableMember.memberModal.acceptButton' | translate"
   [rejectButtonText]="'associationMembers.tableMember.memberModal.rejectButton' | translate"
   (AcceptEvent)="removeUser()"
-  (RejectEvent)="cancelRemoveUser()"
+  (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)"
 ></app-confirmation-modal>
 <ng-template #memberHeaderTemplate>
   {{ 'associationMembers.tableMember.memberHeader' | translate }}
