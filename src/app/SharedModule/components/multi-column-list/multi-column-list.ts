@@ -33,7 +33,7 @@ export class MultiColumnList implements OnInit{
     }
 
   search(searchString: string) {
-    if(this.dataSource.isInSearch == null) {
+    if(this.dataSource.isInSearch == null || !this.dataSource.canSearch) {
       this.filteredItems = this.dataSource.dataRows.value;
       return
     }

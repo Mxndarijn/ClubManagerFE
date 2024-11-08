@@ -61,9 +61,8 @@ export class AssociationMembersPageComponent implements OnInit{
   associationID: string;
   selectedUser: UserAssociation | undefined;
   selectedRole: string | undefined;
+  selectedInvite: AssociationInvite | undefined;
   userID: string | null;
-
-  associationInvites:AssociationInvite[] = [];
   protected associationName: string = "";
 
   activeTab: Tab = Tab.MEMBERS;
@@ -78,6 +77,17 @@ export class AssociationMembersPageComponent implements OnInit{
   @ViewChild('roleRowTemplate', {static: true}) roleRowTemplate!: TemplateRef<{ data: UserAssociation }>;
   @ViewChild('memberSinceRowTemplate', {static: true}) memberSinceRowTemplate!: TemplateRef<{ data: UserAssociation }>;
   @ViewChild('actionsRowTemplate', {static: true}) actionsRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+
+
+  @ViewChild('emailHeaderTemplate', {static: true}) emailHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('invitationSendHeaderTemplate', {static: true}) invitationSendHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('roleHeaderTemplate', {static: true}) invitationRoleHeaderTemplate!: TemplateRef<any>;
+
+
+  @ViewChild('emailTemplate', {static: true}) emailTemplate!: TemplateRef<any>;
+  @ViewChild('associationRoleTemplate', {static: true}) associationRoleTemplate!: TemplateRef<any>;
+  @ViewChild('associationInviteCreatedAt', {static: true}) associationInviteCreatedAt!: TemplateRef<any>;
+  @ViewChild('cancelButtonTemplate', {static: true}) cancelButtonTemplate!: TemplateRef<any>;
 
 
 
@@ -109,12 +119,13 @@ export class AssociationMembersPageComponent implements OnInit{
     )
     this.userID = this.authService.getUserID();
     this.graphQLCommunication.getAssociationMembers(this.associationID).then(r=>{
-      this.dataSource.dataRows.next(r.users);
-      this.dataSource.isDataLoading = false
+      this.dataSourceMembers.dataRows.next(r.users);
+      this.dataSourceMembers.isDataLoading = false
     })
 
     this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
-        this.associationInvites = r.invites
+      this.dataSourceInvites.dataRows.next(r.invites);
+      this.dataSourceInvites.isDataLoading = false
     })
   }
 
@@ -144,22 +155,22 @@ export class AssociationMembersPageComponent implements OnInit{
     this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER);
   }
   updateUserAssociation(userAssociation: UserAssociation) {
-    let list = this.dataSource.dataRows.value;
+    let list = this.dataSourceMembers.dataRows.value;
     const index = list.findIndex(value => value.user.id === userAssociation.user.id)
     if (index !== -1) {
       list[index] = userAssociation;
-      this.dataSource.dataRows.next(list)
+      this.dataSourceMembers.dataRows.next(list)
     } else {
       // user association not found, zou niet moeteh gebeuren
     }
   }
 
   userAssociationDeleted(userAssociation: UserAssociation) {
-    let list = this.dataSource.dataRows.value;
+    let list = this.dataSourceMembers.dataRows.value;
     const index = list.findIndex(value => value.user.id === userAssociation.user.id)
     if (index !== -1) {
       list.splice(index, 1);
-      this.dataSource.dataRows.next(list);
+      this.dataSourceMembers.dataRows.next(list);
     } else {
       // user association not found, zou niet moeteh gebeuren
     }
@@ -172,54 +183,20 @@ export class AssociationMembersPageComponent implements OnInit{
   //   });
   // }
 
-  deleteSelectedInvite(id: AssociationInviteID) {
-    this.graphQLCommunication.deleteAssociationInvite(id).then((responseObject: DefaultBooleanResponseDTO) =>{
-        if(responseObject.success) {
-          const index = this.associationInvites.findIndex(value => value.id === id)
-          if (index !== -1) {
-            this.associationInvites.splice(index, 1);
-          }
-          const alert: AlertInfo = {
-            duration: 4000,
-            title: "Succesvol",
-            subTitle: "De uitnodiging is succesvol ingetrokken.",
-            alertClass: AlertClass.CORRECT_CLASS,
-            icon: AlertIcon.CHECK
-
-          }
-          this.alertService.showAlert(alert)
-        } else {
-          // error message
-          const alert: AlertInfo = {
-            duration: 4000,
-            title: "Error fout opgetreden",
-            subTitle: "Er is iets misgegaan bij het intrekken van de uitnodiging.",
-            alertClass: AlertClass.INCORRECT_CLASS,
-            icon: AlertIcon.XMARK
-
-          }
-          this.alertService.showAlert(alert)
-        }
-    }).catch(e => {
-      const alert: AlertInfo = {
-        duration: 4000,
-        title: "Error",
-        subTitle: "Er is een fout opgetreden bij het intrekken van de uitnodiging.",
-        alertClass: AlertClass.INCORRECT_CLASS,
-        icon: AlertIcon.XMARK
-
-      }
-      this.alertService.showAlert(alert)
-    });
-
+  deleteSelectedInvite(inv: AssociationInvite) {
+    this.selectedInvite = inv
+    this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_DELETE_INVITE)
   }
 
   newAssociationInviteEvent(associationInvite: AssociationInvite) {
-    this.associationInvites.push(associationInvite);
+    console.log(associationInvite)
+    let list = this.dataSourceInvites.dataRows.value;
+    list.push(associationInvite);
+    this.dataSourceInvites.dataRows.next(list);
   }
 
   protected readonly Modal = Modal;
-  dataSource: MultiColumnListDataSource = {
+  dataSourceMembers: MultiColumnListDataSource = {
     columns: [],
     dataRows: new BehaviorSubject<any[]>([]),
     hasMoreRows: false,
@@ -229,6 +206,19 @@ export class AssociationMembersPageComponent implements OnInit{
     emptyMessage: "LEEG",
     searchPlaceholder: "associationMembers.searchPlaceholder",
     isInSearch: (dataRow : UserAssociation, searchValue : string) => {
+      return dataRow.user.fullName.includes(searchValue) || dataRow.user.email.includes(searchValue);
+    },
+  };
+  dataSourceInvites: MultiColumnListDataSource = {
+    columns: [],
+    dataRows: new BehaviorSubject<any[]>([]),
+    hasMoreRows: false,
+    initialRowCount: 0,
+    isDataLoading: true,
+    canSearch: false,
+    emptyMessage: "LEEG",
+    searchPlaceholder: "zoek",
+    isInSearch: (dataRow : AssociationInvite, searchValue : string) => {
       return dataRow.user.fullName.includes(searchValue) || dataRow.user.email.includes(searchValue);
     },
   };
@@ -253,7 +243,7 @@ export class AssociationMembersPageComponent implements OnInit{
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
   }
   ngOnInit(): void {
-    this.dataSource.columns= [
+    this.dataSourceMembers.columns= [
       {
         sortType: ColumnSortType.ALPHABETICAL,
         headerCell: this.memberHeaderTemplate,
@@ -284,6 +274,86 @@ export class AssociationMembersPageComponent implements OnInit{
         rowCell: this.actionsRowTemplate,
       },
     ]
+    this.dataSourceInvites.columns= [
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.emailHeaderTemplate,
+        rowCell: this.emailTemplate,
+        getRawValueToSort: (dataRow: AssociationInvite) => {
+          return dataRow.user.fullName;
+        }
+      },
+      {
+        sortType: ColumnSortType.DATE,
+        headerCell: this.invitationSendHeaderTemplate,
+        rowCell: this.associationInviteCreatedAt,
+        getRawValueToSort: (dataRow: AssociationInvite) => {
+          return dataRow.associationRole.name;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.invitationRoleHeaderTemplate,
+        rowCell: this.associationRoleTemplate,
+        getRawValueToSort: (dataRow: AssociationInvite) => {
+          return dataRow.createdAt
+        }
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.actionsTemplateHeader,
+        rowCell: this.cancelButtonTemplate,
+      },
+    ]
     this.cdr.detectChanges();
+  }
+
+  deleteInvite() {
+    this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_DELETE_INVITE)
+    if(this.selectedInvite == null) {
+      return
+    }
+    this.graphQLCommunication.deleteAssociationInvite(this.selectedInvite.id).then((responseObject: DefaultBooleanResponseDTO) =>{
+      if(responseObject.success) {
+        let list = this.dataSourceInvites.dataRows.value
+
+
+        const index = list.findIndex(value => value.id === this.selectedInvite!.id)
+        if (index !== -1) {
+          list.splice(index, 1);
+        }
+        this.dataSourceInvites.dataRows.next(list)
+        const alert: AlertInfo = {
+          duration: 4000,
+          title: "Succesvol",
+          subTitle: "De uitnodiging is succesvol ingetrokken.",
+          alertClass: AlertClass.CORRECT_CLASS,
+          icon: AlertIcon.CHECK
+
+        }
+        this.alertService.showAlert(alert)
+      } else {
+        // error message
+        const alert: AlertInfo = {
+          duration: 4000,
+          title: "Error fout opgetreden",
+          subTitle: "Er is iets misgegaan bij het intrekken van de uitnodiging.",
+          alertClass: AlertClass.INCORRECT_CLASS,
+          icon: AlertIcon.XMARK
+
+        }
+        this.alertService.showAlert(alert)
+      }
+    }).catch(e => {
+      const alert: AlertInfo = {
+        duration: 4000,
+        title: "Error",
+        subTitle: "Er is een fout opgetreden bij het intrekken van de uitnodiging.",
+        alertClass: AlertClass.INCORRECT_CLASS,
+        icon: AlertIcon.XMARK
+
+      }
+      this.alertService.showAlert(alert)
+    });
   }
 }

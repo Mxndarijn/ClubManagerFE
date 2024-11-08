@@ -11,9 +11,7 @@
 </div>
 <div *ngIf="activeTab === Tab.MEMBERS" class="w-full">
   <div class="overflow-x-auto">
-<!--    <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box>-->
-    <app-multi-column-list [dataSource]="dataSource">
-    </app-multi-column-list>
+    <app-multi-column-list [dataSource]="dataSourceMembers"></app-multi-column-list>
   </div>
 </div>
 <div *ngIf="activeTab === Tab.INVITATIONS">
@@ -26,37 +24,7 @@
                                (NewAssociationInviteEvent)="newAssociationInviteEvent($event)"></app-send-invitation-modal>
   </div>
   <div class="overflow-x-auto">
-    <table class="table">
-      <thead>
-      <tr>
-        <th>{{'associationMembers.tableInvitations.emailHeader' | translate}}</th>
-        <th>{{'associationMembers.tableInvitations.invitationSendHeader' | translate}}</th>
-        <th>{{'associationMembers.tableInvitations.roleHeader' | translate}}</th>
-      </tr>
-      </thead>
-      <td *ngIf="associationInvites.length === 0" colspan="4" class="text-center text-md">{{'associationMembers.noInvitations' | translate}}</td>
-
-        <tbody>
-      <tr *ngFor="let associationInvite of associationInvites" class="items-center h-16 ">
-        <td>
-          <!-- Naam + email -->
-          <div>{{ associationInvite.user.email }}</div>
-        </td>
-        <td>
-          <!-- Rol -->
-          <p>{{ formatDate(associationInvite.createdAt) | async }}</p>
-        </td>
-        <td>
-          <p>{{ associationInvite.associationRole.name }}</p>
-        </td>
-        <td>
-          <button class="btn border-error border-2 bg-base-100  btn-sm ml-10"
-                  (click)="deleteSelectedInvite(associationInvite.id)">{{'associationMembers.tableInvitations.cancelButton' | translate}}
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <app-multi-column-list [dataSource]="dataSourceInvites"></app-multi-column-list>
   </div>
 </div>
 
@@ -69,6 +37,16 @@
   [rejectButtonText]="'associationMembers.tableMember.memberModal.rejectButton' | translate"
   (AcceptEvent)="removeUser()"
   (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)"
+></app-confirmation-modal>
+
+<app-confirmation-modal
+  [header]="'Invite verwijderen'"
+  [message]="'Wil je invite van ' + this.selectedInvite?.user?.email + ' verwijderen?'"
+  [modalTag]="Modal.ASSOCIATION_MEMBERS_DELETE_INVITE"
+  [acceptButtonText]="'Verwijder'"
+  [rejectButtonText]="'Behoud'"
+  (AcceptEvent)="deleteInvite()"
+  (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_DELETE_INVITE)"
 ></app-confirmation-modal>
 <ng-template #memberHeaderTemplate>
   {{ 'associationMembers.tableMember.memberHeader' | translate }}
@@ -117,4 +95,46 @@
         *ngIf="userAssociation.user.id !== userID">{{ 'associationMembers.tableMember.deleteButton' | translate }}
   <fa-icon [icon]="faTrashCan"></fa-icon>
   </button>
+</ng-template>
+
+
+<!-- ng-templates for table headers -->
+<ng-template #emailHeaderTemplate>
+  {{ 'associationMembers.tableInvitations.emailHeader' | translate }}
+</ng-template>
+
+<ng-template #invitationSendHeaderTemplate>
+  {{ 'associationMembers.tableInvitations.invitationSendHeader' | translate }}
+</ng-template>
+
+<ng-template #roleHeaderTemplate>
+  {{ 'associationMembers.tableInvitations.roleHeader' | translate }}
+</ng-template>
+
+<ng-template #emailTemplate let-associationInvite="data">
+  <td>
+    <!-- Naam + email -->
+    <div>{{ associationInvite.user.email }}</div>
+  </td>
+</ng-template>
+
+<ng-template #associationInviteCreatedAt let-associationInvite="data">
+  <td>
+    <!-- Rol -->
+    <p>{{ formatDate(associationInvite.createdAt) | async }}</p>
+  </td>
+</ng-template>
+
+<ng-template #associationRoleTemplate let-associationInvite="data">
+  <td>
+    <p>{{ associationInvite.associationRole.name }}</p>
+  </td>
+</ng-template>
+
+<ng-template #cancelButtonTemplate let-associationInvite="data">
+  <td>
+    <button class="btn border-error border-2 bg-base-100  btn-sm ml-10"
+            (click)="deleteSelectedInvite(associationInvite)">{{ 'associationMembers.tableInvitations.cancelButton' | translate }}
+    </button>
+  </td>
 </ng-template>
