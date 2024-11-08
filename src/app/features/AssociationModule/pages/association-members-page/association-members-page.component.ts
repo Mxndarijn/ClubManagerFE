@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
-import {map, Observable} from "rxjs";
+import {BehaviorSubject, map, Observable} from "rxjs";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
@@ -25,6 +25,11 @@ import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-us
 import {
   InputFieldDurationComponent
 } from "../../../../SharedModule/components/input-fields/input-field-duration/input-field-duration.component";
+import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
+import {
+  ColumnSortType,
+  MultiColumnListDataSource
+} from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
 
 enum Tab {
   MEMBERS,
@@ -46,12 +51,13 @@ enum Tab {
     SendInvitationModalComponent,
     ConfirmationModalComponent,
     TranslateModule,
-    InputFieldDurationComponent
+    InputFieldDurationComponent,
+    MultiColumnList
   ],
   templateUrl: './association-members-page.component.html',
   styleUrl: './association-members-page.component.css'
 })
-export class AssociationMembersPageComponent {
+export class AssociationMembersPageComponent implements OnInit{
   userAssociations: UserAssociation[] = [];
   filteredAssociations: UserAssociation[] = [];
   associationID: string;
@@ -68,6 +74,16 @@ export class AssociationMembersPageComponent {
 
   faTrashCan = faTrashCan;
 
+  @ViewChild('memberHeaderTemplate', { static: true }) memberHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('roleHeaderTemplate', {static: true}) roleHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('memberSinceHeader', {static: true}) memberSinceHeader!: TemplateRef<any>;
+  @ViewChild('actionsTemplate', {static: true}) actionsTemplateHeader!: TemplateRef<any>;
+
+  @ViewChild('memberRowTemplate', { static: true }) memberRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+  @ViewChild('roleRowTemplate', {static: true}) roleRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+  @ViewChild('memberSinceRowTemplate', {static: true}) memberSinceRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+  @ViewChild('actionsRowTemplate', {static: true}) actionsRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+
 
 
   setActiveTab(tab: Tab) {
@@ -80,7 +96,8 @@ export class AssociationMembersPageComponent {
     private translate: TranslateService,
     route: ActivatedRoute,
     protected modalService: ModalService,
-    private authService: AuthenticationService,) {
+    private authService: AuthenticationService,
+    private cdr: ChangeDetectorRef) {
     this.associationID = route.snapshot.params['associationID'];
 
     this.graphQLCommunication.getAssociationName(this.associationID).then(r=>{
@@ -95,7 +112,8 @@ export class AssociationMembersPageComponent {
     )
     this.userID = this.authService.getUserID();
     this.graphQLCommunication.getAssociationMembers(this.associationID).then(r=>{
-        this.userAssociations = r.users
+      this.dataSource.dataRows.next(r.users);
+      this.dataSource.isDataLoading = false
         this.searchUser(this.latestSearchParam);
     })
 
@@ -209,6 +227,19 @@ export class AssociationMembersPageComponent {
   }
 
   protected readonly Modal = Modal;
+  dataSource: MultiColumnListDataSource = {
+    columns: [],
+    dataRows: new BehaviorSubject<any[]>([]),
+    hasMoreRows: false,
+    initialRowCount: 0,
+    isDataLoading: true,
+    canSearch: true,
+    emptyMessage: "LEEG",
+    searchPlaceholder: "associationMembers.searchPlaceholder",
+    isInSearch: (dataRow : UserAssociation, searchValue : string) => {
+      return dataRow.user.fullName.includes(searchValue) || dataRow.user.email.includes(searchValue);
+    },
+  };
 
   removeUser() {
     this.graphQLCommunication.deleteUserAssociation(this.associationID, this.selectedUser!.user.id)
@@ -232,5 +263,40 @@ export class AssociationMembersPageComponent {
 
   cancelRemoveUser() {
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
+  }
+
+  ngOnInit(): void {
+    this.dataSource.columns= [
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.memberHeaderTemplate,
+        rowCell: this.memberRowTemplate,
+        getRawValueToSort: (dataRow: UserAssociation) => {
+          return dataRow.user.fullName;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.roleHeaderTemplate,
+        rowCell: this.roleRowTemplate,
+        getRawValueToSort: (dataRow: UserAssociation) => {
+          return dataRow.associationRole.name;
+        }
+      },
+      {
+        sortType: ColumnSortType.DATE,
+        headerCell: this.memberSinceHeader,
+        rowCell: this.memberSinceRowTemplate,
+        getRawValueToSort: (dataRow: UserAssociation) => {
+          return dataRow.memberSince;
+        }
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.actionsTemplateHeader,
+        rowCell: this.actionsRowTemplate,
+      },
+    ]
+    this.cdr.detectChanges();
   }
 }
