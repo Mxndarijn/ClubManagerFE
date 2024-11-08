@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms"
-import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgIf} from "@angular/common";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
+import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
@@ -24,6 +24,7 @@ export class SearchBoxComponent {
   placeholder: string = "";
   value: string = "";
   faXMark = faXmark;
+  faMagnifyingGlass = faMagnifyingGlass;
 
   @Output() SearchEvent = new EventEmitter<string>
 

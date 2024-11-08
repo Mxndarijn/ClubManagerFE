@@ -4,6 +4,8 @@ import {AsyncPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {BehaviorSubject, map, Observable} from "rxjs";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
+import {faPencil} from "@fortawesome/free-solid-svg-icons";
+import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
@@ -73,6 +75,8 @@ export class AssociationMembersPageComponent implements OnInit{
   activeTab: Tab = Tab.MEMBERS;
 
   faTrashCan = faTrashCan;
+  faPencil = faPencil;
+  faEnvelope= faEnvelope
 
   @ViewChild('memberHeaderTemplate', { static: true }) memberHeaderTemplate!: TemplateRef<any>;
   @ViewChild('roleHeaderTemplate', {static: true}) roleHeaderTemplate!: TemplateRef<any>;

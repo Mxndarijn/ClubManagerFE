@@ -16,6 +16,9 @@ module.exports = {
         "screen-mini": "82vh",
         "85%": "85%"
       },
+      borderWidth: {
+        "1": "1px",
+      },
     }
   },
   plugins: [
@@ -25,6 +28,7 @@ module.exports = {
   daisyui: {
     themes: [
       {
+
         light: {
           ...require("daisyui/src/theming/themes")["light"],
           "primary": "#38bdf8",
@@ -35,11 +39,15 @@ module.exports = {
           "base-200":  "#e8e8e8",
           "base-300": "#a9a4a4",
           "info": "#0e3ade",
-          "info-focus": "#000000",
+          "infoFocus": "#000000",
           "success": "#16a34a",
           "warning": "#f66e15",
           "error": "#f12020",
           "base-content": "#252525",
+          ".btn-sm": {
+            "height": "2.8rem",
+            "min-height": "2.8rem"
+          },
         },
         dark: {
           ...require("daisyui/src/theming/themes")["dark"],
@@ -51,12 +59,17 @@ module.exports = {
           "base-200": "#131a23",
           "base-300": "#2D3542",
           "info": "#3b57c2",
-          "info-focus": "#000000",
+          "infoFocus": "#000000",
           "success": "#1ba14f",
           "warning": "#f97316",
           "error": "#b71d1d",
           "base-content": "#b4b9b9",
-        }
+          ".btn-sm": {
+            "height": "2.6rem",
+            "min-height": "2.6rem"
+          },
+        },
+
       },
     ],
   },
