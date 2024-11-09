@@ -22,3 +22,7 @@
   </ng-template>
   </tbody>
 </table>
+<button *ngIf="dataSource.hasMoreRows && dataSource.loadAdditionalRows" (click)="loadMoreRows()" class="btn btn-sm" [disabled]="loadingMoreRows">
+  Load more
+
+</button>

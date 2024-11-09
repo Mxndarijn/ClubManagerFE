@@ -21,6 +21,7 @@ export class MultiColumnList implements OnInit{
   @Input() dataSource! : MultiColumnListDataSource;
   searchValue: string = ""
   filteredItems : any[] = []
+  loadingMoreRows = false
 
   constructor() {
   }
@@ -40,5 +41,16 @@ export class MultiColumnList implements OnInit{
     this.searchValue = searchString
     this.filteredItems = this.dataSource.dataRows.value.filter(item => this.dataSource.isInSearch!(item, searchString));
 
+  }
+
+  loadMoreRows() {
+    if(this.dataSource.loadAdditionalRows == null)
+      return
+    this.loadingMoreRows = true
+    this.dataSource.loadAdditionalRows().then(rows => {
+      const list = [...this.dataSource.dataRows.value, ...rows]
+      this.dataSource.dataRows.next(list)
+      this.loadingMoreRows = false
+    })
   }
 }

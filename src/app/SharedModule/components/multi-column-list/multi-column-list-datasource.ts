@@ -3,6 +3,7 @@ import {TemplateRef} from "@angular/core";
 import {BehaviorSubject} from "rxjs";
 
 export interface MultiColumnListDataSource {
+  endCursor?: string;
 
   isDataLoading : boolean;
   // Indicates if the search functionality is enabled for the list
@@ -24,7 +25,7 @@ export interface MultiColumnListDataSource {
   hasMoreRows: boolean;
 
   // Function to load more rows when additional data is required
-  loadAdditionalRows?: (currentRows: any[]) => any[];
+  loadAdditionalRows?:  () => Promise<any[]>;
 
   // Placeholder text displayed in the search input field
   searchPlaceholder?: string;

@@ -122,10 +122,7 @@ export class AssociationMembersPageComponent implements OnInit{
       }
     )
     this.userID = this.authService.getUserID();
-    this.graphQLCommunication.getAssociationMembers(this.associationID).then(r=>{
-      this.dataSourceMembers.dataRows.next(r.users);
-      this.dataSourceMembers.isDataLoading = false
-    })
+    this.initMembers()
 
     this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
       console.log(r)
@@ -213,6 +210,19 @@ export class AssociationMembersPageComponent implements OnInit{
     isInSearch: (dataRow : UserAssociation, searchValue : string) => {
       return dataRow.user.fullName.includes(searchValue) || dataRow.user.email.includes(searchValue);
     },
+    loadAdditionalRows: async () => {
+      return this.graphQLCommunication.getAssociationMembers(this.associationID, 20, this.dataSourceMembers.endCursor)
+        .then(r => {
+          this.dataSourceMembers.hasMoreRows = r.users.pageInfo.hasNextPage;
+          this.dataSourceMembers.endCursor = r.users.pageInfo.endCursor;
+          console.log(r.users.edges.map((edge: any) => edge.node))
+          return r.users.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    }
   };
   dataSourceInvites: MultiColumnListDataSource = {
     columns: [],
@@ -360,5 +370,15 @@ export class AssociationMembersPageComponent implements OnInit{
       }
       this.alertService.showAlert(alert)
     });
+  }
+
+  initMembers() {
+    this.graphQLCommunication.getAssociationMembers(this.associationID).then(r=> {
+      console.log(r)
+      this.dataSourceMembers.dataRows.next(r.users.edges.map((edge: any) => edge.node));
+      this.dataSourceMembers.hasMoreRows = r.users.pageInfo.hasNextPage
+      this.dataSourceMembers.endCursor = r.users.pageInfo.endCursor
+      this.dataSourceMembers.isDataLoading = false
+    })
   }
 }

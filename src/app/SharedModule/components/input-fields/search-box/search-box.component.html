@@ -1,6 +1,6 @@
   <div class="flex flex-row justify-end mr-10">
     <div class="relative flex items-center">
-      <input type="text" [placeholder]="placeholder" (keydown.enter)="SearchEvent.emit(value)" [(ngModel)]="value"
+      <input type="text" [placeholder]="placeholder" (keydown.enter)="SearchEvent.emit(value)" [(ngModel)]="value" (ngModelChange)="change()"
              class="input rounded-none rounded-tl-md rounded-bl-md
              border-accent border-2 w-full bg-base-300 focus:outline-none
              focus:border-accent shadow-2xl focus:shadow-2xl"/>

@@ -1,7 +1,7 @@
 import {environment} from '../../../environment/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable, Injector} from '@angular/core';
-import {Observable} from 'rxjs';
+import {first, Observable} from 'rxjs';
 import {AssociationInviteID} from "../models/association-invite";
 import {WeaponType} from "../models/weapon-type.model";
 import {addMonths, subMonths} from 'date-fns';
@@ -214,32 +214,43 @@ export class GraphQLCommunication {
 
   }
 
-  public getAssociationMembers(associationID: string): Promise<any> {
+  public getAssociationMembers(associationID: string, first: number = 20, after?: string): Promise<any> {
     const query = {
       query: `
-      query GetAssociationMembers($associationID: ID!) {
+      query GetAssociationMembers($associationID: ID!, $first: Int, $after: ID) {
         associationQueries {
     getAssociationDetails(associationID: $associationID) {
-          users {
-            user {
-              id,
-              fullName,
-              email,
-              image {
-                encoded
+          users(first: $first, after: $after) {
+            edges {
+              cursor
+              node {
+                memberSince
+                user {
+                  id
+                  fullName
+                  email
+                  image {
+                    encoded
+                  }
+                }
+                associationRole {
+                  name
+                }
               }
-            },
-            associationRole {
-              name
-            },
-            memberSince
+            }
+            pageInfo {
+              endCursor
+              hasNextPage
+            }
           }
         }
   }
       }
     `,
       variables: {
-        associationID: associationID
+        associationID: associationID,
+        first: first,
+        after: after
       }
     };
     return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);

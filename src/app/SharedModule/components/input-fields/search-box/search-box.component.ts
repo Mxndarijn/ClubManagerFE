@@ -32,4 +32,10 @@ export class SearchBoxComponent {
     this.value = "";
     this.SearchEvent.emit(this.value);
   }
+
+  change() {
+    if(this.value.length == 0) {
+      this.clearFilter()
+    }
+  }
 }
