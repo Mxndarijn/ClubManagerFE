@@ -128,6 +128,7 @@ export class AssociationMembersPageComponent implements OnInit{
     })
 
     this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
+      console.log(r)
       this.dataSourceInvites.dataRows.next(r.invites);
       this.dataSourceInvites.isDataLoading = false
     })
@@ -223,7 +224,7 @@ export class AssociationMembersPageComponent implements OnInit{
     emptyMessage: "LEEG",
     searchPlaceholder: "zoek",
     isInSearch: (dataRow : AssociationInvite, searchValue : string) => {
-      return dataRow.user.fullName.includes(searchValue) || dataRow.user.email.includes(searchValue);
+      return dataRow.email.includes(searchValue);
     },
   };
 
@@ -284,7 +285,7 @@ export class AssociationMembersPageComponent implements OnInit{
         headerCell: this.emailHeaderTemplate,
         rowCell: this.emailTemplate,
         getRawValueToSort: (dataRow: AssociationInvite) => {
-          return dataRow.user.fullName;
+          return dataRow.email;
         }
       },
       {

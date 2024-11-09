@@ -339,9 +339,7 @@ export class GraphQLCommunication {
             userId,
             associationId
         },
-        user {
-            email
-        },
+        email,
         associationRole {
             name
         },
@@ -501,9 +499,7 @@ export class GraphQLCommunication {
             userId,
             associationId
         },
-        user {
-            email
-        },
+        email,
         associationRole {
             name
         },
@@ -595,22 +591,6 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationMutations.associationMemberMutations.rejectAssociationInvite);
 
   }
-
-  // getUserInviteCount() {
-  //   const query = {
-  //     query: `
-  //   {
-  //     getMyProfile {
-  //       invites {
-  //       id
-  //       }
-  //     }
-  //   }
-  // `
-  //   };
-  //   return this.sendGraphQLRequest(query);
-  //
-  // }
 
   uploadProfilePicture(dataURL: string) {
     const query = {

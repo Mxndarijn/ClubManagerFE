@@ -42,7 +42,7 @@
 
 <app-confirmation-modal
   [header]="'Invite verwijderen'"
-  [message]="'Wil je invite van ' + this.selectedInvite?.user?.email + ' verwijderen?'"
+  [message]="'Wil je invite van ' + this.selectedInvite?.email + ' verwijderen?'"
   [modalTag]="Modal.ASSOCIATION_MEMBERS_DELETE_INVITE"
   [acceptButtonText]="'Verwijder'"
   [rejectButtonText]="'Behoud'"
@@ -118,7 +118,7 @@
 <ng-template #emailTemplate let-associationInvite="data">
   <td>
     <!-- Naam + email -->
-    <div>{{ associationInvite.user.email }}</div>
+    <div>{{ associationInvite.email }}</div>
   </td>
 </ng-template>
 

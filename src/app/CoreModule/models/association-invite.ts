@@ -4,7 +4,7 @@ import {AssociationRole} from "./association-role.model";
 
 export interface AssociationInvite {
   id: AssociationInviteID;
-  user: User;
+  email: String
   association: Association
   associationRole: AssociationRole;
   createdAt: string;
