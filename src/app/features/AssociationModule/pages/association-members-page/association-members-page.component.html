@@ -1,22 +1,23 @@
-<div class="w-full mb-10">
-  <div role="tablist" class="tabs flex justify-center">
-    <div role="tab" class="tab w-36  border-b-2"
-         [class.text-accent]="activeTab === Tab.MEMBERS"
-         [class.border-base-content]="activeTab !== Tab.MEMBERS"
-         [class.font-bold]="activeTab === Tab.MEMBERS"
-         [class.border-accent]="activeTab === Tab.MEMBERS"
-         (click)="setActiveTab(Tab.MEMBERS)">
-      {{ 'associationMembers.membersHeader' | translate }}
-    </div>
-    <div role="tab" class="tab w-36  border-b-2"
-         [class.text-accent]="activeTab === Tab.INVITATIONS"
-         [class.border-base-content]="activeTab !== Tab.INVITATIONS"
-         [class.font-bold]="activeTab === Tab.INVITATIONS"
-         [class.border-accent]="activeTab === Tab.INVITATIONS"
-         (click)="setActiveTab(Tab.INVITATIONS)">{{ 'associationMembers.invitationsHeader' | translate }}
-    </div>
-  </div>
-</div>
+<!--<div class="w-full mb-10">-->
+<!--  <div role="tablist" class="tabs flex justify-center">-->
+<!--    <div role="tab" class="tab w-36  border-b-2"-->
+<!--         [class.text-accent]="activeTab === Tab.MEMBERS"-->
+<!--         [class.border-base-content]="activeTab !== Tab.MEMBERS"-->
+<!--         [class.font-bold]="activeTab === Tab.MEMBERS"-->
+<!--         [class.border-accent]="activeTab === Tab.MEMBERS"-->
+<!--         (click)="setActiveTab(Tab.MEMBERS)">-->
+<!--      {{ 'associationMembers.membersHeader' | translate }}-->
+<!--    </div>-->
+<!--    <div role="tab" class="tab w-36  border-b-2"-->
+<!--         [class.text-accent]="activeTab === Tab.INVITATIONS"-->
+<!--         [class.border-base-content]="activeTab !== Tab.INVITATIONS"-->
+<!--         [class.font-bold]="activeTab === Tab.INVITATIONS"-->
+<!--         [class.border-accent]="activeTab === Tab.INVITATIONS"-->
+<!--         (click)="setActiveTab(Tab.INVITATIONS)">{{ 'associationMembers.invitationsHeader' | translate }}-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<app-tab [dataSource]="tabDataSource"></app-tab>
 <div *ngIf="activeTab === Tab.MEMBERS" class="w-full">
   <div class="overflow-x-auto">
     <app-multi-column-list [dataSource]="dataSourceMembers"></app-multi-column-list>

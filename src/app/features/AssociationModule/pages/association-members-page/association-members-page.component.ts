@@ -32,6 +32,8 @@ import {
   ColumnSortType,
   MultiColumnListDataSource
 } from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
 
 enum Tab {
   MEMBERS,
@@ -54,7 +56,8 @@ enum Tab {
     ConfirmationModalComponent,
     TranslateModule,
     InputFieldDurationComponent,
-    MultiColumnList
+    MultiColumnList,
+    TabComponent
   ],
   templateUrl: './association-members-page.component.html',
   styleUrl: './association-members-page.component.css'
@@ -236,6 +239,25 @@ export class AssociationMembersPageComponent implements OnInit{
     isInSearch: (dataRow : AssociationInvite, searchValue : string) => {
       return dataRow.email.includes(searchValue);
     },
+  };
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "associationMembers.membersHeader",
+        onClick : () => {
+          console.log("click mem")
+          this.activeTab = Tab.MEMBERS
+        }
+      },
+      {
+        label: "associationMembers.invitationsHeader",
+        onClick : () => {
+          console.log("click inv")
+          this.activeTab = Tab.INVITATIONS
+        }
+      }
+    ]
   };
 
   removeUser() {
