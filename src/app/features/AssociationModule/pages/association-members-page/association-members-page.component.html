@@ -1,10 +1,18 @@
 <div class="w-full mb-10">
-  <div role="tablist" class="tabs tabs-bordered  flex justify-center">
-    <div role="tab" class="tab  w-36" [class.tab-active]="activeTab === Tab.MEMBERS"
+  <div role="tablist" class="tabs flex justify-center">
+    <div role="tab" class="tab w-36  border-b-2"
+         [class.text-accent]="activeTab === Tab.MEMBERS"
+         [class.border-base-content]="activeTab !== Tab.MEMBERS"
+         [class.font-bold]="activeTab === Tab.MEMBERS"
+         [class.border-accent]="activeTab === Tab.MEMBERS"
          (click)="setActiveTab(Tab.MEMBERS)">
       {{ 'associationMembers.membersHeader' | translate }}
     </div>
-    <div role="tab" class="tab w-36" [class.tab-active]="activeTab === Tab.INVITATIONS"
+    <div role="tab" class="tab w-36  border-b-2"
+         [class.text-accent]="activeTab === Tab.INVITATIONS"
+         [class.border-base-content]="activeTab !== Tab.INVITATIONS"
+         [class.font-bold]="activeTab === Tab.INVITATIONS"
+         [class.border-accent]="activeTab === Tab.INVITATIONS"
          (click)="setActiveTab(Tab.INVITATIONS)">{{ 'associationMembers.invitationsHeader' | translate }}
     </div>
   </div>
@@ -17,7 +25,7 @@
 <div *ngIf="activeTab === Tab.INVITATIONS">
   <!-- Content for Uitnodigingen tab -->
   <div class="w-full flex justify-end">
-    <button class="btn border-accent border-2 bg-base-300 text-accent mr-10 btn-md shadow-2xl" (click)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);">
+    <button class="btn border-accent border-2 bg-base-300 text-accent mr-10 btn-md shadow-2xl hover:border-accent" (click)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);">
       <fa-icon [icon]="faEnvelope"></fa-icon>
       {{'associationMembers.tableInvitations.sendMessageButton' | translate}}
     </button>
@@ -28,7 +36,6 @@
     <app-multi-column-list [dataSource]="dataSourceInvites"></app-multi-column-list>
   </div>
 </div>
-
 
 <app-confirmation-modal
   [header]="'associationMembers.tableMember.memberModal.modalHeader' | translate:{name: this.selectedUser?.user?.fullName}"
@@ -84,7 +91,7 @@
 </ng-template>
 
 <ng-template #actionsRowTemplate let-userAssociation="data">
-  <button class="btn btn-sm border-warning border-2 text-warning bg-base-300 drop-shadow-xl" (click)="changeSelectedUser(userAssociation)"
+  <button class="btn btn-sm border-warning border-2 hover:border-warning text-warning bg-base-300 drop-shadow-xl" (click)="changeSelectedUser(userAssociation)"
       *ngIf="userAssociation.user.id !== userID">
     <fa-icon [icon]="faPencil"></fa-icon>
     {{ 'associationMembers.tableMember.changeButton' | translate }}
@@ -93,7 +100,7 @@
   (updateUserAssociationEvent)="updateUserAssociation($event)"
   [selectedRole]="selectedRole" [selectedUser]="selectedUser"></app-update-user-modal>
 
-  <button class="btn btn-sm border-error border-2 text-error bg-base-300 drop-shadow-xl  ml-10"
+  <button class="btn btn-sm border-error border-2 hover:border-error text-error bg-base-300 drop-shadow-xl  ml-10"
         (click)="deleteSelectedUser(userAssociation)"
         *ngIf="userAssociation.user.id !== userID">
     <fa-icon [icon]="faTrashCan"></fa-icon>
@@ -137,7 +144,7 @@
 
 <ng-template #cancelButtonTemplate let-associationInvite="data">
   <td>
-    <button class="btn border-error border-2 bg-base-100  btn-sm ml-10"
+    <button class="btn btn-sm border-error border-2 hover:border-error text-error bg-base-300 drop-shadow-xl  ml-10"
             (click)="deleteSelectedInvite(associationInvite)">{{ 'associationMembers.tableInvitations.cancelButton' | translate }}
     </button>
   </td>
