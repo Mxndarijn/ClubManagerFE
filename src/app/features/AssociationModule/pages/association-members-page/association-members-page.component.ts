@@ -373,12 +373,30 @@ export class AssociationMembersPageComponent implements OnInit{
   }
 
   initMembers() {
-    this.graphQLCommunication.getAssociationMembers(this.associationID).then(r=> {
-      console.log(r)
-      this.dataSourceMembers.dataRows.next(r.users.edges.map((edge: any) => edge.node));
-      this.dataSourceMembers.hasMoreRows = r.users.pageInfo.hasNextPage
-      this.dataSourceMembers.endCursor = r.users.pageInfo.endCursor
-      this.dataSourceMembers.isDataLoading = false
-    })
+    console.time("Total Render Time");
+    console.time("Fetching");
+
+// Start de request en begin met de tijd meten
+    this.graphQLCommunication.getAssociationMembers(this.associationID).then(r => {
+
+      console.timeEnd("Fetching"); // Meet de tijd die de request in beslag neemt
+
+      console.time("DOM Update"); // Start een timer voor de DOM update
+
+      // Verwerk de data
+      const list = r.users.edges.map((edge: any) => edge.node);
+      this.dataSourceMembers.dataRows.next(list);
+
+      // Stel andere data in voor Angular bindingen
+      this.dataSourceMembers.hasMoreRows = r.users.pageInfo.hasNextPage;
+      this.dataSourceMembers.endCursor = r.users.pageInfo.endCursor;
+      this.dataSourceMembers.isDataLoading = false;
+
+      // Wacht op de volgende render cycle van Angular
+      setTimeout(() => {
+        console.timeEnd("DOM Update"); // Eindig de DOM Update tijdsmeting
+        console.timeEnd("Total Render Time"); // Eindig de totale tijdsmeting
+      });
+    });
   }
 }
