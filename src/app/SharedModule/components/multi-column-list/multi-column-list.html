@@ -1,5 +1,6 @@
 <app-search-box *ngIf="dataSource.canSearch" [placeholder]="dataSource.searchPlaceholder! | translate" (SearchEvent)="search($event)">
 </app-search-box>
+
 <table class="table">
   <thead>
   <tr>
@@ -11,7 +12,7 @@
   <tbody>
   <ng-container *ngIf="!dataSource.isDataLoading; else loading">
     <td *ngIf="filteredItems.length == 0" colspan="40" class="text-center text-md">{{ dataSource.emptyMessage}}</td>
-      <tr *ngFor="let row of filteredItems" class="bg-base-100 last:border-b-1 last:border-black last:shadow-2xl">
+      <tr *ngFor="let row of filteredItems" class="bg-base-100 last:border-b-1 last:border-black last:shadow-3xl">
         <td *ngFor="let column of dataSource.columns">
           <ng-container [ngTemplateOutlet]="column.rowCell" [ngTemplateOutletContext]="{ data: row }"></ng-container>
         </td>
