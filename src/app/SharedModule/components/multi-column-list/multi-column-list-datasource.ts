@@ -4,10 +4,12 @@ import {BehaviorSubject} from "rxjs";
 
 export interface MultiColumnListDataSource {
   endCursor?: string;
-
   isDataLoading : boolean;
   // Indicates if the search functionality is enabled for the list
   canSearch: boolean;
+
+  searchHasMoreRows?: boolean;
+  searchEndCursor?: string;
 
   // Function to check if a data row matches the search criteria based on a search value
   isInSearch?: (dataRow: any, searchValue: string) => boolean;
@@ -31,9 +33,11 @@ export interface MultiColumnListDataSource {
   searchPlaceholder?: string;
 
   // Function to search for additional items not currently in dataRows
-  searchForAdditionalItems?: (searchValue: string) => any[];
+  searchForAdditionalItems?: (searchValue: string) =>Promise<any[]>;
 
   emptyMessage: string;
+
+  getID : (dataRow: any) => string;
 }
 
 // Interface representing a configuration for an individual column in the table

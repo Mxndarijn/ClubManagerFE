@@ -33,7 +33,7 @@ export class MultiColumnList implements OnInit{
     });
     }
 
-  search(searchString: string) {
+  search(searchString: string, searchForItems = true) {
     if(this.dataSource.isInSearch == null || !this.dataSource.canSearch) {
       this.filteredItems = this.dataSource.dataRows.value;
       return
@@ -41,16 +41,25 @@ export class MultiColumnList implements OnInit{
     this.searchValue = searchString
     this.filteredItems = this.dataSource.dataRows.value.filter(item => this.dataSource.isInSearch!(item, searchString));
 
+    if(searchForItems) {
+      this.loadMoreRows()
+    }
+
   }
 
   loadMoreRows() {
-    if(this.dataSource.loadAdditionalRows == null)
+    if(this.dataSource.loadAdditionalRows == null || this.loadingMoreRows)
       return
     this.loadingMoreRows = true
-    this.dataSource.loadAdditionalRows().then(rows => {
-      const list = [...this.dataSource.dataRows.value, ...rows]
-      this.dataSource.dataRows.next(list)
-      this.loadingMoreRows = false
-    })
+    if(this.searchValue.length == 0 || this.dataSource.searchForAdditionalItems == null)
+      this.dataSource.loadAdditionalRows().then(rows => this.processLoadedRows(rows))
+    else
+      this.dataSource.searchForAdditionalItems!(this.searchValue).then(rows => this.processLoadedRows(rows))
+  }
+  processLoadedRows(rows : any[]) {
+    const list = [...new Map([...this.dataSource.dataRows.value, ...rows].map(item => [this.dataSource.getID(item), item])).values()];
+    this.dataSource.dataRows.next(list);
+    this.loadingMoreRows = false;
+    this.search(this.searchValue, false);
   }
 }

@@ -224,14 +224,28 @@ export class AssociationMembersPageComponent implements OnInit{
         .then(r => {
           this.dataSourceMembers.hasMoreRows = r.users.pageInfo.hasNextPage;
           this.dataSourceMembers.endCursor = r.users.pageInfo.endCursor;
-          console.log(r.users.edges.map((edge: any) => edge.node))
           return r.users.edges.map((edge: any) => edge.node);
         })
         .catch(error => {
           console.error(error);
           return null;
         });
-    }
+    },
+    searchForAdditionalItems: async (search : string) => {
+      console.log("search for : " + search)
+      return this.graphQLCommunication.getAssociationMembers(this.associationID, 20, this.dataSourceMembers.searchEndCursor, search)
+        .then(r => {
+          console.log(r)
+          this.dataSourceMembers.searchHasMoreRows = r.users.pageInfo.hasNextPage;
+          this.dataSourceMembers.searchEndCursor = r.users.pageInfo.endCursor;
+          return r.users.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    },
+    getID: datatableRow => datatableRow.user.id,
   };
   dataSourceInvites: MultiColumnListDataSource = {
     columns: [],
@@ -245,6 +259,9 @@ export class AssociationMembersPageComponent implements OnInit{
     isInSearch: (dataRow : AssociationInvite, searchValue : string) => {
       return dataRow.email.includes(searchValue);
     },
+    getID: (dataRow: any) => {
+      return dataRow.id.userId;
+    }
   };
   tabDataSource: TabDataSource = {
     defaultActive: 0,
