@@ -214,14 +214,14 @@ export class GraphQLCommunication {
 
   }
 
-  public getAssociationMembers(associationID: string, first: number = 20, after?: string): Promise<any> {
+  public getAssociationMembers(associationID: string, first: number = 20, after?: string, search = ""): Promise<any> {
     console.log("getting members")
     const query = {
       query: `
-      query GetAssociationMembers($associationID: ID!, $first: Int, $after: ID) {
+      query GetAssociationMembers($associationID: ID!, $first: Int, $after: ID, $search: String) {
         associationQueries {
     getAssociationDetails(associationID: $associationID) {
-          users(first: $first, after: $after) {
+          users(first: $first, after: $after, search: $search) {
             edges {
               cursor
               node {
@@ -251,7 +251,8 @@ export class GraphQLCommunication {
       variables: {
         associationID: associationID,
         first: first,
-        after: after
+        after: after,
+        search: search
       }
     };
     return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);

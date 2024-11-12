@@ -44,13 +44,18 @@ export class MultiColumnList implements OnInit{
   }
 
   loadMoreRows() {
-    if(this.dataSource.loadAdditionalRows == null)
+    if(this.dataSource.loadAdditionalRows == null || this.loadingMoreRows)
       return
     this.loadingMoreRows = true
-    this.dataSource.loadAdditionalRows().then(rows => {
-      const list = [...this.dataSource.dataRows.value, ...rows]
-      this.dataSource.dataRows.next(list)
-      this.loadingMoreRows = false
-    })
+    if(this.searchValue.length == 0 || this.dataSource.searchForAdditionalItems == null)
+      this.dataSource.loadAdditionalRows().then(rows => this.processLoadedRows(rows))
+    else
+      this.dataSource.searchForAdditionalItems!(this.searchValue).then(rows => this.processLoadedRows(rows))
+  }
+  processLoadedRows(rows : any[]) {
+    const list = [...new Map([...this.dataSource.dataRows.value, ...rows].map(item => [this.dataSource.getID(item), item])).values()];
+    this.dataSource.dataRows.next(list);
+    this.loadingMoreRows = false;
+    this.search(this.searchValue);
   }
 }
