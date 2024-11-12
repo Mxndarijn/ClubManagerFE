@@ -33,13 +33,17 @@ export class MultiColumnList implements OnInit{
     });
     }
 
-  search(searchString: string) {
+  search(searchString: string, searchForItems = true) {
     if(this.dataSource.isInSearch == null || !this.dataSource.canSearch) {
       this.filteredItems = this.dataSource.dataRows.value;
       return
     }
     this.searchValue = searchString
     this.filteredItems = this.dataSource.dataRows.value.filter(item => this.dataSource.isInSearch!(item, searchString));
+
+    if(searchForItems) {
+      this.loadMoreRows()
+    }
 
   }
 
@@ -56,6 +60,6 @@ export class MultiColumnList implements OnInit{
     const list = [...new Map([...this.dataSource.dataRows.value, ...rows].map(item => [this.dataSource.getID(item), item])).values()];
     this.dataSource.dataRows.next(list);
     this.loadingMoreRows = false;
-    this.search(this.searchValue);
+    this.search(this.searchValue, false);
   }
 }
