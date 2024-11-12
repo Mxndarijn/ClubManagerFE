@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {TranslateModule} from "@ngx-translate/core";
 import {Modal} from "../../../../CoreModule/services/modal.service";
@@ -11,7 +11,8 @@ export enum ButtonClass {
   ACCENT_CLASS,
   SUCCESS_CLASS,
   ERROR_CLASS,
-  WARNING_CLASS
+  WARNING_CLASS,
+  LOGIN_CLASS
 }
 
 export enum ButtonSize {
@@ -20,11 +21,14 @@ export enum ButtonSize {
   BTN_LG,
 }
 export const cssClassMap = {
-  [ButtonClass.ACCENT_CLASS]: ['border-accent', 'text-accent', 'hover:border-accent'],
-  [ButtonClass.SUCCESS_CLASS]: ['border-success', 'text-success', 'hover:border-success'],
-  [ButtonClass.ERROR_CLASS]: ['border-error', 'text-error', 'hover:border-error'],
-  [ButtonClass.WARNING_CLASS]: ['border-warning', 'text-warning', 'hover:border-warning']
+  [ButtonClass.ACCENT_CLASS]: ['border-accent','bg-base-300', 'text-accent', 'hover:border-accent'],
+  [ButtonClass.SUCCESS_CLASS]: ['border-success', 'bg-base-300',  'text-success', 'hover:border-success'],
+  [ButtonClass.ERROR_CLASS]: ['border-error', 'bg-base-300', 'text-error', 'hover:border-error'],
+  [ButtonClass.WARNING_CLASS]: ['border-warning', 'bg-base-300', 'text-warning', 'hover:border-warning'],
+  [ButtonClass.LOGIN_CLASS]: ['bg-accent', 'text-base-content', 'border-none' ]
 };
+
+
 
 export const cssButtonSizeClassMap = {
   [ButtonSize.BTN_SM]: ['btn-sm'],
@@ -44,7 +48,11 @@ export const cssButtonSizeClassMap = {
   templateUrl: './custom-button.html',
   styleUrl: './custom-button.css'
 })
-export class CustomButton {
+export class CustomButton implements OnInit {
+  ngOnInit(): void {
+    this.additionalClassesList = this.additionalClasses.split(' ')
+  }
+
 
   protected readonly Modal = Modal;
   @Input() icon?: IconDefinition;
@@ -53,15 +61,19 @@ export class CustomButton {
   @Input() labelText: string = '';
   @Input() buttonSize: ButtonSize = ButtonSize.BTN_MD
   @Input() disabledStatus: boolean = false;
+  @Input() additionalClasses: string = '';
 
+  additionalClassesList: string[] = []
 
   protected readonly cssClassMap = cssClassMap;
   protected readonly cssButtonSizeClassMap = cssButtonSizeClassMap;
 
+
   getCSSClasses() {
     return [
           ...this.cssClassMap[this.buttonClass],
-          ...this.cssButtonSizeClassMap[this.buttonSize]
-        ];
+          ...this.cssButtonSizeClassMap[this.buttonSize],
+          ...this.additionalClassesList
+    ];
   }
 }

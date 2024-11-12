@@ -8,6 +8,16 @@ module.exports = {
       colors: {
         "grayTint": "#54575d",
         "black": "#000000",
+        'custom-gray': '#1F2937',
+        'custom-teal': '#0E7490',
+        'custom-teal-opacity': 'rgba(14, 116, 144, 0.08)', // 8% opacity
+      },
+      rotate: {
+        "60" : "160deg"
+      },
+      spacing: {
+        'custom-top-30': '30%',
+        'custom-top-65': '65%',
       },
       width: {
         "1/7": "14,27%"
@@ -22,6 +32,9 @@ module.exports = {
       boxShadow: {
         '3xl': '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
       },
+      borderRadius: {
+        "custom-radius-85": "85px"
+      }
     }
   },
   plugins: [
