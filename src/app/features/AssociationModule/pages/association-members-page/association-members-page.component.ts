@@ -34,6 +34,11 @@ import {
 } from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
 import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
 import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 enum Tab {
   MEMBERS,
@@ -57,7 +62,8 @@ enum Tab {
     TranslateModule,
     InputFieldDurationComponent,
     MultiColumnList,
-    TabComponent
+    TabComponent,
+    CustomButton
   ],
   templateUrl: './association-members-page.component.html',
   styleUrl: './association-members-page.component.css'
@@ -438,4 +444,7 @@ export class AssociationMembersPageComponent implements OnInit{
       });
     });
   }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

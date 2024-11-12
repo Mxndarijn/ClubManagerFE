@@ -1,41 +1,24 @@
-<!--<div class="w-full mb-10">-->
-<!--  <div role="tablist" class="tabs flex justify-center">-->
-<!--    <div role="tab" class="tab w-36  border-b-2"-->
-<!--         [class.text-accent]="activeTab === Tab.MEMBERS"-->
-<!--         [class.border-base-content]="activeTab !== Tab.MEMBERS"-->
-<!--         [class.font-bold]="activeTab === Tab.MEMBERS"-->
-<!--         [class.border-accent]="activeTab === Tab.MEMBERS"-->
-<!--         (click)="setActiveTab(Tab.MEMBERS)">-->
-<!--      {{ 'associationMembers.membersHeader' | translate }}-->
-<!--    </div>-->
-<!--    <div role="tab" class="tab w-36  border-b-2"-->
-<!--         [class.text-accent]="activeTab === Tab.INVITATIONS"-->
-<!--         [class.border-base-content]="activeTab !== Tab.INVITATIONS"-->
-<!--         [class.font-bold]="activeTab === Tab.INVITATIONS"-->
-<!--         [class.border-accent]="activeTab === Tab.INVITATIONS"-->
-<!--         (click)="setActiveTab(Tab.INVITATIONS)">{{ 'associationMembers.invitationsHeader' | translate }}-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
 <app-tab [dataSource]="tabDataSource"></app-tab>
 <div *ngIf="activeTab === Tab.MEMBERS" class="w-full">
-  <div class="overflow-x-auto">
+<!--  <div class="overflow-x-auto">-->
     <app-multi-column-list [dataSource]="dataSourceMembers"></app-multi-column-list>
-  </div>
 </div>
-<div *ngIf="activeTab === Tab.INVITATIONS">
+<div  *ngIf="activeTab === Tab.INVITATIONS">
   <!-- Content for Uitnodigingen tab -->
   <div class="w-full flex justify-end">
-    <button class="btn border-accent border-2 bg-base-300 text-accent mr-10 btn-md shadow-2xl hover:border-accent" (click)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);">
-      <fa-icon [icon]="faEnvelope"></fa-icon>
-      {{'associationMembers.tableInvitations.sendMessageButton' | translate}}
-    </button>
+    <app-custom-button class="mr-10"
+    [buttonClass]="ButtonClass.ACCENT_CLASS"
+    [buttonSize]="ButtonSize.BTN_MD"
+    [labelText]="'associationMembers.tableInvitations.sendMessageButton'"
+    [icon]="faEnvelope"
+    [disabledStatus]="false"
+    (onClick)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);"
+    ></app-custom-button>
+
     <app-send-invitation-modal [associationName]="associationName"
                                (NewAssociationInviteEvent)="newAssociationInviteEvent($event)"></app-send-invitation-modal>
   </div>
-  <div class="overflow-x-auto">
     <app-multi-column-list [dataSource]="dataSourceInvites"></app-multi-column-list>
-  </div>
 </div>
 
 <app-confirmation-modal
@@ -57,18 +40,22 @@
   (AcceptEvent)="deleteInvite()"
   (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_DELETE_INVITE)"
 ></app-confirmation-modal>
+
 <ng-template #memberHeaderTemplate>
   {{ 'associationMembers.tableMember.memberHeader' | translate }}
 </ng-template>
+
 <ng-template #roleHeaderTemplate>
   {{ 'associationMembers.tableMember.roleHeader' | translate }}
 </ng-template>
+
 <ng-template #memberSinceHeader>
   {{ 'associationMembers.tableMember.memberSinceHeader' | translate }}
 </ng-template>
 
 <ng-template #actionsTemplate>
 </ng-template>
+
 <ng-template #memberRowTemplate let-userAssociation="data">
   <div class="flex items-center gap-3">
     <div class="avatar">
@@ -92,21 +79,29 @@
 </ng-template>
 
 <ng-template #actionsRowTemplate let-userAssociation="data">
-  <button class="btn btn-sm border-warning border-2 hover:border-warning text-warning bg-base-300 drop-shadow-xl" (click)="changeSelectedUser(userAssociation)"
-      *ngIf="userAssociation.user.id !== userID">
-    <fa-icon [icon]="faPencil"></fa-icon>
-    {{ 'associationMembers.tableMember.changeButton' | translate }}
-  </button>
+
+  <app-custom-button class="mr-10"
+    *ngIf="userAssociation.user.id !== userID"
+    [buttonClass]="ButtonClass.WARNING_CLASS"
+    [buttonSize]="ButtonSize.BTN_SM"
+    [labelText]="'associationMembers.tableMember.changeButton'"
+    [icon]="faPencil"
+    [disabledStatus]="false"
+    (onClick)="changeSelectedUser(userAssociation)"
+  ></app-custom-button>
+
   <app-update-user-modal
   (updateUserAssociationEvent)="updateUserAssociation($event)"
   [selectedRole]="selectedRole" [selectedUser]="selectedUser"></app-update-user-modal>
-
-  <button class="btn btn-sm border-error border-2 hover:border-error text-error bg-base-300 drop-shadow-xl  ml-10"
-        (click)="deleteSelectedUser(userAssociation)"
-        *ngIf="userAssociation.user.id !== userID">
-    <fa-icon [icon]="faTrashCan"></fa-icon>
-    {{ 'associationMembers.tableMember.deleteButton' | translate }}
-  </button>
+  <app-custom-button
+    *ngIf="userAssociation.user.id !== userID"
+    [buttonClass]="ButtonClass.ERROR_CLASS"
+    [buttonSize]="ButtonSize.BTN_SM"
+    [labelText]="'associationMembers.tableMember.deleteButton'"
+    [icon]="faTrashCan"
+    [disabledStatus]="false"
+    (onClick)="deleteSelectedUser(userAssociation)"
+  ></app-custom-button>
 </ng-template>
 
 
@@ -145,8 +140,13 @@
 
 <ng-template #cancelButtonTemplate let-associationInvite="data">
   <td>
-    <button class="btn btn-sm border-error border-2 hover:border-error text-error bg-base-300 drop-shadow-xl  ml-10"
-            (click)="deleteSelectedInvite(associationInvite)">{{ 'associationMembers.tableInvitations.cancelButton' | translate }}
-    </button>
+    <app-custom-button class="ml-10"
+      [buttonClass]="ButtonClass.ERROR_CLASS"
+      [buttonSize]="ButtonSize.BTN_SM"
+      [labelText]="'associationMembers.tableInvitations.cancelButton'"
+      [icon]="faTrashCan"
+      [disabledStatus]="false"
+      (onClick)="deleteSelectedInvite(associationInvite)"
+    ></app-custom-button>
   </td>
 </ng-template>
