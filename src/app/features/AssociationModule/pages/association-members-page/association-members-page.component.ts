@@ -14,7 +14,7 @@ import {
   ConfirmationModalComponent
 } from "../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
 import {UserAssociation} from "../../../../CoreModule/models/user-association.model";
-import {AssociationInvite, AssociationInviteID} from "../../../../CoreModule/models/association-invite";
+import {AssociationInvite} from "../../../../CoreModule/models/association-invite";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {NavigationService} from "../../../../CoreModule/services/navigation.service";
@@ -132,12 +132,6 @@ export class AssociationMembersPageComponent implements OnInit{
     )
     this.userID = this.authService.getUserID();
     this.initMembers()
-
-    this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
-      console.log(r)
-      this.dataSourceInvites.dataRows.next(r.invites);
-      this.dataSourceInvites.isDataLoading = false
-    })
   }
 
   protected readonly Tab = Tab;
@@ -417,7 +411,7 @@ export class AssociationMembersPageComponent implements OnInit{
     });
   }
 
-  initMembers() {
+  async initMembers() {
     console.time("Total Render Time");
     console.time("Fetching");
 
@@ -443,6 +437,11 @@ export class AssociationMembersPageComponent implements OnInit{
         console.timeEnd("Total Render Time"); // Eindig de totale tijdsmeting
       });
     });
+
+    this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
+      this.dataSourceInvites.dataRows.next(r.invites);
+      this.dataSourceInvites.isDataLoading = false
+    })
   }
 
   protected readonly ButtonClass = ButtonClass;

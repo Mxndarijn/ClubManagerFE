@@ -2,7 +2,6 @@ import {environment} from '../../../environment/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable, Injector} from '@angular/core';
 import {first, Observable} from 'rxjs';
-import {AssociationInviteID} from "../models/association-invite";
 import {WeaponType} from "../models/weapon-type.model";
 import {addMonths, subMonths} from 'date-fns';
 import {UtilityFunctions} from "../../SharedModule/utilities/utility-functions";
@@ -348,10 +347,7 @@ export class GraphQLCommunication {
        associationQueries {
     getAssociationDetails(associationID: $associationID) {
           invites {
-        id {
-            userId,
-            associationId
-        },
+        id,
         email,
         associationRole {
             name
@@ -377,10 +373,7 @@ export class GraphQLCommunication {
       userQueries {
     getMyProfile {
         invites {
-        id {
-        userId,
-        associationId,
-        }
+        id
         association {
             name
             contactEmail
@@ -473,7 +466,7 @@ export class GraphQLCommunication {
 
   }
 
-  deleteAssociationInvite(id: AssociationInviteID): Promise<any> {
+  deleteAssociationInvite(id: string): Promise<any> {
     const query = {
       query: `
       mutation MyMutation($inviteID :AssociationInviteInput! ) {
@@ -489,8 +482,7 @@ export class GraphQLCommunication {
     `,
       variables: {
         inviteID: {
-          userUUID: id.userId,
-          associationUUID: id.associationId,
+          associationInviteID: id
         }
       }
     };
@@ -508,10 +500,7 @@ export class GraphQLCommunication {
     success,
     message,
     associationInvite {
-    id {
-            userId,
-            associationId
-        },
+    id,
         email,
         associationRole {
             name
@@ -555,7 +544,7 @@ export class GraphQLCommunication {
   }
 
 
-  acceptAssociationInvite(id: AssociationInviteID): Promise<any> {
+  acceptAssociationInvite(id: string): Promise<any> {
     const query = {
       query: `
       mutation acceptAssociationInvite($inviteID: AssociationInviteInput!) {
@@ -571,8 +560,7 @@ export class GraphQLCommunication {
     `,
       variables: {
         inviteID: {
-          userUUID: id.userId,
-          associationUUID: id.associationId,
+          associationInviteID: id
         }
       }
     };
@@ -580,7 +568,7 @@ export class GraphQLCommunication {
 
   }
 
-  rejectAssociationInvite(id: AssociationInviteID): Promise<any> {
+  rejectAssociationInvite(id: string): Promise<any> {
     const query = {
       query: `
       mutation rejectAssociationInvite($inviteID: AssociationInviteInput!) {
@@ -596,8 +584,7 @@ export class GraphQLCommunication {
     `,
       variables: {
         inviteID: {
-          userUUID: id.userId,
-          associationUUID: id.associationId,
+          associationInviteID: id
         }
       }
     };

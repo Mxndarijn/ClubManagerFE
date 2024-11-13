@@ -29,7 +29,7 @@ export class MultiColumnList implements OnInit{
   ngOnInit(): void {
     this.filteredItems = this.dataSource.dataRows.value
     this.dataSource.dataRows.subscribe(() => {
-      this.search(this.searchValue)
+      this.search(this.searchValue, false)
     });
     }
 

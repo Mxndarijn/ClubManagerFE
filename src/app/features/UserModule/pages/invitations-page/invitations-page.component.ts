@@ -4,7 +4,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {map, Observable} from "rxjs";
-import {AssociationInvite, AssociationInviteID} from "../../../../CoreModule/models/association-invite";
+import {AssociationInvite} from "../../../../CoreModule/models/association-invite";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {
@@ -75,7 +75,7 @@ export class InvitationsPageComponent {
 
   protected readonly Modal = Modal;
 
-  declineInvite(associationInviteId: AssociationInviteID) {
+  declineInvite(associationInviteId: string) {
     this.graphQLService.rejectAssociationInvite(associationInviteId)
       .then((dto: DefaultBooleanResponseDTO) => {
         if (dto.success) {
@@ -108,7 +108,7 @@ export class InvitationsPageComponent {
     })
   }
 
-  acceptInvite(associationInviteId: AssociationInviteID) {
+  acceptInvite(associationInviteId: string) {
     this.graphQLService.acceptAssociationInvite(associationInviteId)
       .then((dto: DefaultBooleanResponseDTO) => {
         if (dto.success) {
