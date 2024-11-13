@@ -1,4 +1,4 @@
-<button class="btn border-2 bg-base-300 shadow-3xl" [disabled]="disabledStatus" [class]="getCSSClasses()" (click)="this.onClick.emit();">
+<button class="btn border-2 shadow-3xl" [disabled]="disabledStatus" [class]="getCSSClasses()" (click)="this.onClick.emit();">
   <fa-icon *ngIf="icon" [icon]="(icon)"></fa-icon>
   {{labelText | translate}}
 </button>
