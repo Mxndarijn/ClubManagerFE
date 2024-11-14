@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListTableComponent } from './multi-column-list';
+import { MultiColumnList } from './multi-column-list';
 
 describe('ListTableComponent', () => {
-  let component: ListTableComponent;
-  let fixture: ComponentFixture<ListTableComponent>;
+  let component: MultiColumnList;
+  let fixture: ComponentFixture<MultiColumnList>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListTableComponent]
+      imports: [MultiColumnList]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ListTableComponent);
+    fixture = TestBed.createComponent(MultiColumnList);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

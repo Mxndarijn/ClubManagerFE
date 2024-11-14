@@ -60,6 +60,7 @@ module.exports = {
           "warning": "#f66e15",
           "error": "#f12020",
           "base-content": "#252525",
+          "white": "#ffffff",
           ".btn-sm": {
             "height": "2.8rem",
             "min-height": "2.8rem"
@@ -80,6 +81,8 @@ module.exports = {
           "warning": "#f97316",
           "error": "#b71d1d",
           "base-content": "#b4b9b9",
+          "white": "#ffffff",
+
           ".btn-sm": {
             "height": "2.6rem",
             "min-height": "2.6rem"

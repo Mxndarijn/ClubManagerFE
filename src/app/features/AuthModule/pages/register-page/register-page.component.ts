@@ -24,11 +24,19 @@ import {ValidationUtils} from "../../../../SharedModule/utilities/validation-uti
 import {
   DefaultInputFieldComponent
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
+import {
+    LeftSideAuthenticationComponent
+} from "../../../../SharedModule/components/left-side-authentication/left-side-authentication.component";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 @Component({
   selector: 'app-register-page',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, ErrorMessageComponent, RouterLink, RouterLinkActive, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, ErrorMessageComponent, RouterLink, RouterLinkActive, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent, LeftSideAuthenticationComponent, CustomButton],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css'
 })
@@ -37,6 +45,7 @@ export class RegisterPageComponent {
     password: FormControl<string | null>;
     confirmPassword: FormControl<string | null>;
     fullName: FormControl<string | null>;
+    license: FormControl<number | null>;
     email: FormControl<string | null>
   }>;
 
@@ -50,6 +59,7 @@ export class RegisterPageComponent {
       password: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required, ValidationUtils.containsUppercase, ValidationUtils.containsLowercase, ValidationUtils.containsNumber, ValidationUtils.containsSpecialChar])),
       confirmPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required])),
       fullName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(4), Validators.required, ValidationUtils.containsSpace])),
+      license: new FormControl<number>(0, Validators.compose([Validators.maxLength(255), Validators.minLength(4), Validators.required])),
     }, {validators: ValidationUtils.passwordsMatchValidator});
   }
 
@@ -88,4 +98,6 @@ export class RegisterPageComponent {
   }
 
   protected readonly environment = environment;
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }
