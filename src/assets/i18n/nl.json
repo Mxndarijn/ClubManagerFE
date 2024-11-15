@@ -47,18 +47,21 @@
     }
   },
   "registerPage": {
-    "titleHeader": "Welkom op {{companyName}}",
+    "titleHeader": "Registreer",
     "accessInformation": "Registeren",
     "fullNameHeader": "Volledige Naam",
     "emailHeader": "Email",
     "passwordHeader": "Wachtwoord",
     "repeatPasswordHeader": "Herhaal wachtwoord",
+    "shootingLicenseHeader": "Schiet nummer",
     "registerButton": "Registreer",
-    "alreadyAccount": "Heb je al een account? Log hier in.",
+    "alreadyAccount": "Al een account?",
+    "alreadyAccount2": "Log in",
     "fullNamePlaceholder": "Vul hier je volledige naam in.",
     "emailPlaceholder": "Vul hier je email in",
     "passwordPlaceholder": "Vul hier je wachtwoord in",
     "repeatPasswordPlaceholder": "Vul hier je wachtwoord nog een keer in",
+    "shootingLicensePlaceholder": "Vul hier je schiet licentie nummer in",
     "errors": {
       "noFullName": "Je moet een geldige naam invullen.",
       "noValidEmail": "Je moet een geldig email invullen",
@@ -68,6 +71,7 @@
       "noNumber": "Het wachtwoord moet een getal bevatten.",
       "noSpecialChar": "Het wachtwoord moet speciaal karakter bevatten.",
       "passwordMismatch": "De wachtwoorden komen niet overeen.",
+      "noShootingLicense": "Je moet een geldig licentie nummer invullen.",
       "serverResponses": {
         "account-validation-error": "Er is een fout opgetreden tijdens het valideren van de gegevens.",
         "email-already-used": "Er is al een account met dit emailadres",

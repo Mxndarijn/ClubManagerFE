@@ -20,6 +20,8 @@ import {NavigationService} from "../../../../CoreModule/services/navigation.serv
 import {
   MyReservationDetailModalComponent
 } from "../../modals/my-reservation-detail-modal/my-reservation-detail-modal.component";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
 
 
 enum Tab {
@@ -40,7 +42,8 @@ enum Tab {
     NgIf,
     SearchBoxComponent,
     UpdateUserModalComponent,
-    MyReservationDetailModalComponent
+    MyReservationDetailModalComponent,
+    TabComponent
   ],
   templateUrl: './my-reservations-page.component.html',
   styleUrl: './my-reservations-page.component.css'
@@ -51,6 +54,26 @@ export class MyReservationsPageComponent implements OnInit {
   protected futureReservationsUsers : ReservationUser[] = []
   protected historyReservationsUsers : ReservationUser[] = []
 
+
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "Future",
+        onClick : () => {
+          console.log("click fut")
+          this.activeTab = Tab.FUTURE
+        }
+      },
+      {
+        label: "History",
+        onClick : () => {
+          console.log("click his")
+          this.activeTab = Tab.HISTORY
+        }
+      }
+    ]
+  };
 
   constructor(
     private graphQL: GraphQLCommunication,
@@ -74,10 +97,7 @@ export class MyReservationsPageComponent implements OnInit {
   }
 
 
-  setActiveTab(tab: Tab) {
-    this.activeTab = tab;
 
-  }
 
   protected readonly Modal = Modal;
   protected readonly faTrashCan = faTrashCan;
