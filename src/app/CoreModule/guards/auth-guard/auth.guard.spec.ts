@@ -11,24 +11,26 @@ export class AuthGuard {
     private router: Router
   ) {}
 
-  async canActivate(
+  canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Promise<boolean> {
+  ): boolean {
+    this.checkAuthentication(state.url)
+    return true;
+  }
+
+  private async checkAuthentication(targetUrl: string): Promise<void> {
     const [loggedIn, accountVerified] = await Promise.all([
       this.authService.isLoggedIn(),
-      this.authService.isAccountVerified()
+      this.authService.isAccountVerified(),
     ]);
+
     if (!loggedIn) {
-      await this.router.navigate(['/login']);
-      return false;
-    }
-    if (!accountVerified && loggedIn) {
+      await this.router.navigate(['/login'], {
+        queryParams: { redirectUrl: targetUrl },
+      });
+    } else if (!accountVerified) {
       await this.router.navigate(['/email-verification']);
-      return false;
     }
-
-
-    return true;
   }
 }

@@ -3,6 +3,7 @@ import {MultiColumnListDataSource} from "./multi-column-list-datasource";
 import {NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
 import {SearchBoxComponent} from "../input-fields/search-box/search-box.component";
 import {TranslateModule} from "@ngx-translate/core";
+import {CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 
 @Component({
   selector: 'app-multi-column-list',
@@ -12,7 +13,9 @@ import {TranslateModule} from "@ngx-translate/core";
     NgForOf,
     NgIf,
     SearchBoxComponent,
-    TranslateModule
+    TranslateModule,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll
   ],
   templateUrl: './multi-column-list.html',
   styleUrl: './multi-column-list.css'
