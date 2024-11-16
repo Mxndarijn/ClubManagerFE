@@ -1,7 +1,7 @@
 <app-search-box *ngIf="dataSource.canSearch" [placeholder]="dataSource.searchPlaceholder! | translate" (SearchEvent)="search($event)">
 </app-search-box>
 
-<table class="table">
+<table class="table overflow-y-hidden">
   <thead>
   <tr>
     <th *ngFor="let column of dataSource.columns">
@@ -23,7 +23,7 @@
   </ng-template>
   </tbody>
 </table>
-<button *ngIf="dataSource.hasMoreRows && dataSource.loadAdditionalRows" (click)="loadMoreRows()" class="btn btn-sm" [disabled]="loadingMoreRows">
+<button *ngIf="dataSource.hasMoreRows && dataSource.loadAdditionalRows" (click)="loadMoreRows()" class="btn btn-sm" [disabled]="loadingMoreRows">w
   Load more
 
 </button>

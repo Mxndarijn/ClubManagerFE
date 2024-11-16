@@ -340,26 +340,38 @@ export class GraphQLCommunication {
 
   }
 
-  getAssociationInvites(associationID: string) {
+  getAssociationInvites(associationID: string, first: number = 20, after?: string, search: string = ""): Promise<any> {
     const query = {
       query: `
-     query GetAssociationInvites($associationID: ID!) {
-       associationQueries {
+     query MyQuery($associationID: ID!, $first: Int, $after: ID, $search: String) {
+  associationQueries {
     getAssociationDetails(associationID: $associationID) {
-          invites {
-        id,
-        email,
-        associationRole {
-            name
-        },
-        createdAt
-    }
+      invites(after: $after, first: $first, search: $search) {
+        edges {
+          cursor
+          node {
+            id
+            email
+            createdAt
+            associationRole {
+              name
+            }
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
       }
+    }
   }
 }
     `,
       variables: {
-        associationID: associationID
+        associationID: associationID,
+        first: first,
+        after: after,
+        search: search
       }
     };
     return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);

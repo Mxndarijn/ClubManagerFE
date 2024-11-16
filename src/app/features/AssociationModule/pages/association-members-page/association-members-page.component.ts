@@ -226,7 +226,6 @@ export class AssociationMembersPageComponent implements OnInit{
         });
     },
     searchForAdditionalItems: async (search : string) => {
-      console.log("search for : " + search)
       return this.graphQLCommunication.getAssociationMembers(this.associationID, 20, this.dataSourceMembers.searchEndCursor, search)
         .then(r => {
           console.log(r)
@@ -244,18 +243,43 @@ export class AssociationMembersPageComponent implements OnInit{
   dataSourceInvites: MultiColumnListDataSource = {
     columns: [],
     dataRows: new BehaviorSubject<any[]>([]),
-    hasMoreRows: false,
+    hasMoreRows: true,
     initialRowCount: 0,
     isDataLoading: true,
-    canSearch: false,
+    canSearch: true,
     emptyMessage: "LEEG",
     searchPlaceholder: "zoek",
     isInSearch: (dataRow : AssociationInvite, searchValue : string) => {
       return dataRow.email.includes(searchValue);
     },
-    getID: (dataRow: any) => {
-      return dataRow.id.userId;
-    }
+    getID: (dataRow: AssociationInvite) => {
+      return dataRow.id;
+    },
+    loadAdditionalRows: async () => {
+      return this.graphQLCommunication.getAssociationInvites(this.associationID, 20, this.dataSourceMembers.endCursor)
+        .then(r => {
+          this.dataSourceMembers.hasMoreRows = r.invites.pageInfo.hasNextPage;
+          this.dataSourceMembers.endCursor = r.invites.pageInfo.endCursor;
+          return r.invites.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    },
+    searchForAdditionalItems: async (search : string) => {
+      return this.graphQLCommunication.getAssociationInvites(this.associationID, 20, this.dataSourceMembers.searchEndCursor, search)
+        .then(r => {
+          console.log(r)
+          this.dataSourceMembers.searchHasMoreRows = r.invites.pageInfo.hasNextPage;
+          this.dataSourceMembers.searchEndCursor = r.invites.pageInfo.endCursor;
+          return r.invites.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    },
   };
   tabDataSource: TabDataSource = {
     defaultActive: 0,
@@ -412,16 +436,7 @@ export class AssociationMembersPageComponent implements OnInit{
   }
 
   async initMembers() {
-    console.time("Total Render Time");
-    console.time("Fetching");
-
-// Start de request en begin met de tijd meten
     this.graphQLCommunication.getAssociationMembers(this.associationID).then(r => {
-
-      console.timeEnd("Fetching"); // Meet de tijd die de request in beslag neemt
-
-      console.time("DOM Update"); // Start een timer voor de DOM update
-
       // Verwerk de data
       const list = r.users.edges.map((edge: any) => edge.node);
       this.dataSourceMembers.dataRows.next(list);
@@ -430,17 +445,16 @@ export class AssociationMembersPageComponent implements OnInit{
       this.dataSourceMembers.hasMoreRows = r.users.pageInfo.hasNextPage;
       this.dataSourceMembers.endCursor = r.users.pageInfo.endCursor;
       this.dataSourceMembers.isDataLoading = false;
-
-      // Wacht op de volgende render cycle van Angular
-      setTimeout(() => {
-        console.timeEnd("DOM Update"); // Eindig de DOM Update tijdsmeting
-        console.timeEnd("Total Render Time"); // Eindig de totale tijdsmeting
-      });
     });
 
     this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
-      this.dataSourceInvites.dataRows.next(r.invites);
-      this.dataSourceInvites.isDataLoading = false
+      const list = r.invites.edges.map((edge: any) => edge.node);
+      this.dataSourceInvites.dataRows.next(list);
+
+      // Stel andere data in voor Angular bindingen
+      this.dataSourceInvites.hasMoreRows = r.invites.pageInfo.hasNextPage;
+      this.dataSourceInvites.endCursor = r.invites.pageInfo.endCursor;
+      this.dataSourceInvites.isDataLoading = false;
     })
   }
 
