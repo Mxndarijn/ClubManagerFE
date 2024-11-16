@@ -1223,7 +1223,7 @@ export class GraphQLCommunication {
 
   }
 
-  register(email: string, password: string, fullName: string, language: string) {
+  register(email: string, password: string, fullName: string, language: string, knsaMembershipNumber: number) {
     const query = {
       query: `
         mutation register($registerRequest: RegisterDTOInput!) {
@@ -1240,7 +1240,8 @@ export class GraphQLCommunication {
           email: email,
           password: password,
           fullName: fullName,
-          language: language
+          language: language,
+          knsaMembershipNumber: knsaMembershipNumber
         }
       }
     };

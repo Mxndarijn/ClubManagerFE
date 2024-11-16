@@ -40,9 +40,9 @@ export class AuthenticationService {
     })
   }
 
-  public register(email: string, password: string, fullName: string, language: string): Observable<any> {
+  public register(email: string, password: string, fullName: string, language: string, knsaMembershipNumber: number): Observable<any> {
     return new Observable(subscriber => {
-      this.graphQLService.register(email, password, fullName, language).then((dto: DefaultBooleanResponseDTO) =>{
+      this.graphQLService.register(email, password, fullName, language, knsaMembershipNumber).then((dto: DefaultBooleanResponseDTO) =>{
           if (dto.success) {
             localStorage.setItem(this.tokenKey, dto.message);
             this.updateUserID();

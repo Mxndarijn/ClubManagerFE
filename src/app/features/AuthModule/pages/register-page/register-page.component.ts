@@ -46,7 +46,7 @@ export class RegisterPageComponent {
     confirmPassword: FormControl<string | null>;
     fullName: FormControl<string | null>;
     license: FormControl<number | null>;
-    email: FormControl<string | null>
+    email: FormControl<string | null>;
   }>;
 
 
@@ -70,7 +70,8 @@ export class RegisterPageComponent {
         this.registerForm.controls.email.value!,
         this.registerForm.controls.password.value!,
         this.registerForm.controls.fullName.value!,
-        this.translate.currentLang
+        this.translate.currentLang,
+        this.registerForm.controls.license.value!
       ).subscribe({
         next: (registerRequest) => {
           console.log(registerRequest)
