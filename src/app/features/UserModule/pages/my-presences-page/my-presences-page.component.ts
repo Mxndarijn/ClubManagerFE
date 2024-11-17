@@ -88,7 +88,7 @@ export class MyPresencesPageComponent implements OnInit {
       }
     )
 
-    this.graphQLCommunication.getUserPresences(2, this.dataSourcePresences.endCursor)
+    this.graphQLCommunication.getUserPresences(20, this.dataSourcePresences.endCursor)
       .then(r => {
         this.dataSourcePresences.hasMoreRows = r.presences.pageInfo.hasNextPage;
         this.dataSourcePresences.endCursor = r.presences.pageInfo.endCursor;
