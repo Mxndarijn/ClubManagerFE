@@ -1,0 +1,42 @@
+<zxing-scanner [torch]="torchEnabled" [device]="deviceCurrent" (deviceChange)="onDeviceChange($event)" (scanSuccess)="onCodeResult($event)"
+               [formats]="formats" [tryHarder]="true" (permissionResponse)="onHasPermission($event)"
+               (camerasFound)="onCamerasFound($event)" (torchCompatible)="torchCompatible = $event" class="w-80 h-60 mx-auto">
+
+</zxing-scanner>
+
+<ng-container *ngIf="hasDevices === undefined">
+  No devices found
+</ng-container>
+<ng-container *ngIf="hasPermission === undefined">
+
+  <h2>Waiting for permissions.</h2>
+
+  <blockquote>
+    If your device does not has cameras, no permissions will be asked.
+  </blockquote>
+
+</ng-container>
+
+<ng-container *ngIf="hasPermission === false">
+
+  <h2>You denied the camera permission, we can't scan anything without it. 😪</h2>
+  <button (click)="requestPermission()">Opnieuw proberen</button>
+
+</ng-container>
+
+result
+{{result}}
+<app-search-box [value]="result" (SearchEvent)="search($event)">
+
+</app-search-box>
+
+<div *ngFor="let ua of resultList">
+  {{ua.user.fullName}}
+  <button class="btn btn-accent" (click)="openConfirm(ua)">Presentie melden</button>
+</div>
+<app-association-presence-create
+  [dataSource]="currentSelected"
+  (onClickEvent)="createPresence($event)">
+
+</app-association-presence-create>
+

@@ -32,6 +32,7 @@ export class GraphQLCommunication {
   associationWeaponMutations = 0;
   associationCompetitionMutations = 0;
   associationCompetitionQueries = 0;
+  associationUserPresenceMutations = 0;
 
   constructor(private http: HttpClient,
               private util: UtilityFunctions,
@@ -214,6 +215,7 @@ export class GraphQLCommunication {
   }
 
   public getAssociationMembers(associationID: string, first: number = 20, after?: string, search = ""): Promise<any> {
+    console.log(search)
     console.log("getting members")
     const query = {
       query: `
@@ -229,6 +231,7 @@ export class GraphQLCommunication {
                   id
                   fullName
                   email
+                  knsaMembershipNumber
                   image {
                     encoded
                   }
@@ -1909,6 +1912,77 @@ export class GraphQLCommunication {
       }
     }
     return this.solvePromise(query, v => v.data.authenticationMutations.refreshToken);
+
+  }
+
+  createUserPresence(associationID: string, userID: string, date: string) {
+    console.log(associationID)
+    const query = {
+      query: `mutation MyMutation($associationID: ID!, $userID: ID!, $date: LocalDateTime!) {
+  associationMutations {
+    associationUserPresenceMutations {
+      createUserPresence(dto: {userID: $userID, date: $date, associationID: $associationID}) {
+        message
+        success
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        userID: userID,
+        date: date
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationUserPresenceMutations.createUserPresence);
+  }
+
+  getUserPresences(first: number = 20, after?: string, search: string = "") {
+    const query = {
+      query: `query MyQuery($first: Int, $after: LocalDateTime, $search: String)  {
+  userQueries {
+    getMyProfile {
+      presences(after: $after, first: $first, search: $search) {
+        edges {
+          cursor
+          node {
+            user {
+              fullName
+              id
+            }
+            approvedBy {
+              fullName
+              id
+            }
+            createdDate
+            date
+            id
+            association {
+              name
+              image {
+                encoded
+                id
+              }
+            }
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        after: after,
+        first: first,
+        search: search
+      }
+    }
+    return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+
+
 
   }
 }

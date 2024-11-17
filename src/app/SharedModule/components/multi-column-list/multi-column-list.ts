@@ -42,7 +42,8 @@ export class MultiColumnList implements OnInit{
       return
     }
     this.searchValue = searchString
-    this.filteredItems = this.dataSource.dataRows.value.filter(item => this.dataSource.isInSearch!(item, searchString));
+    const tempValue = this.searchValue.toLowerCase()
+    this.filteredItems = this.dataSource.dataRows.value.filter(item => this.dataSource.isInSearch!(item, tempValue));
 
     if(searchForItems) {
       this.loadMoreRows()

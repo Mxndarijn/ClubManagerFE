@@ -226,6 +226,8 @@ export class UtilityFunctions {
     return new Date(startDate).getTime() > new Date().getTime();
 
   }
+
+
 }
 
 export enum Day {

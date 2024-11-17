@@ -1,0 +1,47 @@
+<app-tab [dataSource]="tabDataSource"></app-tab>
+
+<div *ngIf="activeTab === Tab.PRESENCES">
+
+  <app-multi-column-list
+    [dataSource]="dataSourcePresences">
+
+  </app-multi-column-list>
+
+</div>
+
+<div *ngIf="activeTab === Tab.INTRODUCES">
+
+</div>
+
+<ng-template #AssociationHeader>
+  Vereniging
+</ng-template>
+
+<ng-template #DateHeader>
+  Datum
+</ng-template>
+
+<ng-template #ApprovedUserHeader>
+  Aangemeld door
+</ng-template>
+
+<ng-template #AssociationRow let-userPresence="data">
+  <div class="flex items-center gap-3">
+    <div class="avatar">
+      <div class="mask mask-squircle w-12 h-12 rounded-full">
+        <img src="{{userPresence.association.image.encoded}}" alt="{{userPresence.association.name}}"/>
+      </div>
+    </div>
+    <div>
+      <div class="font-bold">{{ userPresence.association.name}}</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #DateRow let-userPresence="data">
+  <p>{{ formatDate(userPresence.date) | async }}</p>
+</ng-template>
+
+<ng-template #ApprovedUserRow let-userPresence="data">
+  <p>{{ userPresence.approvedBy.fullName}}</p>
+</ng-template>

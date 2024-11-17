@@ -37,6 +37,10 @@ import {
 import {
   viewAssociationReservationPageGuardGuard
 } from "./CoreModule/guards/view-association-reservation-page-guard/view-association-reservation-page-guard.guard";
+import {
+  AssociationPresenceComponent
+} from "./features/AssociationModule/pages/association-presence/association-presence.component";
+import {MyPresencesPageComponent} from "./features/UserModule/pages/my-presences-page/my-presences-page.component";
 
 export const routes: Routes = [
   {
@@ -108,6 +112,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard, viewAssociationReservationPageGuardGuard],
   },
   {
+    path: 'association/:associationID/presence',
+    component: AssociationPresenceComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'association/:associationID/competition',
     component: CompetitionPageComponent,
     canActivate: [AuthGuard, viewCompetitionPageGuardGuard],
@@ -134,6 +143,10 @@ export const routes: Routes = [
   {
     path: 'email-verification',
     component: EmailVerificationPageComponent,
+  },
+  {
+    path: 'my-presences',
+    component: MyPresencesPageComponent,
   },
 
 ];

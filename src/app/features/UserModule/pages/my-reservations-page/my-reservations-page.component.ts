@@ -61,14 +61,12 @@ export class MyReservationsPageComponent implements OnInit {
       {
         label: "Future",
         onClick : () => {
-          console.log("click fut")
           this.activeTab = Tab.FUTURE
         }
       },
       {
         label: "History",
         onClick : () => {
-          console.log("click his")
           this.activeTab = Tab.HISTORY
         }
       }

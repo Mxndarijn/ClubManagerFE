@@ -240,6 +240,7 @@ export class AssociationMembersPageComponent implements OnInit{
     },
     getID: datatableRow => datatableRow.user.id,
   };
+
   dataSourceInvites: MultiColumnListDataSource = {
     columns: [],
     dataRows: new BehaviorSubject<any[]>([]),
@@ -256,10 +257,10 @@ export class AssociationMembersPageComponent implements OnInit{
       return dataRow.id;
     },
     loadAdditionalRows: async () => {
-      return this.graphQLCommunication.getAssociationInvites(this.associationID, 20, this.dataSourceMembers.endCursor)
+      return this.graphQLCommunication.getAssociationInvites(this.associationID, 20, this.dataSourceInvites.endCursor)
         .then(r => {
-          this.dataSourceMembers.hasMoreRows = r.invites.pageInfo.hasNextPage;
-          this.dataSourceMembers.endCursor = r.invites.pageInfo.endCursor;
+          this.dataSourceInvites.hasMoreRows = r.invites.pageInfo.hasNextPage;
+          this.dataSourceInvites.endCursor = r.invites.pageInfo.endCursor;
           return r.invites.edges.map((edge: any) => edge.node);
         })
         .catch(error => {
@@ -268,11 +269,11 @@ export class AssociationMembersPageComponent implements OnInit{
         });
     },
     searchForAdditionalItems: async (search : string) => {
-      return this.graphQLCommunication.getAssociationInvites(this.associationID, 20, this.dataSourceMembers.searchEndCursor, search)
+      return this.graphQLCommunication.getAssociationInvites(this.associationID, 20, this.dataSourceInvites.searchEndCursor, search)
         .then(r => {
           console.log(r)
-          this.dataSourceMembers.searchHasMoreRows = r.invites.pageInfo.hasNextPage;
-          this.dataSourceMembers.searchEndCursor = r.invites.pageInfo.endCursor;
+          this.dataSourceInvites.searchHasMoreRows = r.invites.pageInfo.hasNextPage;
+          this.dataSourceInvites.searchEndCursor = r.invites.pageInfo.endCursor;
           return r.invites.edges.map((edge: any) => edge.node);
         })
         .catch(error => {

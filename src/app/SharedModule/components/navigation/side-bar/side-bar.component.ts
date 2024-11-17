@@ -30,6 +30,10 @@ const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
   {
     name: "Mijn reserveringen",
     link: "/myreservations"
+  },
+  {
+    name: "Mijn Presenties / Introducees",
+    link: "/my-presences"
   }
 ]
 
@@ -48,6 +52,11 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
     name: "Baan configuratie",
     link: "trackConfiguration",
     permission: AssociationPermission.MANAGE_TRACK_CONFIGURATION
+  },
+  {
+    name: "Presentie",
+    link: "presence",
+    permission: AssociationPermission.MANAGE_TRACK_CONFIGURATION // TODO CHANGE
   },
   {
     name: "Reserveren",

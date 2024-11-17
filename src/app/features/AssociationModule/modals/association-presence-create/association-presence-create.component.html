@@ -1,0 +1,27 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Presentie melden - {{dataSource?.user?.fullName}}</h3>
+    <p>Extra tekst?</p>
+    <app-date-time-selector class="w-3/6"
+                            [labelText]="'Startdatum'"
+                            [_formControl]="dateTimeFormControl.controls.date"
+                            [errorSettings]="[
+      {
+      errorMessage: 'Je moet geldige datum instellen.',
+      errorName: ''
+      }]"
+    >
+    </app-date-time-selector>
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between">
+        <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
+        >Sluit
+        </button>
+        <button class="btn border-accent border-2 bg-base-100" (click)="onClick()" [disabled]="!dateTimeFormControl.valid"
+        >Bevestig
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>

@@ -22,7 +22,7 @@ import {TranslateModule} from "@ngx-translate/core";
 export class SearchBoxComponent {
   @Input()
   placeholder: string = "";
-  value: string = "";
+  @Input() value: string = "";
   faXMark = faXmark;
   faMagnifyingGlass = faMagnifyingGlass;
 
