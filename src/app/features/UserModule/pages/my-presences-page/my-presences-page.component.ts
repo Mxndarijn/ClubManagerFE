@@ -88,9 +88,8 @@ export class MyPresencesPageComponent implements OnInit {
       }
     )
 
-    this.graphQLCommunication.getUserPresences(20, this.dataSourcePresences.endCursor)
+    this.graphQLCommunication.getUserPresences(2, this.dataSourcePresences.endCursor)
       .then(r => {
-        console.log(r)
         this.dataSourcePresences.hasMoreRows = r.presences.pageInfo.hasNextPage;
         this.dataSourcePresences.endCursor = r.presences.pageInfo.endCursor;
         this.dataSourcePresences.isDataLoading = false
@@ -150,7 +149,6 @@ export class MyPresencesPageComponent implements OnInit {
     loadAdditionalRows: async () => {
       return this.graphQLCommunication.getUserPresences(20, this.dataSourcePresences.endCursor)
         .then(r => {
-          console.log(r)
           this.dataSourcePresences.hasMoreRows = r.presences.pageInfo.hasNextPage;
           this.dataSourcePresences.endCursor = r.presences.pageInfo.endCursor;
           return r.presences.edges.map((edge: any) => edge.node);
@@ -163,7 +161,6 @@ export class MyPresencesPageComponent implements OnInit {
     searchForAdditionalItems: async (search : string) => {
       return this.graphQLCommunication.getUserPresences(20, this.dataSourcePresences.searchEndCursor, search)
         .then(r => {
-          console.log(r)
           this.dataSourcePresences.searchHasMoreRows = r.presences.pageInfo.hasNextPage;
           this.dataSourcePresences.searchEndCursor = r.presences.pageInfo.endCursor;
           return r.presences.edges.map((edge: any) => edge.node);
