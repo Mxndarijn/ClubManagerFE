@@ -1924,6 +1924,22 @@ export class GraphQLCommunication {
       createUserPresence(dto: {userID: $userID, date: $date, associationID: $associationID}) {
         message
         success
+        userPresence {
+        createdDate
+            date
+            id
+            user {
+              fullName
+              id
+              image {
+                encoded
+              }
+            }
+            approvedBy {
+              fullName
+              id
+            }
+            }
       }
     }
   }
