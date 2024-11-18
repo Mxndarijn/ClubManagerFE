@@ -1,48 +1,69 @@
 <app-my-reservation-detail-modal (UpdateReservationUsers)="refreshData()" [SetCurrentReservationUser]="SetCurrentReservationUser" ></app-my-reservation-detail-modal>
   <app-tab [dataSource]="tabDataSource"></app-tab>
 <div *ngIf="activeTab === Tab.FUTURE" class="w-full">
-  <div class="overflow-x-auto">
-<!--    <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box> #TODO Maybe add a date filter?-->
-    <table class="table">
-      <thead>
-      <tr>
-        <th>Titel</th>
-        <th>Vereniging</th>
-        <th>Tijd</th>
-        <th>Baan</th>
-        <th>Positie</th>
-        <th> </th>
-      </tr>
-      </thead>
-      <tbody>
-      <td *ngIf="futureReservationsUsers.length === 0" colspan="4" class="text-center text-md">Geen aankomende aangemellde reservations PS. Dit nog aanpassen text
-      </td>
-      <tr *ngFor="let reservationUser of futureReservationsUsers" class="items-center">
-        <td>
-          <p> {{ reservationUser.reservation.title }}</p>
-        </td>
-        <td>
-          <p>{{ reservationUser.reservation.association?.name }}</p>
-        </td>
-        <td>
-          <p>Begint op {{this.util.formatDateTimeAsString(reservationUser.reservation.startDate) | async}} - Eindigt op {{this.util.formatDateTimeAsString(reservationUser.reservation.endDate) | async}}</p>
-        </td>
-        <td>
-          <p *ngFor="let track of reservationUser.reservation.tracks">{{ track.name}}</p>
-        </td>
-        <td>
-          <p *ngIf="reservationUser.reservation.membersCanChooseTheirOwnPosition">{{ reservationUser.position + 1 }}</p>
-          <p *ngIf="!reservationUser.reservation.membersCanChooseTheirOwnPosition">Geen</p>
-        </td>
-        <td>
-          <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="viewMoreInformation(reservationUser)">Info
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+<!--  <div class="overflow-x-auto">-->
+<!--&lt;!&ndash;    <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box> #TODO Maybe add a date filter?&ndash;&gt;-->
+<!--    <table class="table">-->
+<!--      <thead>-->
+<!--      <tr>-->
+<!--        <th>Titel</th>-->
+<!--        <th>Vereniging</th>-->
+<!--        <th>Tijd</th>-->
+<!--        <th>Baan</th>-->
+<!--        <th>Positie</th>-->
+<!--        <th> </th>-->
+<!--      </tr>-->
+<!--      </thead>-->
+<!--      <tbody>-->
+<!--      <td *ngIf="futureReservationsUsers.length === 0" colspan="4" class="text-center text-md">Geen aankomende aangemellde reservations PS. Dit nog aanpassen text-->
+<!--      </td>-->
+<!--      <tr *ngFor="let reservationUser of futureReservationsUsers" class="items-center">-->
+<!--        <td>-->
+<!--          <p> {{ reservationUser.reservation.title }}</p>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--          <p>{{ reservationUser.reservation.association?.name }}</p>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--          <p>Begint op {{this.util.formatDateTimeAsString(reservationUser.reservation.startDate) | async}} - Eindigt op {{this.util.formatDateTimeAsString(reservationUser.reservation.endDate) | async}}</p>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--          <p *ngFor="let track of reservationUser.reservation.tracks">{{ track.name}}</p>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--          <p *ngIf="reservationUser.reservation.membersCanChooseTheirOwnPosition">{{ reservationUser.position + 1 }}</p>-->
+<!--          <p *ngIf="!reservationUser.reservation.membersCanChooseTheirOwnPosition">Geen</p>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--          <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="viewMoreInformation(reservationUser)">Info-->
+<!--          </button>-->
+<!--        </td>-->
+<!--      </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
+<!--  </div>-->
+  <app-multi-column-list [dataSource]="dataSourcePlannedReservations"></app-multi-column-list>
 </div>
+<!--Headers-->
+<ng-template #MyReservationsTitleHeaderTemplate>
+  Titel
+</ng-template>
+<ng-template #MyReservationsAssociationHeaderTemplate>
+  Vereniging
+</ng-template>
+<ng-template #MyReservationsTimeHeaderTemplate>
+  Tijd
+</ng-template>
+<ng-template #MyReservationsDurationHeaderTemplate>
+  Duur
+</ng-template>
+<ng-template #MyReservationsTrackHeaderTemplate>
+  Baan
+</ng-template>
+<ng-template #MyReservationsPositionHeaderTemplate>
+  Positie
+</ng-template>
+
 <div *ngIf="activeTab === Tab.HISTORY" class="w-full">
   <div class="overflow-x-auto">
     <!--    <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box> #TODO Maybe add a date filter?-->

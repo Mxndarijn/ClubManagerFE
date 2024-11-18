@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
@@ -22,6 +22,12 @@ import {
 } from "../../modals/my-reservation-detail-modal/my-reservation-detail-modal.component";
 import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
 import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
+import {
+  MultiColumnListDataSource
+} from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
+import {BehaviorSubject} from "rxjs";
+import {AssociationInvite} from "../../../../CoreModule/models/association-invite";
+import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
 
 
 enum Tab {
@@ -43,7 +49,8 @@ enum Tab {
     SearchBoxComponent,
     UpdateUserModalComponent,
     MyReservationDetailModalComponent,
-    TabComponent
+    TabComponent,
+    MultiColumnList
   ],
   templateUrl: './my-reservations-page.component.html',
   styleUrl: './my-reservations-page.component.css'
@@ -55,17 +62,25 @@ export class MyReservationsPageComponent implements OnInit {
   protected historyReservationsUsers : ReservationUser[] = []
 
 
+  @ViewChild('MyReservationsTitleHeaderTemplate', { static: true }) myReservationsTitleHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('MyReservationsAssociationHeaderTemplate', {static: true}) myReservationsAssociationHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('MyReservationsTimeHeaderTemplate', {static: true}) myReservationsTimeHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('MyReservationsDurationHeaderTemplate', {static: true}) myReservationsDurationHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('MyReservationsTrackHeaderTemplate', {static: true}) myReservationsTrackHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('MyReservationsPositionHeaderTemplate', {static: true}) myReservationsPositionHeaderTemplate!: TemplateRef<any>;
+
+
   tabDataSource: TabDataSource = {
     defaultActive: 0,
     items: [
       {
-        label: "Future",
+        label: "Geplanned",
         onClick : () => {
           this.activeTab = Tab.FUTURE
         }
       },
       {
-        label: "History",
+        label: "Geschiedenis",
         onClick : () => {
           this.activeTab = Tab.HISTORY
         }
@@ -74,7 +89,7 @@ export class MyReservationsPageComponent implements OnInit {
   };
 
   constructor(
-    private graphQL: GraphQLCommunication,
+    private graphQLCommunication: GraphQLCommunication,
     protected util: UtilityFunctions,
     private alertService : AlertService,
     private navigationService : NavigationService,
@@ -86,16 +101,28 @@ export class MyReservationsPageComponent implements OnInit {
         navigationService.setTitle(res);
       }
     )
-
   }
+  dataSourcePlannedReservations: MultiColumnListDataSource = {
+    columns: [],
+    dataRows: new BehaviorSubject<any[]>([]),
+    hasMoreRows: false,
+    initialRowCount: 0,
+    isDataLoading: true,
+    canSearch: true,
+    emptyMessage: "LEEG",
+    searchPlaceholder: "Zoek reserveringen",
+    isInSearch: (dataRow : ReservationUser, searchValue : string) => {
+      return dataRow.reservation.title.toLowerCase().includes(searchValue);
+    },
+    getID: (dataRow: ReservationUser) => {
+      return dataRow.id.reservationId;
+    },
+  };
 
   ngOnInit(): void {
 
     this.refreshData()
   }
-
-
-
 
   protected readonly Modal = Modal;
   protected readonly faTrashCan = faTrashCan;
@@ -108,7 +135,7 @@ export class MyReservationsPageComponent implements OnInit {
 
   protected refreshData() {
     const startDate = this.util.toLocalIsoDateTime(new Date());
-    this.graphQL.getMyReservations(startDate, "").then(response => {
+    this.graphQLCommunication.getMyReservations(startDate, "").then(response => {
       if(response == null) {
         this.alertService.showAlert({
           title: "Fout opgetreden",
@@ -123,7 +150,7 @@ export class MyReservationsPageComponent implements OnInit {
         return new Date(a.reservation.startDate).getTime() - new Date(b.reservation.startDate).getTime();
       });
     })
-    this.graphQL.getMyReservations("", startDate).then(response => {
+    this.graphQLCommunication.getMyReservations("", startDate).then(response => {
       if(response == null) {
         this.alertService.showAlert({
           title: "Fout opgetreden",

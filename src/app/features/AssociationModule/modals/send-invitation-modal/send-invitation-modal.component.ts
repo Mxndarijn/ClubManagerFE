@@ -50,9 +50,10 @@ import {
 export class SendInvitationModalComponent {
   showModal: boolean = false;
   @Input() selectedRole: string = "User";
+  // roleFormControl: FormControl;
   @Input() associationName: string = "";
   userRoles: AssociationRole[] = [];
-  emailFormControl: FormControl
+  emailFormControl: FormControl;
   private associationID: string;
   @Output()
   public NewAssociationInviteEvent = new EventEmitter<AssociationInvite>();
@@ -68,6 +69,7 @@ export class SendInvitationModalComponent {
   ) {
     this.associationID = route.snapshot.params['associationID'];
     this.emailFormControl = new FormControl<string>('', [Validators.email]);
+    // this.roleFormControl = new FormControl<AssociationRole>()
 
     this.modalService.modalVisibilityEvent.subscribe({
       next: (modalChange: ModalChange) => {

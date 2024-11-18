@@ -1,7 +1,7 @@
 <div class="w-full mb-10 flex justify-center">
   <div class="inline-flex rounded-lg  p-2 bg-base-100 shadow-3xl">
     <div role="tablist" class="tabs flex">
-      <div *ngFor="let item of dataSource.items" role="tab" class="tab px-4 w-36 py-2 border-b-2"
+      <div *ngFor="let item of dataSource.items" role="tab" class="tab px-4 min-w-36 py-2 border-b-2"
            [ngClass]="{
              'text-accent': currentActive === item,
              'border-base-content': currentActive !== item,
