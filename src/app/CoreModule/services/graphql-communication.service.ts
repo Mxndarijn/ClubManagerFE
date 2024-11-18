@@ -1985,4 +1985,74 @@ export class GraphQLCommunication {
 
 
   }
+
+  getAssociationPresences(associationID: string, first: number = 20, after?: string, search: string = "") {
+    const query = {
+      query: `query MyQuery($associationID: ID!, $first: Int, $after: LocalDateTime, $search: String)  {
+  associationQueries {
+    getAssociationDetails(associationID: $associationID) {
+      presences(after: $after, first: $first, search: $search) {
+        edges {
+          cursor
+          node {
+            createdDate
+            date
+            id
+            user {
+              fullName
+              id
+              image {
+                encoded
+              }
+            }
+            approvedBy {
+              fullName
+              id
+            }
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        after: after,
+        first: first,
+        search: search
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
+
+
+
+  }
+
+  deleteUserPresence(associationID: string, id: string) {
+    const query = {
+      query: `mutation MyMutation($dto: DeleteUserPresenceDTO!)  {
+  associationMutations {
+    associationUserPresenceMutations {
+      deleteUserPresence(dto: $dto) {
+        message
+        success
+      }
+    }
+  }
+}`,
+      variables: {
+        dto: {
+          associationID: associationID,
+          userPresenceID: id
+
+
+        }
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationUserPresenceMutations.deleteUserPresence);
+  }
 }
