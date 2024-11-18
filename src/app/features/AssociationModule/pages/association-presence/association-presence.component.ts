@@ -125,7 +125,10 @@ export class AssociationPresenceComponent implements OnInit{
 
     this.graphQLService.getAssociationPresences(this.associationID, 20, this.dataSourcePresences.endCursor)
       .then(r => {
-        console.log(r)
+        if(r === null) {
+          console.error("Could not load Association presences.")
+          return;
+        }
         this.dataSourcePresences.hasMoreRows = r.presences.pageInfo.hasNextPage;
         this.dataSourcePresences.endCursor = r.presences.pageInfo.endCursor;
         this.dataSourcePresences.isDataLoading = false
@@ -313,7 +316,6 @@ export class AssociationPresenceComponent implements OnInit{
     if(this.selectedPresence) {
       this.modalService.hideModal(Modal.ASSOCIATION_PRESENCE_CONFIRMATION_DELETE)
       this.graphQLService.deleteUserPresence(this.associationID, this.selectedPresence.id).then((r: DefaultBooleanResponseDTO)=> {
-        console.log(r)
         if(r.success) {
           this.dataSourcePresences.dataRows.next(this.dataSourcePresences.dataRows.getValue().filter(row => row.id !== this.selectedPresence!.id));
           this.selectedPresence = undefined;
