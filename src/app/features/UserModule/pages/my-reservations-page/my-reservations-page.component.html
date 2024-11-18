@@ -1,49 +1,13 @@
-<app-my-reservation-detail-modal (UpdateReservationUsers)="refreshData()" [SetCurrentReservationUser]="SetCurrentReservationUser" ></app-my-reservation-detail-modal>
   <app-tab [dataSource]="tabDataSource"></app-tab>
 <div *ngIf="activeTab === Tab.FUTURE" class="w-full">
-<!--  <div class="overflow-x-auto">-->
-<!--&lt;!&ndash;    <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box> #TODO Maybe add a date filter?&ndash;&gt;-->
-<!--    <table class="table">-->
-<!--      <thead>-->
-<!--      <tr>-->
-<!--        <th>Titel</th>-->
-<!--        <th>Vereniging</th>-->
-<!--        <th>Tijd</th>-->
-<!--        <th>Baan</th>-->
-<!--        <th>Positie</th>-->
-<!--        <th> </th>-->
-<!--      </tr>-->
-<!--      </thead>-->
-<!--      <tbody>-->
-<!--      <td *ngIf="futureReservationsUsers.length === 0" colspan="4" class="text-center text-md">Geen aankomende aangemellde reservations PS. Dit nog aanpassen text-->
-<!--      </td>-->
-<!--      <tr *ngFor="let reservationUser of futureReservationsUsers" class="items-center">-->
-<!--        <td>-->
-<!--          <p> {{ reservationUser.reservation.title }}</p>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <p>{{ reservationUser.reservation.association?.name }}</p>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <p>Begint op {{this.util.formatDateTimeAsString(reservationUser.reservation.startDate) | async}} - Eindigt op {{this.util.formatDateTimeAsString(reservationUser.reservation.endDate) | async}}</p>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <p *ngFor="let track of reservationUser.reservation.tracks">{{ track.name}}</p>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <p *ngIf="reservationUser.reservation.membersCanChooseTheirOwnPosition">{{ reservationUser.position + 1 }}</p>-->
-<!--          <p *ngIf="!reservationUser.reservation.membersCanChooseTheirOwnPosition">Geen</p>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="viewMoreInformation(reservationUser)">Info-->
-<!--          </button>-->
-<!--        </td>-->
-<!--      </tr>-->
-<!--      </tbody>-->
-<!--    </table>-->
-<!--  </div>-->
   <app-multi-column-list [dataSource]="dataSourcePlannedReservations"></app-multi-column-list>
 </div>
+
+
+<div *ngIf="activeTab === Tab.HISTORY" class="w-full">
+  <app-multi-column-list [dataSource]="dataSourceHistoryReservations"></app-multi-column-list>
+</div>
+
 <!--Headers-->
 <ng-template #MyReservationsTitleHeaderTemplate>
   Titel
@@ -64,46 +28,45 @@
   Positie
 </ng-template>
 
-<div *ngIf="activeTab === Tab.HISTORY" class="w-full">
-  <div class="overflow-x-auto">
-    <!--    <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box> #TODO Maybe add a date filter?-->
-    <table class="table">
-      <thead>
-      <tr>
-        <th>Titel</th>
-        <th>Vereniging</th>
-        <th>Tijd</th>
-        <th>Baan</th>
-        <th>Positie</th>
-        <th> </th>
-      </tr>
-      </thead>
-      <tbody>
-      <td *ngIf="historyReservationsUsers.length === 0" colspan="4" class="text-center text-md">Geen aankomende aangemellde reservations PS. Dit nog aanpassen text
-      </td>
-      <tr *ngFor="let reservationUser of historyReservationsUsers" class="items-center">
-        <td>
-          <p> {{ reservationUser.reservation.title }}</p>
-        </td>
-        <td>
-          <p>{{ reservationUser.reservation.association?.name }}</p>
-        </td>
-        <td>
-          <p>Begint op {{this.util.formatDateTimeAsString(reservationUser.reservation.startDate) | async}} - Eindigt op {{this.util.formatDateTimeAsString(reservationUser.reservation.endDate) | async}}</p>
-        </td>
-        <td>
-          <p *ngFor="let track of reservationUser.reservation.tracks">{{ track.name}}</p>
-        </td>
-        <td>
-          <p *ngIf="reservationUser.reservation.membersCanChooseTheirOwnPosition">{{ reservationUser.position }}</p>
-          <p *ngIf="!reservationUser.reservation.membersCanChooseTheirOwnPosition">Geen</p>
-        </td>
-        <td>
-          <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="viewMoreInformation(reservationUser)">Info
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+<ng-template #actionsTemplate>
+</ng-template>
+
+<!--Rows-->
+<ng-template #MyReservationsTitleRowTemplate let-reservationUser="data">
+  <p> {{ reservationUser.reservation.title }}</p>
+</ng-template>
+
+<ng-template #MyReservationsAssociationRowTemplate let-reservationUser="data" >
+  <p>{{ reservationUser.reservation.association?.name }}</p>
+</ng-template>
+
+<ng-template #MyReservationsTimeRowTemplate let-reservationUser="data" >
+  <p>{{this.util.formatDateTimeAsString(reservationUser.reservation.startDate) | async}}</p>
+</ng-template>
+
+<ng-template #MyReservationsDurationRowTemplate let-reservationUser="data" >
+  <p>{{this.util.calculateDuration(reservationUser.reservation.startDate, reservationUser.reservation.endDate)}}</p>
+</ng-template>
+
+<ng-template #MyReservationsTrackRowTemplate let-reservationUser="data" >
+  <p *ngFor="let track of reservationUser.reservation.tracks">{{ track.name}}</p>
+</ng-template>
+
+<ng-template #MyReservationsPositionRowTemplate let-reservationUser="data" >
+  <p *ngIf="reservationUser.reservation.membersCanChooseTheirOwnPosition">{{ reservationUser.position + 1 }}</p>
+  <p *ngIf="!reservationUser.reservation.membersCanChooseTheirOwnPosition">Geen</p>
+</ng-template>
+
+<ng-template #actionsRowTemplate let-reservationUser="data">
+  <app-custom-button
+    [buttonClass]="ButtonClass.ACCENT_CLASS"
+    [buttonSize]="ButtonSize.BTN_SM"
+    [labelText]="'Info'"
+    [icon]="faInfoCircle"
+    [disabledStatus]="false"
+    (onClick)="viewMoreInformation(reservationUser)"
+  ></app-custom-button>
+</ng-template>
+
+  <app-my-reservation-detail-modal (UpdateReservationUsers)="refreshData()" [SetCurrentReservationUser]="SetCurrentReservationUser" ></app-my-reservation-detail-modal>
+
