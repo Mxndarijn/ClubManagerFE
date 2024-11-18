@@ -38,6 +38,8 @@ export interface MultiColumnListDataSource {
   emptyMessage: string;
 
   getID : (dataRow: any) => string;
+
+  headerRow?: TemplateRef<any>;
 }
 
 // Interface representing a configuration for an individual column in the table

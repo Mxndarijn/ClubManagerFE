@@ -1,5 +1,9 @@
-<app-search-box *ngIf="dataSource.canSearch" [placeholder]="dataSource.searchPlaceholder! | translate" (SearchEvent)="search($event)">
-</app-search-box>
+
+<div>
+  <ng-container *ngIf="dataSource.headerRow" [ngTemplateOutlet]="dataSource.headerRow"></ng-container>
+  <app-search-box *ngIf="dataSource.canSearch" [placeholder]="dataSource.searchPlaceholder! | translate" (SearchEvent)="search($event)">
+  </app-search-box>
+</div>
 
 <table class="table overflow-y-hidden">
   <thead>
