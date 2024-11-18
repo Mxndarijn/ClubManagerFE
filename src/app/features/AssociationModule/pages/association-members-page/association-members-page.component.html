@@ -1,24 +1,11 @@
 <app-tab [dataSource]="tabDataSource"></app-tab>
 <div *ngIf="activeTab === Tab.MEMBERS" class="w-full">
-<!--  <div class="overflow-x-auto">-->
     <app-multi-column-list [dataSource]="dataSourceMembers"></app-multi-column-list>
 </div>
 <div  *ngIf="activeTab === Tab.INVITATIONS">
-  <!-- Content for Uitnodigingen tab -->
-  <div class="w-full flex justify-end">
-    <app-custom-button class="mr-10"
-    [buttonClass]="ButtonClass.ACCENT_CLASS"
-    [buttonSize]="ButtonSize.BTN_MD"
-    [labelText]="'associationMembers.tableInvitations.sendMessageButton'"
-    [icon]="faEnvelope"
-    [disabledStatus]="false"
-    (onClick)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);"
-    ></app-custom-button>
-
-    <app-send-invitation-modal [associationName]="associationName"
-                               (NewAssociationInviteEvent)="newAssociationInviteEvent($event)"></app-send-invitation-modal>
-  </div>
     <app-multi-column-list [dataSource]="dataSourceInvites"></app-multi-column-list>
+  <app-send-invitation-modal [associationName]="associationName"
+                             (NewAssociationInviteEvent)="newAssociationInviteEvent($event)"></app-send-invitation-modal>
 </div>
 
 <app-confirmation-modal
@@ -40,6 +27,18 @@
   (AcceptEvent)="deleteInvite()"
   (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_DELETE_INVITE)"
 ></app-confirmation-modal>
+
+<ng-template #topHeaderRowInvitations>
+  <app-custom-button class="mr-10"
+                     [buttonClass]="ButtonClass.ACCENT_CLASS"
+                     [buttonSize]="ButtonSize.BTN_MD"
+                     [labelText]="'associationMembers.tableInvitations.sendMessageButton'"
+                     [icon]="faEnvelope"
+                     [disabledStatus]="false"
+                     (onClick)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);"
+  ></app-custom-button>
+</ng-template>
+
 
 <ng-template #memberHeaderTemplate>
   {{ 'associationMembers.tableMember.memberHeader' | translate }}

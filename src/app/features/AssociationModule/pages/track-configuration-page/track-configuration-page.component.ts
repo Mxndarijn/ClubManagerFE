@@ -1,6 +1,6 @@
 import {Component, EventEmitter} from '@angular/core';
 import {NgForOf, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
+import {faEnvelope, faTrashCan, faPencil} from "@fortawesome/free-solid-svg-icons";
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {CreateTrackModalComponent} from "../../modals/create-track-modal/create-track-modal.component";
@@ -35,6 +35,18 @@ import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/defau
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {GetReservationsDTO} from "../../../../CoreModule/models/dto/get-reservations-between-dto";
 import {Association} from "../../../../CoreModule/models/association.model";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+
+enum Tab {
+  TRACKS,
+  CALENDAR
+}
 
 @Component({
   selector: 'app-track-configuration-page',
@@ -50,13 +62,15 @@ import {Association} from "../../../../CoreModule/models/association.model";
     ConfirmationModalComponent,
     CalenderViewComponent,
     CreateTrackReservationModalComponent,
-    ViewTrackReservationModalComponent
+    ViewTrackReservationModalComponent,
+    TabComponent,
+    CustomButton
   ],
   templateUrl: './track-configuration-page.component.html',
   styleUrl: './track-configuration-page.component.css'
 })
 export class TrackConfigurationPageComponent {
-  protected activeTab = Tab.TRACKS
+  activeTab = Tab.TRACKS
   protected readonly Tab = Tab;
   protected readonly getWeaponStatus = getWeaponStatus;
   protected readonly Modal = Modal;
@@ -112,6 +126,26 @@ export class TrackConfigurationPageComponent {
     //TODO other subscriptions
 
   }
+
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "Banen",
+        onClick : () => {
+          console.log("click tra")
+          this.activeTab = Tab.TRACKS
+        }
+      },
+      {
+        label: "Kalender",
+        onClick : () => {
+          console.log("click cal")
+          this.activeTab = Tab.CALENDAR
+        }
+      }
+    ]
+  };
 
   trackCreated(track: Track) {
     this.tracks.push(track);
@@ -238,9 +272,10 @@ export class TrackConfigurationPageComponent {
     if(this.lastUsedDate)
       this.updateEvents(this.lastUsedDate)
   }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly faPencil = faPencil;
 }
 
-enum Tab {
-  TRACKS = 0,
-  CALENDAR = 1
-}
+

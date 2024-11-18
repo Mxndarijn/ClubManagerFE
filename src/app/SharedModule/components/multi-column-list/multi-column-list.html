@@ -1,8 +1,8 @@
 
-<div>
-  <ng-container *ngIf="dataSource.headerRow" [ngTemplateOutlet]="dataSource.headerRow"></ng-container>
+<div class="flex flex-row items-center justify-end">
   <app-search-box *ngIf="dataSource.canSearch" [placeholder]="dataSource.searchPlaceholder! | translate" (SearchEvent)="search($event)">
   </app-search-box>
+  <ng-container  *ngIf="dataSource.headerRow" [ngTemplateOutlet]="dataSource.headerRow"></ng-container>
 </div>
 
 <table class="table overflow-y-hidden">

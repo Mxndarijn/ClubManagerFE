@@ -81,6 +81,8 @@ export class AssociationMembersPageComponent implements OnInit{
   faPencil = faPencil;
   faEnvelope= faEnvelope
 
+  @ViewChild('topHeaderRowInvitations', { static: true }) topHeaderRowInvitations!: TemplateRef<any>;
+
   @ViewChild('memberHeaderTemplate', { static: true }) memberHeaderTemplate!: TemplateRef<any>;
   @ViewChild('roleHeaderTemplate', {static: true}) roleHeaderTemplate!: TemplateRef<any>;
   @ViewChild('memberSinceHeader', {static: true}) memberSinceHeader!: TemplateRef<any>;
@@ -315,6 +317,7 @@ export class AssociationMembersPageComponent implements OnInit{
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
   }
   ngOnInit(): void {
+    this.dataSourceInvites.headerRow = this.topHeaderRowInvitations;
     this.dataSourceMembers.columns= [
       {
         sortType: ColumnSortType.ALPHABETICAL,
