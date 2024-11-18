@@ -19,6 +19,8 @@ import {
 } from "../../modals/enroll-at-reservation-modal/enroll-at-reservation-modal.component";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {Association} from "../../../../CoreModule/models/association.model";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
 
 @Component({
   selector: 'app-reservation-page',
@@ -28,7 +30,8 @@ import {Association} from "../../../../CoreModule/models/association.model";
     CalenderViewComponent,
     NgSwitchCase,
     NgSwitch,
-    EnrollAtReservationModalComponent
+    EnrollAtReservationModalComponent,
+    TabComponent
   ],
   templateUrl: './reservation-page.component.html',
   styleUrl: './reservation-page.component.css'
@@ -109,6 +112,23 @@ export class ReservationPageComponent {
 
   protected readonly CalendarEventRegisterReservationComponent = CalendarEventRegisterReservationComponent;
   SetCurrentReservation = new EventEmitter<Reservation>;
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "Baan",
+        onClick : () => {
+          this.activeTab = Tab.RESERVATIONS
+        }
+      },
+      {
+        label: "Wapen",
+        onClick : () => {
+          this.activeTab = Tab.WEAPONS
+        }
+      }
+    ]
+  };
 }
 
 enum Tab {

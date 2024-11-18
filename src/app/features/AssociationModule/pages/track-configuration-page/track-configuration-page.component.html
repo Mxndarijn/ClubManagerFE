@@ -2,72 +2,7 @@
 
 <ng-container [ngSwitch]="activeTab">
   <div *ngSwitchCase="Tab.TRACKS">
-    <div class="w-full flex justify-end">
-<!--      <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="openModal(generateNewTrack())">-->
-<!--        Voeg baan toe-->
-<!--      </button>-->
-      <app-custom-button class="mr-10"
-                         [buttonClass]="ButtonClass.ACCENT_CLASS"
-                         [buttonSize]="ButtonSize.BTN_MD"
-                         [labelText]="'Voeg baan toe'"
-                         [disabledStatus]="false"
-                         (onClick)="openModal(generateNewTrack());"
-      ></app-custom-button>
-    </div>
-    <app-create-track-modal (TrackCreatedEvent)="trackCreated($event)" (TrackDeleteEvent)="trackDeleted($event)"
-                            (TrackEditedEvent)="trackEdited($event)"
-                            [SetCurrentTrack]="SetCurrentTrack"></app-create-track-modal>
-    <div class="overflow-x-auto">
-      <table class="table">
-        <thead>
-        <tr class="">
-          <th>Baan naam</th>
-          <th>Omschrijving</th>
-          <th>Toegestane wapentypes</th>
-        </tr>
-        </thead>
-        <!--          <td *ngIf="weaponList.length === 0"  colspan="4" class="text-center text-md"> Geen wapens gevonden</td>-->
-        <tbody>
-        <tr class="items-center h-16" *ngFor="let track of tracks">
-          <td>
-            <p>{{ track.name }}</p>
-          </td>
-          <td>
-            <p>{{ track.description }}</p>
-          </td>
-          <td>
-            <div class="flex flex-row max-w-36 items-center flex-wrap">
-              <ng-container *ngFor="let value of track.allowedWeaponTypes; let last = last">
-                <p>{{ value.name }}{{ !last ? ', &nbsp;' : '' }}</p>
-              </ng-container>
-            </div>
-          </td>
-          <td>
-            <app-custom-button class="mr-10"
-                               [buttonClass]="ButtonClass.WARNING_CLASS"
-                               [buttonSize]="ButtonSize.BTN_SM"
-                               [labelText]="'Wijzig'"
-                               [icon]="faPencil"
-                               [disabledStatus]="false"
-                               (onClick)="openModal(track);"
-            ></app-custom-button>
-            <app-custom-button class=""
-                               [buttonClass]="ButtonClass.ERROR_CLASS"
-                               [buttonSize]="ButtonSize.BTN_SM"
-                               [labelText]="'Verwijder'"
-                               [icon]="faTrashCan"
-                               [disabledStatus]="false"
-                               (onClick)="startDeleteTrack(track);"
-            ></app-custom-button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-    <app-confirmation-modal header="Verwijder baan" acceptButtonText="Verwijder" rejectButtonText="Behoud"
-                            [message]="confirmModalMessage" (AcceptEvent)="deleteTrack()"
-                            (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE)"
-                            [modalTag]="Modal.ASSOCIATION_CONFIGURE_TRACK_CONFIRM_DELETE"></app-confirmation-modal>
+    <app-multi-column-list [dataSource]="dataSourceTrack"></app-multi-column-list>
   </div>
   <div *ngSwitchCase="Tab.CALENDAR">
     <app-calender (RequestNewCalendarItemsEvent)="updateEvents($event)"
@@ -80,4 +15,71 @@
     <app-view-track-reservation-modal [SetSelectedItem]="SetSelectedItemForView"  [SetEditingReservation]="SetCurrentReservation" (RefreshEvents)="refreshEvents()"></app-view-track-reservation-modal>
   </div>
 </ng-container>
+
+<app-create-track-modal (TrackCreatedEvent)="trackCreated($event)" (TrackDeleteEvent)="trackDeleted($event)"
+                        (TrackEditedEvent)="trackEdited($event)"
+                        [SetCurrentTrack]="SetCurrentTrack">
+
+</app-create-track-modal>
+
+<ng-template #TrackHeaderRow>
+  <app-custom-button class="mr-10"
+                     [buttonClass]="ButtonClass.ACCENT_CLASS"
+                     [buttonSize]="ButtonSize.BTN_MD"
+                     [labelText]="'Voeg baan toe'"
+                     [disabledStatus]="false"
+                     (onClick)="openModal(generateNewTrack());"
+  ></app-custom-button>
+</ng-template>
+
+<!--Headers-->
+<ng-template #TrackNameHeader>
+  Baan
+</ng-template>
+
+<ng-template #DescriptionHeader>
+  Omschrijving
+</ng-template>
+
+<ng-template #AllowedWeaponTypesHeader>
+  Toegestane wapentypes
+</ng-template>
+<ng-template #ActionsHeader>
+
+</ng-template>
+
+<!--Rows-->
+<ng-template #TrackNameRow let-track="data">
+  <p>{{ track.name }}</p>
+</ng-template>
+
+<ng-template #TrackDescriptionRow let-track="data">
+  <p>{{ track.description }}</p>
+</ng-template>
+
+<ng-template #TrackWeaponTypesRow let-track="data">
+  <div class="flex flex-row max-w-36 items-center flex-wrap">
+    <ng-container *ngFor="let value of track.allowedWeaponTypes; let last = last">
+      <p>{{ value.name }}{{ !last ? ', &nbsp;' : '' }}</p>
+    </ng-container>
+  </div>
+</ng-template>
+<ng-template #TrackActionsRow let-track="data">
+  <app-custom-button class="mr-10"
+                     [buttonClass]="ButtonClass.WARNING_CLASS"
+                     [buttonSize]="ButtonSize.BTN_SM"
+                     [labelText]="'Wijzig'"
+                     [icon]="faPencil"
+                     [disabledStatus]="false"
+                     (onClick)="openModal(track);"
+  ></app-custom-button>
+  <app-custom-button class=""
+                     [buttonClass]="ButtonClass.ERROR_CLASS"
+                     [buttonSize]="ButtonSize.BTN_SM"
+                     [labelText]="'Verwijder'"
+                     [icon]="faTrashCan"
+                     [disabledStatus]="false"
+                     (onClick)="startDeleteTrack(track);"
+  ></app-custom-button>
+</ng-template>
 
