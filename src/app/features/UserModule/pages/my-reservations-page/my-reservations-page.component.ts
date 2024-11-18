@@ -11,11 +11,11 @@ import {
   UpdateUserModalComponent
 } from "../../../AssociationModule/modals/update-user-modal/update-user-modal.component";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
+import {faInfoCircle, faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
-import {Reservation, ReservationUser} from "../../../../CoreModule/models/reservation.model";
+import {ReservationUser} from "../../../../CoreModule/models/reservation.model";
 import {NavigationService} from "../../../../CoreModule/services/navigation.service";
 import {
   MyReservationDetailModalComponent
@@ -23,11 +23,16 @@ import {
 import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
 import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
 import {
+  ColumnSortType,
   MultiColumnListDataSource
 } from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
 import {BehaviorSubject} from "rxjs";
-import {AssociationInvite} from "../../../../CoreModule/models/association-invite";
 import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 
 enum Tab {
@@ -50,7 +55,8 @@ enum Tab {
     UpdateUserModalComponent,
     MyReservationDetailModalComponent,
     TabComponent,
-    MultiColumnList
+    MultiColumnList,
+    CustomButton
   ],
   templateUrl: './my-reservations-page.component.html',
   styleUrl: './my-reservations-page.component.css'
@@ -68,6 +74,17 @@ export class MyReservationsPageComponent implements OnInit {
   @ViewChild('MyReservationsDurationHeaderTemplate', {static: true}) myReservationsDurationHeaderTemplate!: TemplateRef<any>;
   @ViewChild('MyReservationsTrackHeaderTemplate', {static: true}) myReservationsTrackHeaderTemplate!: TemplateRef<any>;
   @ViewChild('MyReservationsPositionHeaderTemplate', {static: true}) myReservationsPositionHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('actionsTemplate', {static: true}) actionsTemplateHeader!: TemplateRef<any>;
+
+
+  @ViewChild('MyReservationsTitleRowTemplate', { static: true }) myReservationsTitleRowTemplate!: TemplateRef<{ data: ReservationUser }>;
+  @ViewChild('MyReservationsAssociationRowTemplate', {static: true}) myReservationsAssociationRowTemplate!: TemplateRef<{ data: ReservationUser }>;
+  @ViewChild('MyReservationsTimeRowTemplate', {static: true}) myReservationsTimeRowTemplate!: TemplateRef<{ data: ReservationUser }>;
+  @ViewChild('MyReservationsDurationRowTemplate', {static: true}) myReservationsDurationRowTemplate!: TemplateRef<{ data: ReservationUser }>;
+  @ViewChild('MyReservationsTrackRowTemplate', {static: true}) myReservationsTrackRowTemplate!: TemplateRef<{ data: ReservationUser }>;
+  @ViewChild('MyReservationsPositionRowTemplate', {static: true}) myReservationsPositionRowTemplate!: TemplateRef<{ data: ReservationUser }>;
+  @ViewChild('actionsRowTemplate', {static: true}) actionsRowTemplate!: TemplateRef<{ data: ReservationUser }>;
+
 
 
   tabDataSource: TabDataSource = {
@@ -119,13 +136,77 @@ export class MyReservationsPageComponent implements OnInit {
     },
   };
 
-  ngOnInit(): void {
+  dataSourceHistoryReservations: MultiColumnListDataSource = {
+    columns: [],
+    dataRows: new BehaviorSubject<any[]>([]),
+    hasMoreRows: false,
+    initialRowCount: 0,
+    isDataLoading: true,
+    canSearch: true,
+    emptyMessage: "LEEG",
+    searchPlaceholder: "Zoek reserveringen",
+    isInSearch: (dataRow : ReservationUser, searchValue : string) => {
+      return dataRow.reservation.title.toLowerCase().includes(searchValue);
+    },
+    getID: (dataRow: ReservationUser) => {
+      return dataRow.id.reservationId;
+    },
+  };
 
+  ngOnInit(): void {
+    const data= [
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.myReservationsTitleHeaderTemplate,
+        rowCell: this.myReservationsTitleRowTemplate,
+        getRawValueToSort: (dataRow: ReservationUser) => {
+          return dataRow.reservation.title;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.myReservationsAssociationHeaderTemplate,
+        rowCell: this.myReservationsAssociationRowTemplate,
+        getRawValueToSort: (dataRow: ReservationUser) => {
+          return dataRow.reservation.association?.name;
+        }
+      },
+      {
+        sortType: ColumnSortType.DATE,
+        headerCell: this.myReservationsTimeHeaderTemplate,
+        rowCell: this.myReservationsTimeRowTemplate,
+        getRawValueToSort: (dataRow: ReservationUser) => {
+          return dataRow.reservation.startDate;
+        }
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.myReservationsDurationHeaderTemplate,
+        rowCell: this.myReservationsDurationRowTemplate,
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.myReservationsTrackHeaderTemplate,
+        rowCell: this.myReservationsTrackRowTemplate,
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.myReservationsPositionHeaderTemplate,
+        rowCell: this.myReservationsPositionRowTemplate,
+      },
+    ]
+    this.dataSourceHistoryReservations.columns = data;
+    this.dataSourcePlannedReservations.columns = [...data, {
+      sortType: ColumnSortType.NONE,
+      headerCell: this.actionsTemplateHeader,
+      rowCell: this.actionsRowTemplate,
+    }];
     this.refreshData()
   }
 
   protected readonly Modal = Modal;
   protected readonly faTrashCan = faTrashCan;
+  protected readonly faInfoCircle = faInfoCircle;
   SetCurrentReservationUser: EventEmitter<ReservationUser> = new EventEmitter();
 
   viewMoreInformation(reservationUser : ReservationUser) {
@@ -146,9 +227,8 @@ export class MyReservationsPageComponent implements OnInit {
         });
         return
       }
-      this.futureReservationsUsers = response.reservations.sort((a: ReservationUser, b: ReservationUser) => {
-        return new Date(a.reservation.startDate).getTime() - new Date(b.reservation.startDate).getTime();
-      });
+      this.dataSourcePlannedReservations.dataRows.next(response.reservations);
+      this.dataSourcePlannedReservations.isDataLoading = false;
     })
     this.graphQLCommunication.getMyReservations("", startDate).then(response => {
       if(response == null) {
@@ -161,9 +241,11 @@ export class MyReservationsPageComponent implements OnInit {
         });
         return
       }
-      this.historyReservationsUsers = response.reservations.sort((a: ReservationUser, b: ReservationUser) => {
-        return new Date(b.reservation.startDate).getTime() - new Date(a.reservation.startDate).getTime();
-      });
+      this.dataSourceHistoryReservations.dataRows.next(response.reservations);
+      this.dataSourceHistoryReservations.isDataLoading = false;
     })
   }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

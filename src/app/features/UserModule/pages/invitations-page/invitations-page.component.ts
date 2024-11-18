@@ -129,7 +129,8 @@ export class InvitationsPageComponent implements OnInit{
         headerCell: this.actionsTemplateHeader,
         rowCell: this.actionsRowTemplate,
       },
-    ]    }
+    ]
+  }
 
   protected formatDate(dateString: string): Observable<string> {
     const date = new Date(dateString);

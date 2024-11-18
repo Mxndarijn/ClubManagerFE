@@ -119,27 +119,18 @@
 </ng-template>
 
 <ng-template #emailTemplate let-associationInvite="data">
-  <td>
-    <!-- Naam + email -->
     <div>{{ associationInvite.email }}</div>
-  </td>
 </ng-template>
 
 <ng-template #associationInviteCreatedAt let-associationInvite="data">
-  <td>
-    <!-- Rol -->
     <p>{{ formatDate(associationInvite.createdAt) | async }}</p>
-  </td>
 </ng-template>
 
 <ng-template #associationRoleTemplate let-associationInvite="data">
-  <td>
     <p>{{ associationInvite.associationRole.name }}</p>
-  </td>
 </ng-template>
 
 <ng-template #cancelButtonTemplate let-associationInvite="data">
-  <td>
     <app-custom-button class="ml-10"
       [buttonClass]="ButtonClass.ERROR_CLASS"
       [buttonSize]="ButtonSize.BTN_SM"
@@ -148,5 +139,4 @@
       [disabledStatus]="false"
       (onClick)="deleteSelectedInvite(associationInvite)"
     ></app-custom-button>
-  </td>
 </ng-template>

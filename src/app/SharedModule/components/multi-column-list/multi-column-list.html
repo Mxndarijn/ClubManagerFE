@@ -4,16 +4,16 @@
 <table class="table overflow-y-hidden">
   <thead>
   <tr>
-    <th *ngFor="let column of dataSource.columns">
-      <ng-container [ngTemplateOutlet]="column.headerCell"></ng-container>
+    <th class="text-sm"  *ngFor="let column of dataSource.columns">
+      <ng-container  [ngTemplateOutlet]="column.headerCell"></ng-container>
     </th>
   </tr>
   </thead>
   <tbody>
   <ng-container *ngIf="!dataSource.isDataLoading; else loading">
-    <td *ngIf="filteredItems.length == 0" colspan="40" class="text-center text-md">{{ dataSource.emptyMessage}}</td>
+    <td *ngIf="filteredItems.length == 0" colspan="40" class="text-center text-xs">{{ dataSource.emptyMessage}}</td>
       <tr *ngFor="let row of filteredItems" class="bg-base-100 last:border-b-1 last:border-black last:shadow-3xl">
-        <td *ngFor="let column of dataSource.columns">
+        <td class="text-xs" *ngFor="let column of dataSource.columns">
           <ng-container [ngTemplateOutlet]="column.rowCell" [ngTemplateOutletContext]="{ data: row }"></ng-container>
         </td>
       </tr>
