@@ -30,6 +30,7 @@ import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
+import {AssociationGuestResponseDTO} from "../../../../CoreModule/models/dto/association-guest-response-dto";
 
 
 enum Tab {
@@ -273,8 +274,28 @@ export class AssociationPresenceComponent implements OnInit{
       return
     }
     this.modalService.hideModal(Modal.ASSOCIATION_PRESENCE_CONFIRMATION)
-    this.graphQLService.createUserPresence(this.associationID, this.currentSelected.user.id, time).then(r => {
+    this.graphQLService.createUserPresence(this.associationID, this.currentSelected.user.id, time).then((r) => {
       console.log(r)
+      if(r.success) {
+        const list = this.dataSourcePresences.dataRows.value
+        list.push(r.userPresence)
+        this.dataSourcePresences.dataRows.next(list)
+        this.alertService.showAlert({
+          title: "Succesvol",
+          subTitle: "De presentie is succesvol aangemaakt.",
+          icon: AlertIcon.CHECK,
+          duration: 4000,
+          alertClass: AlertClass.CORRECT_CLASS
+        });
+      } else {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is iets fout gegaan, probeer het later nog eens.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+      }
     })
     console.log(time)
   }
@@ -321,7 +342,7 @@ export class AssociationPresenceComponent implements OnInit{
           this.selectedPresence = undefined;
           this.alertService.showAlert({
             title: "Succesvol",
-            subTitle: "Successvol afgemeld voor reservatie.",
+            subTitle: "Successvol presentie verwijderd.",
             icon: AlertIcon.CHECK,
             duration: 4000,
             alertClass: AlertClass.CORRECT_CLASS
@@ -329,7 +350,7 @@ export class AssociationPresenceComponent implements OnInit{
         } else {
           this.alertService.showAlert({
             title: "Fout opgetreden",
-            subTitle: "Er ging iets mis tijdens het afmelden.",
+            subTitle: "Er ging iets mis tijdens het verwijderen van de presentie.",
             icon: AlertIcon.XMARK,
             duration: 4000,
             alertClass: AlertClass.INCORRECT_CLASS
