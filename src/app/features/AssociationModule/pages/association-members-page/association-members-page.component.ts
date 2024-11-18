@@ -102,13 +102,6 @@ export class AssociationMembersPageComponent implements OnInit{
   @ViewChild('associationInviteCreatedAt', {static: true}) associationInviteCreatedAt!: TemplateRef<any>;
   @ViewChild('cancelButtonTemplate', {static: true}) cancelButtonTemplate!: TemplateRef<any>;
 
-
-
-  setActiveTab(tab: Tab) {
-    this.activeTab = tab;
-  }
-
-
   constructor(
     private alertService: AlertService,
     private graphQLCommunication: GraphQLCommunication,
@@ -117,7 +110,8 @@ export class AssociationMembersPageComponent implements OnInit{
     route: ActivatedRoute,
     protected modalService: ModalService,
     private authService: AuthenticationService,
-    private cdr: ChangeDetectorRef) {
+    private cdr: ChangeDetectorRef
+  ){
     this.associationID = route.snapshot.params['associationID'];
 
     this.graphQLCommunication.getAssociationName(this.associationID).then(r=>{
@@ -128,8 +122,7 @@ export class AssociationMembersPageComponent implements OnInit{
     navigationService.showNavigation();
     this.translate.get('associationMembers.titleHeader').subscribe((res: string) => {
         navigationService.setTitle(res);
-      }
-    )
+    })
     this.userID = this.authService.getUserID();
     this.initMembers()
   }
