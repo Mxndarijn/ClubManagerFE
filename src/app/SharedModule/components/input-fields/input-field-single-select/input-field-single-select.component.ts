@@ -49,9 +49,8 @@ export class InputFieldSingleSelectComponent implements OnInit {
     );
     this.processedItems = []
     this.processedItems = [...this.processedItems, ...newItems];
-    console.log(this.processedItems)
     if(this.processedItems.length == 1) {
-      // this._formControl.setValue(this.processedItems[0].original)
+      this.dataSource.formControl.setValue(this.processedItems[0].original)
     }
     }
 

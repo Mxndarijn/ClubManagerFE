@@ -20,12 +20,16 @@ import {
   CustomButton
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
+import {
+  CreateGuestModalComponent
+} from "../../../AssociationModule/modals/create-guest-modal/create-guest-modal.component";
 
 @Component({
   selector: 'app-my-guests-page',
   standalone: true,
   imports: [
     MultiColumnList,
+    CreateGuestModalComponent,
     CustomButton
   ],
   templateUrl: './my-guests-page.component.html',
@@ -189,4 +193,9 @@ export class MyGuestsPageComponent implements OnInit {
   protected readonly ButtonSize = ButtonSize;
   protected readonly Modal = Modal;
   protected readonly faEnvelope = faEnvelope;
+
+  addAssociationGuest($event: AssociationGuest) {
+    this.dataSourceGuests.dataRows.next([...this.dataSourceGuests.dataRows.value, $event]);
+
+  }
 }

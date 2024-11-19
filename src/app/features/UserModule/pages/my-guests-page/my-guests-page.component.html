@@ -31,10 +31,10 @@
   <app-custom-button class="mr-10"
                      [buttonClass]="ButtonClass.ACCENT_CLASS"
                      [buttonSize]="ButtonSize.BTN_MD"
-                     [labelText]="'Voor Merijn'"
+                     [labelText]="'Introducee Aanvraag'"
                      [icon]="faEnvelope"
                      [disabledStatus]="false"
-                     (onClick)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);"
+                     (onClick)="this.modalService.showModal(Modal.GUEST_CREATE_GUEST);"
   ></app-custom-button>
 </ng-template>
 
@@ -63,3 +63,5 @@
 <ng-template #ActionsRow let-associationGuest="data">
   buttonie
 </ng-template>
+
+<app-create-guest-modal (AssociationGuestCreated)="addAssociationGuest($event)"></app-create-guest-modal>

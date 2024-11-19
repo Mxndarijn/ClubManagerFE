@@ -15,6 +15,7 @@ import {CompetitionDTO} from "../models/competition.model";
 import {SmallCompetitionScore} from "../models/association-competition";
 import {AuthenticationService} from "./authentication.service";
 import {WeaponStatus} from "../models/weapon.model";
+import {AssociationGuestVerificationType} from "../models/dto/association-guest-response-dto";
 
 
 @Injectable({
@@ -118,6 +119,30 @@ export class GraphQLCommunication {
             encoded
             id
           }
+          name
+          welcomeMessage
+        }
+      }
+    }
+  }
+}
+  `
+    };
+    return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+
+  }
+
+  public getMyAssociationsWithoutImage(): Promise<any> {
+    const query = {
+      query: `
+    {
+  userQueries {
+    getMyProfile {
+      associations {
+        association {
+          id
+          contactEmail
+          active
           name
           welcomeMessage
         }
@@ -2130,5 +2155,58 @@ export class GraphQLCommunication {
 
 
 
+  }
+
+  createGuestAssociation(associationID: string, guestFullName: string, guestResidence: string, guestVerificationType: AssociationGuestVerificationType, guestVerificationCode : string, eventTime: string) {
+    const query = {
+      query: `mutation MyMutation($dto: CreateAssociationGuestDTO!) {
+  associationMutations {
+    associationGuestMutations {
+      createAssociationGuest(
+        dto: $dto
+      ) {
+        message
+        success
+        associationGuest {
+          eventTime
+          guestFullName
+          guestResidence
+          guestVerificationCode
+          guestVerificationType
+          id
+          requestTime
+          status
+          reviewer {
+            email
+            fullName
+            hasEmailVerified
+            id
+          }
+          association {
+            name
+            image {
+              encoded
+            }
+          }
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        dto: {
+          associationID: associationID,
+          guestFullName: guestFullName,
+          guestResidence: guestResidence,
+          guestVerificationType: guestVerificationType,
+          guestVerificationCode: guestVerificationCode,
+          eventTime: eventTime
+        }
+      }
+    }
+
+    console.log(query)
+
+    return this.solvePromise(query, v => v.data.associationMutations.associationGuestMutations.createAssociationGuest);
   }
 }
