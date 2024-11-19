@@ -23,6 +23,9 @@ import {ColorPreset} from "../../../../CoreModule/models/color-preset.model";
 import {Modal} from "../../../../CoreModule/services/modal.service";
 import {CalendarEventData} from "../models/CalendarEventData";
 import {CalendarEventCommonComponent} from "../events/calendar-event-common/calendar-event-common.component";
+import {ButtonClass, ButtonSize, CustomButton} from "../../buttons/custom-button/custom-button";
+import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
+import {DateTimeSelectorComponent} from "../../input-fields/date-time-selector/date-time-selector.component";
 
 
 @Component({
@@ -41,6 +44,8 @@ import {CalendarEventCommonComponent} from "../events/calendar-event-common/cale
     FormsModule,
     ReactiveFormsModule,
     NgIf,
+    CustomButton,
+    DateTimeSelectorComponent,
   ],
     templateUrl: './calender-view.component.html',
     styleUrl: './calender-view.component.css'
@@ -113,6 +118,10 @@ export class CalenderViewComponent implements OnInit {
     this.renderer.removeAttribute(this.myDetails.nativeElement, 'open')
 
   }
+
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly faInfoCircle = faInfoCircle;
+  protected readonly ButtonClass = ButtonClass;
 }
 
 export interface CalendarEvent {
