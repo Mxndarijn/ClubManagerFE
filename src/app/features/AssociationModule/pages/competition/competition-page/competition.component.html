@@ -1,7 +1,12 @@
-<div class="flex flex-col">
+<div class="flex flex-row justify-end">
   <app-search-box [placeholder]="'Zoek Competitie'" (SearchEvent)="searchCompetition($event)"></app-search-box>
-  <button class="btn border-accent border-2 btn-sm bg-base-100 no-animation" (click)="this.modalService.showModal(Modal.ASSOCIATION_CREATE_COMPETITION)
-">Nieuwe competitie</button>
+  <app-custom-button class="mr-10"
+                     [buttonClass]="ButtonClass.ACCENT_CLASS"
+                     [buttonSize]="ButtonSize.BTN_MD"
+                     [labelText]="'Nieuwe competitie'"
+                     [disabledStatus]="false"
+                     (onClick)="this.modalService.showModal(Modal.ASSOCIATION_CREATE_COMPETITION)"
+  ></app-custom-button>
 <create-competition-modal
 (CompetitionCreatedEvent)="CompetitionCreatedEvent($event)" >
 
@@ -32,8 +37,15 @@
       <p> {{this.utility.formatDateTimeAsString(competition.endDate) |async }}</p>
     </td>
       <td>
-      <button class="btn border-accent border-2 btn-sm bg-base-100" [routerLink]="getRouterLink(competition.id)" >Bekijk
-      </button>
+<!--      <button class="btn border-accent border-2 btn-sm bg-base-100" [routerLink]="getRouterLink(competition.id)" >Bekijk-->
+<!--      </button>-->
+        <app-custom-button class=""
+                           [buttonClass]="ButtonClass.ACCENT_CLASS"
+                           [buttonSize]="ButtonSize.BTN_SM"
+                           [labelText]="'Bekijk'"
+                           [disabledStatus]="false"
+                           [routerLink]="getRouterLink(competition.id)"
+        ></app-custom-button>
     </td>
   </tr>
   </tbody>

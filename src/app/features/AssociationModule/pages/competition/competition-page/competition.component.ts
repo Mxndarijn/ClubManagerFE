@@ -19,6 +19,11 @@ import {
   CreateCompetitionModalComponent,
 } from "../../../modals/create-competition-modal/create-competition-modal.component";
 import {CompetitionDTO} from "../../../../../CoreModule/models/competition.model";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 
 @Component({
@@ -33,7 +38,8 @@ import {CompetitionDTO} from "../../../../../CoreModule/models/competition.model
     SearchBoxComponent,
     TranslateModule,
     CreateCompetitionModalComponent,
-    RouterLink
+    RouterLink,
+    CustomButton
   ],
   templateUrl: './competition.component.html',
   styleUrl: './competition.component.css'
@@ -103,4 +109,7 @@ export class CompetitionPageComponent {
   CompetitionCreatedEvent($event: CompetitionDTO) {
     this.updateCompetitions()
   }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

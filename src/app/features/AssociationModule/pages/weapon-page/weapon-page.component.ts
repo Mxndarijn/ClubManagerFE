@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit, TemplateRef, ViewChild} from '@angular/
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
+import {faTrashCan, faPencil} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {ActivatedRoute} from "@angular/router";
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
@@ -37,6 +37,11 @@ import {
 import {BehaviorSubject} from "rxjs";
 import {Track} from "../../../../CoreModule/models/track.model";
 import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 enum Tab {
   WEAPON_OVERVIEW,
@@ -60,6 +65,7 @@ enum Tab {
     WeaponMaintenanceCreateEditModalComponent,
     TabComponent,
     MultiColumnList,
+    CustomButton,
 
   ],
   templateUrl: './weapon-page.component.html',
@@ -166,6 +172,7 @@ export class WeaponPageComponent implements OnInit{
   protected readonly Tab = Tab;
 
   protected readonly faTrashCan = faTrashCan;
+  protected readonly faPencil = faPencil;
 
   createWeaponEvent(weapon: Weapon) {
     const list = this.dataSourceWeapons.dataRows.value;
@@ -310,4 +317,7 @@ export class WeaponPageComponent implements OnInit{
     })
     this.dataSourceWeapons.dataRows.next(list);
   }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

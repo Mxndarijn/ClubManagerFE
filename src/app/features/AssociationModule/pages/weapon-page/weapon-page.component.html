@@ -12,9 +12,13 @@
 <app-create-weapon-modal (CreateWeaponEvent)="createWeaponEvent($event)" (ChangeWeaponEvent)="changeWeaponEvent($event)" [SetCurrentWeapon]="setCurrentWeapon"></app-create-weapon-modal>
 
 <ng-template #TableHeaderRow>
-  <button class="btn border-accent border-2 bg-base-100 mr-10  btn-md" (click)="this.setCurrentWeapon.emit(generateNewWeapon());this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON)">
-    Voeg wapen toe
-  </button>
+  <app-custom-button class="mr-10"
+    [buttonClass]="ButtonClass.ACCENT_CLASS"
+    [buttonSize]="ButtonSize.BTN_MD"
+    [labelText]="'Voeg wapen toe'"
+    [disabledStatus]="false"
+    (onClick)="this.setCurrentWeapon.emit(generateNewWeapon());this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON)"
+  ></app-custom-button>
 </ng-template>
 
 <!--Headers-->
@@ -47,11 +51,26 @@
 </ng-template>
 
 <ng-template #ActionsRow let-weapon="data">
-  <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10" (click)="this.setCurrentWeapon.emit(weapon);this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON)">
-    Wijzig
-  </button>
-  <button class="btn border-error border-2 bg-base-100  btn-sm ml-10">
-    Verwijder
-    <fa-icon [icon]="faTrashCan"></fa-icon>
-  </button>
+<!--  <button class="btn border-warning border-2 bg-base-100  btn-sm ml-10" (click)=>-->
+<!--    Wijzig-->
+<!--  </button>-->
+  <app-custom-button
+    [buttonClass]="ButtonClass.WARNING_CLASS"
+    [buttonSize]="ButtonSize.BTN_SM"
+    [labelText]="'Info'"
+    [icon]="faPencil"
+    [disabledStatus]="false"
+    (onClick)="this.setCurrentWeapon.emit(weapon);this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON)"
+  ></app-custom-button>
+<!--  <button class="btn border-error border-2 bg-base-100  btn-sm ml-10">-->
+<!--    Verwijder-->
+<!--    <fa-icon [icon]="faTrashCan"></fa-icon>-->
+<!--  </button>-->
+  <app-custom-button class="ml-10"
+                     [buttonClass]="ButtonClass.ERROR_CLASS"
+                     [buttonSize]="ButtonSize.BTN_SM"
+                     [labelText]="'Verwijder'"
+                     [icon]="faTrashCan"
+                     [disabledStatus]="false"
+  ></app-custom-button>
 </ng-template>
