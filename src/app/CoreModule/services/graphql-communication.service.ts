@@ -1747,14 +1747,17 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.deleteReservationSeries);
   }
 
-  getMyReservations(startDate: string, endDate : string) {
+  getMyReservations(startDate: string, endDate : string, first: number = 20, after?: string) {
     const query = {
       query: `
-   query MyQuery($endDate : LocalDateTime, $startDate : LocalDateTime) {
+   query MyQuery($endDate : LocalDateTime, $startDate : LocalDateTime, $first:Int, $after:LocalDateTime) {
   userQueries {
     getMyProfile {
-      reservations(endDate: $endDate, startDate: $startDate) {
-        id {
+      reservations(after: $after, endDate: $endDate, first: $first, startDate: $startDate) {
+        edges {
+          cursor
+          node {
+             id {
           reservationId
           userId
         }
@@ -1777,13 +1780,21 @@ export class GraphQLCommunication {
             description
           }
         }
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
       }
     }
   }
 }`,
       variables: {
         endDate: endDate,
-        startDate: startDate
+        startDate: startDate,
+        after: after,
+        first: first
       }
     }
     return this.solvePromise(query, v => v.data.userQueries.getMyProfile);

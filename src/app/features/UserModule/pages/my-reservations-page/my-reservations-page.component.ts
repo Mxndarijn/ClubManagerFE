@@ -66,6 +66,7 @@ export class MyReservationsPageComponent implements OnInit {
   protected readonly Tab = Tab;
   protected futureReservationsUsers : ReservationUser[] = []
   protected historyReservationsUsers : ReservationUser[] = []
+  startDate = this.util.toLocalIsoDateTime(new Date());
 
 
   @ViewChild('MyReservationsTitleHeaderTemplate', { static: true }) myReservationsTitleHeaderTemplate!: TemplateRef<any>;
@@ -122,34 +123,52 @@ export class MyReservationsPageComponent implements OnInit {
   dataSourcePlannedReservations: MultiColumnListDataSource = {
     columns: [],
     dataRows: new BehaviorSubject<any[]>([]),
-    hasMoreRows: false,
+    hasMoreRows: true,
     initialRowCount: 0,
     isDataLoading: true,
-    canSearch: true,
+    canSearch: false,
     emptyMessage: "LEEG",
     searchPlaceholder: "Zoek reserveringen",
-    isInSearch: (dataRow : ReservationUser, searchValue : string) => {
-      return dataRow.reservation.title.toLowerCase().includes(searchValue);
-    },
     getID: (dataRow: ReservationUser) => {
       return dataRow.id.reservationId;
+    },
+    loadAdditionalRows: async () => {
+      return this.graphQLCommunication.getMyReservations(this.startDate, "", 20, this.dataSourcePlannedReservations.endCursor)
+        .then(r => {
+          this.dataSourcePlannedReservations.hasMoreRows = r.reservations.pageInfo.hasNextPage;
+          this.dataSourcePlannedReservations.endCursor = r.reservations.pageInfo.endCursor;
+          return r.reservations.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
     },
   };
 
   dataSourceHistoryReservations: MultiColumnListDataSource = {
     columns: [],
     dataRows: new BehaviorSubject<any[]>([]),
-    hasMoreRows: false,
+    hasMoreRows: true,
     initialRowCount: 0,
     isDataLoading: true,
-    canSearch: true,
+    canSearch: false,
     emptyMessage: "LEEG",
     searchPlaceholder: "Zoek reserveringen",
-    isInSearch: (dataRow : ReservationUser, searchValue : string) => {
-      return dataRow.reservation.title.toLowerCase().includes(searchValue);
-    },
     getID: (dataRow: ReservationUser) => {
       return dataRow.id.reservationId;
+    },
+    loadAdditionalRows: async () => {
+      return this.graphQLCommunication.getMyReservations("", this.startDate, 20, this.dataSourceHistoryReservations.endCursor)
+        .then(r => {
+          this.dataSourceHistoryReservations.hasMoreRows = r.reservations.pageInfo.hasNextPage;
+          this.dataSourceHistoryReservations.endCursor = r.reservations.pageInfo.endCursor;
+          return r.reservations.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
     },
   };
 
@@ -215,8 +234,7 @@ export class MyReservationsPageComponent implements OnInit {
   }
 
   protected refreshData() {
-    const startDate = this.util.toLocalIsoDateTime(new Date());
-    this.graphQLCommunication.getMyReservations(startDate, "").then(response => {
+    this.graphQLCommunication.getMyReservations(this.startDate, "", 20, undefined).then(response => {
       if(response == null) {
         this.alertService.showAlert({
           title: "Fout opgetreden",
@@ -227,10 +245,12 @@ export class MyReservationsPageComponent implements OnInit {
         });
         return
       }
-      this.dataSourcePlannedReservations.dataRows.next(response.reservations);
+      this.dataSourcePlannedReservations.hasMoreRows = response.reservations.pageInfo.hasNextPage;
+      this.dataSourcePlannedReservations.endCursor = response.reservations.pageInfo.endCursor;
+      this.dataSourcePlannedReservations.dataRows.next(response.reservations.edges.map((edge: any) => edge.node));
       this.dataSourcePlannedReservations.isDataLoading = false;
     })
-    this.graphQLCommunication.getMyReservations("", startDate).then(response => {
+    this.graphQLCommunication.getMyReservations("", this.startDate, 20, undefined).then(response => {
       if(response == null) {
         this.alertService.showAlert({
           title: "Fout opgetreden",
@@ -241,7 +261,9 @@ export class MyReservationsPageComponent implements OnInit {
         });
         return
       }
-      this.dataSourceHistoryReservations.dataRows.next(response.reservations);
+      this.dataSourceHistoryReservations.hasMoreRows = response.reservations.pageInfo.hasNextPage;
+      this.dataSourceHistoryReservations.endCursor = response.reservations.pageInfo.endCursor;
+      this.dataSourceHistoryReservations.dataRows.next(response.reservations.edges.map((edge: any) => edge.node));
       this.dataSourceHistoryReservations.isDataLoading = false;
     })
   }
