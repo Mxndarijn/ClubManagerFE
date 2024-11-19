@@ -130,6 +130,30 @@ export class GraphQLCommunication {
 
   }
 
+  public getMyAssociationsWithoutImage(): Promise<any> {
+    const query = {
+      query: `
+    {
+  userQueries {
+    getMyProfile {
+      associations {
+        association {
+          id
+          contactEmail
+          active
+          name
+          welcomeMessage
+        }
+      }
+    }
+  }
+}
+  `
+    };
+    return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+
+  }
+
   public getMyPermissions(): Promise<any> {
     const query = {
       query: `

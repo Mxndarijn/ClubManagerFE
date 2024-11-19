@@ -224,9 +224,14 @@ export class UtilityFunctions {
       return false;
     }
     return new Date(startDate).getTime() > new Date().getTime();
-
   }
 
+
+  static getEnumList(list: any): any[] {
+
+    return Object.keys(list).filter(key => isNaN(Number(key)));
+
+}
 
 }
 

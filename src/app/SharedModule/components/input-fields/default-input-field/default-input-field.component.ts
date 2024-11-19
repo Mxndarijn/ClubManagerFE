@@ -28,7 +28,7 @@ export class DefaultInputFieldComponent {
     this.onTouch = fn;
   }
   @Input() placeholder: string = '';
-  @Input() type: string = '';
+  @Input() type: string = 'text';
   @Input() inputId: string = '';
   @Input() labelText: string = '';
   @Input() autocomplete: string = '';
@@ -39,6 +39,13 @@ export class DefaultInputFieldComponent {
   protected readonly faEyeSlash = faEyeSlash;
   protected showPassword: boolean = false;
   @Input() hideErrorsWhenEmpty: boolean = false;
+
+
+  constructor() {
+    if(this.inputId.length == 0) {
+      this.inputId = Math.random().toString(36);
+    }
+  }
 }
 
 export interface ErrorSetting {

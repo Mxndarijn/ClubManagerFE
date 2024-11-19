@@ -14,12 +14,16 @@ import {BehaviorSubject} from "rxjs";
 import {UserPresence} from "../../../../CoreModule/models/user-presence.model";
 import {AssociationGuest} from "../../../../CoreModule/models/dto/association-guest-response-dto";
 import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
+import {
+  CreateGuestModalComponent
+} from "../../../AssociationModule/modals/create-guest-modal/create-guest-modal.component";
 
 @Component({
   selector: 'app-my-guests-page',
   standalone: true,
   imports: [
-    MultiColumnList
+    MultiColumnList,
+    CreateGuestModalComponent
   ],
   templateUrl: './my-guests-page.component.html',
   styleUrl: './my-guests-page.component.css'

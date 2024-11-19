@@ -1,0 +1,48 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{{ title }}</h3>
+
+    <app-default-input-field
+      [_formControl]="createGuestForm.controls.guestName"
+      [placeholder]="'Vul de naam van de Introducee in'"
+      [labelText]="'Volledige naam van introducee'"
+      [errorSettings]="[{
+          errorMessage: 'Je moet een geldige naam invullen.',
+          errorName: ''
+         }]">
+    </app-default-input-field>
+
+    <app-default-input-field
+      [_formControl]="createGuestForm.controls.guestResidence"
+      [placeholder]="'Vul het adres in van de Introducee.'"
+      [labelText]="'Adres van introducee'"
+      [errorSettings]="[{
+          errorMessage: 'Je moet een geldig adres invullen.',
+          errorName: ''
+         }]">
+    </app-default-input-field>
+
+    <app-default-input-field
+      [_formControl]="createGuestForm.controls.guestVerificationCode"
+      [placeholder]="'Vul het document-id in van de Introducee.'"
+      [labelText]="'Document-id van introducee'"
+      [errorSettings]="[{
+          errorMessage: 'Je moet een geldig adres invullen.',
+          errorName: ''
+         }]">
+    </app-default-input-field>
+
+    <app-date-time-selector
+    [_formControl]="createGuestForm.controls.eventTime"
+    [type]="'date'">
+
+    </app-date-time-selector>
+
+    <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceVerificationType">
+    </app-input-field-single-select>
+
+    <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceAssociation">
+    </app-input-field-single-select>
+  </div>
+</dialog>
