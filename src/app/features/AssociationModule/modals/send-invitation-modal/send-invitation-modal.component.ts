@@ -28,6 +28,11 @@ import {CompetitionScoreType} from "../../../../CoreModule/models/association-co
 import {
   InputFieldSingleSelectComponent
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
+import {
+  InputFieldSingleSelectDataSource
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
+import {BehaviorSubject} from "rxjs";
+import {WeaponType} from "../../../../CoreModule/models/weapon-type.model";
 
 @Component({
   selector: 'app-send-invitation-modal',
@@ -50,7 +55,6 @@ import {
 export class SendInvitationModalComponent {
   showModal: boolean = false;
   @Input() selectedRole: string = "User";
-  // roleFormControl: FormControl;
   @Input() associationName: string = "";
   userRoles: AssociationRole[] = [];
   emailFormControl: FormControl;
@@ -69,7 +73,6 @@ export class SendInvitationModalComponent {
   ) {
     this.associationID = route.snapshot.params['associationID'];
     this.emailFormControl = new FormControl<string>('', [Validators.email]);
-    // this.roleFormControl = new FormControl<AssociationRole>()
 
     this.modalService.modalVisibilityEvent.subscribe({
       next: (modalChange: ModalChange) => {
@@ -87,6 +90,22 @@ export class SendInvitationModalComponent {
           a.name === 'User' ? -1 : b.name === 'User' ? 1 : 0);
     })
   }
+
+  // singleSelectInputFieldDataSource: InputFieldSingleSelectDataSource = {
+  //   errorSetting: {
+  //     errorMessage: 'Je moet een waarde selecteren.',
+  //     errorName: ''
+  //   },
+  //   formControl: new FormControl(null, Validators.required),
+  //   hideErrorsWhenEmpty: false,
+  //   items: new BehaviorSubject<any[]>([]),
+  //   label: "Selecteer hier de rol",
+  //   processItem(input: AssociationRole): Promise<any> {
+  //     return new Promise((resolve, reject) => {
+  //       resolve(input.name);
+  //     });
+  //   }
+  // }
 
   cancelInvitation() {
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);

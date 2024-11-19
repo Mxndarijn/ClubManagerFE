@@ -17,6 +17,11 @@ import {
 import {
   InputFieldSingleSelectDataSource
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 @Component({
   selector: 'app-enroll-at-reservation-modal',
@@ -26,7 +31,8 @@ import {
     NgClass,
     NgIf,
     NgForOf,
-    InputFieldSingleSelectComponent
+    InputFieldSingleSelectComponent,
+    CustomButton
   ],
   templateUrl: './enroll-at-reservation-modal.component.html',
   styleUrl: './enroll-at-reservation-modal.component.css'
@@ -189,4 +195,6 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
     }
   }
 
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

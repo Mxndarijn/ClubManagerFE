@@ -4,7 +4,7 @@
     <h3 class="font-bold text-lg">Nieuwe Competitie</h3>
     <div class="flex flex-row gap-x-1 mt-5">
       <div class="flex flex-col">
-        <app-inputfield-weapon-modal
+        <app-default-input-field
           [inputId]="'inputID'"
           [placeholder]="'Vul hier de competitie naam in.'"
           [_formControl]="createCompetitionForm.controls.name"
@@ -16,7 +16,7 @@
       errorMessage: 'Je moet een naam invullen.',
       errorName: ''
       }]">
-        </app-inputfield-weapon-modal>
+        </app-default-input-field>
 
         <app-textarea-modal
           [placeholder]="'Vul hier de beschrijving van de nieuwe competitie in.'"

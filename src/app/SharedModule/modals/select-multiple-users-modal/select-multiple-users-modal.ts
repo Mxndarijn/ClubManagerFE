@@ -11,9 +11,6 @@ import {FormsModule} from "@angular/forms";
 import {
   InputFieldSingleSelectComponent
 } from "../../components/input-fields/input-field-single-select/input-field-single-select.component";
-import {
-  InputFieldWeaponModalComponent
-} from "../../components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {
   TextareaModalComponent
@@ -32,7 +29,6 @@ import {
     ErrorMessageComponent,
     FormsModule,
     InputFieldSingleSelectComponent,
-    InputFieldWeaponModalComponent,
     NgIf,
     TextareaModalComponent,
     NgClass,

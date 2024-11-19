@@ -6,9 +6,6 @@ import {Subscription} from "rxjs";
 
 import {addDays} from "date-fns";
 import {
-  InputFieldWeaponModalComponent
-} from "../../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
-import {
   TextareaModalComponent
 } from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
 import {
@@ -39,6 +36,9 @@ import {Modal, ModalService} from "../../../../CoreModule/services/modal.service
 import {ActivatedRoute} from "@angular/router";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
+import {
+  DefaultInputFieldComponent
+} from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 
 
 enum Step {
@@ -52,7 +52,6 @@ enum Step {
   selector: 'app-create-track-reservation-modal',
   standalone: true,
   imports: [
-    InputFieldWeaponModalComponent,
     TextareaModalComponent,
     NgClass,
     FormsModule,
@@ -69,6 +68,7 @@ enum Step {
     NgSwitchCase,
     ErrorMessageComponent,
     AsyncPipe,
+    DefaultInputFieldComponent,
   ],
   templateUrl: './create-track-reservation-modal.component.html',
   styleUrl: './create-track-reservation-modal.component.css'

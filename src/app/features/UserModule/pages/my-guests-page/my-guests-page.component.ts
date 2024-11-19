@@ -4,7 +4,7 @@ import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-comm
 import {NavigationService} from "../../../../CoreModule/services/navigation.service";
 import {TranslateService} from "@ngx-translate/core";
 import {ActivatedRoute} from "@angular/router";
-import {ModalService} from "../../../../CoreModule/services/modal.service";
+import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {AuthenticationService} from "../../../../CoreModule/services/authentication.service";
 import {
   ColumnSortType,
@@ -15,6 +15,12 @@ import {UserPresence} from "../../../../CoreModule/models/user-presence.model";
 import {AssociationGuest} from "../../../../CoreModule/models/dto/association-guest-response-dto";
 import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
 import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
+import {
   CreateGuestModalComponent
 } from "../../../AssociationModule/modals/create-guest-modal/create-guest-modal.component";
 
@@ -23,12 +29,16 @@ import {
   standalone: true,
   imports: [
     MultiColumnList,
-    CreateGuestModalComponent
+    CreateGuestModalComponent,
+    CustomButton
   ],
   templateUrl: './my-guests-page.component.html',
   styleUrl: './my-guests-page.component.css'
 })
 export class MyGuestsPageComponent implements OnInit {
+
+  @ViewChild('topHeaderRowInvitations', { static: true }) topHeaderRowInvitations!: TemplateRef<any>;
+
 
   @ViewChild('GuestNameHeader', { static: true }) guestNameHeader!: TemplateRef<any>;
   @ViewChild('AssociationHeader', {static: true}) associationHeader!: TemplateRef<any>;
@@ -79,6 +89,7 @@ export class MyGuestsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.dataSourceGuests.headerRow = this.topHeaderRowInvitations;
     this.dataSourceGuests.columns= [
       {
         sortType: ColumnSortType.ALPHABETICAL,
@@ -178,4 +189,8 @@ export class MyGuestsPageComponent implements OnInit {
   };
 
 
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly Modal = Modal;
+  protected readonly faEnvelope = faEnvelope;
 }

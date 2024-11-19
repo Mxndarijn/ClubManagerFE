@@ -27,6 +27,17 @@
 <ng-template #ActionsHeader>
 </ng-template>
 
+<ng-template #topHeaderRowInvitations>
+  <app-custom-button class="mr-10"
+                     [buttonClass]="ButtonClass.ACCENT_CLASS"
+                     [buttonSize]="ButtonSize.BTN_MD"
+                     [labelText]="'Voor Merijn'"
+                     [icon]="faEnvelope"
+                     [disabledStatus]="false"
+                     (onClick)="this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);"
+  ></app-custom-button>
+</ng-template>
+
 <!--Rows-->
 
 <ng-template #GuestNameRow let-associationGuest="data">

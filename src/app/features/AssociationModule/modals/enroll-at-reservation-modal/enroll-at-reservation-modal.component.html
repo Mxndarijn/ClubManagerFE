@@ -21,17 +21,31 @@
     <div class="modal-action">
 
       <form method="dialog" class="w-full flex justify-between">
-        <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
-        >Sluit
-        </button>
-        <button *ngIf="!isEnrolled()" class="btn border-success border-2 bg-base-100" [disabled]="!timeIsAfterCurrentDate(reservation?.startDate!) || (reservation?.membersCanChooseTheirOwnPosition  ? !singleSelectInputFieldDataSource.formControl.valid : false)"
-                (click)="enrollAtReservation()"
-        >Aanmelden
-        </button>
-        <button *ngIf="isEnrolled()" class="btn border-error border-2 bg-base-100" [disabled]="!timeIsAfterCurrentDate(reservation?.startDate!)"
-                (click)="unrollAtReservation()"
-        >Afmelden
-        </button>
+        <app-custom-button
+          [buttonClass]="ButtonClass.ERROR_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Sluit'"
+          [disabledStatus]="false"
+          (onClick)="hideModal()"
+        ></app-custom-button>
+
+        <app-custom-button
+          *ngIf="!isEnrolled()"
+          [buttonClass]="ButtonClass.SUCCESS_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Aanmelden'"
+          [disabledStatus]="!timeIsAfterCurrentDate(reservation?.startDate!) || (reservation?.membersCanChooseTheirOwnPosition  ? !singleSelectInputFieldDataSource.formControl.valid : false)"
+          (onClick)="enrollAtReservation()"
+        ></app-custom-button>
+
+        <app-custom-button
+          *ngIf="isEnrolled()"
+          [buttonClass]="ButtonClass.ERROR_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Afmelden'"
+          [disabledStatus]="!timeIsAfterCurrentDate(reservation?.startDate!)"
+          (onClick)="unrollAtReservation()"
+        ></app-custom-button>
       </form>
     </div>
   </div>
