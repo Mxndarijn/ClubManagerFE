@@ -10,15 +10,21 @@ import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-comm
 import {ActivatedRoute} from "@angular/router";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 @Component({
   selector: 'app-view-track-reservation-modal',
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    NgClass
-  ],
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        CustomButton
+    ],
   templateUrl: './view-track-reservation-modal.component.html',
   styleUrl: './view-track-reservation-modal.component.css'
 })
@@ -129,4 +135,7 @@ export class ViewTrackReservationModalComponent extends DefaultModalInformation 
       }
     })
   }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

@@ -4,17 +4,30 @@
 
     <div class="modal-action">
       <form method="dialog" class="w-full flex justify-between">
-        <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
-        >Sluit
-        </button>
-        <button class="btn border-accent border-2 bg-base-100" [disabled]="!timeIsAfterCurrentDate(selected?.endDate!)"
-                (click)="deleteReservation()"
-        >Verwijder reservering
-        </button>
-        <button class="btn border-accent border-2 bg-base-100" [disabled]="selected?.data.reservationSeries == null"
-                (click)="deleteReservationSeries()"
-        >Verwijder reservering serie
-        </button>
+        <app-custom-button
+          [buttonClass]="ButtonClass.ERROR_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Sluit'"
+          [disabledStatus]="false"
+          (onClick)="hideModal()"
+        ></app-custom-button>
+
+        <app-custom-button
+          [buttonClass]="ButtonClass.ACCENT_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Verwijder reservering'"
+          [disabledStatus]="!timeIsAfterCurrentDate(selected?.endDate!)"
+          (onClick)="deleteReservation()"
+        ></app-custom-button>
+
+        <app-custom-button
+          [buttonClass]="ButtonClass.ACCENT_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Verwijder reservering serie'"
+          [disabledStatus]="selected?.data.reservationSeries == null"
+          (onClick)="deleteReservationSeries()"
+        ></app-custom-button>
+
       </form>
     </div>
   </div>
