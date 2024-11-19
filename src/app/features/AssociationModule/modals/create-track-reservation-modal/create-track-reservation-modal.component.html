@@ -20,7 +20,7 @@
         </ul>
 
         <div *ngSwitchCase="Step.STEP_1">
-          <app-inputfield-weapon-modal
+          <app-default-input-field
             [inputId]="'inputID'"
             [placeholder]="'Vul hier de naam van de reservering in.'"
             [_formControl]="step1ReservationForm.controls.title"
@@ -33,7 +33,7 @@
             errorName: ''
             }]">
 
-          </app-inputfield-weapon-modal>
+          </app-default-input-field>
           <app-textarea-modal
             [placeholder]="'Vul hier de beschrijving van de reservering in.'"
             [labelText]="'Beschrijving'"
@@ -42,7 +42,7 @@
           </app-textarea-modal>
 
           <div class="flex flex-row  items-start w-full space-x-2 mt-2">
-            <app-inputfield-weapon-modal class="w-3/6 "
+            <app-default-input-field
                                          [inputId]="'inputID'"
                                          [placeholder]="'Vul hier het max aantal deelnemers in.'"
                                          [_formControl]="step1ReservationForm.controls.maxSize"
@@ -54,7 +54,7 @@
           errorMessage: 'Je moet een positief getal invullen.',
           errorName: ''
           }]">
-            </app-inputfield-weapon-modal>
+            </app-default-input-field>
             <div class="flex flex-col w-3/6">
               <label for="select-color" class="">Visualisatie kleur </label>
               <select id="select-color" class="select select-accent max-w-xs border-2"
@@ -192,14 +192,14 @@
               </app-date-time-selector>
 
               <div class="flex flex-row items-end space-x-2 mt-2">
-                <app-inputfield-weapon-modal
+                <app-default-input-field
                   [inputId]="'inputID'"
                   [labelText]="'Herhaalt elke'"
                   [_formControl]="createSeriesForm.controls.repeatDaysBetween"
                   [hideErrorsWhenEmpty]="true"
                   [type]="'number'"
                   [errorSettings]="[]">
-                </app-inputfield-weapon-modal>
+                </app-default-input-field>
 
                 <select class="select select-accent border-2 "
                         [formControl]="createSeriesForm.controls.repeatType">

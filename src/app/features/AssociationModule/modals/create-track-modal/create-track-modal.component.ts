@@ -11,9 +11,6 @@ import {CreateTrackResponseDTO} from "../../../../CoreModule/models/dto/create-t
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {
-  InputFieldWeaponModalComponent
-} from "../../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
-import {
   TextareaModalComponent
 } from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
 import {
@@ -31,7 +28,6 @@ import {
   imports: [
     FormsModule,
     NgClass,
-    InputFieldWeaponModalComponent,
     TextareaModalComponent,
     NgForOf,
     ReactiveFormsModule,

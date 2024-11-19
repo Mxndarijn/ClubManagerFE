@@ -22,6 +22,11 @@ import {
 import {
   InputFieldSingleSelectDataSource
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 export interface WeaponStatusInterface {
   status: string,
@@ -31,16 +36,17 @@ export interface WeaponStatusInterface {
 @Component({
   selector: 'app-create-weapon-modal',
   standalone: true,
-    imports: [
-        FormsModule,
-        NgForOf,
-        ReactiveFormsModule,
-        SingleErrorMessageComponent,
-        NgClass,
-        DefaultInputFieldComponent,
-        NgIf,
-        InputFieldSingleSelectComponent
-    ],
+  imports: [
+    FormsModule,
+    NgForOf,
+    ReactiveFormsModule,
+    SingleErrorMessageComponent,
+    NgClass,
+    DefaultInputFieldComponent,
+    NgIf,
+    InputFieldSingleSelectComponent,
+    CustomButton
+  ],
   templateUrl: './create-weapon-modal.component.html',
   styleUrl: './create-weapon-modal.component.css'
 })
@@ -56,16 +62,6 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
     type: FormControl<WeaponType | null>;
   }>;
   private associationID: string = '';
-  // weaponTypeList: WeaponType[] = [];
-  // weaponStatuses: WeaponStatusInterface[] = [
-  //   {
-  //   status: WeaponStatus.ACTIVE,
-  //     id: "ACTIVE"
-  // },
-  //   {
-  //     status: WeaponStatus.INACTIVE,
-  //     id: "INACTIVE"
-  //   }]
   @Output() CreateWeaponEvent = new EventEmitter<Weapon>();
   @Input() SetCurrentWeapon! : EventEmitter<Weapon>;
   @Output() ChangeWeaponEvent = new EventEmitter<Weapon>();
@@ -95,7 +91,7 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
     hideErrorsWhenEmpty: false,
     items: new BehaviorSubject<any[]>([]),
     label: "Selecteer de status van het wapen",
-    processItem(input: WeaponStatus): Promise<any> {
+    processItem(input: string): Promise<any> {
       return new Promise((resolve, reject) => {
         resolve(input);
       });
@@ -117,14 +113,14 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.singleSelectInputFieldDataSourceStatus.items.next(Object.values(WeaponStatus))
+    this.singleSelectInputFieldDataSourceStatus.items.next(Object.keys(WeaponStatus).filter((key) => isNaN(Number(key))))
 
 
     // @ts-ignore
     this.createWeaponForm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required, Validators.minLength(3)])),
-      status: this.singleSelectInputFieldDataSourceType.formControl,
-      type: new FormControl(null, Validators.required),
+      status: this.singleSelectInputFieldDataSourceStatus.formControl,
+      type: this.singleSelectInputFieldDataSourceType.formControl,
     });
     this.graphQLService.getAllWeaponTypes().then(r=>{
         this.singleSelectInputFieldDataSourceType.items.next(r);
@@ -174,6 +170,7 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
               alertClass: AlertClass.CORRECT_CLASS
             });
           } else {
+            console.log(weaponDTO)
             this.alertService.showAlert({
               title: "Fout opgetreden",
               subTitle: "Er is een fout opgetreden.",
@@ -243,4 +240,7 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
       this.modalService.hideModal(Modal.ASSOCIATION_WEAPONS_CREATE_WEAPON);
     }
   }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

@@ -8,9 +8,9 @@ export interface Weapon {
 }
 
 export enum WeaponStatus {
-  ACTIVE = "Actief",
-  INACTIVE = "Inactief",
-  MAINTENANCE = "Onderhoud"
+  ACTIVE,
+  INACTIVE,
+  MAINTENANCE
 }
 
 export function getWeaponStatus(name : string) {

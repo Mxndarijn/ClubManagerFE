@@ -20,42 +20,43 @@
       errorName: ''
       }]">
           </app-default-input-field>
-          <div class="flex flex-col w-96 items-start justify-evenly mt-5">
             <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceStatus">
             </app-input-field-single-select>
 
-
-<!--            <label for="status-selection" class="mb-2">Selecteer de status van het wapen</label>-->
-<!--            <select id="status-selection" class="select select-accent w-full  border-2"-->
-<!--                    [formControl]="createWeaponForm.controls.status">-->
-<!--              <option [ngValue]="weaponStatus" *ngFor="let weaponStatus of weaponStatuses"> {{ weaponStatus.status }}-->
-<!--              </option>-->
-<!--            </select>-->
-          </div>
-          <div class="flex flex-col w-96  items-start justify-evenly mt-5">
             <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceType">
             </app-input-field-single-select>
-<!--            <label for="type-selection" class="mb-2">Selecteer hier het type van het wapen</label>-->
-<!--            <select id="type-selection" class="select select-accent w-full  border-2"-->
-<!--                    [formControl]="createWeaponForm.controls.type">-->
-<!--              <option [ngValue]="weaponType" *ngFor="let weaponType of weaponTypeList">{{ weaponType.name }}</option>-->
-<!--            </select>-->
-          </div>
+
         </form>
       </div>
     </div>
     <div class="modal-action">
       <form method="dialog" class="w-full flex justify-between">
-        <button class="btn border-error border-2 bg-base-100"
-                (click)="closeModal()">Annuleer
-        </button>
+        <app-custom-button
+          [buttonClass]="ButtonClass.ERROR_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Annuleer'"
+          [disabledStatus]="false"
+          (onClick)="closeModal()"
+        ></app-custom-button>
+
         <ng-container *ngIf="currentWeapon">
-          <button *ngIf="currentWeapon.id.length <= 0" [disabled]="!createWeaponForm.valid" class="btn border-success border-2 bg-base-100"
-                  (click)="createWeapon()">Voeg toe
-          </button>
-          <button *ngIf="currentWeapon.id.length > 0" [disabled]="!createWeaponForm.valid" class="btn border-success border-2 bg-base-100"
-                  (click)="changeWeapon()">Wijzig
-          </button>
+          <app-custom-button
+            *ngIf="currentWeapon.id.length <= 0"
+            [buttonClass]="ButtonClass.SUCCESS_CLASS"
+            [buttonSize]="ButtonSize.BTN_MD"
+            [labelText]="'Voeg toe'"
+            [disabledStatus]="!createWeaponForm.valid"
+            (onClick)="createWeapon()"
+          ></app-custom-button>
+
+          <app-custom-button
+            *ngIf="currentWeapon.id.length > 0"
+            [buttonClass]="ButtonClass.WARNING_CLASS"
+            [buttonSize]="ButtonSize.BTN_MD"
+            [labelText]="'Wijzig'"
+            [disabledStatus]="!createWeaponForm.valid"
+            (onClick)="changeWeapon()"
+          ></app-custom-button>
         </ng-container>
       </form>
     </div>
