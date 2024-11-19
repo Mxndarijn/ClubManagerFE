@@ -40,6 +40,8 @@ export interface MultiColumnListDataSource {
   getID : (dataRow: any) => string;
 
   headerRow?: TemplateRef<any>;
+
+  defaultSort?: (a: any, b: any) => number;
 }
 
 // Interface representing a configuration for an individual column in the table
