@@ -2082,4 +2082,52 @@ export class GraphQLCommunication {
     }
     return this.solvePromise(query, v => v.data.associationMutations.associationUserPresenceMutations.deleteUserPresence);
   }
+
+  getMyAssociationGuests(first: number = 20, after?: string, search: string = "") {
+    const query = {
+      query: `query MyQuery($first: Int, $after: LocalDateTime, $search: String) {
+  userQueries {
+    getMyProfile {
+      associationGuests(after: $after, first: $first, search: $search) {
+        edges {
+          node {
+            status
+            reviewer {
+              fullName
+            }
+            requestTime
+            id
+            guestVerificationType
+            guestVerificationCode
+            guestResidence
+            guestFullName
+            eventTime
+            association {
+              id
+              name
+              image {
+                encoded
+              }
+            }
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        first: first,
+        after: after,
+        search: search
+      }
+    }
+    return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+
+
+
+  }
 }

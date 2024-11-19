@@ -1,0 +1,54 @@
+
+<app-multi-column-list
+  [dataSource]="dataSourceGuests">
+</app-multi-column-list>
+
+<!--Headers-->
+<ng-template #GuestNameHeader>
+  Introducee
+</ng-template>
+
+<ng-template #AssociationHeader>
+  Vereniging
+</ng-template>
+
+<ng-template #DateHeader>
+  Introducee Datum
+</ng-template>
+
+<ng-template #StatusHeader>
+  Status
+</ng-template>
+
+<ng-template #RequestDateHeader>
+  Aanvraagdatum
+</ng-template>
+
+<ng-template #ActionsHeader>
+</ng-template>
+
+<!--Rows-->
+
+<ng-template #GuestNameRow let-associationGuest="data">
+  {{ associationGuest.guestFullName }}
+</ng-template>
+
+<ng-template #DateRow let-associationGuest="data">
+  {{ associationGuest.eventTime }}
+</ng-template>
+
+<ng-template #AssociationRow let-associationGuest="data">
+  {{ associationGuest.association.name }}
+</ng-template>
+
+<ng-template #StatusRow let-associationGuest="data">
+  {{ associationGuest.status }}
+</ng-template>
+
+<ng-template #RequestDateRow let-associationGuest="data">
+  {{ associationGuest.requestTime }}
+</ng-template>
+
+<ng-template #ActionsRow let-associationGuest="data">
+  buttonie
+</ng-template>

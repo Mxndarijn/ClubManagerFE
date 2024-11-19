@@ -20,11 +20,6 @@ import {UserPresence} from "../../../../CoreModule/models/user-presence.model";
 import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
 import {UserAssociation} from "../../../../CoreModule/models/user-association.model";
 
-enum Tab {
-  PRESENCES,
-  INTRODUCES
-}
-
 @Component({
   selector: 'app-my-presences-page',
   standalone: true,
@@ -39,25 +34,6 @@ enum Tab {
   styleUrl: './my-presences-page.component.css'
 })
 export class MyPresencesPageComponent implements OnInit {
-  activeTab: Tab = Tab.PRESENCES;
-  protected readonly Tab = Tab;
-  tabDataSource: TabDataSource = {
-    defaultActive: 0,
-    items: [
-      {
-        label: "Presentie",
-        onClick : () => {
-          this.activeTab = Tab.PRESENCES
-        }
-      },
-      {
-        label: "Introducees",
-        onClick : () => {
-          this.activeTab = Tab.INTRODUCES
-        }
-      }
-    ]
-  };
 
   @ViewChild('AssociationHeader', { static: true }) associationHeader!: TemplateRef<any>;
   @ViewChild('DateHeader', {static: true}) dateHeader!: TemplateRef<any>;

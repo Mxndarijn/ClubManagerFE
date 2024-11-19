@@ -3,6 +3,8 @@ import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
 import {ErrorSetting} from "../default-input-field/default-input-field.component";
+import {InputFieldSingleSelectDataSource} from "./input-field-single-select-datasource";
+import {data} from "autoprefixer";
 
 @Component({
   selector: 'app-input-field-single-select',
@@ -19,25 +21,17 @@ import {ErrorSetting} from "../default-input-field/default-input-field.component
   styleUrl: './input-field-single-select.component.css'
 })
 export class InputFieldSingleSelectComponent implements OnInit {
-  @Input() _formControl!: FormControl;
-  @Input() inputList: any[] = [];
-  @Input() _label: string = "";
-  @Input() processItem!: (input: any) => Promise<string>;
-  @Input() hideErrorsWhenEmpty: boolean = false;
-  @Input() errorSetting!: ErrorSetting;
-  @Input() NewItemsEvent?: EventEmitter<any[]>
+  @Input() dataSource!: InputFieldSingleSelectDataSource
   protected _id: string = "";
   processedItems: { original: any; processed: string }[] = [];
 
 
 
   async ngOnInit() {
-    this._formControl.reset()
+    this.dataSource.formControl.reset()
     this._id = Math.random().toString(15);
-    this.NewItemsEvent?.subscribe({
+    this.dataSource.items.subscribe({
       next : async (items : any[]) => {
-        this.inputList = items
-        console.log("List: " , this.inputList)
         await this.loadItems()
       }
     })
@@ -46,10 +40,10 @@ export class InputFieldSingleSelectComponent implements OnInit {
   }
 
   async loadItems() {
-    this._formControl.reset()
+    this.dataSource.formControl.reset()
     const newItems = await Promise.all(
-      this.inputList.map(async item => {
-        const processed = await this.processItem(item);
+      this.dataSource.items.value.map(async item => {
+        const processed = await this.dataSource.processItem(item);
         return { original: item, processed };
       })
     );
@@ -60,6 +54,8 @@ export class InputFieldSingleSelectComponent implements OnInit {
       // this._formControl.setValue(this.processedItems[0].original)
     }
     }
+
+  protected readonly data = data;
 }
 
 

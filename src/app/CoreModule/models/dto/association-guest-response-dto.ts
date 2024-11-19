@@ -17,7 +17,7 @@ export interface AssociationGuest {
   guestFullName: string;
   requestTime: string; // LocalDateTime
   eventTime: string; // LocalDateTime
-  guestResidence?: string;
+  guestResidence: string;
   guestVerificationType?: AssociationGuestVerificationType;
   guestVerificationCode?: string;
 }

@@ -1,16 +1,7 @@
-<app-tab [dataSource]="tabDataSource"></app-tab>
 
-<div *ngIf="activeTab === Tab.PRESENCES">
-
-  <app-multi-column-list
-    [dataSource]="dataSourcePresences">
-  </app-multi-column-list>
-
-</div>
-
-<div *ngIf="activeTab === Tab.INTRODUCES">
-
-</div>
+<app-multi-column-list
+  [dataSource]="dataSourcePresences">
+</app-multi-column-list>
 
 <ng-template #AssociationHeader>
   Vereniging

@@ -32,8 +32,12 @@ const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
     link: "/myreservations"
   },
   {
-    name: "Mijn Presenties / Introducees",
+    name: "Mijn Presenties",
     link: "/my-presences"
+  },
+  {
+    name: "Mijn Introducees",
+    link: "/my-guests"
   }
 ]
 

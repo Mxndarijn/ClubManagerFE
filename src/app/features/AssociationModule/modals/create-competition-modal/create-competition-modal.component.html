@@ -54,30 +54,10 @@
           [specificError]="'dateNotAfterOther'">
         </app-error-message>
 
-        <app-input-field-single-select
-          [_formControl]="createCompetitionForm.controls.compScoreType"
-          [inputList]="Object.values(CompetitionScoreType)"
-          [_label]="'Selecteer de competitie score.'"
-          [processItem]="convertScoreTypeToText"
-          [errorSetting]="
-            {
-              errorMessage: 'Je moet een waarde selecteren.',
-              errorName: ''
-            }">
-
+        <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceType">
         </app-input-field-single-select>
 
-        <app-input-field-single-select
-          [_formControl]="createCompetitionForm.controls.compRankingType"
-          [inputList]="Object.values(CompetitionRanking)"
-          [_label]="'Selecteer de competitie ranking.'"
-          [processItem]="convertRankingToText"
-          [errorSetting]="
-            {
-              errorMessage: 'Je moet een waarde selecteren.',
-              errorName: ''
-            }">
-
+        <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSource">
         </app-input-field-single-select>
       </div>
     </div>

@@ -4,7 +4,7 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {DefaultModalInformation} from "../../../../SharedModule/models/default-modal-information";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {Reservation} from "../../../../CoreModule/models/reservation.model";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
 import {AuthenticationService} from "../../../../CoreModule/services/authentication.service";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
@@ -14,6 +14,9 @@ import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/
 import {
   InputFieldSingleSelectComponent
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
+import {
+  InputFieldSingleSelectDataSource
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
 
 @Component({
   selector: 'app-enroll-at-reservation-modal',
@@ -37,9 +40,22 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
   startTime: string = "";
   endTime: string = "";
   private associationID : string;
-  selectPosition: FormControl<number | null>;
-  NewItemsEvent: EventEmitter<any[]> = new EventEmitter;
-  items : any[] = []
+
+  singleSelectInputFieldDataSource: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "",
+    processItem(input: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input + 1);
+      });
+    }
+  }
 
 
   constructor(modalService: ModalService,
@@ -51,7 +67,7 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
               private auth : AuthenticationService) {
     super(Modal.ASSOCIATION_RESERVE_ENROLL_AT_RESERVATION, modalService);
     this.associationID = route.snapshot.params['associationID'];
-    this.selectPosition = new FormControl(null, Validators.required)
+    // this.selectPosition = new FormControl(null, Validators.required)
 
   }
 
@@ -70,8 +86,7 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
           console.log(data)
           if(data.success == true) {
             this.reservation = data.reservation;
-            this.NewItemsEvent.emit(this.reservation!.openPositions);
-            this.items = this.reservation!.openPositions
+            this.singleSelectInputFieldDataSource.items.next(this.reservation!.openPositions);
           } else {
             this.alertService.showAlert({
               title: "Fout opgetreden",
@@ -109,9 +124,7 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
 
   enrollAtReservation() {
     if(this.reservation != null) {
-      console.log(this.selectPosition)
-      console.log(this.selectPosition.value)
-      const position = this.selectPosition.value != null ? this.selectPosition.value! : -1
+      const position = this.singleSelectInputFieldDataSource.formControl.value != null ? this.singleSelectInputFieldDataSource.formControl.value! : -1
       this.graphQLService.enrollAtReservation(this.associationID, this.reservation.id, true, position).then(data => {
         console.log(data)
         if(data.success == true) {
@@ -176,9 +189,4 @@ export class EnrollAtReservationModalComponent extends DefaultModalInformation i
     }
   }
 
-  convertNumberToText(input: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      resolve(input + 1);
-    });
-  }
 }

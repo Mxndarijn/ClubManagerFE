@@ -7,7 +7,7 @@ import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-comm
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
 import {
   InputFieldFormComponent
 } from "../../../../SharedModule/components/input-fields/input-field-form-big/input-field-form.component";
@@ -36,6 +36,9 @@ import {
 import {ActivatedRoute} from "@angular/router";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {CompetitionRanking, CompetitionScoreType } from '../../../../CoreModule/models/association-competition';
+import {
+  InputFieldSingleSelectDataSource
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
 
 @Component({
   selector: 'create-competition-modal',
@@ -61,6 +64,38 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
   private subscriptions: Subscription[] = [];
   @Output() CompetitionCreatedEvent = new EventEmitter<CompetitionDTO>;
 
+  singleSelectInputFieldDataSource: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer de competitie ranking.",
+    processItem(input: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input);
+      });
+    }
+  }
+
+  singleSelectInputFieldDataSourceType: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer de competitie score.",
+    processItem(input: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input);
+      });
+    }
+  }
+
   protected createCompetitionForm: FormGroup<{
     name: FormControl<string | null>;
     description: FormControl<string | null>;
@@ -79,6 +114,9 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
     route: ActivatedRoute,
   ) {
     super(Modal.ASSOCIATION_CREATE_COMPETITION, modalService);
+
+    this.singleSelectInputFieldDataSource.items.next(Object.values(CompetitionRanking))
+    this.singleSelectInputFieldDataSourceType.items.next(Object.values(CompetitionScoreType))
     this.associationID = route.snapshot.params['associationID'];
     this.OnModalShowEvent.subscribe({
       next: () => {
@@ -91,8 +129,8 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
       description: new FormControl('', Validators.compose([Validators.required, Validators.minLength(3)])),
       startDate: new FormControl("", Validators.required),
       endDate: new FormControl("", Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
-      compScoreType: new FormControl(null, Validators.required),
-      compRankingType: new FormControl(null, Validators.required),
+      compScoreType: this.singleSelectInputFieldDataSourceType.formControl,
+      compRankingType: this.singleSelectInputFieldDataSource.formControl,
     });
   }
 
@@ -124,17 +162,6 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
   protected readonly CompetitionScoreType = CompetitionScoreType;
   protected readonly CompetitionRanking = CompetitionRanking;
 
-  convertScoreTypeToText(input: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      resolve(input);
-    });
-  }
-
-  convertRankingToText(input: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      resolve(input);
-    });
-  }
 
   createCompetition(): void {
     if (this.createCompetitionForm.valid) {

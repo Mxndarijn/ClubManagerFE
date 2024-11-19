@@ -41,6 +41,7 @@ import {
   AssociationPresenceComponent
 } from "./features/AssociationModule/pages/association-presence/association-presence.component";
 import {MyPresencesPageComponent} from "./features/UserModule/pages/my-presences-page/my-presences-page.component";
+import {MyGuestsPageComponent} from "./features/UserModule/pages/my-guests-page/my-guests-page.component";
 
 export const routes: Routes = [
   {
@@ -147,6 +148,10 @@ export const routes: Routes = [
   {
     path: 'my-presences',
     component: MyPresencesPageComponent,
+  },
+  {
+    path: 'my-guests',
+    component: MyGuestsPageComponent,
   },
 
 ];
