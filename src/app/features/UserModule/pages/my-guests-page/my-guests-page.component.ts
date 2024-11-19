@@ -193,4 +193,9 @@ export class MyGuestsPageComponent implements OnInit {
   protected readonly ButtonSize = ButtonSize;
   protected readonly Modal = Modal;
   protected readonly faEnvelope = faEnvelope;
+
+  addAssociationGuest($event: AssociationGuest) {
+    this.dataSourceGuests.dataRows.next([...this.dataSourceGuests.dataRows.value, $event]);
+
+  }
 }

@@ -1,9 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {
-  InputFieldWeaponModalComponent
-} from "../../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {JsonPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {
   TextareaModalComponent
 } from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
@@ -13,7 +10,10 @@ import {Modal, ModalService} from "../../../../CoreModule/services/modal.service
 import {ActivatedRoute} from "@angular/router";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
-import {AssociationGuestVerificationType} from "../../../../CoreModule/models/dto/association-guest-response-dto";
+import {
+  AssociationGuest,
+  AssociationGuestVerificationType
+} from "../../../../CoreModule/models/dto/association-guest-response-dto";
 import {Association} from "../../../../CoreModule/models/association.model";
 import {ValidationUtils} from "../../../../SharedModule/utilities/validation-utils";
 import {
@@ -31,13 +31,18 @@ import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-funct
 import {
   DateTimeSelectorComponent
 } from "../../../../SharedModule/components/input-fields/date-time-selector/date-time-selector.component";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 
 @Component({
   selector: 'app-create-guest-modal',
   standalone: true,
   imports: [
     FormsModule,
-    InputFieldWeaponModalComponent,
     NgForOf,
     NgIf,
     ReactiveFormsModule,
@@ -45,12 +50,16 @@ import {
     NgClass,
     InputFieldSingleSelectComponent,
     DefaultInputFieldComponent,
-    DateTimeSelectorComponent
+    DateTimeSelectorComponent,
+    CustomButton,
+    JsonPipe
   ],
   templateUrl: './create-guest-modal.component.html',
   styleUrl: './create-guest-modal.component.css'
 })
 export class CreateGuestModalComponent extends DefaultModalInformation {
+
+  @Output() AssociationGuestCreated = new EventEmitter<AssociationGuest>();
 
   protected createGuestForm: FormGroup<{
     guestName: FormControl<string | null>;
@@ -58,7 +67,7 @@ export class CreateGuestModalComponent extends DefaultModalInformation {
     guestVerificationType: FormControl<AssociationGuestVerificationType | null>;
     guestVerificationCode: FormControl<string | null>;
     eventTime: FormControl<string | null>;
-    association: FormControl<Association | null>;
+    association: FormControl<UserAssociation | null>;
   }>;
 
   singleSelectInputFieldDataSourceAssociation: InputFieldSingleSelectDataSource = {
@@ -69,7 +78,7 @@ export class CreateGuestModalComponent extends DefaultModalInformation {
     formControl: new FormControl(null, Validators.required),
     hideErrorsWhenEmpty: false,
     items: new BehaviorSubject<any[]>([]),
-    label: "",
+    label: "Vereniging",
     processItem(input: UserAssociation): Promise<any> {
       return new Promise((resolve, reject) => {
         resolve(input.association.name);
@@ -85,7 +94,7 @@ export class CreateGuestModalComponent extends DefaultModalInformation {
     formControl: new FormControl(null, Validators.required),
     hideErrorsWhenEmpty: false,
     items: new BehaviorSubject<any[]>([]),
-    label: "",
+    label: "Verificatie type",
     processItem(input: AssociationGuestVerificationType): Promise<any> {
       return new Promise((resolve, reject) => {
         resolve(input);
@@ -102,6 +111,8 @@ export class CreateGuestModalComponent extends DefaultModalInformation {
   ) {
     super(Modal.GUEST_CREATE_GUEST, modalService);
 
+    this.title = "Aanvraag Introducee";
+
     this.graphQLService.getMyAssociationsWithoutImage().then(response => {
       this.singleSelectInputFieldDataSourceAssociation.items.next(response.associations);
     })
@@ -114,10 +125,58 @@ export class CreateGuestModalComponent extends DefaultModalInformation {
       guestResidence: new FormControl<string | null>(null, [Validators.required]),
       guestVerificationCode: new FormControl<string | null>(null, [Validators.required]),
       eventTime: new FormControl<string | null>(null, [Validators.required, ValidationUtils.isDatePresentOrFuture]),
-      guestVerificationType: new FormControl<AssociationGuestVerificationType | null>(null, [Validators.required]),
-      association: new FormControl<Association | null>(null, [Validators.required]),
+      guestVerificationType: this.singleSelectInputFieldDataSourceVerificationType.formControl,
+      association: this.singleSelectInputFieldDataSourceAssociation.formControl
     });
 
   }
 
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly ButtonClass = ButtonClass;
+
+  createGuest() {
+    if(this.createGuestForm.valid) {
+      this.graphQLService.createGuestAssociation(
+        this.createGuestForm.controls.association.value!.association.id,
+        this.createGuestForm.controls.guestName.value!,
+        this.createGuestForm.controls.guestResidence.value!,
+        this.createGuestForm.controls.guestVerificationType.value!,
+        this.createGuestForm.controls.guestVerificationCode.value!,
+        this.createGuestForm.controls.eventTime.value!
+        ).then(response => {
+          this.hideModal()
+          if(response.success) {
+
+            this.alertService.showAlert({
+              title: "Succesvol",
+              subTitle: "Aanvraag succesvol verstuurd.",
+              icon: AlertIcon.CHECK,
+              duration: 4000,
+              alertClass: AlertClass.CORRECT_CLASS
+            });
+            this.AssociationGuestCreated.emit(response.associationGuest)
+          } else {
+            this.alertService.showAlert({
+              title: "Fout opgetreden",
+              subTitle: "Er ging tijdens het versturen van de aanvraag.",
+              icon: AlertIcon.XMARK,
+              duration: 4000,
+              alertClass: AlertClass.INCORRECT_CLASS
+            });
+          }
+          console.log(response)
+      }).catch(error => {
+        console.error(error)
+        this.hideModal()
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er ging tijdens het versturen van de aanvraag.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+      })
+    }
+
+  }
 }

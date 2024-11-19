@@ -35,7 +35,12 @@
 
     <app-date-time-selector
     [_formControl]="createGuestForm.controls.eventTime"
-    [type]="'date'">
+    [labelText]="'Datum'"
+    [errorSettings]="[{
+      errorMessage: 'Selecteer toekomstige datum.',
+      errorName: ''
+    }]"
+    class="w-96">
 
     </app-date-time-selector>
 
@@ -44,5 +49,26 @@
 
     <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceAssociation">
     </app-input-field-single-select>
+  <div class="modal-action">
+    <form method="dialog" class="w-full flex justify-between" >
+
+      <app-custom-button
+        [buttonClass]="ButtonClass.ERROR_CLASS"
+        [buttonSize]="ButtonSize.BTN_MD"
+        [labelText]="'Sluit'"
+        [disabledStatus]="false"
+        (onClick)="hideModal()"
+      ></app-custom-button>
+
+      <app-custom-button
+        [buttonClass]="ButtonClass.SUCCESS_CLASS"
+        [buttonSize]="ButtonSize.BTN_MD"
+        [labelText]="'Aanvragen'"
+        [disabledStatus]="!createGuestForm.valid"
+        (onClick)="createGuest()"
+      ></app-custom-button>
+    </form>
   </div>
+  </div>
+
 </dialog>
