@@ -14,6 +14,7 @@ import {
 import {CompetitionDTO} from "../models/competition.model";
 import {SmallCompetitionScore} from "../models/association-competition";
 import {AuthenticationService} from "./authentication.service";
+import {WeaponStatus} from "../models/weapon.model";
 
 
 @Injectable({
@@ -813,7 +814,7 @@ export class GraphQLCommunication {
 
   }
 
-  createWeapon(associationID: string, weaponName: string, weaponStatusInterface: WeaponStatusInterface, weaponType: WeaponType) {
+  createWeapon(associationID: string, weaponName: string, weaponStatusInterface: WeaponStatus, weaponType: WeaponType) {
     const query = {
       query: `
          mutation createWeapon($dto: CreateWeaponDTO!, $associationID: ID!) {
@@ -840,7 +841,7 @@ export class GraphQLCommunication {
         dto: {
           weaponName: weaponName,
           weaponType: weaponType.id,
-          weaponStatus: weaponStatusInterface.id
+          weaponStatus: weaponStatusInterface
         },
         associationID: associationID
       }
@@ -1376,7 +1377,7 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.createReservations);
   }
 
-  changeWeapon(associationID: string, weaponID: string, weaponName: string, weaponStatusInterface: WeaponStatusInterface, weaponType: WeaponType) {
+  changeWeapon(associationID: string, weaponID: string, weaponName: string, weaponStatusInterface: WeaponStatus, weaponType: WeaponType) {
     const query = {
       query: `
          mutation changeWeapon($dto: ChangeWeaponDTO!, $associationID: ID!) {
@@ -1403,7 +1404,7 @@ export class GraphQLCommunication {
         dto: {
           weaponName: weaponName,
           weaponType: weaponType.id,
-          weaponStatus: weaponStatusInterface.id,
+          weaponStatus: weaponStatusInterface,
           weaponID: weaponID
         },
         associationID: associationID

@@ -16,6 +16,14 @@ import {
 import {
   TextareaModalComponent
 } from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
+import {
+  DefaultInputFieldComponent
+} from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 @Component({
   selector: 'app-create-track-modal',
@@ -27,7 +35,9 @@ import {
     TextareaModalComponent,
     NgForOf,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    DefaultInputFieldComponent,
+    CustomButton
   ],
   templateUrl: './create-track-modal.component.html',
   styleUrl: './create-track-modal.component.css'
@@ -172,5 +182,8 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
     return this.createTrackForm.controls.trackWeaponTypes.value!.includes(weaponType);
 
   }
+
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly ButtonClass = ButtonClass;
 }
 

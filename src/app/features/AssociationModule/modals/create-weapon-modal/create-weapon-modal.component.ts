@@ -7,7 +7,7 @@ import {
 import {
   SingleErrorMessageComponent
 } from "../../../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
 import {Weapon, WeaponStatus} from "../../../../CoreModule/models/weapon.model";
 import {WeaponType} from "../../../../CoreModule/models/weapon-type.model";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
@@ -16,6 +16,12 @@ import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {ActivatedRoute} from "@angular/router";
 import {CreateWeaponResponseDTO} from "../../../../CoreModule/models/dto/create-weapon-response-dto";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {
+    InputFieldSingleSelectComponent
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
+import {
+  InputFieldSingleSelectDataSource
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
 
 export interface WeaponStatusInterface {
   status: string,
@@ -25,15 +31,16 @@ export interface WeaponStatusInterface {
 @Component({
   selector: 'app-create-weapon-modal',
   standalone: true,
-  imports: [
-    FormsModule,
-    NgForOf,
-    ReactiveFormsModule,
-    SingleErrorMessageComponent,
-    NgClass,
-    DefaultInputFieldComponent,
-    NgIf
-  ],
+    imports: [
+        FormsModule,
+        NgForOf,
+        ReactiveFormsModule,
+        SingleErrorMessageComponent,
+        NgClass,
+        DefaultInputFieldComponent,
+        NgIf,
+        InputFieldSingleSelectComponent
+    ],
   templateUrl: './create-weapon-modal.component.html',
   styleUrl: './create-weapon-modal.component.css'
 })
@@ -45,23 +52,55 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
   showModal: boolean = false;
   createWeaponForm: FormGroup<{
     name: FormControl<string | null>;
-    status: FormControl<WeaponStatusInterface | null>;
+    status: FormControl<WeaponStatus | null>;
     type: FormControl<WeaponType | null>;
   }>;
   private associationID: string = '';
-  weaponTypeList: WeaponType[] = [];
-  weaponStatuses: WeaponStatusInterface[] = [
-    {
-    status: WeaponStatus.ACTIVE,
-      id: "ACTIVE"
-  },
-    {
-      status: WeaponStatus.INACTIVE,
-      id: "INACTIVE"
-    }]
+  // weaponTypeList: WeaponType[] = [];
+  // weaponStatuses: WeaponStatusInterface[] = [
+  //   {
+  //   status: WeaponStatus.ACTIVE,
+  //     id: "ACTIVE"
+  // },
+  //   {
+  //     status: WeaponStatus.INACTIVE,
+  //     id: "INACTIVE"
+  //   }]
   @Output() CreateWeaponEvent = new EventEmitter<Weapon>();
   @Input() SetCurrentWeapon! : EventEmitter<Weapon>;
   @Output() ChangeWeaponEvent = new EventEmitter<Weapon>();
+
+  singleSelectInputFieldDataSourceType: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer de type van het wapen",
+    processItem(input: WeaponType): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input.name);
+      });
+    }
+  }
+
+  singleSelectInputFieldDataSourceStatus: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer de status van het wapen",
+    processItem(input: WeaponStatus): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input);
+      });
+    }
+  }
 
   constructor(
     private graphQLService: GraphQLCommunication,
@@ -78,14 +117,17 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
       }
     })
 
+    this.singleSelectInputFieldDataSourceStatus.items.next(Object.values(WeaponStatus))
+
+
     // @ts-ignore
     this.createWeaponForm = new FormGroup({
       name: new FormControl('', Validators.compose([Validators.required, Validators.minLength(3)])),
-      status: new FormControl(this.weaponStatuses[0], Validators.required),
+      status: this.singleSelectInputFieldDataSourceType.formControl,
       type: new FormControl(null, Validators.required),
     });
     this.graphQLService.getAllWeaponTypes().then(r=>{
-        this.weaponTypeList = r
+        this.singleSelectInputFieldDataSourceType.items.next(r);
     })
   }
 
@@ -95,12 +137,10 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
         this.currentWeapon = value;
         this.createWeaponForm.controls.name.setValue(value.name);
         if(value.status.length > 0) {
-          this.createWeaponForm.controls.status.setValue(this.weaponStatuses.find(f => {
-            return f.id === value.status;
-          })!);
+          this.createWeaponForm.controls.status.setValue(WeaponStatus[value.status as keyof typeof WeaponStatus]!);
         }
         if(value.type.id != null) {
-          this.createWeaponForm.controls.type.setValue(this.weaponTypeList.find(f => {
+          this.createWeaponForm.controls.type.setValue(this.singleSelectInputFieldDataSourceType.items.value.find(f => {
             return f.id === value.type.id;
           })!);
         }
