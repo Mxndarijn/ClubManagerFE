@@ -1,11 +1,9 @@
-import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {NavigationService} from "../../../../CoreModule/services/navigation.service";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {ActivatedRoute} from "@angular/router";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
-import {AuthenticationService} from "../../../../CoreModule/services/authentication.service";
 import {
   ColumnSortType,
   MultiColumnListDataSource
@@ -67,10 +65,7 @@ export class MyGuestsPageComponent implements OnInit {
     private graphQLCommunication: GraphQLCommunication,
     navigationService: NavigationService,
     private translate: TranslateService,
-    route: ActivatedRoute,
     protected modalService: ModalService,
-    private authService: AuthenticationService,
-    private cdr: ChangeDetectorRef
   ) {
 
     navigationService.setSubTitle("");
