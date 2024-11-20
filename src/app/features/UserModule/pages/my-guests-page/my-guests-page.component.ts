@@ -10,7 +10,10 @@ import {
 } from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
 import {BehaviorSubject} from "rxjs";
 import {UserPresence} from "../../../../CoreModule/models/user-presence.model";
-import {AssociationGuest} from "../../../../CoreModule/models/dto/association-guest-response-dto";
+import {
+  AssociationGuest,
+  AssociationGuestStatus
+} from "../../../../CoreModule/models/dto/association-guest-response-dto";
 import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
 import {
   ButtonClass,
@@ -26,6 +29,8 @@ import {
 } from "../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
 import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {NgIf} from "@angular/common";
+import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
 
 @Component({
   selector: 'app-my-guests-page',
@@ -35,7 +40,8 @@ import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/
     CreateGuestModalComponent,
     CustomButton,
     ConfirmationModalComponent,
-    TranslateModule
+    TranslateModule,
+    NgIf
   ],
   templateUrl: './my-guests-page.component.html',
   styleUrl: './my-guests-page.component.css'
@@ -43,7 +49,6 @@ import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/
 export class MyGuestsPageComponent implements OnInit {
 
   @ViewChild('topHeaderRowInvitations', { static: true }) topHeaderRowInvitations!: TemplateRef<any>;
-
 
   @ViewChild('GuestNameHeader', { static: true }) guestNameHeader!: TemplateRef<any>;
   @ViewChild('AssociationHeader', {static: true}) associationHeader!: TemplateRef<any>;
@@ -228,4 +233,7 @@ export class MyGuestsPageComponent implements OnInit {
     }
 
   }
+
+  protected readonly UtilityFunctions = UtilityFunctions;
+  protected readonly AssociationGuestStatus = AssociationGuestStatus;
 }

@@ -77,6 +77,11 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
     link: "weapons",
     permission: AssociationPermission.MANAGE_WEAPONS
   },
+  {
+    name: "Introducees",
+    link: "guests",
+    permission: AssociationPermission.REVIEW_ASSOCIATION_GUEST
+  },
 
 ]
 @Component({

@@ -6,5 +6,6 @@ export enum AssociationPermission {
   NO_PERMISSION = "no-permission",
   MANAGE_WEAPONS = "manage-weapons",
   VIEW_COMPETITIONS = "view-competitions",
-  VIEW_RESERVATIONS = "view-reservations"
+  VIEW_RESERVATIONS = "view-reservations",
+  REVIEW_ASSOCIATION_GUEST = "review-association-guest"
 }

@@ -1,0 +1,32 @@
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{{ title }}</h3>
+    nog ffe details uitwerken wat allemaal zichtbaar
+    {{selectedAssociationGuest?.guestFullName}}
+
+
+    <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceStatus">
+    </app-input-field-single-select>
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between" >
+        <app-custom-button
+          [buttonClass]="ButtonClass.ERROR_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Sluit'"
+          [disabledStatus]="false"
+          (onClick)="hideModal()"
+        ></app-custom-button>
+
+        <app-custom-button
+          [buttonClass]="ButtonClass.SUCCESS_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Bevestig'"
+          [disabledStatus]="!singleSelectInputFieldDataSourceStatus.formControl.valid"
+          (onClick)="changeGuest()"
+        ></app-custom-button>
+      </form>
+    </div>
+  </div>
+
+</dialog>

@@ -61,7 +61,7 @@
 </ng-template>
 
 <ng-template #ActionsRow let-associationGuest="data">
-  <app-custom-button class="mr-10"
+  <app-custom-button *ngIf="UtilityFunctions.convertToEnum(AssociationGuestStatus,associationGuest.status) == AssociationGuestStatus.PENDING" class="mr-10"
                      [buttonClass]="ButtonClass.ERROR_CLASS"
                      [buttonSize]="ButtonSize.BTN_MD"
                      [labelText]="'Annuleer Aanvraag'"

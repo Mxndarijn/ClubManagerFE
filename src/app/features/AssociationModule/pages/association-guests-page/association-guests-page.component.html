@@ -1,0 +1,91 @@
+<app-tab [dataSource]="dataSourceTab"></app-tab>
+<div *ngIf="activeTab === Tab.PRESENT">
+  <app-multi-column-list
+    [dataSource]="dataSourceGuestsPresent">
+  </app-multi-column-list>
+</div>
+
+<div *ngIf="activeTab === Tab.HISTORY">
+  <app-multi-column-list
+    [dataSource]="dataSourceGuestsHistory">
+  </app-multi-column-list>
+</div>
+
+<!--Headers-->
+<ng-template #GuestNameHeader>
+  Introducee
+</ng-template>
+
+<ng-template #RequesterHeader>
+  Aanvrager
+</ng-template>
+
+<ng-template #DateHeader>
+  Introducee Datum
+</ng-template>
+
+<ng-template #StatusHeader>
+  Status
+</ng-template>
+
+<ng-template #RequestDateHeader>
+  Aanvraagdatum
+</ng-template>
+
+<ng-template #ActionsHeader>
+</ng-template>
+
+<ng-template #ReviewerHeader>
+  Behandeld door
+</ng-template>
+
+<ng-template #topHeaderRowInvitations>
+<!--  <app-custom-button class="mr-10"-->
+<!--                     [buttonClass]="ButtonClass.ACCENT_CLASS"-->
+<!--                     [buttonSize]="ButtonSize.BTN_MD"-->
+<!--                     [labelText]="'Behandel Aanvraag'"-->
+<!--                     [icon]="faEnvelope"-->
+<!--                     [disabledStatus]="false"-->
+<!--  ></app-custom-button>-->
+</ng-template>
+
+<!--Rows-->
+
+<ng-template #GuestNameRow let-associationGuest="data">
+  {{ associationGuest.guestFullName }}
+</ng-template>
+
+<ng-template #DateRow let-associationGuest="data">
+  {{ associationGuest.eventTime }}
+</ng-template>
+
+<ng-template #RequesterRow let-associationGuest="data">
+  {{ associationGuest.association.name }}
+</ng-template>
+
+<ng-template #StatusRow let-associationGuest="data">
+  {{ associationGuest.status }}
+</ng-template>
+
+<ng-template #RequestDateRow let-associationGuest="data">
+  {{ associationGuest.requestTime }}
+</ng-template>
+
+<ng-template #ReviewerRow let-associationGuest="data">
+  {{ associationGuest.reviewer.fullName }}
+</ng-template>
+
+<ng-template #ActionsRow let-associationGuest="data">
+  <app-custom-button class="mr-10"
+                     [buttonClass]="ButtonClass.WARNING_CLASS"
+                     [buttonSize]="ButtonSize.BTN_MD"
+                     [labelText]="'Behandel Aanvraag'"
+                     [icon]="faEnvelope"
+                     [disabledStatus]="false"
+                     (onClick)="selectedAssociationGuest = associationGuest; modalService.showModal(Modal.GUEST_CHANGE_GUEST)"
+  ></app-custom-button>
+</ng-template>
+
+<app-review-association-guest-modal [selectedAssociationGuest]="selectedAssociationGuest" (AssociationGuestChanged)="guestChanged($event)"></app-review-association-guest-modal>
+
+

@@ -42,6 +42,9 @@ import {
 } from "./features/AssociationModule/pages/association-presence/association-presence.component";
 import {MyPresencesPageComponent} from "./features/UserModule/pages/my-presences-page/my-presences-page.component";
 import {MyGuestsPageComponent} from "./features/UserModule/pages/my-guests-page/my-guests-page.component";
+import {
+  AssociationGuestsPageComponent
+} from "./features/AssociationModule/pages/association-guests-page/association-guests-page.component";
 
 export const routes: Routes = [
   {
@@ -131,6 +134,11 @@ export const routes: Routes = [
     path: 'association/:associationID/competition/:competitionID/member/:competitionMemberID',
     component: CompetitionDetailMemberPageComponent,
     canActivate: [AuthGuard, viewCompetitionPageGuardGuard],
+  },
+  {
+    path: 'association/:associationID/guests',
+    component: AssociationGuestsPageComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'myreservations',

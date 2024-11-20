@@ -233,6 +233,10 @@ export class UtilityFunctions {
 
 }
 
+  static convertToEnum<T>(enumObj: T, value: string) {
+    return enumObj[value as keyof T];
+  }
+
 }
 
 export enum Day {

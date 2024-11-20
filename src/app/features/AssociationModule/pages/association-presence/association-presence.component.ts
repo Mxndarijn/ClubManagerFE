@@ -358,7 +358,6 @@ export class AssociationPresenceComponent implements OnInit{
         }
       })
     }
-
   }
 
   async generateConfirmationMessage() {

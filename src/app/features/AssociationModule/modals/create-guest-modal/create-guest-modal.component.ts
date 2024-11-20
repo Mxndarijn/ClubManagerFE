@@ -107,7 +107,6 @@ export class CreateGuestModalComponent extends DefaultModalInformation {
     private route: ActivatedRoute,
     private graphQLService: GraphQLCommunication,
     private alertService: AlertService,
-    private util: UtilityFunctions
   ) {
     super(Modal.GUEST_CREATE_GUEST, modalService);
 

@@ -13,7 +13,7 @@ export interface AssociationGuest {
   requester: User;
   reviewer: User;
   association: Association;
-  status: AssociationGuestStatus;
+  status: string;
   guestFullName: string;
   requestTime: string; // LocalDateTime
   eventTime: string; // LocalDateTime

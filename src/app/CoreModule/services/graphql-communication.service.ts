@@ -15,7 +15,7 @@ import {CompetitionDTO} from "../models/competition.model";
 import {SmallCompetitionScore} from "../models/association-competition";
 import {AuthenticationService} from "./authentication.service";
 import {WeaponStatus} from "../models/weapon.model";
-import {AssociationGuestVerificationType} from "../models/dto/association-guest-response-dto";
+import {AssociationGuestStatus, AssociationGuestVerificationType} from "../models/dto/association-guest-response-dto";
 
 
 @Injectable({
@@ -2156,6 +2156,56 @@ export class GraphQLCommunication {
 
 
   }
+  getAssociationGuests(associationID: string, first: number = 20, after?: string, status?: string, search: string = "") {
+    const query = {
+      query: `query MyQuery($associationID: ID!, $status: AssociationGuestStatus, $first: Int, $after: LocalDateTime, $search: String) {
+  associationQueries {
+    getAssociationDetails(associationID: $associationID) {
+      associationGuests(status: $status, search: $search, first: $first, after: $after) {
+        edges {
+          node {
+            status
+            reviewer {
+              fullName
+            }
+            requestTime
+            id
+            guestVerificationType
+            guestVerificationCode
+            guestResidence
+            guestFullName
+            eventTime
+            association {
+              id
+              name
+            }
+            requester {
+              fullName
+              id
+            }
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        first: first,
+        after: after,
+        search: search,
+        status: status,
+        associationID: associationID
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
+
+
+
+  }
 
   createGuestAssociation(associationID: string, guestFullName: string, guestResidence: string, guestVerificationType: AssociationGuestVerificationType, guestVerificationCode : string, eventTime: string) {
     const query = {
@@ -2229,6 +2279,53 @@ export class GraphQLCommunication {
       }
     }
     return this.solvePromise(query, v => v.data.associationMutations.associationGuestMutations.cancelAssociationGuest);
+
+  }
+
+  changeAssociationGuestStatus(id: string, associationID: string, status: any) {
+    const query = {
+      query: `
+      mutation MyMutation($associationID: ID!, $associationGuestID: ID!, $status: AssociationGuestStatus!) {
+  associationMutations {
+    associationGuestMutations {
+      reviewAssociationGuest(
+        dto: {associationID: $associationID, associationGuestID: $associationGuestID, status: $status}
+      ) {
+        message
+        success
+        associationGuest {
+          eventTime
+          guestFullName
+          guestResidence
+          guestVerificationCode
+          guestVerificationType
+          id
+          requestTime
+          status
+          reviewer {
+            email
+            fullName
+            hasEmailVerified
+            id
+          }
+          association {
+            name
+            image {
+              encoded
+            }
+          }
+        }
+      }
+    }
+  }
+}`, variables: {
+        associationID: associationID,
+        associationGuestID: id,
+        status: status
+      }
+    }
+
+    return this.solvePromise(query, v => v.data.associationMutations.associationGuestMutations.reviewAssociationGuest);
 
   }
 }
