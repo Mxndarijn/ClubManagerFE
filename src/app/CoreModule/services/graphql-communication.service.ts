@@ -2209,4 +2209,26 @@ export class GraphQLCommunication {
 
     return this.solvePromise(query, v => v.data.associationMutations.associationGuestMutations.createAssociationGuest);
   }
+
+  deleteAssociationGuest(id: string, associationID : string) {
+    const query = {
+      query: `mutation MyMutation($associationID: ID!, $associationGuestID: ID!) {
+  associationMutations {
+    associationGuestMutations {
+      cancelAssociationGuest(dto: {associationID: $associationID, associationGuestID: $associationGuestID}) {
+        message
+        success
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        associationGuestID: id
+
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationGuestMutations.cancelAssociationGuest);
+
+  }
 }

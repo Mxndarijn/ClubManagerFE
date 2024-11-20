@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@ang
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {NavigationService} from "../../../../CoreModule/services/navigation.service";
-import {TranslateService} from "@ngx-translate/core";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {ActivatedRoute} from "@angular/router";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {AuthenticationService} from "../../../../CoreModule/services/authentication.service";
@@ -23,6 +23,11 @@ import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import {
   CreateGuestModalComponent
 } from "../../../AssociationModule/modals/create-guest-modal/create-guest-modal.component";
+import {
+  ConfirmationModalComponent
+} from "../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
+import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
+import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 
 @Component({
   selector: 'app-my-guests-page',
@@ -30,7 +35,9 @@ import {
   imports: [
     MultiColumnList,
     CreateGuestModalComponent,
-    CustomButton
+    CustomButton,
+    ConfirmationModalComponent,
+    TranslateModule
   ],
   templateUrl: './my-guests-page.component.html',
   styleUrl: './my-guests-page.component.css'
@@ -53,6 +60,7 @@ export class MyGuestsPageComponent implements OnInit {
   @ViewChild('ActionsRow', {static: true}) actionsRow!: TemplateRef<{ data: AssociationGuest }>;
   @ViewChild('DateRow', {static: true}) dateRow!: TemplateRef<{ data: AssociationGuest }>;
   @ViewChild('RequestDateRow', {static: true}) requestDateRow!: TemplateRef<{ data: AssociationGuest }>;
+  selectedAssociationGuest?: AssociationGuest;
 
   constructor(
     private alertService: AlertService,
@@ -196,6 +204,33 @@ export class MyGuestsPageComponent implements OnInit {
 
   addAssociationGuest($event: AssociationGuest) {
     this.dataSourceGuests.dataRows.next([...this.dataSourceGuests.dataRows.value, $event]);
+
+  }
+
+  deleteAssociationGuest() {
+    if(this.selectedAssociationGuest) {
+      this.modalService.hideModal(Modal.GUEST_CANCEL_GUEST)
+      this.graphQLCommunication.deleteAssociationGuest(this.selectedAssociationGuest.id, this.selectedAssociationGuest.association.id).then((response: DefaultBooleanResponseDTO) => {
+        if(response.success) {
+          this.dataSourceGuests.dataRows.next([...this.dataSourceGuests.dataRows.value.filter(a => { return a.id != this.selectedAssociationGuest!.id})])
+          this.alertService.showAlert({
+            title: "Succesvol",
+            subTitle: "De Aanvraag is succesvol ingetrokken.",
+            icon: AlertIcon.CHECK,
+            duration: 4000,
+            alertClass: AlertClass.CORRECT_CLASS
+          });
+        } else {
+          this.alertService.showAlert({
+            title: "Fout opgetreden",
+            subTitle: "De aanvraag kon niet worden ingetrokken.",
+            icon: AlertIcon.XMARK,
+            duration: 4000,
+            alertClass: AlertClass.INCORRECT_CLASS
+          });
+        }
+      })
+    }
 
   }
 }
