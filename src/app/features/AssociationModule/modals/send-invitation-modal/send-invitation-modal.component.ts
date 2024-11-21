@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {ActivatedRoute} from "@angular/router";
@@ -54,10 +54,13 @@ import {WeaponType} from "../../../../CoreModule/models/weapon-type.model";
 })
 export class SendInvitationModalComponent {
   showModal: boolean = false;
-  @Input() selectedRole: string = "User";
   @Input() associationName: string = "";
-  userRoles: AssociationRole[] = [];
-  emailFormControl: FormControl;
+  // userRoles: AssociationRole[] = [];
+
+  createInvitationsForm: FormGroup<{
+    emailFormControl: FormControl<string | null>
+    selectedRoleFormControl: FormControl<AssociationRole | null>;
+  }>;
   private associationID: string;
   @Output()
   public NewAssociationInviteEvent = new EventEmitter<AssociationInvite>();
@@ -72,7 +75,11 @@ export class SendInvitationModalComponent {
 
   ) {
     this.associationID = route.snapshot.params['associationID'];
-    this.emailFormControl = new FormControl<string>('', [Validators.email]);
+    // @ts-ignore
+    this.createInvitationsForm = new FormGroup({
+      emailFormControl: new FormControl<string>('', [Validators.email, Validators.required]),
+      selectedRoleFormControl: this.singleSelectInputFieldDataSource.formControl
+    })
 
     this.modalService.modalVisibilityEvent.subscribe({
       next: (modalChange: ModalChange) => {
@@ -83,45 +90,39 @@ export class SendInvitationModalComponent {
 
 
     this.graphQLCommunication.getAssociationRoles().then( r=>{
-        this.userRoles = r;
-
-        // reorder the array so 'User' is first
-        this.userRoles = this.userRoles.sort((a, b) =>
-          a.name === 'User' ? -1 : b.name === 'User' ? 1 : 0);
+      r = r.sort((a:any, b:any) =>
+        a.name === 'User' ? -1 : b.name === 'User' ? 1 : 0);
+        this.singleSelectInputFieldDataSource.items.next(r);
     })
   }
 
-  // singleSelectInputFieldDataSource: InputFieldSingleSelectDataSource = {
-  //   errorSetting: {
-  //     errorMessage: 'Je moet een waarde selecteren.',
-  //     errorName: ''
-  //   },
-  //   formControl: new FormControl(null, Validators.required),
-  //   hideErrorsWhenEmpty: false,
-  //   items: new BehaviorSubject<any[]>([]),
-  //   label: "Selecteer hier de rol",
-  //   processItem(input: AssociationRole): Promise<any> {
-  //     return new Promise((resolve, reject) => {
-  //       resolve(input.name);
-  //     });
-  //   }
-  // }
+  singleSelectInputFieldDataSource: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer een gebruikers-rol.",
+    processItem(input: AssociationRole): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input.name);
+      });
+    }
+  }
 
   cancelInvitation() {
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);
-    this.emailFormControl.reset();
+    this.createInvitationsForm.reset();
 
   }
 
   sendInvitation() {
-  if(!this.emailFormControl.valid) {
+  if(!this.createInvitationsForm.valid) {
     return;
   }
-  const selectedRoleObj = this.userRoles.find(role => role.name === this.selectedRole);
-  if (!selectedRoleObj) {
-    return;
-  }
-  this.graphQLCommunication.createAssociationInvite(this.associationID, this.emailFormControl.value,selectedRoleObj.id )
+  this.graphQLCommunication.createAssociationInvite(this.associationID, this.createInvitationsForm.controls.emailFormControl.value!,this.createInvitationsForm.controls.selectedRoleFormControl.value!.id )
     .then((dto: SendAssociationInviteResponseDTO) =>{
         this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE)
         if(dto.success) {
@@ -173,7 +174,7 @@ export class SendInvitationModalComponent {
       alertClass: AlertClass.INCORRECT_CLASS
     });
   })
-    this.emailFormControl.reset();
+    this.createInvitationsForm.reset();
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE)
 
   }
