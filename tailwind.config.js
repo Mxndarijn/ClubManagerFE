@@ -47,19 +47,19 @@ module.exports = {
 
         light: {
           ...require("daisyui/src/theming/themes")["light"],
-          "primary": "#38bdf8",
-          "secondary": "#0369a1",
-          "accent": "#0cacd7",
-          "neutral": "#12b5d2",
-          "base-100": "#f5f5f4",
-          "base-200":  "#e8e8e8",
-          "base-300": "#a9a4a4",
-          "info": "#0e3ade",
-          "infoFocus": "#000000",
-          "success": "#16a34a",
-          "warning": "#f66e15",
-          "error": "#f12020",
-          "base-content": "#252525",
+          "primary": "#0ea5e9",        // Lichter blauw dan het donkere blauw
+          "secondary": "#0284c7",      // Lichter, maar nog steeds dieper blauw dan de primaire kleur
+          "accent": "#0e4e69",         // Een wat minder donkere, meer gedempte blauwgroene tint
+          "neutral": "#2f8ea1",        // Een lichter blauw-groenige tint die goed past bij het lichte thema
+          "base-100": "#f9fafb",       // Zeer licht grijs voor de achtergrond
+          "base-200": "#e5e7eb",       // Een iets donkerder grijs voor secundaire achtergronden
+          "base-300": "#d1d5db",       // Licht grijs voor panelen, kaders, en randen
+          "info": "#3b57c2",           // Blauw voor informatie
+          "infoFocus": "#f0f0f0",      // Lichtgrijs als focuskleur voor info
+          "success": "#16a34a",        // Een heldergroene tint die succes aanduidt
+          "warning": "#f59e0b",        // Geel-oranje tint voor waarschuwingen
+          "error": "#ef4444",          // Een heldere rode tint voor fouten
+          "base-content": "#374151",   // Donkerder grijs voor tekst
           "white": "#ffffff",
           ".btn-sm": {
             "height": "2.8rem",

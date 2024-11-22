@@ -21,7 +21,6 @@ import {
   ButtonSize,
   CustomButton
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
-import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import {Modal} from "../../../../CoreModule/services/modal.service";
 import {
   RoundedSocialBoxComponent
@@ -41,6 +40,8 @@ import {
 export class HomePageComponent {
   // this.days = this.getDaysOfMonth(year, month);
   protected days = this.getDaysOfMonth(new Date())
+  protected activeMonth: string = new Date().toLocaleString('default', { month: 'long' });
+  protected activeDay: string = new Date().toLocaleString('default', { weekday: 'long' });
 
 // Is van de calendAr moeten we naar kieke
   @Output() readonly CalendarItemClickedEvent = new EventEmitter<CalendarEvent>();
@@ -89,7 +90,6 @@ export class HomePageComponent {
 
 
   protected readonly environment = environment;
-  protected readonly faEnvelope = faEnvelope;
   protected readonly ButtonClass = ButtonClass;
   protected readonly ButtonSize = ButtonSize;
   protected readonly Modal = Modal;
