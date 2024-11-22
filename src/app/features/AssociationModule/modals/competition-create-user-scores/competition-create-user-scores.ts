@@ -84,7 +84,6 @@ export class CompetitionCreateUserScores extends DefaultModalInformation impleme
       }
     })
 
-    // @ts-ignore
     this.addScoreFormGroup = new FormGroup({
       date: new FormControl("", Validators.required),
       score: new FormControl(0, Validators.required),
