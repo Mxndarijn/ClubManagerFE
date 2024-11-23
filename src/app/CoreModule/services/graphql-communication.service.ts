@@ -36,6 +36,8 @@ export class GraphQLCommunication {
   associationCompetitionQueries = 0;
   associationUserPresenceMutations = 0;
 
+  private associationNameCache = new Map<string, any>();
+
   constructor(private http: HttpClient,
               private util: UtilityFunctions,
               private injector: Injector) {
@@ -566,6 +568,10 @@ export class GraphQLCommunication {
   }
 
   getAssociationName(associationID: string) {
+    if(this.associationNameCache.has(associationID)) {
+      return Promise.resolve(this.associationNameCache.get(associationID));
+    }
+
     const query = {
       query: `
      query GetAssociationInvites($associationID: ID!) {
@@ -580,7 +586,10 @@ export class GraphQLCommunication {
         associationID: associationID
       }
     };
-    return this.solvePromise(query, v => v.data.associationQueries.getAssociationDetails);
+    return this.solvePromise(query, v => {
+      this.associationNameCache.set(associationID, v.data.associationQueries.getAssociationDetails.name);
+      return v.data.associationQueries.getAssociationDetails
+    });
 
   }
 
