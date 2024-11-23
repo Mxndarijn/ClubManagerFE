@@ -31,9 +31,8 @@
             <p class="font-bold text-xs sm:text-sm">Zo</p>
 
             <!-- Grid items voor de dagen -->
-            <div *ngFor="let day of days"
-                 class="flex justify-center items-center w-[35px] h-[35px] rounded-lg bg-base-300 border-2 border-accent font-bold text-xs sm:text-sm">
-              <p>{{ day.day }}</p>
+            <div *ngFor="let day of days" class="flex justify-center items-center w-[50px] h-[50px] rounded-lg border-2 border-accent font-bold text-xs sm:text-sm" [ngClass]="{ 'bg-accent': day.activated, 'bg-base-300': !day.activated}">
+                <p>{{ day.day }}</p>
             </div>
           </div>
 

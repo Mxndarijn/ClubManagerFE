@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
-import {NgForOf} from "@angular/common";
+import {NgClass, NgForOf} from "@angular/common";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {TokenInterceptor} from "../../../../CoreModule/interceptors/token.interceptor";
 import {environment} from "../../../../../environment/environment";
@@ -25,11 +25,12 @@ import {Modal} from "../../../../CoreModule/services/modal.service";
 import {
   RoundedSocialBoxComponent
 } from "../../../../SharedModule/components/rounded-social-box/rounded-social-box.component";
+import {UserPresence} from "../../../../CoreModule/models/user-presence.model";
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [SideBarComponent, NgForOf, RouterOutlet, NavbarComponent, UpcomingEventsComponent, CustomButton, RoundedSocialBoxComponent],
+  imports: [SideBarComponent, NgForOf, RouterOutlet, NavbarComponent, UpcomingEventsComponent, CustomButton, RoundedSocialBoxComponent, NgClass],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
   providers: [
@@ -63,13 +64,24 @@ export class HomePageComponent {
         this.associations = dto.associations.map((assoc: UserAssociation) => assoc.association);
     });
 
+    graphQLCommunication.getUserPresencesWithoutInformation(70).then(response => {
+      const data = response.presences.edges.map((edge: any) => edge.node)
+      data.forEach((presence : UserPresence) => {
+        const presenceDate = new Date(presence.date);
+        const day = this.days.find(day => day.date.getDate() == presenceDate.getDate() && day.date.getMonth() == presenceDate.getMonth() && day.date.getFullYear() == presenceDate.getFullYear())
+        if(day != null) {
+          day.activated = true;
+        }
+      })
+    })
+
 
 
   }
 
 
-  getDaysOfMonth(date: Date): { day: number | null }[] {
-    const days: { day: number | null }[] = [];
+  getDaysOfMonth(date: Date): { day: number | null, activated: boolean, date: Date }[] {
+    const days: { day: number | null, activated: boolean, date: Date }[] = [];
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay(); // Dag van de week (0 = zondag)
     const totalDays = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); // Aantal dagen in de maand
     const previousMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate(); // Dagen in de vorige maand
@@ -77,12 +89,13 @@ export class HomePageComponent {
     // Voeg lege cellen toe voor uitlijning
     const val = (firstDay === 0 ? 6 : firstDay - 1)
     for (let i = 0; i < val; i++) {
-      days.push({ day: previousMonthDays -val +  i });
+      const day = previousMonthDays - val + i;
+      days.push({day: day, activated: false, date: new Date(date.getFullYear(), date.getMonth() - 1, day)});
     }
 
     // Voeg de dagen van de maand toe
     for (let i = 1; i <= totalDays; i++) {
-      days.push({ day: i });
+      days.push({day: i, activated: false, date: new Date(date.getFullYear(), date.getMonth(), i)});
     }
 
     return days;

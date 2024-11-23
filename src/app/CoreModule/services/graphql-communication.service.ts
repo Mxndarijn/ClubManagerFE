@@ -2034,9 +2034,32 @@ export class GraphQLCommunication {
       }
     }
     return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
+  }
 
-
-
+  getUserPresencesWithoutInformation(first: number = 20, after?: string, search: string = "") {
+    const query = {
+      query: `query MyQuery($first: Int, $after: LocalDateTime, $search: String)  {
+  userQueries {
+    getMyProfile {
+      presences(after: $after, first: $first, search: $search) {
+        edges {
+          cursor
+          node {
+            date
+            id
+          }
+        }
+      }
+    }
+  }
+}`,
+      variables: {
+        after: after,
+        first: first,
+        search: search
+      }
+    }
+    return this.solvePromise(query, v => v.data.userQueries.getMyProfile);
   }
 
   getAssociationPresences(associationID: string, first: number = 20, after?: string, search: string = "") {
