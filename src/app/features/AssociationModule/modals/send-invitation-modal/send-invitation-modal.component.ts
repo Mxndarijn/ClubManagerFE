@@ -33,6 +33,12 @@ import {
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
 import {BehaviorSubject} from "rxjs";
 import {WeaponType} from "../../../../CoreModule/models/weapon-type.model";
+import {
+  MultiSelectInputFieldComponent
+} from "../../../../SharedModule/components/input-fields/multi-select-input-field/multi-select-input-field.component";
+import {
+  MultiSelectInputFieldDatasource
+} from "../../../../SharedModule/components/input-fields/multi-select-input-field/multi-select-input-field-datasource";
 
 @Component({
   selector: 'app-send-invitation-modal',
@@ -47,7 +53,8 @@ import {WeaponType} from "../../../../CoreModule/models/weapon-type.model";
     NgIf,
     DefaultInputFieldComponent,
     TranslateModule,
-    InputFieldSingleSelectComponent
+    InputFieldSingleSelectComponent,
+    MultiSelectInputFieldComponent
   ],
   templateUrl: './send-invitation-modal.component.html',
   styleUrl: './send-invitation-modal.component.css'
@@ -93,6 +100,7 @@ export class SendInvitationModalComponent {
       r = r.sort((a:any, b:any) =>
         a.name === 'User' ? -1 : b.name === 'User' ? 1 : 0);
         this.singleSelectInputFieldDataSource.items.next(r);
+        this.multiSelectInputFieldDataSource.items.next(r);
     })
   }
 
@@ -183,4 +191,19 @@ export class SendInvitationModalComponent {
     protected readonly ButtonSize = ButtonSize;
   protected readonly CompetitionScoreType = CompetitionScoreType;
   protected readonly Object = Object;
+  multiSelectInputFieldDataSource: MultiSelectInputFieldDatasource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer een gebruikers-rol.",
+    processItem(input: AssociationRole): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input.name);
+      });
+    }
+  };
 }
