@@ -1,0 +1,24 @@
+<div class="flex flex-col w-96 items-start justify-evenly mt-5">
+  <label for="{{_id}}" class="mb-2">{{ dataSource.label }}</label>
+  <div class="dropdown w-full">
+    <div tabindex="0" class="select select-accent w-full border-2">
+      {{ getSelectedItemsDisplay() || 'Select items' }}
+    </div>
+    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full max-h-60 overflow-auto">
+      <li *ngFor="let listItem of processedItems" class="flex items-center">
+        <label class="flex items-center gap-2 w-full cursor-pointer">
+          <input type="checkbox"
+                 [checked]="isItemSelected(listItem.original)"
+                 (change)="toggleItemSelection(listItem.original)" />
+          <span>{{ listItem.processed }}</span>
+        </label>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="(dataSource.formControl.value == null || dataSource.formControl.value.length == 0) ? dataSource.hideErrorsWhenEmpty : true">
+    <app-single-error-message
+      [errorMessage]="dataSource.errorSetting.errorMessage"
+      [specificFormControl]="dataSource.formControl">
+    </app-single-error-message>
+  </div>
+</div>

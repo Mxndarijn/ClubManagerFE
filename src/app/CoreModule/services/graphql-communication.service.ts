@@ -571,7 +571,6 @@ export class GraphQLCommunication {
     if(this.associationNameCache.has(associationID)) {
       return Promise.resolve(this.associationNameCache.get(associationID));
     }
-
     const query = {
       query: `
      query GetAssociationInvites($associationID: ID!) {
