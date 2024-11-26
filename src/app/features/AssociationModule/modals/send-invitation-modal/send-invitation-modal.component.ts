@@ -66,7 +66,7 @@ export class SendInvitationModalComponent {
 
   createInvitationsForm: FormGroup<{
     emailFormControl: FormControl<string | null>
-    selectedRoleFormControl: FormControl<AssociationRole | null>;
+    selectedRoleFormControl: FormControl<AssociationRole[] | null>;
   }>;
   private associationID: string;
   @Output()
@@ -85,7 +85,7 @@ export class SendInvitationModalComponent {
     // @ts-ignore
     this.createInvitationsForm = new FormGroup({
       emailFormControl: new FormControl<string>('', [Validators.email, Validators.required]),
-      selectedRoleFormControl: this.singleSelectInputFieldDataSource.formControl
+      selectedRoleFormControl: this.multiSelectInputFieldDataSource.formControl
     })
 
     this.modalService.modalVisibilityEvent.subscribe({
@@ -127,10 +127,13 @@ export class SendInvitationModalComponent {
   }
 
   sendInvitation() {
+    console.log(this.createInvitationsForm.controls.selectedRoleFormControl.value)
   if(!this.createInvitationsForm.valid) {
     return;
   }
-  this.graphQLCommunication.createAssociationInvite(this.associationID, this.createInvitationsForm.controls.emailFormControl.value!,this.createInvitationsForm.controls.selectedRoleFormControl.value!.id )
+
+    const dataList = this.createInvitationsForm.controls.selectedRoleFormControl.value!.map((role: AssociationRole) => role.id) || [];
+  this.graphQLCommunication.createAssociationInvite(this.associationID, this.createInvitationsForm.controls.emailFormControl.value!,dataList )
     .then((dto: SendAssociationInviteResponseDTO) =>{
         this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE)
         if(dto.success) {

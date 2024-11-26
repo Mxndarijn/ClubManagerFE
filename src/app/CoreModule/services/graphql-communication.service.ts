@@ -264,8 +264,9 @@ export class GraphQLCommunication {
                     encoded
                   }
                 }
-                associationRole {
+                associationRoles {
                   name
+                  id
                 }
               }
             }
@@ -384,8 +385,9 @@ export class GraphQLCommunication {
             id
             email
             createdAt
-            associationRole {
+            associationRoles {
               name
+              id
             }
           }
         }
@@ -533,7 +535,7 @@ export class GraphQLCommunication {
 
   }
 
-  createAssociationInvite(associationID: string, email: string, id: string): Promise<any> {
+  createAssociationInvite(associationID: string, email: string, idList: string[]): Promise<any> {
     const query = {
       query: `
       mutation sendAssociationInvite($dto: CreateAssociationInviteInput!) {
@@ -545,8 +547,9 @@ export class GraphQLCommunication {
     associationInvite {
     id,
         email,
-        associationRole {
+        associationRoles {
             name
+            id
         },
         createdAt
     }
@@ -559,7 +562,7 @@ export class GraphQLCommunication {
         dto: {
           userEmail: email,
           associationUUID: associationID,
-          associationRoleUUID: id
+          associationRoleUUID: idList
         }
       }
     };

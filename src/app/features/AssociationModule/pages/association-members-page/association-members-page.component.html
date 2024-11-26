@@ -70,7 +70,9 @@
 </ng-template>
 
 <ng-template #roleRowTemplate let-userAssociation="data">
-  <p>{{ userAssociation.associationRole.name }}</p>
+  <ng-container *ngFor="let role of userAssociation.associationRoles">
+    <p>{{ role.name }}</p>
+  </ng-container>
 </ng-template>
 
 <ng-template #memberSinceRowTemplate let-userAssociation="data">
@@ -126,7 +128,9 @@
 </ng-template>
 
 <ng-template #associationRoleTemplate let-associationInvite="data">
-    <p>{{ associationInvite.associationRole.name }}</p>
+  <ng-container *ngFor="let role of associationInvite.associationRoles">
+    <p>{{ role.name }}</p>
+  </ng-container>
 </ng-template>
 
 <ng-template #cancelButtonTemplate let-associationInvite="data">
