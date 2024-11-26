@@ -40,7 +40,9 @@
 </ng-template>
 
 <ng-template #roleRowTemplate let-associationInvite="data">
-  <p>{{ associationInvite.associationRole.name }}</p>
+  <ng-container *ngFor="let role of associationInvite.associationRoles">
+    <p>{{ role.name }}</p>
+  </ng-container>
 </ng-template>
 
 <ng-template #actionsRowTemplate let-associationInvite="data">

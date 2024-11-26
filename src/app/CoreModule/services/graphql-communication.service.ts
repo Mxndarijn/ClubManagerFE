@@ -428,8 +428,9 @@ export class GraphQLCommunication {
             }
         }
         createdAt,
-        associationRole {
+        associationRoles {
           name
+          id
         }
         }
       }
