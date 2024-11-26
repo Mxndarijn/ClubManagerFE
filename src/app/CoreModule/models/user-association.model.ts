@@ -7,7 +7,7 @@ export interface UserAssociation {
   user: User;
   association: Association;
   memberSince: string;
-  associationRole: AssociationRole;
+  associationRoles: AssociationRole[];
 }
 
 export interface UserAssociationId {

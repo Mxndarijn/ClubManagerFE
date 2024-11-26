@@ -23,6 +23,8 @@ export class PermissionService {
     this.accountPermissions = [];
     this.permissionsLoaded.next(false);
     authService.isLoggedIn().then(loggedIn => {
+      if(!loggedIn)
+        return
       this.refreshPermissions();
     })
   }
@@ -56,7 +58,10 @@ export class PermissionService {
             return of(false);
           }
 
-          const hasPermission = userAssociation.associationRole.permissions.some(p => p.name === perm);
+          const hasPermission = userAssociation.associationRoles.some(p => {
+            return p.permissions.some(pe => pe.name === perm);
+
+          })
           return of(hasPermission);
         })
       )

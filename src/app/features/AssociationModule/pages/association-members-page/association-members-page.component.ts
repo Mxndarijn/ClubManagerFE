@@ -146,7 +146,7 @@ export class AssociationMembersPageComponent implements OnInit{
   }
   public changeSelectedUser(user: UserAssociation) {
     this.selectedUser = user;
-    this.selectedRole = user.associationRole.name;
+    // this.selectedRole = user.associationRole.name; // TODO fix
     this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_MODIFY_MEMBER);
   }
 
@@ -332,7 +332,7 @@ export class AssociationMembersPageComponent implements OnInit{
         headerCell: this.roleHeaderTemplate,
         rowCell: this.roleRowTemplate,
         getRawValueToSort: (dataRow: UserAssociation) => {
-          return dataRow.associationRole.name;
+          return dataRow.associationRoles.map(role => role.name).join(', ') || '';
         }
       },
       {

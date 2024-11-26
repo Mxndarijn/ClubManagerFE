@@ -142,7 +142,9 @@ export class SideBarComponent implements OnInit {
       return false;
     }
 
-    return userAssociation.associationRole.permissions.some(p => p.name === perm);
+    return userAssociation.associationRoles.some(p => {
+      return p.permissions.some(permission => permission.name === perm)
+    });
   }
 
 

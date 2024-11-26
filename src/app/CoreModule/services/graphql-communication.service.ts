@@ -185,7 +185,7 @@ export class GraphQLCommunication {
       userQueries {
     getMyProfile {
         associations {
-            associationRole {
+            associationRoles {
                 permissions {
                     id
                     name
