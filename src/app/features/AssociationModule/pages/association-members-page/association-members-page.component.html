@@ -48,6 +48,10 @@
   {{ 'associationMembers.tableMember.roleHeader' | translate }}
 </ng-template>
 
+<ng-template #additionalRolesHeader>
+  Additionele Rollen
+</ng-template>
+
 <ng-template #memberSinceHeader>
   {{ 'associationMembers.tableMember.memberSinceHeader' | translate }}
 </ng-template>
@@ -70,7 +74,13 @@
 </ng-template>
 
 <ng-template #roleRowTemplate let-userAssociation="data">
-  <ng-container *ngFor="let role of userAssociation.associationRoles">
+  <ng-container *ngFor="let role of splitAssociationRoles(userAssociation.associationRoles).primary">
+    <p>{{ role.name }}</p>
+  </ng-container>
+</ng-template>
+
+<ng-template #additionalRoleRowTemplate let-userAssociation="data">
+  <ng-container *ngFor="let role of splitAssociationRoles(userAssociation.associationRoles).secondary">
     <p>{{ role.name }}</p>
   </ng-container>
 </ng-template>
@@ -128,7 +138,12 @@
 </ng-template>
 
 <ng-template #associationRoleTemplate let-associationInvite="data">
-  <ng-container *ngFor="let role of associationInvite.associationRoles">
+  <ng-container *ngFor="let role of splitAssociationRoles(associationInvite.associationRoles).primary">
+    <p>{{ role.name }}</p>
+  </ng-container>
+</ng-template>
+<ng-template #associationAdditionalRoleTemplate let-associationInvite="data">
+  <ng-container *ngFor="let role of splitAssociationRoles(associationInvite.associationRoles).secondary">
     <p>{{ role.name }}</p>
   </ng-container>
 </ng-template>

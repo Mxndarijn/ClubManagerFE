@@ -121,7 +121,7 @@ export class InvitationsPageComponent implements OnInit{
         headerCell: this.roleHeaderTemplate,
         rowCell: this.roleRowTemplate,
         getRawValueToSort: (dataRow: AssociationInvite) => {
-          return dataRow.associationRole;
+          return dataRow.associationRoles.map(role => role.name).join(', ') || '';
         }
       },
       {

@@ -6,6 +6,6 @@ export interface AssociationInvite {
   id: string;
   email: String
   association: Association
-  associationRole: AssociationRole;
+  associationRoles: AssociationRole[];
   createdAt: string;
 }

@@ -39,6 +39,7 @@ import {
   ButtonSize,
   CustomButton
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {splitAssociationRoles} from "../../../../CoreModule/models/association-role.model";
 
 enum Tab {
   MEMBERS,
@@ -85,11 +86,13 @@ export class AssociationMembersPageComponent implements OnInit{
 
   @ViewChild('memberHeaderTemplate', { static: true }) memberHeaderTemplate!: TemplateRef<any>;
   @ViewChild('roleHeaderTemplate', {static: true}) roleHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('additionalRolesHeader', {static: true}) additionalRolesHeader!: TemplateRef<any>;
   @ViewChild('memberSinceHeader', {static: true}) memberSinceHeader!: TemplateRef<any>;
   @ViewChild('actionsTemplate', {static: true}) actionsTemplateHeader!: TemplateRef<any>;
 
   @ViewChild('memberRowTemplate', { static: true }) memberRowTemplate!: TemplateRef<{ data: UserAssociation }>;
   @ViewChild('roleRowTemplate', {static: true}) roleRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+  @ViewChild('additionalRoleRowTemplate', {static: true}) additionalRoleRowTemplate!: TemplateRef<{ data: UserAssociation }>;
   @ViewChild('memberSinceRowTemplate', {static: true}) memberSinceRowTemplate!: TemplateRef<{ data: UserAssociation }>;
   @ViewChild('actionsRowTemplate', {static: true}) actionsRowTemplate!: TemplateRef<{ data: UserAssociation }>;
 
@@ -101,6 +104,7 @@ export class AssociationMembersPageComponent implements OnInit{
 
   @ViewChild('emailTemplate', {static: true}) emailTemplate!: TemplateRef<any>;
   @ViewChild('associationRoleTemplate', {static: true}) associationRoleTemplate!: TemplateRef<any>;
+  @ViewChild('associationAdditionalRoleTemplate', {static: true}) associationAdditionalRoleTemplate!: TemplateRef<any>;
   @ViewChild('associationInviteCreatedAt', {static: true}) associationInviteCreatedAt!: TemplateRef<any>;
   @ViewChild('cancelButtonTemplate', {static: true}) cancelButtonTemplate!: TemplateRef<any>;
 
@@ -336,6 +340,14 @@ export class AssociationMembersPageComponent implements OnInit{
         }
       },
       {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.additionalRolesHeader,
+        rowCell: this.additionalRoleRowTemplate,
+        getRawValueToSort: (dataRow: UserAssociation) => {
+          return dataRow.associationRoles.map(role => role.name).join(', ') || '';
+        }
+      },
+      {
         sortType: ColumnSortType.DATE,
         headerCell: this.memberSinceHeader,
         rowCell: this.memberSinceRowTemplate,
@@ -363,7 +375,7 @@ export class AssociationMembersPageComponent implements OnInit{
         headerCell: this.invitationSendHeaderTemplate,
         rowCell: this.associationInviteCreatedAt,
         getRawValueToSort: (dataRow: AssociationInvite) => {
-          return dataRow.associationRole.name;
+          return dataRow.createdAt;
         }
       },
       {
@@ -371,7 +383,15 @@ export class AssociationMembersPageComponent implements OnInit{
         headerCell: this.invitationRoleHeaderTemplate,
         rowCell: this.associationRoleTemplate,
         getRawValueToSort: (dataRow: AssociationInvite) => {
-          return dataRow.createdAt
+          return dataRow.associationRoles.map(role => role.name).join(', ') || '';
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.additionalRolesHeader,
+        rowCell: this.associationAdditionalRoleTemplate,
+        getRawValueToSort: (dataRow: AssociationInvite) => {
+          return dataRow.associationRoles.map(role => role.name).join(', ') || '';
         }
       },
       {
@@ -457,4 +477,5 @@ export class AssociationMembersPageComponent implements OnInit{
 
   protected readonly ButtonClass = ButtonClass;
   protected readonly ButtonSize = ButtonSize;
+  protected readonly splitAssociationRoles = splitAssociationRoles;
 }
