@@ -7,7 +7,7 @@ import {AssociationMembersPageComponent} from "../../pages/association-members-p
 import {
   SingleErrorMessageComponent
 } from "../../../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
-import {AssociationRole} from "../../../../CoreModule/models/association-role.model";
+import {AssociationRole, splitAssociationRoles} from "../../../../CoreModule/models/association-role.model";
 import {AssociationInvite} from "../../../../CoreModule/models/association-invite";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {Modal, ModalChange, ModalService, ModalStatus} from "../../../../CoreModule/services/modal.service";
@@ -67,6 +67,7 @@ export class SendInvitationModalComponent {
   createInvitationsForm: FormGroup<{
     emailFormControl: FormControl<string | null>
     selectedRoleFormControl: FormControl<AssociationRole[] | null>;
+    additionalRoles: FormControl<AssociationRole[] | null>;
   }>;
   private associationID: string;
   @Output()
@@ -85,7 +86,8 @@ export class SendInvitationModalComponent {
     // @ts-ignore
     this.createInvitationsForm = new FormGroup({
       emailFormControl: new FormControl<string>('', [Validators.email, Validators.required]),
-      selectedRoleFormControl: this.multiSelectInputFieldDataSource.formControl
+      selectedRoleFormControl: this.singleSelectInputFieldDataSource.formControl,
+      additionalRoles: this.multiSelectInputFieldDataSource.formControl
     })
 
     this.modalService.modalVisibilityEvent.subscribe({
@@ -97,10 +99,11 @@ export class SendInvitationModalComponent {
 
 
     this.graphQLCommunication.getAssociationRoles().then( r=>{
+      const data = splitAssociationRoles(r)
       r = r.sort((a:any, b:any) =>
         a.name === 'User' ? -1 : b.name === 'User' ? 1 : 0);
-        this.singleSelectInputFieldDataSource.items.next(r);
-        this.multiSelectInputFieldDataSource.items.next(r);
+        this.singleSelectInputFieldDataSource.items.next(data.primary);
+        this.multiSelectInputFieldDataSource.items.next(data.secondary);
     })
   }
 
@@ -112,7 +115,7 @@ export class SendInvitationModalComponent {
     formControl: new FormControl(null, Validators.required),
     hideErrorsWhenEmpty: false,
     items: new BehaviorSubject<any[]>([]),
-    label: "Selecteer een gebruikers-rol.",
+    label: "Selecteer de gebruikers hoofd-rol.",
     processItem(input: AssociationRole): Promise<any> {
       return new Promise((resolve, reject) => {
         resolve(input.name);
@@ -128,11 +131,13 @@ export class SendInvitationModalComponent {
 
   sendInvitation() {
     console.log(this.createInvitationsForm.controls.selectedRoleFormControl.value)
-  if(!this.createInvitationsForm.valid) {
-    return;
-  }
+    if(!this.createInvitationsForm.valid) {
+      return;
+    }
 
-    const dataList = this.createInvitationsForm.controls.selectedRoleFormControl.value!.map((role: AssociationRole) => role.id) || [];
+    const dataList = this.createInvitationsForm.controls.additionalRoles.value?.map((role: AssociationRole) => role.id) || [];
+    dataList.push(this.singleSelectInputFieldDataSource.formControl.value!.id)
+    console.log(dataList)
   this.graphQLCommunication.createAssociationInvite(this.associationID, this.createInvitationsForm.controls.emailFormControl.value!,dataList )
     .then((dto: SendAssociationInviteResponseDTO) =>{
         this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE)
@@ -199,10 +204,10 @@ export class SendInvitationModalComponent {
       errorMessage: 'Je moet een waarde selecteren.',
       errorName: ''
     },
-    formControl: new FormControl(null, Validators.required),
+    formControl: new FormControl(null),
     hideErrorsWhenEmpty: false,
     items: new BehaviorSubject<any[]>([]),
-    label: "Selecteer een gebruikers-rol.",
+    label: "Selecteer addiotionele gebruikers-rollen.",
     processItem(input: AssociationRole): Promise<any> {
       return new Promise((resolve, reject) => {
         resolve(input.name);
