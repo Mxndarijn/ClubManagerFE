@@ -139,6 +139,13 @@ export interface CalendarEvent {
 
 }
 
+export interface CurrentTimeCalendarEvent {
+  time: Date,
+  columnIndex: number,
+  show: boolean,
+  rowIndex: number
+}
+
 
 export enum CalendarView {
   MONTH = "Maand overzicht",

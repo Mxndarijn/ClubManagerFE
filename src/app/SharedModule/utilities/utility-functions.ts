@@ -237,6 +237,12 @@ export class UtilityFunctions {
     return enumObj[value as keyof T];
   }
 
+  isSameDay(time: Date, selectedDay: Date) {
+
+    return time.getFullYear() === selectedDay.getFullYear() &&
+      time.getMonth() === selectedDay.getMonth() &&
+      time.getDate() === selectedDay.getDate();
+  }
 }
 
 export enum Day {
