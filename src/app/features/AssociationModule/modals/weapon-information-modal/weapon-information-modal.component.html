@@ -33,7 +33,7 @@
           [buttonSize]="ButtonSize.BTN_MD"
           [labelText]="'Wijzig'"
           [disabledStatus]="!timeIsAfterCurrentDate(selectedMaintenanceEvent?.endDate)"
-          (onClick)="hideModal(); this.changeCurrentWeaponMaintenance?.emit(selectedMaintenanceEvent); this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_EDIT_WEAPON_MAINTENANCE)"
+          (onClick)="hideModal(); this.modalService.showModal(Modal.ASSOCIATION_WEAPONS_CREATE_EDIT_WEAPON_MAINTENANCE); this.changeCurrentWeaponMaintenance?.emit(selectedMaintenanceEvent); "
         ></app-custom-button>
       </form>
     </div>

@@ -851,7 +851,7 @@ export class GraphQLCommunication {
 
   }
 
-  createWeapon(associationID: string, weaponName: string, weaponStatusInterface: WeaponStatus, weaponType: WeaponType) {
+  createWeapon(associationID: string, weaponName: string, weaponStatusInterface: string, weaponType: WeaponType) {
     const query = {
       query: `
          mutation createWeapon($dto: CreateWeaponDTO!, $associationID: ID!) {
@@ -1414,7 +1414,7 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.createReservations);
   }
 
-  changeWeapon(associationID: string, weaponID: string, weaponName: string, weaponStatusInterface: WeaponStatus, weaponType: WeaponType) {
+    changeWeapon(associationID: string, weaponID: string, weaponName: string, weaponStatusInterface: string, weaponType: WeaponType) {
     const query = {
       query: `
          mutation changeWeapon($dto: ChangeWeaponDTO!, $associationID: ID!) {

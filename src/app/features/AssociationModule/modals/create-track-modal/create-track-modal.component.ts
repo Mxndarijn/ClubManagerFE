@@ -14,13 +14,21 @@ import {
   TextareaModalComponent
 } from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 import {
   ButtonClass,
   ButtonSize,
   CustomButton
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {
+  MultiSelectInputFieldComponent
+} from "../../../../SharedModule/components/input-fields/multi-select-input-field/multi-select-input-field.component";
+import {
+  MultiSelectInputFieldDatasource
+} from "../../../../SharedModule/components/input-fields/multi-select-input-field/multi-select-input-field-datasource";
+import {BehaviorSubject} from "rxjs";
+import {AssociationRole} from "../../../../CoreModule/models/association-role.model";
 
 @Component({
   selector: 'app-create-track-modal',
@@ -33,7 +41,8 @@ import {
     ReactiveFormsModule,
     NgIf,
     DefaultInputFieldComponent,
-    CustomButton
+    CustomButton,
+    MultiSelectInputFieldComponent
   ],
   templateUrl: './create-track-modal.component.html',
   styleUrl: './create-track-modal.component.css'
@@ -49,7 +58,6 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
     trackDescription: FormControl<string | null>;
     trackWeaponTypes: FormControl<WeaponType[] | null>;
   }>;
-  weaponTypeList: WeaponType[] = [];
   private associationID: string;
 
   @Output() TrackCreatedEvent = new EventEmitter<Track>
@@ -70,13 +78,29 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
     this.createTrackForm = new FormGroup({
       trackTitle: new FormControl('', Validators.compose([Validators.required, Validators.minLength(3)])),
       trackDescription: new FormControl(''),
-      trackWeaponTypes: new FormControl([], Validators.required),
+      trackWeaponTypes: this.weaponTypeDataSource.formControl,
     });
 
     this.graphQLService.getAllWeaponTypes().then(r=>{
-        this.weaponTypeList = r
+        this.weaponTypeDataSource.items.next(r);
     })
   }
+
+  weaponTypeDataSource: MultiSelectInputFieldDatasource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer het type van het wapen",
+    processItem(input: WeaponType): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input.name);
+      });
+    }
+  };
 
   ngOnInit(): void {
     this.SetCurrentTrack.subscribe({
@@ -84,7 +108,7 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
         this.currentTrack = track;
         const list: WeaponType[] = [];
         this.currentTrack.allowedWeaponTypes.forEach(weaponType => {
-          const value = this.weaponTypeList.find(w => w.id === weaponType.id)
+          const value = this.weaponTypeDataSource.items.value.find(w => w.id === weaponType.id)
           if(value != null) {
             list.push(value);
           }
@@ -181,5 +205,6 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
 
   protected readonly ButtonSize = ButtonSize;
   protected readonly ButtonClass = ButtonClass;
+  protected readonly InputFieldWidth = InputFieldWidth;
 }
 

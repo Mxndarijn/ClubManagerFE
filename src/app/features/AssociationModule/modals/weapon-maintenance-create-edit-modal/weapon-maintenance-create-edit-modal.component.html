@@ -10,6 +10,7 @@
                                    [labelText]="'Event titel'"
                                    [hideErrorsWhenEmpty]="true"
                                    [type]="'text'"
+                                   [inputFieldWidth]="InputFieldWidth.FULL"
                                    [errorSettings]="[
       {
       errorMessage: 'Je moet een titel invullen.',
@@ -18,7 +19,7 @@
       >
 
       </app-default-input-field>
-      <div class="flex flex-row w-full gap-x-20 mt-2 ">
+      <div class="flex flex-row w-full gap-x-10 mt-2 ">
         <div class="flex flex-col w-3/6">
           <h1 class="">Wapen voor onderhoud </h1>
           <select class="select select-accent max-w-xs border-2"
@@ -38,7 +39,7 @@
             </app-single-error-message>
           </div>
         </div>
-        <div class="flex flex-col w-2/6">
+        <div class="flex flex-col w-3/6">
           <h1 class="">Visualisatie kleur </h1>
           <select class="select select-accent max-w-xs border-2"
                   [formControl]="weaponMaintenanceFormGroup.controls.maintenanceColor">

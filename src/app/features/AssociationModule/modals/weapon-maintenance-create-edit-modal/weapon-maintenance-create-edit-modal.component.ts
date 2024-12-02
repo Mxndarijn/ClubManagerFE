@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 import {
   DefaultTextAreaComponent
@@ -82,6 +82,11 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     super(Modal.ASSOCIATION_WEAPONS_CREATE_EDIT_WEAPON_MAINTENANCE, modalService);
     this.associationID = route.snapshot.params['associationID'];
 
+    this.OnModalShowEvent.subscribe({
+      next: () => {
+        this.weaponMaintenanceFormGroup.reset()
+      }
+    })
     graphQLService.getAllColorPresets().then(r=>{
         this.colorPresets = r
 
@@ -286,4 +291,6 @@ export class WeaponMaintenanceCreateEditModalComponent extends DefaultModalInfor
     });
     this.hideModal()
   }
+
+  protected readonly InputFieldWidth = InputFieldWidth;
 }
