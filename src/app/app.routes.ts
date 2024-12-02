@@ -1,10 +1,10 @@
 import {Routes} from '@angular/router';
-import {AuthGuard} from './CoreModule/guards/auth.guard.spec';
+import {AuthGuard} from './CoreModule/guards/auth-guard/auth.guard.spec';
 import {LoginPageComponent} from './features/AuthModule/pages/login-page/login-page.component';
 import {RegisterPageComponent} from "./features/AuthModule/pages/register-page/register-page.component";
 import {HomePageComponent} from "./features/UserModule/pages/home-page/home-page.component";
-import {ReservationPageComponent} from "./features/UserModule/pages/reservation-page/reservation-page.component";
-import {AssociationManagerGuard} from "./CoreModule/guards/association-manager-guard.spec";
+import {ReservationPageComponent} from "./features/AssociationModule/pages/reservation-page/reservation-page.component";
+import {AssociationManagerGuard} from "./CoreModule/guards/association-manager-guard/association-manager-guard.spec";
 import {InvitationsPageComponent} from "./features/UserModule/pages/invitations-page/invitations-page.component";
 import {UpdateProfilePageComponent} from "./features/UserModule/pages/update-profile-page/update-profile-page.component";
 import {CompetitionPageComponent} from "./features/AssociationModule/pages/competition/competition-page/competition.component";
@@ -22,6 +22,29 @@ import {
 import {
   CompetitionDetailMemberPageComponent
 } from "./features/AssociationModule/pages/competition/competition-detail-member-page/competition-detail-member-page.component";
+import {
+  MyReservationsPageComponent
+} from "./features/UserModule/pages/my-reservations-page/my-reservations-page.component";
+import {
+  EmailVerifyEmailLinkPageComponent
+} from "./features/AuthModule/pages/email-verify-email-link-page/email-verify-email-link-page.component";
+import {
+  EmailVerificationPageComponent
+} from "./features/AuthModule/pages/email-verification-page/email-verification-page.component";
+import {
+  viewCompetitionPageGuardGuard
+} from "./CoreModule/guards/view-competition-page-guard/view-competition-page-guard.guard";
+import {
+  viewAssociationReservationPageGuardGuard
+} from "./CoreModule/guards/view-association-reservation-page-guard/view-association-reservation-page-guard.guard";
+import {
+  AssociationPresenceComponent
+} from "./features/AssociationModule/pages/association-presence/association-presence.component";
+import {MyPresencesPageComponent} from "./features/UserModule/pages/my-presences-page/my-presences-page.component";
+import {MyGuestsPageComponent} from "./features/UserModule/pages/my-guests-page/my-guests-page.component";
+import {
+  AssociationGuestsPageComponent
+} from "./features/AssociationModule/pages/association-guests-page/association-guests-page.component";
 
 export const routes: Routes = [
   {
@@ -90,22 +113,53 @@ export const routes: Routes = [
   {
     path: 'association/:associationID/book',
     component: ReservationPageComponent,
-    canActivate: [AuthGuard, AssociationManagerGuard],
+    canActivate: [AuthGuard, viewAssociationReservationPageGuardGuard],
   },
   {
-    path: 'association/:associationID/competitions',
+    path: 'association/:associationID/presence',
+    component: AssociationPresenceComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'association/:associationID/competition',
     component: CompetitionPageComponent,
-    canActivate: [AuthGuard, AssociationManagerGuard],
+    canActivate: [AuthGuard, viewCompetitionPageGuardGuard],
   },
   {
     path: 'association/:associationID/competition/:competitionID',
-    component: CompetitionDetailsPage ,
-    canActivate: [AuthGuard, AssociationManagerGuard],
+    component: CompetitionDetailsPage,
+    canActivate: [AuthGuard, viewCompetitionPageGuardGuard],
   },
   {
     path: 'association/:associationID/competition/:competitionID/member/:competitionMemberID',
     component: CompetitionDetailMemberPageComponent,
-    canActivate: [AuthGuard, AssociationManagerGuard],
+    canActivate: [AuthGuard, viewCompetitionPageGuardGuard],
+  },
+  {
+    path: 'association/:associationID/guests',
+    component: AssociationGuestsPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'myreservations',
+    component: MyReservationsPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'verify-email/:verificationCode',
+    component: EmailVerifyEmailLinkPageComponent,
+  },
+  {
+    path: 'email-verification',
+    component: EmailVerificationPageComponent,
+  },
+  {
+    path: 'my-presences',
+    component: MyPresencesPageComponent,
+  },
+  {
+    path: 'my-guests',
+    component: MyGuestsPageComponent,
   },
 
 ];

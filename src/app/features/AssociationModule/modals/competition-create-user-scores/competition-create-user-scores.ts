@@ -2,24 +2,14 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {FormControl, FormGroup, FormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {DefaultModalInformation} from "../../../../SharedModule/models/default-modal-information";
-import {WeaponMaintenance} from "../../../../CoreModule/models/weapon-maintenance.model";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
 import {Subscription} from "rxjs";
 import {
-  InputFieldFormComponent
-} from "../../../../SharedModule/components/input-fields/input-field-form-big/input-field-form.component";
-import {
   DefaultInputFieldComponent
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
-import {WeaponType} from "../../../../CoreModule/models/weapon-type.model";
-import {WeaponStatusInterface} from "../create-weapon-modal/create-weapon-modal.component";
-import {
-  CompetitionDTO,
-} from "../../../../CoreModule/models/competition.model";
-import {ValidationUtils} from "../../../../SharedModule/utilities/validation-utils";
 import {
   TextareaModalComponent
 } from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
@@ -27,9 +17,6 @@ import {
   DateTimeSelectorComponent
 } from "../../../../SharedModule/components/input-fields/date-time-selector/date-time-selector.component";
 import {ErrorMessageComponent} from "../../../../SharedModule/components/error-message/error-message.component";
-import {
-  InputFieldWeaponModalComponent
-} from "../../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
 import {
   InputFieldSingleSelectComponent
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
@@ -52,13 +39,11 @@ import {
   imports: [
     FormsModule,
     NgClass,
-    InputFieldFormComponent,
     DefaultInputFieldComponent,
     TextareaModalComponent,
     DateTimeSelectorComponent,
     ErrorMessageComponent,
     NgIf,
-    InputFieldWeaponModalComponent,
     NgForOf,
     InputFieldSingleSelectComponent,
     TranslateModule,
@@ -99,7 +84,6 @@ export class CompetitionCreateUserScores extends DefaultModalInformation impleme
       }
     })
 
-    // @ts-ignore
     this.addScoreFormGroup = new FormGroup({
       date: new FormControl("", Validators.required),
       score: new FormControl(0, Validators.required),

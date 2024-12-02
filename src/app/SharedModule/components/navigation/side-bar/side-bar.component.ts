@@ -30,6 +30,14 @@ const STANDARD_SIDEBAR_ITEMS: SideBarIconStandard[] = [
   {
     name: "Mijn reserveringen",
     link: "/myreservations"
+  },
+  {
+    name: "Mijn Presenties",
+    link: "/my-presences"
+  },
+  {
+    name: "Mijn Introducees",
+    link: "/my-guests"
   }
 ]
 
@@ -50,19 +58,29 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
     permission: AssociationPermission.MANAGE_TRACK_CONFIGURATION
   },
   {
+    name: "Presentie",
+    link: "presence",
+    permission: AssociationPermission.MANAGE_TRACK_CONFIGURATION // TODO CHANGE
+  },
+  {
     name: "Reserveren",
     link: "book",
-    permission: AssociationPermission.NO_PERMISSION
+    permission: AssociationPermission.VIEW_RESERVATIONS
   },
   {
     name: "Competities",
-    link: "competitions",
-    permission: AssociationPermission.NO_PERMISSION
+    link: "competition",
+    permission: AssociationPermission.VIEW_COMPETITIONS
   },
   {
     name: "Wapens",
     link: "weapons",
     permission: AssociationPermission.MANAGE_WEAPONS
+  },
+  {
+    name: "Introducees",
+    link: "guests",
+    permission: AssociationPermission.REVIEW_ASSOCIATION_GUEST
   },
 
 ]
@@ -81,7 +99,7 @@ export class SideBarComponent implements OnInit {
   associations: Association[] = [];
   public isVisible: boolean = false;
   associationPermissions: UserAssociation[] = [];
-  associationInvitesList: AssociationInvite[] = [];
+  associationInvitesList: AssociationInvite[] | undefined = [];
 
   constructor(
         private graphQLCommunication: GraphQLCommunication, navigationService: NavigationService,
@@ -124,7 +142,9 @@ export class SideBarComponent implements OnInit {
       return false;
     }
 
-    return userAssociation.associationRole.permissions.some(p => p.name === perm);
+    return userAssociation.associationRoles.some(p => {
+      return p.permissions.some(permission => permission.name === perm)
+    });
   }
 
 

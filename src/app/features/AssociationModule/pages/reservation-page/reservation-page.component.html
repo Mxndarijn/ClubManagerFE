@@ -1,0 +1,38 @@
+<!--<div role="tablist" class="tabs tabs-bordered  flex justify-center">-->
+<!--  <div role="tab" class="tab  w-36" [class.tab-active]="activeTab === Tab.RESERVATIONS"-->
+<!--       (click)="activeTab = (Tab.RESERVATIONS)">Baan-->
+<!--  </div>-->
+<!--  <div role="tab" class="tab w-36" [class.tab-active]="activeTab === Tab.WEAPONS"-->
+<!--       (click)="activeTab = (Tab.WEAPONS)">Wapen-->
+<!--  </div>-->
+<!--</div>-->
+<app-tab [dataSource]="tabDataSource"></app-tab>
+<ng-container [ngSwitch]="activeTab">
+
+
+  <div *ngSwitchCase="Tab.RESERVATIONS">
+    <app-calender (RequestNewCalendarItemsEvent)="updateReservationEvent($event)"
+                  [NewCalendarItemsEvent]="updateReservationsCalendarEvent"
+                  (CalendarItemClickedEvent)="reservationCalendarItemClicked($event)"
+                  (ButtonClickedEvent)="''" [buttonTitle]="''"
+                  [showButton]="false"
+                  [CalendarEventComponent]="CalendarEventRegisterReservationComponent"
+                  class="w-full">
+      <!--      TODO ButtonClickEvent-->
+    </app-calender>
+  </div>
+  <div *ngSwitchCase="Tab.WEAPONS">
+    <app-calender (RequestNewCalendarItemsEvent)="updateWeaponEvents($event)"
+                  [NewCalendarItemsEvent]="updateWeaponCalendarEvent"
+                  (CalendarItemClickedEvent)="weaponCalendarItemClicked($event)"
+                  (ButtonClickedEvent)="createNewWeaponReservation()" [buttonTitle]="'Reserveer Wapen'"
+                  class="w-full">
+
+    </app-calender>
+  </div>
+  <app-enroll-at-reservation-modal [setCurrentReservation]="SetCurrentReservation">
+  </app-enroll-at-reservation-modal>
+
+
+</ng-container>
+

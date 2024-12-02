@@ -20,6 +20,13 @@ import {
 import {User} from "../../../../../CoreModule/models/user.model";
 import {FormsModule} from "@angular/forms";
 import {UserAssociation} from "../../../../../CoreModule/models/user-association.model";
+import {PermissionService} from "../../../../../CoreModule/services/permission.service";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
+import {
+  ConfirmationModalComponent
+} from "../../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
+import {AlertInfo} from "../../../../../SharedModule/components/alerts/alert-manager/alert-manager.component";
+
 
 @Component({
   selector: 'app-competition-detail-member-page',
@@ -30,7 +37,10 @@ import {UserAssociation} from "../../../../../CoreModule/models/user-association
     SearchBoxComponent,
     TranslateModule,
     CompetitionCreateUserScores,
-    FormsModule
+    FormsModule,
+    RouterLink,
+    RouterLinkActive,
+    ConfirmationModalComponent
   ],
   templateUrl: './competition-detail-member-page.component.html',
   styleUrl: './competition-detail-member-page.component.css'
@@ -52,6 +62,8 @@ export class CompetitionDetailMemberPageComponent {
     private navigationService: NavigationService,
     protected modalService: ModalService,
     private alertService: AlertService,
+    private permissionService: PermissionService,
+    private router: Router
 
 
 ) {
@@ -114,8 +126,32 @@ export class CompetitionDetailMemberPageComponent {
         duration: 4000,
         alertClass: AlertClass.CORRECT_CLASS
       });
-
-
     })
   }
+
+  removeMemberFromCompetition() {
+    this.graphQLCommunication.removeMemberFromCompetition(this.associationID, this.competitionID, this.competitionUserID).then(res => {
+      this.router.navigate(['/association', this.associationID, 'competition', this.competitionID]);
+      if (res.success) {
+        this.alertService.showAlert({
+          title: "Succesvol",
+          subTitle: this.competitionUser?.user?.fullName + " is succesvol verwijdered uit de competitie.",
+          icon: AlertIcon.CHECK,
+          duration: 4000,
+          alertClass: AlertClass.CORRECT_CLASS
+        })
+
+      } else {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: this.competitionUser?.user?.fullName + " is niet verwijdered uit de competitie.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        })
+      }
+    });
+  }
+
+  protected readonly Modal = Modal;
 }

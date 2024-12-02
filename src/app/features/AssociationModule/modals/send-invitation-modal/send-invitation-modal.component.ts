@@ -1,13 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgClass, NgForOf} from "@angular/common";
-import {TranslateService} from "@ngx-translate/core";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {ActivatedRoute} from "@angular/router";
 import {AssociationMembersPageComponent} from "../../pages/association-members-page/association-members-page.component";
 import {
   SingleErrorMessageComponent
 } from "../../../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
-import {AssociationRole} from "../../../../CoreModule/models/association-role.model";
+import {AssociationRole, splitAssociationRoles} from "../../../../CoreModule/models/association-role.model";
 import {AssociationInvite} from "../../../../CoreModule/models/association-invite";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {Modal, ModalChange, ModalService, ModalStatus} from "../../../../CoreModule/services/modal.service";
@@ -15,6 +15,30 @@ import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {SendAssociationInviteResponseDTO} from "../../../../CoreModule/models/dto/send-association-invite-response-dto";
 import {AlertInfo} from "../../../../SharedModule/components/alerts/alert-manager/alert-manager.component";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {faPencil} from "@fortawesome/free-solid-svg-icons";
+import {
+  DefaultInputFieldComponent
+} from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
+import {CompetitionScoreType} from "../../../../CoreModule/models/association-competition";
+import {
+  InputFieldSingleSelectComponent
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
+import {
+  InputFieldSingleSelectDataSource
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
+import {BehaviorSubject} from "rxjs";
+import {WeaponType} from "../../../../CoreModule/models/weapon-type.model";
+import {
+  MultiSelectInputFieldComponent
+} from "../../../../SharedModule/components/input-fields/multi-select-input-field/multi-select-input-field.component";
+import {
+  MultiSelectInputFieldDatasource
+} from "../../../../SharedModule/components/input-fields/multi-select-input-field/multi-select-input-field-datasource";
 
 @Component({
   selector: 'app-send-invitation-modal',
@@ -24,17 +48,27 @@ import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/
     ReactiveFormsModule,
     NgClass,
     NgForOf,
-    SingleErrorMessageComponent
+    SingleErrorMessageComponent,
+    CustomButton,
+    NgIf,
+    DefaultInputFieldComponent,
+    TranslateModule,
+    InputFieldSingleSelectComponent,
+    MultiSelectInputFieldComponent
   ],
   templateUrl: './send-invitation-modal.component.html',
   styleUrl: './send-invitation-modal.component.css'
 })
 export class SendInvitationModalComponent {
   showModal: boolean = false;
-  @Input() selectedRole: string = "User";
   @Input() associationName: string = "";
-  userRoles: AssociationRole[] = [];
-  emailFormControl: FormControl
+  // userRoles: AssociationRole[] = [];
+
+  createInvitationsForm: FormGroup<{
+    emailFormControl: FormControl<string | null>
+    selectedRoleFormControl: FormControl<AssociationRole[] | null>;
+    additionalRoles: FormControl<AssociationRole[] | null>;
+  }>;
   private associationID: string;
   @Output()
   public NewAssociationInviteEvent = new EventEmitter<AssociationInvite>();
@@ -49,7 +83,12 @@ export class SendInvitationModalComponent {
 
   ) {
     this.associationID = route.snapshot.params['associationID'];
-    this.emailFormControl = new FormControl<string>('', [Validators.email]);
+    // @ts-ignore
+    this.createInvitationsForm = new FormGroup({
+      emailFormControl: new FormControl<string>('', [Validators.email, Validators.required]),
+      selectedRoleFormControl: this.singleSelectInputFieldDataSource.formControl,
+      additionalRoles: this.multiSelectInputFieldDataSource.formControl
+    })
 
     this.modalService.modalVisibilityEvent.subscribe({
       next: (modalChange: ModalChange) => {
@@ -60,29 +99,46 @@ export class SendInvitationModalComponent {
 
 
     this.graphQLCommunication.getAssociationRoles().then( r=>{
-        this.userRoles = r;
-
-        // reorder the array so 'User' is first
-        this.userRoles = this.userRoles.sort((a, b) =>
-          a.name === 'User' ? -1 : b.name === 'User' ? 1 : 0);
+      const data = splitAssociationRoles(r)
+      r = r.sort((a:any, b:any) =>
+        a.name === 'User' ? -1 : b.name === 'User' ? 1 : 0);
+        this.singleSelectInputFieldDataSource.items.next(data.primary);
+        this.multiSelectInputFieldDataSource.items.next(data.secondary);
     })
+  }
+
+  singleSelectInputFieldDataSource: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer de gebruikers hoofd-rol.",
+    processItem(input: AssociationRole): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input.name);
+      });
+    }
   }
 
   cancelInvitation() {
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);
-    this.emailFormControl.reset();
+    this.createInvitationsForm.reset();
 
   }
 
   sendInvitation() {
-  if(!this.emailFormControl.valid) {
-    return;
-  }
-  const selectedRoleObj = this.userRoles.find(role => role.name === this.selectedRole);
-  if (!selectedRoleObj) {
-    return;
-  }
-  this.graphQLCommunication.createAssociationInvite(this.associationID, this.emailFormControl.value,selectedRoleObj.id )
+    console.log(this.createInvitationsForm.controls.selectedRoleFormControl.value)
+    if(!this.createInvitationsForm.valid) {
+      return;
+    }
+
+    const dataList = this.createInvitationsForm.controls.additionalRoles.value?.map((role: AssociationRole) => role.id) || [];
+    dataList.push(this.singleSelectInputFieldDataSource.formControl.value!.id)
+    console.log(dataList)
+  this.graphQLCommunication.createAssociationInvite(this.associationID, this.createInvitationsForm.controls.emailFormControl.value!,dataList )
     .then((dto: SendAssociationInviteResponseDTO) =>{
         this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE)
         if(dto.success) {
@@ -134,8 +190,28 @@ export class SendInvitationModalComponent {
       alertClass: AlertClass.INCORRECT_CLASS
     });
   })
-    this.emailFormControl.reset();
+    this.createInvitationsForm.reset();
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE)
 
   }
+
+    protected readonly ButtonClass = ButtonClass;
+    protected readonly ButtonSize = ButtonSize;
+  protected readonly CompetitionScoreType = CompetitionScoreType;
+  protected readonly Object = Object;
+  multiSelectInputFieldDataSource: MultiSelectInputFieldDatasource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer addiotionele gebruikers-rollen.",
+    processItem(input: AssociationRole): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input.name);
+      });
+    }
+  };
 }

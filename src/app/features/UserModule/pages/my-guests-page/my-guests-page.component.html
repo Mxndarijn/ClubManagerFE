@@ -1,0 +1,84 @@
+
+<app-multi-column-list
+  [dataSource]="dataSourceGuests">
+</app-multi-column-list>
+
+<!--Headers-->
+<ng-template #GuestNameHeader>
+  Introducee
+</ng-template>
+
+<ng-template #AssociationHeader>
+  Vereniging
+</ng-template>
+
+<ng-template #DateHeader>
+  Introducee Datum
+</ng-template>
+
+<ng-template #StatusHeader>
+  Status
+</ng-template>
+
+<ng-template #RequestDateHeader>
+  Aanvraagdatum
+</ng-template>
+
+<ng-template #ActionsHeader>
+</ng-template>
+
+<ng-template #topHeaderRowInvitations>
+  <app-custom-button class="mr-10"
+                     [buttonClass]="ButtonClass.ACCENT_CLASS"
+                     [buttonSize]="ButtonSize.BTN_MD"
+                     [labelText]="'Introducee Aanvraag'"
+                     [icon]="faEnvelope"
+                     [disabledStatus]="false"
+                     (onClick)="this.modalService.showModal(Modal.GUEST_CREATE_GUEST);"
+  ></app-custom-button>
+</ng-template>
+
+<!--Rows-->
+
+<ng-template #GuestNameRow let-associationGuest="data">
+  {{ associationGuest.guestFullName }}
+</ng-template>
+
+<ng-template #DateRow let-associationGuest="data">
+  {{ associationGuest.eventTime }}
+</ng-template>
+
+<ng-template #AssociationRow let-associationGuest="data">
+  {{ associationGuest.association.name }}
+</ng-template>
+
+<ng-template #StatusRow let-associationGuest="data">
+  {{ associationGuest.status }}
+</ng-template>
+
+<ng-template #RequestDateRow let-associationGuest="data">
+  {{ associationGuest.requestTime }}
+</ng-template>
+
+<ng-template #ActionsRow let-associationGuest="data">
+  <app-custom-button *ngIf="UtilityFunctions.convertToEnum(AssociationGuestStatus,associationGuest.status) == AssociationGuestStatus.PENDING" class="mr-10"
+                     [buttonClass]="ButtonClass.ERROR_CLASS"
+                     [buttonSize]="ButtonSize.BTN_MD"
+                     [labelText]="'Annuleer Aanvraag'"
+                     [icon]="faEnvelope"
+                     [disabledStatus]="false"
+                     (onClick)="this.selectedAssociationGuest =associationGuest; this.modalService.showModal(Modal.GUEST_CANCEL_GUEST);"
+  ></app-custom-button>
+</ng-template>
+
+<app-create-guest-modal (AssociationGuestCreated)="addAssociationGuest($event)"></app-create-guest-modal>
+
+<app-confirmation-modal
+  [header]="'Introducee aanvraag annuleren'"
+  [message]="'Weet je zeker dat je de aanvraag voor ' + selectedAssociationGuest?.guestFullName + ' wilt annuleren?'"
+  [modalTag]="Modal.GUEST_CANCEL_GUEST"
+  [acceptButtonText]="'Aanvraag annuleren'"
+  [rejectButtonText]="'Aanvraag behouden'"
+  (AcceptEvent)="deleteAssociationGuest()"
+  (RejectEvent)="this.modalService.hideModal(Modal.GUEST_CANCEL_GUEST)"
+></app-confirmation-modal>

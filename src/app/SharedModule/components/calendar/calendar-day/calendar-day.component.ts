@@ -2,19 +2,19 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
-  Input,
+  Input, OnDestroy,
   OnInit,
   Renderer2,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {BehaviorSubject} from "rxjs";
-import {CalendarEvent} from "../calender-view/calender-view.component";
+import {CalendarEvent, CurrentTimeCalendarEvent} from "../calender-view/calender-view.component";
 import {TranslateService} from "@ngx-translate/core";
 import {addDays, addMinutes} from "date-fns";
 import {CalenderEventComponent} from "../calender-week-event/calender-event.component";
 import {ColumnDay, HourRow} from "../calender-week/calender-week.component";
-import {NgClass, NgForOf, NgStyle} from "@angular/common";
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {UtilityFunctions} from "../../../utilities/utility-functions";
 import {CalendarEventCommonComponent} from "../events/calendar-event-common/calendar-event-common.component";
 
@@ -25,12 +25,13 @@ import {CalendarEventCommonComponent} from "../events/calendar-event-common/cale
     NgForOf,
     NgClass,
     CalenderEventComponent,
-    NgStyle
+    NgStyle,
+    NgIf
   ],
   templateUrl: './calendar-day.component.html',
   styleUrl: './calendar-day.component.css'
 })
-export class CalendarDayComponent implements AfterViewInit, OnInit {
+export class CalendarDayComponent implements AfterViewInit, OnInit, OnDestroy {
   @Input() focusDayChangedEvent! : BehaviorSubject<Date>
   @Input() eventsChangedEvent! : BehaviorSubject<CalendarEvent[]>
   @Input() currentDay!: Date
@@ -46,6 +47,13 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
 
   protected selectedDay: Date = new Date();
   protected weekEvents: CalendarEvent[] = [];
+  private intervalId: any;
+  protected currentTimeLine: CurrentTimeCalendarEvent = {
+    time: new Date(),
+    columnIndex: 0,
+    show: false,
+    rowIndex: 0
+  }
 
 
   constructor(
@@ -59,7 +67,15 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
         this.hours.push({hourNumber: i, displayName: displayName});
       })
     }
+
+
   }
+
+  ngOnDestroy(): void {
+     if(this.intervalId) {
+       clearInterval(this.intervalId);
+     }
+    }
 
   ngOnInit(): void {
     setTimeout(() => {
@@ -78,6 +94,11 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
           this.selectedDay.setHours(0)
           this.selectedDay.setMinutes(0)
 
+          //Current Time line
+          this.currentTimeLine.columnIndex = 2
+          this.currentTimeLine.show = this.utility.isSameDay(this.currentTimeLine.time, this.selectedDay);
+          this.currentTimeLine.rowIndex = this.getCorrectRow(this.currentTimeLine.time)
+
           this.utility.formatDate(this.selectedDay).subscribe({
             next: (result) => {
               this.title = result;
@@ -89,6 +110,13 @@ export class CalendarDayComponent implements AfterViewInit, OnInit {
         }
       })
     });
+    this.intervalId = setInterval(() => {
+      if(this.hours && this.hours.length > 0) {
+        this.currentTimeLine.columnIndex = 2
+        this.currentTimeLine.show = this.utility.isSameDay(this.currentTimeLine.time, this.selectedDay);
+        this.currentTimeLine.rowIndex = this.getCorrectRow(this.currentTimeLine.time)
+      }
+    }, 60 * 1000);
   }
 
   refreshEvents() {

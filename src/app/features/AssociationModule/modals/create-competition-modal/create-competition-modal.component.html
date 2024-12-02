@@ -4,7 +4,7 @@
     <h3 class="font-bold text-lg">Nieuwe Competitie</h3>
     <div class="flex flex-row gap-x-1 mt-5">
       <div class="flex flex-col">
-        <app-inputfield-weapon-modal
+        <app-default-input-field
           [inputId]="'inputID'"
           [placeholder]="'Vul hier de competitie naam in.'"
           [_formControl]="createCompetitionForm.controls.name"
@@ -16,7 +16,7 @@
       errorMessage: 'Je moet een naam invullen.',
       errorName: ''
       }]">
-        </app-inputfield-weapon-modal>
+        </app-default-input-field>
 
         <app-textarea-modal
           [placeholder]="'Vul hier de beschrijving van de nieuwe competitie in.'"
@@ -54,30 +54,10 @@
           [specificError]="'dateNotAfterOther'">
         </app-error-message>
 
-        <app-input-field-single-select
-          [_formControl]="createCompetitionForm.controls.compScoreType"
-          [inputList]="Object.values(CompetitionScoreType)"
-          [_label]="'Selecteer de competitie score.'"
-          [processItem]="convertScoreTypeToText"
-          [errorSetting]="
-            {
-              errorMessage: 'Je moet een waarde selecteren.',
-              errorName: ''
-            }">
-
+        <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceType">
         </app-input-field-single-select>
 
-        <app-input-field-single-select
-          [_formControl]="createCompetitionForm.controls.compRankingType"
-          [inputList]="Object.values(CompetitionRanking)"
-          [_label]="'Selecteer de competitie ranking.'"
-          [processItem]="convertRankingToText"
-          [errorSetting]="
-            {
-              errorMessage: 'Je moet een waarde selecteren.',
-              errorName: ''
-            }">
-
+        <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSource">
         </app-input-field-single-select>
       </div>
     </div>

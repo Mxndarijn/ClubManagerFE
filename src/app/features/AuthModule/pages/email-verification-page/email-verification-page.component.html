@@ -1,0 +1,19 @@
+<p>Verify your email! </p>
+
+<app-default-input-field
+  [_formControl]="resetMailForm.controls.email"
+  [autocomplete]="'email'"
+  [placeholder]="'registerPage.emailPlaceholder' | translate"
+  [labelText]="'registerPage.emailHeader' | translate"
+  [inputId]="'emailId'"
+  [type]="'text'"
+  [errorSettings]="[{
+      errorMessage: 'registerPage.errors.noValidEmail' | translate,
+      errorName: ''
+      }]"></app-default-input-field>
+<button class="btn  btn-primary w-60" (click)="changeEmail()" [disabled]="!resetMailForm.valid"
+        routerLinkActive="active" translate>
+  Verander email
+</button>
+
+<p> your email: {{profileEmail}}</p>

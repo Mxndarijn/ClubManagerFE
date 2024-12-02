@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgClass} from "@angular/common";
 import {Modal, ModalChange, ModalService, ModalStatus} from "../../../CoreModule/services/modal.service";
+import {ButtonClass, ButtonSize, CustomButton} from "../../components/buttons/custom-button/custom-button";
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -9,7 +10,8 @@ import {Modal, ModalChange, ModalService, ModalStatus} from "../../../CoreModule
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    NgClass
+    NgClass,
+    CustomButton
   ],
   templateUrl: './confirmation-modal.component.html',
   styleUrl: './confirmation-modal.component.css'
@@ -44,4 +46,7 @@ export class ConfirmationModalComponent {
   cancelFunction() {
     this.RejectEvent.emit();
   }
+
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly ButtonClass = ButtonClass;
 }

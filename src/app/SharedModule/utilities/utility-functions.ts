@@ -218,6 +218,31 @@ export class UtilityFunctions {
     return `${formattedMinutes}:${formattedSeconds}:${formattedMilliseconds}`;
 
   }
+
+  timeIsAfterCurrentDate(startDate: string) {
+    if (!startDate) {
+      return false;
+    }
+    return new Date(startDate).getTime() > new Date().getTime();
+  }
+
+
+  static getEnumList(list: any): any[] {
+
+    return Object.keys(list).filter(key => isNaN(Number(key)));
+
+}
+
+  static convertToEnum<T>(enumObj: T, value: string) {
+    return enumObj[value as keyof T];
+  }
+
+  isSameDay(time: Date, selectedDay: Date) {
+
+    return time.getFullYear() === selectedDay.getFullYear() &&
+      time.getMonth() === selectedDay.getMonth() &&
+      time.getDate() === selectedDay.getDate();
+  }
 }
 
 export enum Day {

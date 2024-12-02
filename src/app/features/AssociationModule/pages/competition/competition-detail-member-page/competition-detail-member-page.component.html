@@ -1,5 +1,18 @@
 <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="addScores()">Scores toevoegen</button>
 <button class="btn border-accent border-2 btn-sm bg-base-100" (click)="removeScores()">Geselecteerde scores verwijderen</button>
+<button class="btn border-accent border-2 btn-sm bg-base-100" (click)="this.modalService.showModal(Modal.ASSOCIATION_COMPETITION_MEMBERS_REMOVE_USER)">Lid verwijderen</button>
+<app-confirmation-modal
+
+  [header]="'Verwijder '+ competitionUser?.user?.fullName "
+  [message]="'Weet je zeker dat je '+ competitionUser?.user?.fullName +' wilt verwijderen uit de competitie?'"
+  [modalTag]="Modal.ASSOCIATION_COMPETITION_MEMBERS_REMOVE_USER"
+  [acceptButtonText]="'Bevestig'"
+  [rejectButtonText]="'Annuleer'"
+  (AcceptEvent)="removeMemberFromCompetition()"
+  (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_COMPETITION_MEMBERS_REMOVE_USER)"
+>
+</app-confirmation-modal>
+
 
 <app-competition-create-user-scores (UserScoresAddedEvent)="updateCompetition()" [SetCurrentUser]="SetCurrentUser" [SetCurrentType]="SetCurrentType"></app-competition-create-user-scores>
 <div class="overflow-x-auto">

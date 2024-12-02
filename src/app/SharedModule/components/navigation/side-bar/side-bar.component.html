@@ -12,7 +12,7 @@
       <div class="p-1 indicator" *ngFor="let i of standard_sidebar_items">
         <app-side-bar-item class="mr-2" [item]="i">
         </app-side-bar-item>
-        <span *ngIf="i.link === '/invitations' && associationInvitesList.length > 0" class="indicator-item indicator-middle indicator-end badge badge-accent">{{associationInvitesList.length}}</span>
+        <span *ngIf="i.link === '/invitations' && associationInvitesList != undefined && associationInvitesList.length > 0" class="indicator-item indicator-middle indicator-end badge badge-accent">{{associationInvitesList.length}}</span>
       </div>
       <div class="divider"></div>
       <div *ngFor="let association of associations">

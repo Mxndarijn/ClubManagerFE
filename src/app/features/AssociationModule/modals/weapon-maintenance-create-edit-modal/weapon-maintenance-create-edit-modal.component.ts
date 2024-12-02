@@ -13,9 +13,7 @@ import {
 import {
   TextareaModalComponent
 } from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
-import {
-  InputFieldWeaponModalComponent
-} from "../../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
+
 import {
   SingleErrorMessageComponent
 } from "../../../../SharedModule/components/error-messages/single-error-message/single-error-message.component";
@@ -50,7 +48,6 @@ import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/defau
     DateTimeSelectorComponent,
     TextareaModalComponent,
     ReactiveFormsModule,
-    InputFieldWeaponModalComponent,
     NgIf,
     SingleErrorMessageComponent,
     ErrorMessageComponent,

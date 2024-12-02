@@ -4,7 +4,7 @@ import {CommonModule} from '@angular/common';
 import {AuthenticationService} from '../../../../CoreModule/services/authentication.service';
 import {ConfirmButtonComponent} from '../../../../SharedModule/components/buttons/confirm-button/confirm-button.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
-import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import {faEnvelope, faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {
   ErrorMessageComponent
@@ -23,6 +23,15 @@ import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-comm
 import {
   DefaultInputFieldComponent
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
+import {
+  LeftSideAuthenticationComponent
+} from "../../../../SharedModule/components/left-side-authentication/left-side-authentication.component";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {Modal} from "../../../../CoreModule/services/modal.service";
 
 
 @Component({
@@ -30,7 +39,7 @@ import {
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent, LeftSideAuthenticationComponent, CustomButton],
 })
 export class LoginPageComponent {
   public loginForm: FormGroup<{
@@ -78,7 +87,6 @@ export class LoginPageComponent {
             this.permissionService.refreshPermissions();
             this.navigationService.refreshNavigation();
             this.router.navigate(['/home']);
-            console.log("e")
             // navigate to home
 
           }
@@ -94,4 +102,8 @@ export class LoginPageComponent {
   }
 
   protected readonly environment = environment;
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly Modal = Modal;
+  protected readonly faEnvelope = faEnvelope;
 }

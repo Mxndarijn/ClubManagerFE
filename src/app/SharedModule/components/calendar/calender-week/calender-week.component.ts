@@ -3,13 +3,13 @@ import {
   Component,
   Directive,
   ElementRef, EventEmitter,
-  Input,
+  Input, OnDestroy,
   OnInit,
   Renderer2, Type,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {CalendarEvent} from "../calender-view/calender-view.component";
+import {CalendarEvent, CurrentTimeCalendarEvent} from "../calender-view/calender-view.component";
 import {TranslateService} from "@ngx-translate/core";
 import {NgClass, NgComponentOutlet, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {addDays, addHours, addMinutes, differenceInMinutes} from "date-fns";
@@ -35,7 +35,7 @@ import {CalendarEventData} from "../models/CalendarEventData";
   styleUrls: ['./calender-week.component.css']
 })
 
-export class CalenderWeekComponent implements AfterViewInit, OnInit {
+export class CalenderWeekComponent implements AfterViewInit, OnInit, OnDestroy {
   @Input() focusDayChangedEvent!: BehaviorSubject<Date>
   @Input() eventsChangedEvent!: BehaviorSubject<CalendarEvent[]>
   @Input() calendarItemClickedEvent? : EventEmitter<CalendarEvent>
@@ -49,8 +49,15 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
   private startHour = 7;
   private endHour = 22;
   private weekStartDay!: Date
+  private intervalId: any;
 
   protected weekEvents: CalendarEvent[] = [];
+  protected currentTimeLine: CurrentTimeCalendarEvent = {
+    time: new Date(),
+    columnIndex: 0,
+    show: false,
+    rowIndex: 0
+  }
 
 
   constructor(
@@ -62,6 +69,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
         this.hours.push({hourNumber: i, displayName: displayName});
       })
     }
+
   }
 
   ngOnInit(): void {
@@ -76,6 +84,12 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
       this.focusDayChangedEvent.subscribe({
         next: (date: Date) => {
           this.weekStartDay = this.toStartOfWeek(date);
+
+          //Current Time line
+          this.currentTimeLine.columnIndex = this.getCorrectColumn(this.currentTimeLine.time)
+          this.currentTimeLine.show = this.currentTimeLine.time >= this.weekStartDay && this.currentTimeLine.time <= addDays(this.weekStartDay, 6);
+          this.currentTimeLine.rowIndex = this.getCorrectRow(this.currentTimeLine.time)
+
           let i = 0;
           this.days = []
           this.dayStrings.forEach(v => {
@@ -89,6 +103,19 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit {
         }
       })
     });
+    this.intervalId = setInterval(() => {
+      if(this.hours && this.hours.length > 0) {
+        this.currentTimeLine.columnIndex = 2
+        this.currentTimeLine.show = this.currentTimeLine.time >= this.weekStartDay && this.currentTimeLine.time <= addDays(this.weekStartDay, 6);
+        this.currentTimeLine.rowIndex = this.getCorrectRow(this.currentTimeLine.time)
+      }
+    }, 60 * 1000);
+  }
+
+  ngOnDestroy(): void {
+    if(this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   refreshEvents() {

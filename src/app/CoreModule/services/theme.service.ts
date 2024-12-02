@@ -13,7 +13,7 @@ export class ThemeService {
 
   constructor() {
     if(localStorage.getItem(this.themeKey) == null) {
-      localStorage.setItem(this.themeKey, Theme.LIGHT);
+      localStorage.setItem(this.themeKey, Theme.DARK);
     }
     this.activateTheme(this.getCurrentTheme());
   }

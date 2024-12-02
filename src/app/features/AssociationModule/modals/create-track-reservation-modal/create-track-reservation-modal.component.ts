@@ -6,9 +6,6 @@ import {Subscription} from "rxjs";
 
 import {addDays} from "date-fns";
 import {
-  InputFieldWeaponModalComponent
-} from "../../../../SharedModule/components/input-fields/inputfield-weapon-modal/input-field-weapon-modal.component";
-import {
   TextareaModalComponent
 } from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
 import {
@@ -39,6 +36,9 @@ import {Modal, ModalService} from "../../../../CoreModule/services/modal.service
 import {ActivatedRoute} from "@angular/router";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
+import {
+  DefaultInputFieldComponent
+} from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 
 
 enum Step {
@@ -52,7 +52,6 @@ enum Step {
   selector: 'app-create-track-reservation-modal',
   standalone: true,
   imports: [
-    InputFieldWeaponModalComponent,
     TextareaModalComponent,
     NgClass,
     FormsModule,
@@ -69,6 +68,7 @@ enum Step {
     NgSwitchCase,
     ErrorMessageComponent,
     AsyncPipe,
+    DefaultInputFieldComponent,
   ],
   templateUrl: './create-track-reservation-modal.component.html',
   styleUrl: './create-track-reservation-modal.component.css'
@@ -95,6 +95,8 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     weaponTypes: FormControl<WeaponType[] | null>;
     maxSize: FormControl<number>;
     color: FormControl<ColorPreset | null>;
+    chooseTime: FormControl<boolean | undefined>;
+
   }>;
   protected step2ReservationForm: FormGroup<{
     tracks: FormControl<Track[] | null>;
@@ -155,7 +157,9 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
 
       weaponTypes: new FormControl([], Validators.required),
       maxSize: new FormControl(1, Validators.compose([Validators.required, Validators.min(1)])),
-      color: new FormControl(null, Validators.required)
+      color: new FormControl(null, Validators.required),
+      chooseTime: new FormControl(true, Validators.required)
+
     });
 
     // @ts-ignore
@@ -240,13 +244,13 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
         this.step3ReservationForm.patchValue({
           startDate: this.currentReservation?.startDate,
           endDate: this.currentReservation?.endDate,
-          repeats: this.currentReservation.reservationSerie != null && this.currentReservation.reservationSerie.id.length > 0,
+          repeats: this.currentReservation.reservationSeries != null && this.currentReservation.reservationSeries.id.length > 0,
         });
 
         this.createSeriesForm.patchValue({
-          repeatUntil: this.currentReservation?.reservationSerie?.repeatUntil,
-          repeatDaysBetween: this.currentReservation?.reservationSerie?.repeatDaysBetween,
-          repeatType: this.currentReservation.reservationSerie?.reservationRepeat
+          repeatUntil: this.currentReservation?.reservationSeries?.repeatUntil,
+          repeatDaysBetween: this.currentReservation?.reservationSeries?.repeatDaysBetween,
+          repeatType: this.currentReservation.reservationSeries?.reservationRepeat
         });
       }
     }))
@@ -263,16 +267,17 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     this.currentReservation.startDate = this.step3ReservationForm.controls.startDate.value!;
     this.currentReservation.endDate = this.step3ReservationForm.controls.endDate.value!;
     this.currentReservation.maxSize = this.step1ReservationForm.controls.maxSize.value!;
-    this.currentReservation.colorPreset = this.step1ReservationForm.controls.color.value!
+    this.currentReservation.colorPreset = this.step1ReservationForm.controls.color.value!;
+    this.currentReservation.membersCanChooseTheirOwnPosition = this.step1ReservationForm.controls.chooseTime.value!;
     if (!setSerie)
       return;
 
-    if (this.currentReservation.reservationSerie) {
-      this.currentReservation.reservationSerie.repeatUntil = this.createSeriesForm.controls.repeatUntil.value!;
-      this.currentReservation.reservationSerie.repeatDaysBetween = this.createSeriesForm.controls.repeatDaysBetween.value!;
-      this.currentReservation.reservationSerie.reservationRepeat = this.createSeriesForm.controls.repeatType.value!;
+    if (this.currentReservation.reservationSeries) {
+      this.currentReservation.reservationSeries.repeatUntil = this.createSeriesForm.controls.repeatUntil.value!;
+      this.currentReservation.reservationSeries.repeatDaysBetween = this.createSeriesForm.controls.repeatDaysBetween.value!;
+      this.currentReservation.reservationSeries.reservationRepeat = this.createSeriesForm.controls.repeatType.value!;
     } else {
-      this.currentReservation.reservationSerie = {
+      this.currentReservation.reservationSeries = {
         id: "", reservations: [],
         repeatUntil: this.createSeriesForm.controls.repeatUntil.value!,
         repeatDaysBetween: this.createSeriesForm.controls.repeatDaysBetween.value!,
@@ -304,7 +309,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
             alertClass: AlertClass.INCORRECT_CLASS
           });
         }
-        this.hideModal()
+        this.resetReservationModal();
     }).catch(e=> {
       this.alertService.showAlert({
         title: "Fout opgetreden",
@@ -313,13 +318,18 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
         duration: 4000,
         alertClass: AlertClass.INCORRECT_CLASS
       });
-      console.log(e)
-      this.hideModal()
+      this.resetReservationModal()
     });
   }
+  resetReservationModal() {
+    this.hideModal();
+    this.currentReservation = undefined;
+    this.step1ReservationForm.reset();
+    this.step2ReservationForm.reset();
+    this.step3ReservationForm.reset();
+    this.step = Step.STEP_1;
+    this.step1ReservationForm.controls.chooseTime.setValue(true);
 
-  saveReservation() {
-    this.setCurrentValues(false);
   }
 
   protected readonly ReservationRepeat = ReservationRepeat;
@@ -396,11 +406,14 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   }
 
   containsWeaponTypeInList(weaponType: WeaponType) {
-    return this.step1ReservationForm.controls.weaponTypes.value!.includes(weaponType);
-
+    if(this.step1ReservationForm.controls.weaponTypes.value != null) {
+      return this.step1ReservationForm.controls.weaponTypes.value!.includes(weaponType);
+    } else {
+      return false
+    }
   }
-
   getSubTitleForStep() {
+
     switch (this.step) {
       case Step.STEP_1:
         return "Vul de correcte gegevens in";

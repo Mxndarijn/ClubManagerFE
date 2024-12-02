@@ -1,6 +1,6 @@
-import {Component, EventEmitter} from '@angular/core';
-import {NgForOf, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
+import {Component, EventEmitter, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {AsyncPipe, NgForOf, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
+import {faEnvelope, faTrashCan, faPencil} from "@fortawesome/free-solid-svg-icons";
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {CreateTrackModalComponent} from "../../modals/create-track-modal/create-track-modal.component";
@@ -34,6 +34,26 @@ import {NavigationService} from "../../../../CoreModule/services/navigation.serv
 import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {GetReservationsDTO} from "../../../../CoreModule/models/dto/get-reservations-between-dto";
+import {Association} from "../../../../CoreModule/models/association.model";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {
+  ColumnSortType,
+  MultiColumnListDataSource
+} from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
+import {BehaviorSubject} from "rxjs";
+import {UserPresence} from "../../../../CoreModule/models/user-presence.model";
+import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
+
+enum Tab {
+  TRACKS,
+  CALENDAR
+}
 
 @Component({
   selector: 'app-track-configuration-page',
@@ -49,20 +69,23 @@ import {GetReservationsDTO} from "../../../../CoreModule/models/dto/get-reservat
     ConfirmationModalComponent,
     CalenderViewComponent,
     CreateTrackReservationModalComponent,
-    ViewTrackReservationModalComponent
+    ViewTrackReservationModalComponent,
+    TabComponent,
+    CustomButton,
+    AsyncPipe,
+    MultiColumnList
   ],
   templateUrl: './track-configuration-page.component.html',
   styleUrl: './track-configuration-page.component.css'
 })
-export class TrackConfigurationPageComponent {
-  protected activeTab = Tab.TRACKS
+export class TrackConfigurationPageComponent implements OnInit {
+  activeTab = Tab.TRACKS
   protected readonly Tab = Tab;
   protected readonly getWeaponStatus = getWeaponStatus;
   protected readonly Modal = Modal;
   protected readonly faTrashCan = faTrashCan;
   protected SetCurrentTrack = new EventEmitter<Track>();
   protected SetCurrentReservation = new EventEmitter<Reservation>();
-  protected tracks: Track[] = []
   protected reservations: Reservation[] = []
   private associationID: string;
 
@@ -74,6 +97,35 @@ export class TrackConfigurationPageComponent {
   ReservationCreatedEvent = new EventEmitter<Reservation[]>;
   ReservationEditedEvent = new EventEmitter<Reservation[]>;
   ReservationDeleteEvent = new EventEmitter<Reservation[]>;
+
+  @ViewChild('TrackNameHeader', { static: true }) trackNameHeader!: TemplateRef<any>;
+  @ViewChild('DescriptionHeader', {static: true}) descriptionHeader!: TemplateRef<any>;
+  @ViewChild('AllowedWeaponTypesHeader', {static: true}) allowedWeaponTypesHeader!: TemplateRef<any>;
+  @ViewChild('ActionsHeader', {static: true}) actionsHeader!: TemplateRef<any>;
+
+  @ViewChild('TrackHeaderRow', {static: true}) trackHeaderRow!: TemplateRef<any>;
+
+  @ViewChild('TrackNameRow', { static: true }) trackNameRow!: TemplateRef<{ data: Track }>;
+  @ViewChild('TrackDescriptionRow', {static: true}) trackDescriptionRow!: TemplateRef<{ data: Track }>;
+  @ViewChild('TrackWeaponTypesRow', {static: true}) trackWeaponTypesRow!: TemplateRef<{ data: Track }>;
+  @ViewChild('TrackActionsRow', {static: true}) trackActionsRow!: TemplateRef<{ data: Track }>;
+
+  dataSourceTrack: MultiColumnListDataSource = {
+    columns: [],
+    dataRows: new BehaviorSubject<any[]>([]),
+    hasMoreRows: true,
+    initialRowCount: 0,
+    isDataLoading: true,
+    canSearch: true,
+    emptyMessage: "LEEG",
+    searchPlaceholder: "zoek",
+    isInSearch: (dataRow : Track, searchValue : string) => {
+      return dataRow.name.toLowerCase().includes(searchValue);
+    },
+    getID: (dataRow: Track) => {
+      return dataRow.id;
+    },
+  };
 
 
   constructor(
@@ -96,7 +148,18 @@ export class TrackConfigurationPageComponent {
         navigationService.setSubTitle(r.name);
     })
     this.graphQLService.getTracksOfAssociation(this.associationID).then( r =>{
-        this.tracks = r;
+      if(r == null) {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een fout opgetreden bij het ophalen van de banen..",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+        return;
+      }
+      this.dataSourceTrack.dataRows.next(r)
+      this.dataSourceTrack.isDataLoading = false
     })
 
     this.ReservationCreatedEvent.subscribe({
@@ -112,17 +175,70 @@ export class TrackConfigurationPageComponent {
 
   }
 
+  ngOnInit(): void {
+    this.dataSourceTrack.headerRow = this.trackHeaderRow
+    this.dataSourceTrack.columns= [
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.trackNameHeader,
+        rowCell: this.trackNameRow,
+        getRawValueToSort: (dataRow: Track) => {
+          return dataRow.name;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.descriptionHeader,
+        rowCell: this.trackDescriptionRow,
+        getRawValueToSort: (dataRow: Track) => {
+          return dataRow.description;
+        }
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.allowedWeaponTypesHeader,
+        rowCell: this.trackWeaponTypesRow,
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.actionsHeader,
+        rowCell: this.trackActionsRow,
+      },
+    ]
+    }
+
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "Banen",
+        onClick : () => {
+          this.activeTab = Tab.TRACKS
+        }
+      },
+      {
+        label: "Kalender",
+        onClick : () => {
+          this.activeTab = Tab.CALENDAR
+        }
+      }
+    ]
+  };
+
   trackCreated(track: Track) {
-    this.tracks.push(track);
+    const list = this.dataSourceTrack.dataRows.value;
+    list.push(track);
+    this.dataSourceTrack.dataRows.next(list);
   }
 
   trackDeleted(track: Track) {
-    this.tracks = this.tracks.filter(t => t.id !== track.id);
+    const list = this.dataSourceTrack.dataRows.value.filter(t => t.id !== track.id);
+    this.dataSourceTrack.dataRows.next(list);
   }
 
   trackEdited(track: Track) {
-    this.tracks = this.tracks.map(t => t.id === track.id ? track : t);
-
+    const list = this.dataSourceTrack.dataRows.value.map(t => t.id === track.id ? track : t);
+    this.dataSourceTrack.dataRows.next(list);
   }
 
   generateNewTrack(): Track {
@@ -152,7 +268,8 @@ export class TrackConfigurationPageComponent {
             duration: 4000,
             alertClass: AlertClass.CORRECT_CLASS
           });
-          this.tracks = this.tracks.filter(t => t.id != this.selectedTrack!.id)
+          const list = this.dataSourceTrack.dataRows.value.filter(t => t.id !== t.id);
+          this.dataSourceTrack.dataRows.next(list);
         } else {
           this.alertService.showAlert({
             title: "Fout opgetreden",
@@ -172,9 +289,11 @@ export class TrackConfigurationPageComponent {
 
   }
 
+  private lastUsedDate? : Date
   updateEvents(date: Date) {
-    this.graphQLService.getReservations(this.associationID, date).then((dto: GetReservationsDTO) => {
-        if (dto.success) {
+    this.lastUsedDate = date;
+    this.graphQLService.getReservations(this.associationID, date).then((dto: Association) => {
+        if (dto.reservations != null) {
           this.reservations = dto.reservations
           this.createCalendarItems(this.reservations);
           this.updateCalendarItemsEvent?.next(this.calendarItems);
@@ -209,6 +328,7 @@ export class TrackConfigurationPageComponent {
 
   private generateNewReservation(): Reservation {
     return {
+      membersCanChooseTheirOwnPosition: true,
       allowedWeaponTypes: [],
       association: undefined,
       id: "", maxSize: 1,
@@ -219,19 +339,25 @@ export class TrackConfigurationPageComponent {
       endDate: "",
       description: "",
       status: ReservationStatus.IDK,
-      reservationSerie: {
+      reservationSeries: {
         id: "",
         reservations: [],
         reservationRepeat: ReservationRepeat.DAY,
         repeatDaysBetween: 1,
         repeatUntil: "",
       },
+      openPositions: []
     };
   }
 
+  refreshEvents() {
+    if(this.lastUsedDate)
+      this.updateEvents(this.lastUsedDate)
+  }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly faPencil = faPencil;
 }
 
-enum Tab {
-  TRACKS = 0,
-  CALENDAR = 1
-}
+

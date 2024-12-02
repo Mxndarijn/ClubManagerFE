@@ -16,8 +16,10 @@ export interface Reservation {
   reservationUsers: ReservationUser[];
   tracks: Track[];
   allowedWeaponTypes: WeaponType[];
-  reservationSerie?: ReservationSeries;
+  reservationSeries?: ReservationSeries;
   colorPreset?: ColorPreset;
+  membersCanChooseTheirOwnPosition: boolean,
+  openPositions: number[]
 }
 
 export interface ReservationUser {
@@ -25,6 +27,7 @@ export interface ReservationUser {
   user: User;
   reservation: Reservation;
   registerDate: Date
+  position: number
 
 }
 

@@ -1,0 +1,33 @@
+
+<div class="flex flex-row items-center justify-end">
+  <app-search-box *ngIf="dataSource.canSearch" [placeholder]="dataSource.searchPlaceholder! | translate" (SearchEvent)="search($event)">
+  </app-search-box>
+  <ng-container  *ngIf="dataSource.headerRow" [ngTemplateOutlet]="dataSource.headerRow"></ng-container>
+</div>
+
+<table class="table overflow-y-hidden">
+  <thead>
+  <tr>
+    <th class="text-sm"  *ngFor="let column of dataSource.columns">
+      <ng-container  [ngTemplateOutlet]="column.headerCell"></ng-container>
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <ng-container *ngIf="!dataSource.isDataLoading; else loading">
+    <td *ngIf="filteredItems.length == 0" colspan="40" class="text-center text-xs">{{ dataSource.emptyMessage}}</td>
+      <tr *ngFor="let row of filteredItems" class="bg-base-100 last:border-b-1 last:border-black last:shadow-3xl">
+        <td class="text-xs" *ngFor="let column of dataSource.columns">
+          <ng-container [ngTemplateOutlet]="column.rowCell" [ngTemplateOutletContext]="{ data: row }"></ng-container>
+        </td>
+      </tr>
+  </ng-container>
+  <ng-template #loading>
+    Loading data... (Voeg animation toe)
+  </ng-template>
+  </tbody>
+</table>
+<button *ngIf="dataSource.hasMoreRows && dataSource.loadAdditionalRows" (click)="loadMoreRows()" class="btn btn-sm" [disabled]="loadingMoreRows">w
+  Load more
+
+</button>

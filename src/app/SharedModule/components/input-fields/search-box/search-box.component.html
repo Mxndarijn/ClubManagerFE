@@ -1,15 +1,14 @@
-<div class="flex justify-end w-full">
-  <div class="flex flex-row w-5/12 justify-evenly   mr-10">
-    <div class="relative flex items-center w-9/12">
-      <input type="text" [placeholder]="placeholder" [(ngModel)]="value"
-             class="input input-bordered border-2 w-full"/>
-      <button class="right-0 mr-3" (click)="clearFilter()">
-        <div>
+  <div class="flex flex-row justify-end mr-10">
+    <div class="relative flex items-center">
+      <input type="text" [placeholder]="placeholder" (keydown.enter)="SearchEvent.emit(value)" [(ngModel)]="value" (ngModelChange)="change()"
+             class="input rounded-none rounded-tl-md rounded-bl-md
+             border-accent border-2 border-r-0 w-full bg-base-300 focus:outline-none
+             focus:border-accent shadow-3xl focus:shadow-2xl"/>
+      <button *ngIf="value.length > 0" class="absolute inset-y-0 right-0 px-2" (click)="clearFilter()">
           <fa-icon [icon]="faXMark"></fa-icon>
-        </div>
       </button>
     </div>
-    <button class="btn border-accent border-2  bg-base-100" (click)="SearchEvent.emit(value)">{{'associationMembers.searchButtonText' | translate}}
+    <button class="border-accent rounded-tr-md rounded-br-md bg-accent p-3 shadow-3xl" (click)="SearchEvent.emit(value)">
+      <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
     </button>
   </div>
-</div>

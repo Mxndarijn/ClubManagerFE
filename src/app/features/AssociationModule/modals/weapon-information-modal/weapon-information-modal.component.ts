@@ -8,13 +8,19 @@ import {Modal, ModalService} from "../../../../CoreModule/services/modal.service
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
 import {Subscription} from "rxjs";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 @Component({
   selector: 'app-weapon-information-modal',
   standalone: true,
   imports: [
     FormsModule,
-    NgClass
+    NgClass,
+    CustomButton
   ],
   templateUrl: './weapon-information-modal.component.html',
   styleUrl: './weapon-information-modal.component.css'
@@ -88,4 +94,7 @@ export class WeaponInformationModalComponent extends DefaultModalInformation imp
     return startDateTime.getTime() > this.currentDate.getTime();
 
   }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

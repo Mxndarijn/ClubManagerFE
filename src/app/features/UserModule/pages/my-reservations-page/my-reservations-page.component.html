@@ -1,0 +1,72 @@
+  <app-tab [dataSource]="tabDataSource"></app-tab>
+<div *ngIf="activeTab === Tab.FUTURE" class="w-full">
+  <app-multi-column-list [dataSource]="dataSourcePlannedReservations"></app-multi-column-list>
+</div>
+
+
+<div *ngIf="activeTab === Tab.HISTORY" class="w-full">
+  <app-multi-column-list [dataSource]="dataSourceHistoryReservations"></app-multi-column-list>
+</div>
+
+<!--Headers-->
+<ng-template #MyReservationsTitleHeaderTemplate>
+  Titel
+</ng-template>
+<ng-template #MyReservationsAssociationHeaderTemplate>
+  Vereniging
+</ng-template>
+<ng-template #MyReservationsTimeHeaderTemplate>
+  Tijd
+</ng-template>
+<ng-template #MyReservationsDurationHeaderTemplate>
+  Duur
+</ng-template>
+<ng-template #MyReservationsTrackHeaderTemplate>
+  Baan
+</ng-template>
+<ng-template #MyReservationsPositionHeaderTemplate>
+  Positie
+</ng-template>
+
+<ng-template #actionsTemplate>
+</ng-template>
+
+<!--Rows-->
+<ng-template #MyReservationsTitleRowTemplate let-reservationUser="data">
+  <p> {{ reservationUser.reservation.title }}</p>
+</ng-template>
+
+<ng-template #MyReservationsAssociationRowTemplate let-reservationUser="data" >
+  <p>{{ reservationUser.reservation.association?.name }}</p>
+</ng-template>
+
+<ng-template #MyReservationsTimeRowTemplate let-reservationUser="data" >
+  <p>{{this.util.formatDateTimeAsString(reservationUser.reservation.startDate) | async}}</p>
+</ng-template>
+
+<ng-template #MyReservationsDurationRowTemplate let-reservationUser="data" >
+  <p>{{this.util.calculateDuration(reservationUser.reservation.startDate, reservationUser.reservation.endDate)}}</p>
+</ng-template>
+
+<ng-template #MyReservationsTrackRowTemplate let-reservationUser="data" >
+  <p *ngFor="let track of reservationUser.reservation.tracks">{{ track.name}}</p>
+</ng-template>
+
+<ng-template #MyReservationsPositionRowTemplate let-reservationUser="data" >
+  <p *ngIf="reservationUser.reservation.membersCanChooseTheirOwnPosition">{{ reservationUser.position + 1 }}</p>
+  <p *ngIf="!reservationUser.reservation.membersCanChooseTheirOwnPosition">Geen</p>
+</ng-template>
+
+<ng-template #actionsRowTemplate let-reservationUser="data">
+  <app-custom-button
+    [buttonClass]="ButtonClass.ACCENT_CLASS"
+    [buttonSize]="ButtonSize.BTN_SM"
+    [labelText]="'Info'"
+    [icon]="faInfoCircle"
+    [disabledStatus]="false"
+    (onClick)="viewMoreInformation(reservationUser)"
+  ></app-custom-button>
+</ng-template>
+
+  <app-my-reservation-detail-modal (UpdateReservationUsers)="refreshData()" [SetCurrentReservationUser]="SetCurrentReservationUser" ></app-my-reservation-detail-modal>
+

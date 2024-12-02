@@ -1,8 +1,8 @@
-import {Component, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgForOf, NgIf} from "@angular/common";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
-import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
+import {faTrashCan, faPencil} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {ActivatedRoute} from "@angular/router";
 import {CreateWeaponModalComponent} from "../../modals/create-weapon-modal/create-weapon-modal.component";
@@ -28,6 +28,20 @@ import {
 } from "../../../../CoreModule/models/weapon-maintenance.model";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
 import {GetWeaponMaintenancesDTO} from "../../../../CoreModule/models/dto/get-weapon-maintenances-dto";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
+import {
+  ColumnSortType,
+  MultiColumnListDataSource
+} from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
+import {BehaviorSubject} from "rxjs";
+import {Track} from "../../../../CoreModule/models/track.model";
+import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 enum Tab {
   WEAPON_OVERVIEW,
@@ -49,15 +63,29 @@ enum Tab {
     UpdateButtonComponent,
     WeaponInformationModalComponent,
     WeaponMaintenanceCreateEditModalComponent,
+    TabComponent,
+    MultiColumnList,
+    CustomButton,
 
   ],
   templateUrl: './weapon-page.component.html',
   styleUrl: './weapon-page.component.css'
 })
-export class WeaponPageComponent {
+export class WeaponPageComponent implements OnInit{
   activeTab: Tab = Tab.WEAPON_OVERVIEW;
-  weaponList: Weapon[] = [];
   protected associationID: string;
+
+  @ViewChild('WeaponNameHeader', { static: true }) weaponNameHeader!: TemplateRef<any>;
+  @ViewChild('WeaponTypeHeader', {static: true}) weaponTypeHeader!: TemplateRef<any>;
+  @ViewChild('WeaponStatusHeader', {static: true}) weaponStatusHeader!: TemplateRef<any>;
+  @ViewChild('ActionsHeader', {static: true}) actionsHeader!: TemplateRef<any>;
+
+  @ViewChild('TableHeaderRow', {static: true}) tableHeaderRow!: TemplateRef<any>;
+
+  @ViewChild('WeaponNameRow', { static: true }) weaponNameRow!: TemplateRef<{ data: Weapon }>;
+  @ViewChild('WeaponTypeRow', {static: true}) weaponTypeRow!: TemplateRef<{ data: Weapon }>;
+  @ViewChild('WeaponStatusRow', {static: true}) weaponStatusRow!: TemplateRef<{ data: Weapon }>;
+  @ViewChild('ActionsRow', {static: true}) actionsRow!: TemplateRef<{ data: Weapon }>;
 
 
   constructor(
@@ -105,6 +133,37 @@ export class WeaponPageComponent {
     this.reloadData();
   }
 
+  ngOnInit(): void {
+    this.dataSourceWeapons.headerRow = this.tableHeaderRow
+    this.dataSourceWeapons.columns= [
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.weaponNameHeader,
+        rowCell: this.weaponNameRow,
+        getRawValueToSort: (dataRow: Track) => {
+          return dataRow.name;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.weaponTypeHeader,
+        rowCell: this.weaponTypeRow,
+        getRawValueToSort: (dataRow: Track) => {
+          return dataRow.description;
+        }
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.weaponStatusHeader,
+        rowCell: this.weaponStatusRow,
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.actionsHeader,
+        rowCell: this.actionsRow,
+      },
+    ]
+    }
 
   setActiveTab(tab: Tab) {
     this.activeTab = tab;
@@ -113,16 +172,20 @@ export class WeaponPageComponent {
   protected readonly Tab = Tab;
 
   protected readonly faTrashCan = faTrashCan;
+  protected readonly faPencil = faPencil;
 
   createWeaponEvent(weapon: Weapon) {
-    this.weaponList.push(weapon);
+    const list = this.dataSourceWeapons.dataRows.value;
+    list.push(weapon)
+    this.dataSourceWeapons.dataRows.next(list);
   }
 
   protected readonly Modal = Modal;
 
   private reloadData() {
     this.graphQLCommunication.getAllWeapons(this.associationID).then( r =>{
-        this.weaponList = r
+      this.dataSourceWeapons.dataRows.next(r)
+      this.dataSourceWeapons.isDataLoading = false;
     }).catch(e => {
       this.alertService.showAlert({
         title: "Fout opgetreden",
@@ -146,6 +209,42 @@ export class WeaponPageComponent {
   protected deleteWeaponMaintenanceEvent = new EventEmitter<WeaponMaintenance>();
   protected calendarItems: CalendarEvent[] = []
   setCurrentWeapon: EventEmitter<Weapon> = new EventEmitter<Weapon>();
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "Wapen overzicht",
+        onClick : () => {
+          this.activeTab = Tab.WEAPON_OVERVIEW
+        }
+      },
+      {
+        label: "Kalender",
+        onClick : () => {
+          this.activeTab = Tab.CALENDER_VIEW
+        }
+      }
+    ]
+  };
+
+  dataSourceWeapons: MultiColumnListDataSource = {
+    columns: [],
+    dataRows: new BehaviorSubject<any[]>([]),
+    hasMoreRows: true,
+    initialRowCount: 0,
+    isDataLoading: true,
+    canSearch: true,
+    emptyMessage: "LEEG",
+    searchPlaceholder: "zoek",
+    isInSearch: (dataRow : Weapon, searchValue : string) => {
+      return dataRow.name.toLowerCase().includes(searchValue);
+    },
+    getID: (dataRow: Track) => {
+      return dataRow.id;
+    },
+  };
+
+
 
   updateEvents(date: Date) {
     this.graphQLService.getAssociationMaintenances(this.associationID, date).then( (dto: GetWeaponMaintenancesDTO) => {
@@ -208,12 +307,17 @@ export class WeaponPageComponent {
   }
 
   changeWeaponEvent(weapon: Weapon) {
-    this.weaponList.forEach(w => {
+    const list = this.dataSourceWeapons.dataRows.value;
+    list.forEach(w => {
       if(w.id == weapon.id) {
         w.type = weapon.type;
         w.name = weapon.name;
         w.status = weapon.status;
       }
     })
+    this.dataSourceWeapons.dataRows.next(list);
   }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

@@ -1,0 +1,105 @@
+<app-tab [dataSource]="tabDataSource"></app-tab>
+
+<div *ngIf="activeTab === Tab.CREATE_PRESENCE">
+  <zxing-scanner [torch]="torchEnabled" [device]="deviceCurrent" (deviceChange)="onDeviceChange($event)" (scanSuccess)="onCodeResult($event)"
+                 [formats]="formats" [tryHarder]="true" (permissionResponse)="onHasPermission($event)"
+                 (camerasFound)="onCamerasFound($event)" (torchCompatible)="torchCompatible = $event" class="w-80 h-60 mx-auto">
+
+  </zxing-scanner>
+
+  <ng-container *ngIf="hasDevices === undefined">
+    No devices found
+  </ng-container>
+  <ng-container *ngIf="hasPermission === undefined">
+
+    <h2>Waiting for permissions.</h2>
+
+    <blockquote>
+      If your device does not has cameras, no permissions will be asked.
+    </blockquote>
+
+  </ng-container>
+
+  <ng-container *ngIf="hasPermission === false">
+
+    <h2>You denied the camera permission, we can't scan anything without it. 😪</h2>
+    <button (click)="requestPermission()">Opnieuw proberen</button>
+
+  </ng-container>
+
+  result
+  {{result}}
+  <app-search-box [value]="result" (SearchEvent)="search($event)">
+
+  </app-search-box>
+
+  <div *ngFor="let ua of resultList">
+    {{ua.user.fullName}}
+    <button class="btn btn-accent" (click)="openConfirm(ua)">Presentie melden</button>
+  </div>
+  <app-association-presence-create
+    [dataSource]="currentSelected"
+    (onClickEvent)="createPresence($event)">
+
+  </app-association-presence-create>
+</div>
+
+<div *ngIf="activeTab === Tab.HISTORY_PRESENCE">
+  <app-multi-column-list
+    [dataSource]="dataSourcePresences">
+
+  </app-multi-column-list>
+</div>
+
+
+<ng-template #MemberHeader>
+  Lid
+</ng-template>
+
+<ng-template #DateHeader>
+  Datum
+</ng-template>
+
+<ng-template #ApprovedUserHeader>
+  Aangemeld door
+</ng-template>
+
+<ng-template #ActionsHeader>
+</ng-template>
+
+<ng-template #MemberRow let-userPresence="data">
+  <div class="flex items-center gap-3">
+    <div class="avatar">
+      <div class="mask mask-squircle w-12 h-12 rounded-full">
+        <img src="{{userPresence.user.image.encoded}}" alt="{{userPresence.user.fullName}}"/>
+      </div>
+    </div>
+    <div>
+      <div class="font-bold">{{ userPresence.user.fullName}}</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #DateRow let-userPresence="data">
+  <p>{{ formatDate(userPresence.date) | async }}</p>
+</ng-template>
+
+<ng-template #ApprovedUserRow let-userPresence="data">
+  <p>{{ userPresence.approvedBy.fullName}}</p>
+</ng-template>
+
+<ng-template #ActionsRow let-userPresence="data">
+  <app-custom-button [buttonClass]="ButtonClass.ERROR_CLASS" [icon]="faTrashCan" [labelText]="'Verwijderen'" (onClick)="onStartDelete(userPresence)">
+  </app-custom-button>
+</ng-template>
+
+<app-confirmation-modal
+  [header]="'Presentie verwijderen - ' + this.selectedPresence?.user?.fullName"
+  [message]="confirmationMessage"
+  [modalTag]="Modal.ASSOCIATION_PRESENCE_CONFIRMATION_DELETE"
+  [acceptButtonText]="'associationMembers.tableMember.memberModal.acceptButton' | translate"
+  [rejectButtonText]="'associationMembers.tableMember.memberModal.rejectButton' | translate"
+  (AcceptEvent)="deletePresence()"
+  (RejectEvent)="this.modalService.hideModal(Modal.ASSOCIATION_PRESENCE_CONFIRMATION_DELETE)"
+></app-confirmation-modal>
+

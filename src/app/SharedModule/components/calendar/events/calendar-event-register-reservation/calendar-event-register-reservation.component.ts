@@ -25,7 +25,6 @@ export class CalendarEventRegisterReservationComponent implements CalendarEventD
   async ngOnInit() {
     if(this.data) {
       this.reservation = this.data.data as Reservation;
-      console.log(this.reservation)
     }
     this.startTime = await this.utility.formatTime(this.data?.startDate);
   }

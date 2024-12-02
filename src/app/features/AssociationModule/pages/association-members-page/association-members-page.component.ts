@@ -1,9 +1,11 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {AsyncPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
-import {map, Observable} from "rxjs";
+import {BehaviorSubject, map, Observable} from "rxjs";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
+import {faPencil} from "@fortawesome/free-solid-svg-icons";
+import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
 import {SendInvitationModalComponent} from "../../modals/send-invitation-modal/send-invitation-modal.component";
@@ -12,7 +14,7 @@ import {
   ConfirmationModalComponent
 } from "../../../../SharedModule/modals/confirmation-modal/confirmation-modal.component";
 import {UserAssociation} from "../../../../CoreModule/models/user-association.model";
-import {AssociationInvite, AssociationInviteID} from "../../../../CoreModule/models/association-invite";
+import {AssociationInvite} from "../../../../CoreModule/models/association-invite";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {NavigationService} from "../../../../CoreModule/services/navigation.service";
@@ -25,6 +27,19 @@ import {UpdateUserModalComponent} from "../../modals/update-user-modal/update-us
 import {
   InputFieldDurationComponent
 } from "../../../../SharedModule/components/input-fields/input-field-duration/input-field-duration.component";
+import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
+import {
+  ColumnSortType,
+  MultiColumnListDataSource
+} from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {splitAssociationRoles} from "../../../../CoreModule/models/association-role.model";
 
 enum Tab {
   MEMBERS,
@@ -46,33 +61,53 @@ enum Tab {
     SendInvitationModalComponent,
     ConfirmationModalComponent,
     TranslateModule,
-    InputFieldDurationComponent
+    InputFieldDurationComponent,
+    MultiColumnList,
+    TabComponent,
+    CustomButton
   ],
   templateUrl: './association-members-page.component.html',
   styleUrl: './association-members-page.component.css'
 })
-export class AssociationMembersPageComponent {
-  userAssociations: UserAssociation[] = [];
-  filteredAssociations: UserAssociation[] = [];
+export class AssociationMembersPageComponent implements OnInit{
   associationID: string;
   selectedUser: UserAssociation | undefined;
   selectedRole: string | undefined;
+  selectedInvite: AssociationInvite | undefined;
   userID: string | null;
-
-  associationInvites:AssociationInvite[] = [];
-
-  private latestSearchParam: string = "";
   protected associationName: string = "";
 
   activeTab: Tab = Tab.MEMBERS;
-
   faTrashCan = faTrashCan;
+  faPencil = faPencil;
+  faEnvelope= faEnvelope
+
+  @ViewChild('topHeaderRowInvitations', { static: true }) topHeaderRowInvitations!: TemplateRef<any>;
+
+  @ViewChild('memberHeaderTemplate', { static: true }) memberHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('roleHeaderTemplate', {static: true}) roleHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('additionalRolesHeader', {static: true}) additionalRolesHeader!: TemplateRef<any>;
+  @ViewChild('memberSinceHeader', {static: true}) memberSinceHeader!: TemplateRef<any>;
+  @ViewChild('actionsTemplate', {static: true}) actionsTemplateHeader!: TemplateRef<any>;
+
+  @ViewChild('memberRowTemplate', { static: true }) memberRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+  @ViewChild('roleRowTemplate', {static: true}) roleRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+  @ViewChild('additionalRoleRowTemplate', {static: true}) additionalRoleRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+  @ViewChild('memberSinceRowTemplate', {static: true}) memberSinceRowTemplate!: TemplateRef<{ data: UserAssociation }>;
+  @ViewChild('actionsRowTemplate', {static: true}) actionsRowTemplate!: TemplateRef<{ data: UserAssociation }>;
 
 
+  @ViewChild('emailHeaderTemplate', {static: true}) emailHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('invitationSendHeaderTemplate', {static: true}) invitationSendHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('roleHeaderTemplate', {static: true}) invitationRoleHeaderTemplate!: TemplateRef<any>;
 
-  setActiveTab(tab: Tab) {
-    this.activeTab = tab;
-  }
+
+  @ViewChild('emailTemplate', {static: true}) emailTemplate!: TemplateRef<any>;
+  @ViewChild('associationRoleTemplate', {static: true}) associationRoleTemplate!: TemplateRef<any>;
+  @ViewChild('associationAdditionalRoleTemplate', {static: true}) associationAdditionalRoleTemplate!: TemplateRef<any>;
+  @ViewChild('associationInviteCreatedAt', {static: true}) associationInviteCreatedAt!: TemplateRef<any>;
+  @ViewChild('cancelButtonTemplate', {static: true}) cancelButtonTemplate!: TemplateRef<any>;
+
   constructor(
     private alertService: AlertService,
     private graphQLCommunication: GraphQLCommunication,
@@ -80,7 +115,9 @@ export class AssociationMembersPageComponent {
     private translate: TranslateService,
     route: ActivatedRoute,
     protected modalService: ModalService,
-    private authService: AuthenticationService,) {
+    private authService: AuthenticationService,
+    private cdr: ChangeDetectorRef
+  ){
     this.associationID = route.snapshot.params['associationID'];
 
     this.graphQLCommunication.getAssociationName(this.associationID).then(r=>{
@@ -91,17 +128,9 @@ export class AssociationMembersPageComponent {
     navigationService.showNavigation();
     this.translate.get('associationMembers.titleHeader').subscribe((res: string) => {
         navigationService.setTitle(res);
-      }
-    )
+    })
     this.userID = this.authService.getUserID();
-    this.graphQLCommunication.getAssociationMembers(this.associationID).then(r=>{
-        this.userAssociations = r.users
-        this.searchUser(this.latestSearchParam);
-    })
-
-    this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
-        this.associationInvites = r.invites
-    })
+    this.initMembers()
   }
 
   protected readonly Tab = Tab;
@@ -121,7 +150,7 @@ export class AssociationMembersPageComponent {
   }
   public changeSelectedUser(user: UserAssociation) {
     this.selectedUser = user;
-    this.selectedRole = user.associationRole.name;
+    // this.selectedRole = user.associationRole.name; // TODO fix
     this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_MODIFY_MEMBER);
   }
 
@@ -130,85 +159,147 @@ export class AssociationMembersPageComponent {
     this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER);
   }
   updateUserAssociation(userAssociation: UserAssociation) {
-    const index = this.userAssociations.findIndex(value => value.user.id === userAssociation.user.id)
+    let list = this.dataSourceMembers.dataRows.value;
+    const index = list.findIndex(value => value.user.id === userAssociation.user.id)
     if (index !== -1) {
-      this.userAssociations[index] = userAssociation;
-      this.searchUser(this.latestSearchParam);
+      list[index] = userAssociation;
+      this.dataSourceMembers.dataRows.next(list)
     } else {
       // user association not found, zou niet moeteh gebeuren
     }
   }
 
   userAssociationDeleted(userAssociation: UserAssociation) {
-    const index = this.userAssociations.findIndex(value => value.user.id === userAssociation.user.id)
+    let list = this.dataSourceMembers.dataRows.value;
+    const index = list.findIndex(value => value.user.id === userAssociation.user.id)
     if (index !== -1) {
-      this.userAssociations.splice(index, 1);
-      this.searchUser(this.latestSearchParam);
+      list.splice(index, 1);
+      this.dataSourceMembers.dataRows.next(list);
     } else {
       // user association not found, zou niet moeteh gebeuren
     }
   }
 
-  searchUser(searchValue: string) {
-    this.latestSearchParam = searchValue;
-    this.filteredAssociations = this.userAssociations.filter(userAssociation => {
-      return userAssociation.user.fullName.includes(searchValue) || userAssociation.user.email.includes(searchValue);
-    });
+  // searchUser(searchValue: string) {
+  //   this.latestSearchParam = searchValue;
+  //   this.filteredAssociations = this.userAssociations.filter(userAssociation => {
+  //     return userAssociation.user.fullName.includes(searchValue) || userAssociation.user.email.includes(searchValue);
+  //   });
+  // }
 
-
-  }
-
-  deleteSelectedInvite(id: AssociationInviteID) {
-    this.graphQLCommunication.deleteAssociationInvite(id).then((responseObject: DefaultBooleanResponseDTO) =>{
-        if(responseObject.success) {
-          const index = this.associationInvites.findIndex(value => value.id === id)
-          if (index !== -1) {
-            this.associationInvites.splice(index, 1);
-          }
-          const alert: AlertInfo = {
-            duration: 4000,
-            title: "Succesvol",
-            subTitle: "De uitnodiging is succesvol ingetrokken.",
-            alertClass: AlertClass.CORRECT_CLASS,
-            icon: AlertIcon.CHECK
-
-          }
-          this.alertService.showAlert(alert)
-        } else {
-          // error message
-          const alert: AlertInfo = {
-            duration: 4000,
-            title: "Error fout opgetreden",
-            subTitle: "Er is iets misgegaan bij het intrekken van de uitnodiging.",
-            alertClass: AlertClass.INCORRECT_CLASS,
-            icon: AlertIcon.XMARK
-
-          }
-          this.alertService.showAlert(alert)
-        }
-    }).catch(e => {
-      const alert: AlertInfo = {
-        duration: 4000,
-        title: "Error",
-        subTitle: "Er is een fout opgetreden bij het intrekken van de uitnodiging.",
-        alertClass: AlertClass.INCORRECT_CLASS,
-        icon: AlertIcon.XMARK
-
-      }
-      this.alertService.showAlert(alert)
-    });
-
-  }
-
-  createNewAssociationInvite() {
-    this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_CREATE_INVITE);
+  deleteSelectedInvite(inv: AssociationInvite) {
+    this.selectedInvite = inv
+    this.modalService.showModal(Modal.ASSOCIATION_MEMBERS_DELETE_INVITE)
   }
 
   newAssociationInviteEvent(associationInvite: AssociationInvite) {
-    this.associationInvites.push(associationInvite);
+    console.log(associationInvite)
+    let list = this.dataSourceInvites.dataRows.value;
+    list.push(associationInvite);
+    this.dataSourceInvites.dataRows.next(list);
   }
 
   protected readonly Modal = Modal;
+  dataSourceMembers: MultiColumnListDataSource = {
+    columns: [],
+    dataRows: new BehaviorSubject<any[]>([]),
+    hasMoreRows: false,
+    initialRowCount: 0,
+    isDataLoading: true,
+    canSearch: true,
+    emptyMessage: "LEEG",
+    searchPlaceholder: "associationMembers.searchPlaceholder",
+    isInSearch: (dataRow : UserAssociation, searchValue : string) => {
+      return dataRow.user.fullName.includes(searchValue) || dataRow.user.email.includes(searchValue);
+    },
+    loadAdditionalRows: async () => {
+      return this.graphQLCommunication.getAssociationMembers(this.associationID, 20, this.dataSourceMembers.endCursor)
+        .then(r => {
+          this.dataSourceMembers.hasMoreRows = r.users.pageInfo.hasNextPage;
+          this.dataSourceMembers.endCursor = r.users.pageInfo.endCursor;
+          return r.users.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    },
+    searchForAdditionalItems: async (search : string) => {
+      return this.graphQLCommunication.getAssociationMembers(this.associationID, 20, this.dataSourceMembers.searchEndCursor, search)
+        .then(r => {
+          console.log(r)
+          this.dataSourceMembers.searchHasMoreRows = r.users.pageInfo.hasNextPage;
+          this.dataSourceMembers.searchEndCursor = r.users.pageInfo.endCursor;
+          return r.users.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    },
+    getID: datatableRow => datatableRow.user.id,
+  };
+
+  dataSourceInvites: MultiColumnListDataSource = {
+    columns: [],
+    dataRows: new BehaviorSubject<any[]>([]),
+    hasMoreRows: true,
+    initialRowCount: 0,
+    isDataLoading: true,
+    canSearch: true,
+    emptyMessage: "LEEG",
+    searchPlaceholder: "zoek",
+    isInSearch: (dataRow : AssociationInvite, searchValue : string) => {
+      return dataRow.email.includes(searchValue);
+    },
+    getID: (dataRow: AssociationInvite) => {
+      return dataRow.id;
+    },
+    loadAdditionalRows: async () => {
+      return this.graphQLCommunication.getAssociationInvites(this.associationID, 20, this.dataSourceInvites.endCursor)
+        .then(r => {
+          this.dataSourceInvites.hasMoreRows = r.invites.pageInfo.hasNextPage;
+          this.dataSourceInvites.endCursor = r.invites.pageInfo.endCursor;
+          return r.invites.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    },
+    searchForAdditionalItems: async (search : string) => {
+      return this.graphQLCommunication.getAssociationInvites(this.associationID, 20, this.dataSourceInvites.searchEndCursor, search)
+        .then(r => {
+          console.log(r)
+          this.dataSourceInvites.searchHasMoreRows = r.invites.pageInfo.hasNextPage;
+          this.dataSourceInvites.searchEndCursor = r.invites.pageInfo.endCursor;
+          return r.invites.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    },
+  };
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "associationMembers.membersHeader",
+        onClick : () => {
+          console.log("click mem")
+          this.activeTab = Tab.MEMBERS
+        }
+      },
+      {
+        label: "associationMembers.invitationsHeader",
+        onClick : () => {
+          console.log("click inv")
+          this.activeTab = Tab.INVITATIONS
+        }
+      }
+    ]
+  };
 
   removeUser() {
     this.graphQLCommunication.deleteUserAssociation(this.associationID, this.selectedUser!.user.id)
@@ -229,8 +320,162 @@ export class AssociationMembersPageComponent {
       })
     this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
   }
-
-  cancelRemoveUser() {
-    this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_REMOVE_MEMBER)
+  ngOnInit(): void {
+    this.dataSourceInvites.headerRow = this.topHeaderRowInvitations;
+    this.dataSourceMembers.columns= [
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.memberHeaderTemplate,
+        rowCell: this.memberRowTemplate,
+        getRawValueToSort: (dataRow: UserAssociation) => {
+          return dataRow.user.fullName;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.roleHeaderTemplate,
+        rowCell: this.roleRowTemplate,
+        getRawValueToSort: (dataRow: UserAssociation) => {
+          return dataRow.associationRoles.map(role => role.name).join(', ') || '';
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.additionalRolesHeader,
+        rowCell: this.additionalRoleRowTemplate,
+        getRawValueToSort: (dataRow: UserAssociation) => {
+          return dataRow.associationRoles.map(role => role.name).join(', ') || '';
+        }
+      },
+      {
+        sortType: ColumnSortType.DATE,
+        headerCell: this.memberSinceHeader,
+        rowCell: this.memberSinceRowTemplate,
+        getRawValueToSort: (dataRow: UserAssociation) => {
+          return dataRow.memberSince;
+        }
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.actionsTemplateHeader,
+        rowCell: this.actionsRowTemplate,
+      },
+    ]
+    this.dataSourceInvites.columns= [
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.emailHeaderTemplate,
+        rowCell: this.emailTemplate,
+        getRawValueToSort: (dataRow: AssociationInvite) => {
+          return dataRow.email;
+        }
+      },
+      {
+        sortType: ColumnSortType.DATE,
+        headerCell: this.invitationSendHeaderTemplate,
+        rowCell: this.associationInviteCreatedAt,
+        getRawValueToSort: (dataRow: AssociationInvite) => {
+          return dataRow.createdAt;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.invitationRoleHeaderTemplate,
+        rowCell: this.associationRoleTemplate,
+        getRawValueToSort: (dataRow: AssociationInvite) => {
+          return dataRow.associationRoles.map(role => role.name).join(', ') || '';
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.additionalRolesHeader,
+        rowCell: this.associationAdditionalRoleTemplate,
+        getRawValueToSort: (dataRow: AssociationInvite) => {
+          return dataRow.associationRoles.map(role => role.name).join(', ') || '';
+        }
+      },
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.actionsTemplateHeader,
+        rowCell: this.cancelButtonTemplate,
+      },
+    ]
+    this.cdr.detectChanges();
   }
+
+  deleteInvite() {
+    this.modalService.hideModal(Modal.ASSOCIATION_MEMBERS_DELETE_INVITE)
+    if(this.selectedInvite == null) {
+      return
+    }
+    this.graphQLCommunication.deleteAssociationInvite(this.selectedInvite.id).then((responseObject: DefaultBooleanResponseDTO) =>{
+      if(responseObject.success) {
+        let list = this.dataSourceInvites.dataRows.value
+
+
+        const index = list.findIndex(value => value.id === this.selectedInvite!.id)
+        if (index !== -1) {
+          list.splice(index, 1);
+        }
+        this.dataSourceInvites.dataRows.next(list)
+        const alert: AlertInfo = {
+          duration: 4000,
+          title: "Succesvol",
+          subTitle: "De uitnodiging is succesvol ingetrokken.",
+          alertClass: AlertClass.CORRECT_CLASS,
+          icon: AlertIcon.CHECK
+
+        }
+        this.alertService.showAlert(alert)
+      } else {
+        // error message
+        const alert: AlertInfo = {
+          duration: 4000,
+          title: "Error fout opgetreden",
+          subTitle: "Er is iets misgegaan bij het intrekken van de uitnodiging.",
+          alertClass: AlertClass.INCORRECT_CLASS,
+          icon: AlertIcon.XMARK
+
+        }
+        this.alertService.showAlert(alert)
+      }
+    }).catch(e => {
+      const alert: AlertInfo = {
+        duration: 4000,
+        title: "Error",
+        subTitle: "Er is een fout opgetreden bij het intrekken van de uitnodiging.",
+        alertClass: AlertClass.INCORRECT_CLASS,
+        icon: AlertIcon.XMARK
+
+      }
+      this.alertService.showAlert(alert)
+    });
+  }
+
+  async initMembers() {
+    this.graphQLCommunication.getAssociationMembers(this.associationID).then(r => {
+      // Verwerk de data
+      const list = r.users.edges.map((edge: any) => edge.node);
+      this.dataSourceMembers.dataRows.next(list);
+
+      // Stel andere data in voor Angular bindingen
+      this.dataSourceMembers.hasMoreRows = r.users.pageInfo.hasNextPage;
+      this.dataSourceMembers.endCursor = r.users.pageInfo.endCursor;
+      this.dataSourceMembers.isDataLoading = false;
+    });
+
+    this.graphQLCommunication.getAssociationInvites(this.associationID).then(r=>{
+      const list = r.invites.edges.map((edge: any) => edge.node);
+      this.dataSourceInvites.dataRows.next(list);
+
+      // Stel andere data in voor Angular bindingen
+      this.dataSourceInvites.hasMoreRows = r.invites.pageInfo.hasNextPage;
+      this.dataSourceInvites.endCursor = r.invites.pageInfo.endCursor;
+      this.dataSourceInvites.isDataLoading = false;
+    })
+  }
+
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly splitAssociationRoles = splitAssociationRoles;
 }
