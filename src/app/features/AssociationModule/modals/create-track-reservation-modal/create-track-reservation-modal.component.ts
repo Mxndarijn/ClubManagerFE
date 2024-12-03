@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AsyncPipe, KeyValuePipe, NgClass, NgForOf, NgIf, NgStyle, NgSwitch, NgSwitchCase} from "@angular/common";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
 
 import {addDays} from "date-fns";
 import {
@@ -37,15 +37,34 @@ import {ActivatedRoute} from "@angular/router";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
+import {
+  InputFieldSingleSelectComponent
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
+import {
+  InputFieldSingleSelectDataSource
+} from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
+import {
+  MultiSelectInputFieldComponent
+} from "../../../../SharedModule/components/input-fields/multi-select-input-field/multi-select-input-field.component";
+import {
+  MultiSelectInputFieldDatasource
+} from "../../../../SharedModule/components/input-fields/multi-select-input-field/multi-select-input-field-datasource";
+import {MultiColumnList} from "../../../../SharedModule/components/multi-column-list/multi-column-list";
+import {
+  ColumnSortType,
+  MultiColumnListDataSource
+} from "../../../../SharedModule/components/multi-column-list/multi-column-list-datasource";
+import {AssociationInvite} from "../../../../CoreModule/models/association-invite";
+import {UserAssociation} from "../../../../CoreModule/models/user-association.model";
 
 
 enum Step {
   STEP_1,
   STEP_2,
   STEP_3,
-  STEP_4
+
 }
 
 @Component({
@@ -69,6 +88,9 @@ enum Step {
     ErrorMessageComponent,
     AsyncPipe,
     DefaultInputFieldComponent,
+    InputFieldSingleSelectComponent,
+    MultiSelectInputFieldComponent,
+    MultiColumnList,
   ],
   templateUrl: './create-track-reservation-modal.component.html',
   styleUrl: './create-track-reservation-modal.component.css'
@@ -84,10 +106,19 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   protected currentReservation?: Reservation;
 
   @Input() SetCurrentReservation!: EventEmitter<Reservation>;
-
   @Input() ReservationCreatedEvent! : EventEmitter<Reservation[]>
   @Input() ReservationEditedEvent! : EventEmitter<Reservation[]>
   @Input() ReservationDeleteEvent!: EventEmitter<Reservation[]>
+
+  @ViewChild('actionHeaderTemplate', { static: true }) actionHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('trackNameHeaderTemplate', { static: true }) trackNameHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('trackDescriptionHeaderTemplate', { static: true }) trackDescriptionHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('availableWeaponTypesHeaderTemplate', { static: true }) availableWeaponTypesHeaderTemplate!: TemplateRef<any>;
+
+  @ViewChild('actionRowTemplate', { static: true }) actionRowTemplate!: TemplateRef<{ data: Track }>;
+  @ViewChild('trackNameRowTemplate', { static: true }) trackNameRowTemplate!: TemplateRef<{ data: Track }>;
+  @ViewChild('trackDescriptionRowTemplate', { static: true }) trackDescriptionRowTemplate!: TemplateRef<{ data: Track }>;
+  @ViewChild('availableWeaponTypesRowTemplate', { static: true }) availableWeaponTypesRowTemplate!: TemplateRef<{ data: Track }>;
 
   protected step1ReservationForm: FormGroup<{
     title: FormControl<string | null>;
@@ -114,9 +145,70 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     repeatType: FormControl<ReservationRepeat | undefined>
   }>;
 
-  protected weaponTypeList: WeaponType[] = [];
-  protected tracksList: Track[] = [];
-  protected colorPresets: ColorPreset[] = []
+  // protected tracksList: Track[] = [];
+  // protected colorPresets: ColorPreset[] = []
+
+
+  singleSelectInputFieldDataSourceColor: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: " Visualisatie kleur",
+    processItem(input: ColorPreset): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input.colorName);
+      });
+    }
+  }
+  singleSelectInputFieldDataSourceCalendarRepeat: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: " Visualisatie kleur",
+    processItem(input: ReservationRepeat): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input);
+      });
+    }
+  }
+
+  weaponTypeDataSource: MultiSelectInputFieldDatasource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer het type van het wapen",
+    processItem(input: WeaponType): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input.name);
+      });
+    }
+  };
+
+  dataSourceTracks: MultiColumnListDataSource = {
+    columns: [],
+    dataRows: new BehaviorSubject<any[]>([]),
+    hasMoreRows: false,
+    initialRowCount: 0,
+    isDataLoading: true,
+    canSearch: false,
+    emptyMessage: "LEEG",
+    getID: (dataRow: Track) => {
+      return dataRow.id;
+    },
+  };
+
 
 
   constructor(
@@ -130,24 +222,21 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     super(Modal.ASSOCIATION_CONFIGURE_TRACK_CREATE_RESERVATION, modalService);
     this.associationID = route.snapshot.params['associationID'];
 
+    this.singleSelectInputFieldDataSourceCalendarRepeat.items.next(UtilityFunctions.getEnumList(ReservationRepeat))
+
     this.graphQLService.getAllWeaponTypes().then(r=>{
-        this.weaponTypeList = r
+        this.weaponTypeDataSource.items.next(r);
     })
 
     this.graphQLService.getTracksOfAssociation(this.associationID).then(r=>{
-        this.tracksList = r;
+      this.dataSourceTracks.dataRows.next(r)
+      this.dataSourceTracks.isDataLoading = false
+        // this.tracksList = r;
     })
 
     graphQLService.getAllColorPresets().then(r=>{
-        this.colorPresets = r
+        this.singleSelectInputFieldDataSourceColor.items.next(r)
 
-        this.colorPresets.forEach(preset => {
-          translate.get(preset.colorName).subscribe({
-            next: (translatedValue) => {
-              preset.colorName = translatedValue;
-            }
-          })
-        })
     })
 
     // @ts-ignore
@@ -155,9 +244,9 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
       title: new FormControl("", Validators.compose([Validators.required, Validators.minLength(3)])),
       description: new FormControl("", Validators.required),
 
-      weaponTypes: new FormControl([], Validators.required),
+      weaponTypes: this.weaponTypeDataSource.formControl,
       maxSize: new FormControl(1, Validators.compose([Validators.required, Validators.min(1)])),
-      color: new FormControl(null, Validators.required),
+      color: this.singleSelectInputFieldDataSourceColor.formControl,
       chooseTime: new FormControl(true, Validators.required)
 
     });
@@ -179,7 +268,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     // @ts-ignore
     this.createSeriesForm = new FormGroup({
       repeatUntil: new FormControl("", Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
-      repeatType: new FormControl(undefined, Validators.required),
+      repeatType: this.singleSelectInputFieldDataSourceCalendarRepeat.formControl,
       repeatDaysBetween: new FormControl(1, Validators.min(1))
     }, );
 
@@ -225,6 +314,41 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
   }
 
   ngOnInit(): void {
+    this.dataSourceTracks.columns= [
+      {
+        sortType: ColumnSortType.NONE,
+        headerCell: this.actionHeaderTemplate,
+        rowCell: this.actionRowTemplate,
+        getRawValueToSort: (dataRow: Track) => {
+          return dataRow.id;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.trackNameHeaderTemplate,
+        rowCell: this.trackNameRowTemplate,
+        getRawValueToSort: (dataRow: Track) => {
+          return dataRow.name;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.trackDescriptionHeaderTemplate,
+        rowCell: this.trackDescriptionRowTemplate,
+        getRawValueToSort: (dataRow: Track) => {
+          return dataRow.description;
+        }
+      },
+      {
+        sortType: ColumnSortType.ALPHABETICAL,
+        headerCell: this.availableWeaponTypesHeaderTemplate,
+        rowCell: this.availableWeaponTypesRowTemplate,
+        getRawValueToSort: (dataRow: Track) => {
+          return dataRow.allowedWeaponTypes.map(weaponType => weaponType.name).join(', ') || '';
+        }
+      }]
+    console.log(this.dataSourceTracks)
+
     this.subscriptions.push(this.SetCurrentReservation.subscribe({
       next: (reservation: Reservation) => {
         this.title = reservation.id != null ? "Nieuwe reservering" : "Wijzig reservering"
@@ -256,6 +380,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     }))
   }
 
+
   setCurrentValues(setSerie: boolean) {
     if (this.currentReservation == null)
       return;
@@ -284,7 +409,6 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
         reservationRepeat: this.createSeriesForm.controls.repeatType.value!
       };
     }
-
   }
 
   createReservation() {
@@ -349,10 +473,7 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
       step: Step.STEP_3,
       label: "createTrackReservationModal.steps.step3"
     },
-    {
-      step: Step.STEP_4,
-      label: "createTrackReservationModal.steps.step4"
-    }]
+   ]
 
   increaseStep() {
     this.step++;
@@ -390,28 +511,28 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     return valid;
   }
 
-  onWeaponTypeChange(weaponType: WeaponType, event: any) {
-    const checked = event.target.checked;
-    if(checked) {
-      const list = this.step1ReservationForm.controls.weaponTypes.value!;
-      list.push(weaponType)
-      this.step1ReservationForm.controls.weaponTypes.setValue(list);
-    } else {
-      this.step1ReservationForm.controls.weaponTypes.setValue(this.step1ReservationForm.controls.weaponTypes.value!.filter(type => type !== weaponType));
-    }
-
-    this.getTrackList(false).forEach(track => {
-      this.step2ReservationForm.controls.tracks.setValue(this.step2ReservationForm.controls.tracks.value!.filter(type => type !== track));
-    })
-  }
-
-  containsWeaponTypeInList(weaponType: WeaponType) {
-    if(this.step1ReservationForm.controls.weaponTypes.value != null) {
-      return this.step1ReservationForm.controls.weaponTypes.value!.includes(weaponType);
-    } else {
-      return false
-    }
-  }
+  // onWeaponTypeChange(weaponType: WeaponType, event: any) {
+  //   const checked = event.target.checked;
+  //   if(checked) {
+  //     const list = this.step1ReservationForm.controls.weaponTypes.value!;
+  //     list.push(weaponType)
+  //     this.step1ReservationForm.controls.weaponTypes.setValue(list);
+  //   } else {
+  //     this.step1ReservationForm.controls.weaponTypes.setValue(this.step1ReservationForm.controls.weaponTypes.value!.filter(type => type !== weaponType));
+  //   }
+  //
+  //   this.getTrackList(false).forEach(track => {
+  //     this.step2ReservationForm.controls.tracks.setValue(this.step2ReservationForm.controls.tracks.value!.filter(type => type !== track));
+  //   })
+  // }
+  //
+  // containsWeaponTypeInList(weaponType: WeaponType) {
+  //   if(this.step1ReservationForm.controls.weaponTypes.value != null) {
+  //     return this.step1ReservationForm.controls.weaponTypes.value!.includes(weaponType);
+  //   } else {
+  //     return false
+  //   }
+  // }
   getSubTitleForStep() {
 
     switch (this.step) {
@@ -421,8 +542,6 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
         return "Selecteer de banen";
       case Step.STEP_3:
         return "Selecteer een datum en herhaling";
-      case Step.STEP_4:
-        return "Bevestig reservering";
     }
     return "Onbekend";
   }
@@ -470,11 +589,13 @@ export class CreateTrackReservationModalComponent extends DefaultModalInformatio
     }
   }
 
-  getTrackList(b: boolean) {
-    return this.tracksList.filter(item => {
-      return b === this.step1ReservationForm.controls.weaponTypes.value?.some(weaponType => item.allowedWeaponTypes.some(i => i.id === weaponType.id));
-    });
-  }
+  // getTrackList(b: boolean) {
+  //   return this.tracksList.filter(item => {
+  //     return b === this.step1ReservationForm.controls.weaponTypes.value?.some(weaponType => item.allowedWeaponTypes.some(i => i.id === weaponType.id));
+  //   });
+  // }
+
+  protected readonly InputFieldWidth = InputFieldWidth;
 }
 
 
