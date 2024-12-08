@@ -18,7 +18,11 @@ import {BehaviorSubject} from "rxjs";
 import {UtilityFunctions} from "../../../utilities/utility-functions";
 import {CalendarEventCommonComponent} from "../events/calendar-event-common/calendar-event-common.component";
 import {CalendarEventData} from "../models/CalendarEventData";
+import {CalendarUtility} from "../calendar-utils";
+import {CalendarUtils} from "angular-calendar";
 
+export const CalendarStartHour = 7;
+export const CalendarEndHour = 22;
 
 @Component({
   selector: 'app-calender-week',
@@ -35,6 +39,7 @@ import {CalendarEventData} from "../models/CalendarEventData";
   styleUrls: ['./calender-week.component.css']
 })
 
+
 export class CalenderWeekComponent implements AfterViewInit, OnInit, OnDestroy {
   @Input() focusDayChangedEvent!: BehaviorSubject<Date>
   @Input() eventsChangedEvent!: BehaviorSubject<CalendarEvent[]>
@@ -46,8 +51,6 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit, OnDestroy {
   protected hours: HourRow[] = [];
   protected days: ColumnDay[] = [];
   protected dayStrings: string[] = ["Ma", "Di", "Woe", "Do", "Vr", "Za", "Zo"]
-  private startHour = 7;
-  private endHour = 22;
   private weekStartDay!: Date
   private intervalId: any;
 
@@ -64,7 +67,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit, OnDestroy {
     private translateService: TranslateService,
     private utility: UtilityFunctions
   ) {
-    for (let i = this.startHour; i <= this.endHour; i++) {
+    for (let i = CalendarStartHour; i <= CalendarEndHour; i++) {
       utility.formatTimeI(i, 0).then(displayName => {
         this.hours.push({hourNumber: i, displayName: displayName});
       })
@@ -86,9 +89,9 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit, OnDestroy {
           this.weekStartDay = this.toStartOfWeek(date);
 
           //Current Time line
-          this.currentTimeLine.columnIndex = this.getCorrectColumn(this.currentTimeLine.time)
+          this.currentTimeLine.columnIndex = CalendarUtility.getCorrectColumn(this.currentTimeLine.time)
           this.currentTimeLine.show = this.currentTimeLine.time >= this.weekStartDay && this.currentTimeLine.time <= addDays(this.weekStartDay, 6);
-          this.currentTimeLine.rowIndex = this.getCorrectRow(this.currentTimeLine.time)
+          this.currentTimeLine.rowIndex = CalendarUtility.getCorrectRow(this.currentTimeLine.time)
 
           let i = 0;
           this.days = []
@@ -107,7 +110,7 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit, OnDestroy {
       if(this.hours && this.hours.length > 0) {
         this.currentTimeLine.columnIndex = 2
         this.currentTimeLine.show = this.currentTimeLine.time >= this.weekStartDay && this.currentTimeLine.time <= addDays(this.weekStartDay, 6);
-        this.currentTimeLine.rowIndex = this.getCorrectRow(this.currentTimeLine.time)
+        this.currentTimeLine.rowIndex = CalendarUtility.getCorrectRow(this.currentTimeLine.time)
       }
     }, 60 * 1000);
   }
@@ -250,18 +253,18 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  getCorrectColumn(date: Date) {
-    const dayOfTheWeek = date.getDay();
-    return (dayOfTheWeek === 0) ? 8 : dayOfTheWeek + 1;
-  }
-
-  getCorrectRow(date: Date) {
-
-    const hours = (date.getHours() - this.hours[0].hourNumber) * 12;
-    const minutes = Math.floor(date.getMinutes() / 5);
-
-    return hours + minutes + 2;
-  }
+  // getCorrectColumn(date: Date) {
+  //   const dayOfTheWeek = date.getDay();
+  //   return (dayOfTheWeek === 0) ? 8 : dayOfTheWeek + 1;
+  // }
+  //
+  // getCorrectRow(date: Date) {
+  //
+  //   const hours = (date.getHours() - this.hours[0].hourNumber) * 12;
+  //   const minutes = Math.floor(date.getMinutes() / 5);
+  //
+  //   return hours + minutes + 2;
+  // }
 
 
   private getAllEventsOnSpecificTime(multipleDayEvents: CalendarEvent[], currentTime: Date) {
@@ -348,6 +351,8 @@ export class CalenderWeekComponent implements AfterViewInit, OnInit, OnDestroy {
       date1.getMonth() === date2.getMonth() &&
       date1.getFullYear() === date2.getFullYear();
   }
+
+  protected readonly CalendarUtility = CalendarUtility;
 }
 
 

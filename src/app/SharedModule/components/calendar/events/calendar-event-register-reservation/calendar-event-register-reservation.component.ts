@@ -2,14 +2,16 @@ import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {CalendarEventData} from "../../models/CalendarEventData";
 import {CalendarEvent} from "../../calender-view/calender-view.component";
 import {UtilityFunctions} from "../../../../utilities/utility-functions";
-import {NgStyle} from "@angular/common";
+import {NgIf, NgStyle} from "@angular/common";
 import {Reservation} from "../../../../../CoreModule/models/reservation.model";
+import {CalendarUtility} from "../../calendar-utils";
 
 @Component({
   selector: 'app-calendar-event-register-reservation',
   standalone: true,
   imports: [
-    NgStyle
+    NgStyle,
+    NgIf
   ],
   templateUrl: './calendar-event-register-reservation.component.html',
   styleUrl: './calendar-event-register-reservation.component.css'
@@ -36,4 +38,13 @@ export class CalendarEventRegisterReservationComponent implements CalendarEventD
 
   }
 
+  isEnoughSpace() {
+    if(!this.data)
+      return false
+    const startRow = CalendarUtility.getCorrectRow(this.data.startDate)
+    const endRow = CalendarUtility.getCorrectRow(this.data.endDate)
+    // console.log("DATA")
+    // console.log((endRow - startRow))
+    return (endRow - startRow > 10)
+  }
 }

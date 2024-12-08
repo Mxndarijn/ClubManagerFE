@@ -31,7 +31,8 @@ import {
   ButtonSize,
   CustomButton
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
-import {Modal} from "../../../../CoreModule/services/modal.service";
+import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
+import {ForgotPasswordModalComponent} from "../../modals/forgot-password-modal/forgot-password-modal.component";
 
 
 @Component({
@@ -39,7 +40,7 @@ import {Modal} from "../../../../CoreModule/services/modal.service";
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent, LeftSideAuthenticationComponent, CustomButton],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent, LeftSideAuthenticationComponent, CustomButton, ForgotPasswordModalComponent],
 })
 export class LoginPageComponent {
   public loginForm: FormGroup<{
@@ -56,6 +57,7 @@ export class LoginPageComponent {
               private translate: TranslateService,
               private navigationService: NavigationService,
               private graphQLCommunication: GraphQLCommunication,
+              protected modalService: ModalService,
               private permissionService: PermissionService) {
     this.navigationService.hideNavigation();
     this.loginForm = new FormGroup({

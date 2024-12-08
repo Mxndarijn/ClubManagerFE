@@ -13,7 +13,7 @@ export interface AssociationRole {
 
 export function splitAssociationRoles(roles : AssociationRole[]) {
 
-  const FIRST_GROUP_ROLES = ['ADMIN', 'USER', 'VISITOR'];
+  const FIRST_GROUP_ROLES = ['USER', 'VISITOR'];
 
   const groupedRoles = roles.reduce<{ primary: AssociationRole[], secondary: AssociationRole[] }>(
     (acc, role) => {

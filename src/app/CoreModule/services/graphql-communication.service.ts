@@ -2363,4 +2363,23 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationMutations.associationGuestMutations.reviewAssociationGuest);
 
   }
+
+  forgotPassword(email: String) {
+    const query = {
+      query: `
+      mutation MyMutation($email: String!) {
+  userMutations {
+    forgotPassword(email: $email) {
+      message
+      success
+    }
+  }
+}`, variables: {
+        email: email
+      }
+    }
+
+    return this.solvePromise(query, v => v.data.userMutations.forgotPassword);
+
+  }
 }

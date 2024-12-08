@@ -1,7 +1,8 @@
 <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
         [ngClass]="{ 'modal-open': showModal}">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">{{ title }}</h3>
+    <h3 *ngIf="currentTrack?.id" class="font-bold text-lg"> Wijzig baan</h3>
+    <h3 *ngIf="!currentTrack?.id" class="font-bold text-lg">Baan aanmaken</h3>
     <app-default-input-field
       [inputId]="'inputID'"
       [placeholder]="'Vul hier de baan naam in.'"

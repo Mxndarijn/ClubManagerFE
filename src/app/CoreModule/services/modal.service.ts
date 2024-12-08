@@ -26,7 +26,8 @@ export enum Modal {
     ASSOCIATION_PRESENCE_CONFIRMATION_DELETE,
     GUEST_CREATE_GUEST,
     GUEST_CANCEL_GUEST,
-    GUEST_CHANGE_GUEST
+    GUEST_CHANGE_GUEST,
+  FORGOT_PASSWORD
 }
 
 export enum ModalStatus {
@@ -48,6 +49,7 @@ export class ModalService {
   public readonly modalVisibilityEvent: EventEmitter<ModalChange> = new EventEmitter();
 
   public showModal(modal: Modal) {
+    document.body.style.overflowY = 'hidden';
     const modalChange: ModalChange = {
       modal: modal,
       status: ModalStatus.OPEN
@@ -57,6 +59,7 @@ export class ModalService {
   }
 
   public hideModal(modal: Modal) {
+    document.body.style.overflowY = 'scroll';
     const modalChange: ModalChange = {
       modal: modal,
       status: ModalStatus.CLOSE

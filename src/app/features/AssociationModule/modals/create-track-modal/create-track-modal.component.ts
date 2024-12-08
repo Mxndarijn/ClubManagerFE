@@ -186,23 +186,6 @@ export class CreateTrackModalComponent extends DefaultModalInformation implement
     })
   }
 
-  onWeaponTypeChange(weaponType: WeaponType, event: any) {
-    const checked = event.target.checked;
-    if(checked) {
-      const list = this.createTrackForm.controls.trackWeaponTypes.value!;
-      list.push(weaponType)
-      this.createTrackForm.controls.trackWeaponTypes.setValue(list);
-    } else {
-      this.createTrackForm.controls.trackWeaponTypes.setValue(this.createTrackForm.controls.trackWeaponTypes.value!.filter(type => type !== weaponType));
-    }
-
-  }
-
-  containsWeaponTypeInList(weaponType: WeaponType) {
-    return this.createTrackForm.controls.trackWeaponTypes.value!.includes(weaponType);
-
-  }
-
   protected readonly ButtonSize = ButtonSize;
   protected readonly ButtonClass = ButtonClass;
   protected readonly InputFieldWidth = InputFieldWidth;

@@ -18,9 +18,9 @@
 
   <app-calender-event *ngFor="let event of weekEvents" [calendarEvent]="event" class="relative" [calendarItemClickedEvent]="calendarItemClickedEvent" [componentType]="CalendarEventCommonComponent"
   [ngStyle]="{
-  'grid-column-start': this.getCorrectColumn(event.startDate),
-  'grid-row-start': this.getCorrectRow(event.startDate),
-  'grid-row-end': this.getCorrectRow(event.endDate),
+  'grid-column-start': CalendarUtility.getCorrectColumn(event.startDate),
+  'grid-row-start': CalendarUtility.getCorrectRow(event.startDate),
+  'grid-row-end': CalendarUtility.getCorrectRow(event.endDate),
   'width': event.width + '%',
   'left': event.columnIndex + '%',
 
