@@ -44,6 +44,7 @@ export class ForgotPasswordModalComponent extends DefaultModalInformation {
   acceptFunction() {
     if(this.formControl.valid) {
       this.graphQL.forgotPassword(this.formControl.value!).then(response => {
+        console.log(response)
         if(!response) {
           this.alertService.showAlert({
             title: "Fout opgetreden",
