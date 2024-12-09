@@ -13,6 +13,7 @@ export class ValidationUtils {
   }
 
   static passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+    console.log(group)
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
     if (confirmPassword.length === 0 || password.length === 0) {

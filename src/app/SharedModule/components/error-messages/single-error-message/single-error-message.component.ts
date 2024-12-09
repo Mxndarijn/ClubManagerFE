@@ -13,10 +13,14 @@ import {NgIf} from "@angular/common";
 })
 export class SingleErrorMessageComponent {
   @Input() errorMessage!: string;
-  @Input() specificFormControl!: FormControl;
+  @Input() specificFormControl?: FormControl;
   @Input() specificError: string = '';
+  @Input() showErrorMessage: boolean = false;
 
   shouldShowError(): boolean {
+    if(this.showErrorMessage) {
+      return true;
+    }
 
     if (!this.specificFormControl || this.specificFormControl.valid) {
       return false;
