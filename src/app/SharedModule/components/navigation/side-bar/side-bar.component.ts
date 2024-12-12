@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import { SideBarIconStandard, SideBarItemComponent } from '../side-bar-item/side-bar-item.component';
+import {BottomIconStandard, SideBarIconStandard, SideBarItemComponent} from '../side-bar-item/side-bar-item.component';
 import {RouterOutlet} from "@angular/router";
 import {
   SideBarIconAssociation,
@@ -82,8 +82,27 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
     link: "guests",
     permission: AssociationPermission.REVIEW_ASSOCIATION_GUEST
   },
-
 ]
+
+const BOTTOM_SIDEBAR_ITEMS: BottomIconStandard[] = [
+  {
+    name: "Feedback",
+    link: "/feedback",
+    isLogout: false,
+  },
+  {
+    name: "Help",
+    link: "/help",
+    isLogout: false,
+  },
+  {
+    name: "Uitloggen",
+    link: "/login",
+    isLogout: true,
+  }
+]
+
+
 @Component({
   selector: 'app-side-bar',
   standalone: true,
@@ -94,6 +113,7 @@ const ASSOCIATION_SIDEBAR_ITEMS: SideBarIconAssociation[] = [
 
 export class SideBarComponent implements OnInit {
   standard_sidebar_items = STANDARD_SIDEBAR_ITEMS;
+  bottom_sidebar_items = BOTTOM_SIDEBAR_ITEMS;
   association_sidebar_items: SideBarIconAssociation[] = ASSOCIATION_SIDEBAR_ITEMS
   protected readonly environment = environment;
   associations: Association[] = [];

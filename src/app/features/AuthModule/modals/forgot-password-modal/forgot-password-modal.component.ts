@@ -8,7 +8,7 @@ import {
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 import {Modal, ModalChange, ModalService, ModalStatus} from "../../../../CoreModule/services/modal.service";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 import {DefaultModalInformation} from "../../../../SharedModule/models/default-modal-information";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
@@ -194,4 +194,6 @@ export class ForgotPasswordModalComponent extends DefaultModalInformation implem
     })
 
   }
+
+  protected readonly InputFieldWidth = InputFieldWidth;
 }

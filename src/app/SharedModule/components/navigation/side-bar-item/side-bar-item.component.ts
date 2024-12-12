@@ -20,3 +20,7 @@ export interface SideBarIconStandard {
   name: string,
   link: string,
 }
+
+export interface BottomIconStandard extends SideBarIconStandard {
+  isLogout: boolean
+}

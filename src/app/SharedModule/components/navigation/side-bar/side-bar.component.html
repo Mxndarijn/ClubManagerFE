@@ -12,17 +12,23 @@
       <div class="p-1 indicator" *ngFor="let i of standard_sidebar_items">
         <app-side-bar-item class="mr-2" [item]="i">
         </app-side-bar-item>
-        <span *ngIf="i.link === '/invitations' && associationInvitesList != undefined && associationInvitesList.length > 0" class="indicator-item indicator-middle indicator-end badge badge-accent">{{associationInvitesList.length}}</span>
+        <span
+          *ngIf="i.link === '/invitations' && associationInvitesList != undefined && associationInvitesList.length > 0"
+          class="indicator-item indicator-middle indicator-end badge badge-accent">{{ associationInvitesList.length }}</span>
       </div>
       <div class="divider"></div>
       <div *ngFor="let association of associations">
         <h1 class="font-bold">{{ association.name }}</h1>
         <div class="p-1" *ngFor="let i of association_sidebar_items">
-          <app-side-bar-item-association *ngIf="hasAssociationPermission(association.id, i.permission)" [item]="i" [association]="association"></app-side-bar-item-association>
+          <app-side-bar-item-association *ngIf="hasAssociationPermission(association.id, i.permission)" [item]="i"
+                                         [association]="association"></app-side-bar-item-association>
         </div>
         <div class="divider"></div>
+      </div>
+      <div class="p-1 indicator" *ngFor="let i of bottom_sidebar_items">
+        <app-side-bar-item [ngClass]="{'text-error' : i.isLogout}" class="mr-2" [item]="i">
+        </app-side-bar-item>
       </div>
     </ul>
   </div>
 </div>
-<!--</div>-->

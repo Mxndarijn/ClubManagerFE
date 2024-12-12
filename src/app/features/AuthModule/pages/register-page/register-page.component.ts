@@ -32,11 +32,15 @@ import {
   ButtonSize,
   CustomButton
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {
+  EmailVerificationModalComponent
+} from "../../modals/email-verification-modal/email-verification-modal.component";
+import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 
 @Component({
   selector: 'app-register-page',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, ErrorMessageComponent, RouterLink, RouterLinkActive, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent, LeftSideAuthenticationComponent, CustomButton],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, ErrorMessageComponent, RouterLink, RouterLinkActive, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent, LeftSideAuthenticationComponent, CustomButton, EmailVerificationModalComponent],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css'
 })
@@ -52,8 +56,15 @@ export class RegisterPageComponent {
 
   @ViewChild('registerErrorMessage', {static: false}) registerErrorMessage!: ErrorMessageManualComponent;
 
-  constructor(private authenticationService: AuthenticationService, private translate: TranslateService, private sidebarService: NavigationService, private permissionService: PermissionService, private router: Router) {
-    sidebarService.hideNavigation()
+  constructor(private authenticationService: AuthenticationService,
+              private translate: TranslateService,
+              private sidebarService: NavigationService,
+              private permissionService: PermissionService,
+              private router: Router,
+              protected modalService: ModalService,
+  ) {
+    sidebarService.hideNavigation();
+
     this.registerForm = new FormGroup({
       email: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.required, Validators.email])),
       password: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8), Validators.required, ValidationUtils.containsUppercase, ValidationUtils.containsLowercase, ValidationUtils.containsNumber, ValidationUtils.containsSpecialChar])),
@@ -101,4 +112,5 @@ export class RegisterPageComponent {
   protected readonly environment = environment;
   protected readonly ButtonClass = ButtonClass;
   protected readonly ButtonSize = ButtonSize;
+  protected readonly Modal = Modal;
 }

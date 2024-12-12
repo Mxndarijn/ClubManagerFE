@@ -1,0 +1,50 @@
+<dialog id="my_modal_16" class="modal modal-bottom sm:modal-middle overflow-y-hidden"
+        [ngClass]="{ 'modal-open': showModal}">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Email verifieren</h3>
+    <div class="flex flex-row items-center mt-5">
+    <p class="mb-4">We hebben een email gestuurd naar: email adres. Niet gevonden? Kijk ook in je spam</p>
+    </div>
+    <app-default-input-field
+      (valueChanged)="showEmailErrorMessage = false"
+      [inputId]="'inputID'"
+      [placeholder]="'Vul hier de email in'"
+      [_formControl]="formControl"
+      [labelText]="'Pas email aan als nodig'"
+      [hideErrorsWhenEmpty]="true"
+      [inputFieldWidth]="InputFieldWidth.FULL"
+
+      [type]="'text'"
+      [errorSettings]="[
+      {
+      errorMessage: 'Je moet een email invullen.',
+      errorName: ''
+      }]">
+    </app-default-input-field>
+    <app-single-error-message
+      [errorMessage]="'Deze email bestaat niet'"
+      [showErrorMessage]="showEmailErrorMessage"
+    >
+    </app-single-error-message>
+
+    <div class="modal-action">
+      <form method="dialog" class="w-full flex justify-between">
+        <app-custom-button
+          [buttonClass]="ButtonClass.ERROR_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Annuleer'"
+          [disabledStatus]="false"
+          (onClick)="cancelFunction()"
+        ></app-custom-button>
+
+        <app-custom-button
+          [buttonClass]="ButtonClass.SUCCESS_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Bevestig'"
+          [disabledStatus]="!formControl.valid"
+          (onClick)="cancelFunction()"
+        ></app-custom-button>
+      </form>
+    </div>
+  </div>
+</dialog>
