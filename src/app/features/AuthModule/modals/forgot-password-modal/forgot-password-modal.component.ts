@@ -149,4 +149,49 @@ export class ForgotPasswordModalComponent extends DefaultModalInformation implem
     }
     return this.formControl.value.replace(/\D/g, "");
   }
+
+  reduceStep() {
+    this.step--
+  }
+
+  resetPasswordFunction() {
+    if(!this.resetPasswordFormGroup.valid) {
+      return
+    }
+    this.graphQL.resetPassword(this.resetPasswordFormGroup.controls.code.value!, this.resetPasswordFormGroup.controls.password.value!).then(response => {
+      console.log(response)
+      if(response.success) {
+        this.hideModal()
+        this.alertService.showAlert({
+          title: "Succesvol",
+          subTitle: "Je wachtwoord is veranderd.",
+          icon: AlertIcon.CHECK,
+          duration: 4000,
+          alertClass: AlertClass.CORRECT_CLASS
+        });
+      } else {
+        if(response.message == "invalid-response-code") {
+          this.alertService.showAlert({
+            title: "Fout opgetreden",
+            subTitle: "De code die je hebt opgegeven klopt niet.",
+            icon: AlertIcon.XMARK,
+            duration: 4000,
+            alertClass: AlertClass.INCORRECT_CLASS
+          });
+
+        } else {
+          this.hideModal()
+          this.alertService.showAlert({
+            title: "Fout opgetreden",
+            subTitle: "Er is een fout opgetreden.",
+            icon: AlertIcon.XMARK,
+            duration: 4000,
+            alertClass: AlertClass.INCORRECT_CLASS
+          });
+        }
+      }
+
+    })
+
+  }
 }

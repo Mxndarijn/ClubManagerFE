@@ -2382,4 +2382,25 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.userMutations.forgotPassword);
 
   }
+
+  resetPassword(code: string, password: string) {
+    const query = {
+      query: `
+      mutation MyMutation($code: Int!, $password: String!) {
+  userMutations {
+    resetPassword(dto: {resetCode: $code, newPassword: $password}) {
+      message
+      success
+    }
+  }
+}`, variables: {
+        code: code,
+        password: password
+      }
+    }
+
+    return this.solvePromise(query, v => v.data.userMutations.resetPassword);
+
+
+  }
 }
