@@ -1,16 +1,16 @@
 <dialog id="my_modal_16" class="modal modal-bottom sm:modal-middle overflow-y-hidden"
         [ngClass]="{ 'modal-open': showModal}">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">Email verifieren</h3>
+    <h3 class="font-bold text-lg">Email Verificatie</h3>
     <div class="flex flex-row items-center mt-5">
-    <p class="mb-4">We hebben een email gestuurd naar: email adres. Niet gevonden? Kijk ook in je spam</p>
+    <p class="mb-4">We hebben een email gestuurd naar: {{profileEmail}}. Niet gevonden? Kijk ook in je spam</p>
     </div>
     <app-default-input-field
       (valueChanged)="showEmailErrorMessage = false"
       [inputId]="'inputID'"
       [placeholder]="'Vul hier de email in'"
-      [_formControl]="formControl"
-      [labelText]="'Pas email aan als nodig'"
+      [_formControl]="resetMailForm.controls.email"
+      [labelText]="'Pas het  email adres aan als nodig'"
       [hideErrorsWhenEmpty]="true"
       [inputFieldWidth]="InputFieldWidth.FULL"
 
@@ -32,16 +32,14 @@
         <app-custom-button
           [buttonClass]="ButtonClass.ERROR_CLASS"
           [buttonSize]="ButtonSize.BTN_MD"
-          [labelText]="'Annuleer'"
-          [disabledStatus]="false"
+          [labelText]="'Uitloggen'"
           (onClick)="cancelFunction()"
         ></app-custom-button>
-
         <app-custom-button
-          [buttonClass]="ButtonClass.SUCCESS_CLASS"
+          [buttonClass]="ButtonClass.WARNING_CLASS"
           [buttonSize]="ButtonSize.BTN_MD"
-          [labelText]="'Bevestig'"
-          [disabledStatus]="!formControl.valid"
+          [labelText]="'Wijzig Email'"
+          [disabledStatus]="!resetMailForm.valid"
           (onClick)="changeEmail()"
         ></app-custom-button>
       </form>

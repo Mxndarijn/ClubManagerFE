@@ -1,1 +1,13 @@
-<p>{{message}}</p>
+<div class="flex row h-screen">
+  <app-left-side-authentication class="w-6/12"></app-left-side-authentication>
+  <div class="flex flex-col w-6/12 justify-center items-center space-y-24">
+    <h1 class="text-6xl text-white font-bold m-0">{{ currentState?.title }}</h1>
+    <img src="{{currentState?.image}}" alt="{{currentState?.title}}">
+    <p>{{ currentState?.oneLiner }}</p>
+    <div class="flex flex-col justify-center text-center gap-y-10">
+      <p>of</p>
+      <button class="text-accent underline font-bold hover:cursor-pointer" routerLink="/login"
+              routerLinkActive="active">Log hier in</button>
+    </div>
+  </div>
+</div>

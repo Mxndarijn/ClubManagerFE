@@ -1,17 +1,42 @@
 import { Component } from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink, RouterLinkActive} from "@angular/router";
 import {GraphQLCommunication} from "../../../../CoreModule/services/graphql-communication.service";
 import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
+import {EmailVerifyEmailLinkPageInterface} from "./email-verify-email-link-interface";
+import {
+  LeftSideAuthenticationComponent
+} from "../../../../SharedModule/components/left-side-authentication/left-side-authentication.component";
 
 @Component({
   selector: 'app-email-verify-email-link-page',
   standalone: true,
-  imports: [],
+  imports: [
+    LeftSideAuthenticationComponent,
+    RouterLink,
+    RouterLinkActive
+  ],
   templateUrl: './email-verify-email-link-page.component.html',
   styleUrl: './email-verify-email-link-page.component.css'
 })
 export class EmailVerifyEmailLinkPageComponent {
-  protected message : string = "waiting..."
+  protected currentState? : EmailVerifyEmailLinkPageInterface
+  protected verifyStates: EmailVerifyEmailLinkPageInterface[] = [
+    {
+      title: 'Geveriefieerd',
+      image: '../../assets/verifiedImage.png',
+      oneLiner: 'Je account is geverifieerd je kan deze pagina nu sluiten'
+    },
+    {
+      title: 'Niet geverifieerd',
+      image: './assets/verifiedImage.png',
+      oneLiner: 'Je account is niet geverifieerd, probeer opnieuw'
+    },
+    {
+      title: 'No Code',
+      image: './assets/verifiedImage.png',
+      oneLiner: 'No verification code entered'
+    }
+  ]
 
 
   constructor(
@@ -24,15 +49,18 @@ export class EmailVerifyEmailLinkPageComponent {
     if(verificationCode != undefined) {
       this.graphQL.verifyEmail(verificationCode).then((res: DefaultBooleanResponseDTO) => {
         if(res != null && res.success) {
-          this.message = "verified"
+          this.currentState = this.verifyStates[0]
         } else {
-          this.message = "could not verify"
+          this.currentState = this.verifyStates[1]
+
         }
       }).catch(e => {
-        this.message = "could not verify (error)"
+        this.currentState = this.verifyStates[1]
+
       })
     } else {
-      this.message = "no verification code entered"
+      this.currentState = this.verifyStates[2]
+
     }
   }
 }

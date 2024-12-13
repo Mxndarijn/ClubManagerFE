@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {AuthenticationService} from '../../../../CoreModule/services/authentication.service';
@@ -33,6 +33,9 @@ import {
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 import {ForgotPasswordModalComponent} from "../../modals/forgot-password-modal/forgot-password-modal.component";
+import {
+  EmailVerificationModalComponent
+} from "../../modals/email-verification-modal/email-verification-modal.component";
 
 
 @Component({
@@ -40,9 +43,9 @@ import {ForgotPasswordModalComponent} from "../../modals/forgot-password-modal/f
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent, LeftSideAuthenticationComponent, CustomButton, ForgotPasswordModalComponent],
+  imports: [ReactiveFormsModule, ConfirmButtonComponent, CommonModule, FontAwesomeModule, RouterLink, RouterLinkActive, ErrorMessageComponent, ErrorMessageManualComponent, TranslateModule, NavbarMinimalComponent, NavbarMinimalComponent, DefaultInputFieldComponent, LeftSideAuthenticationComponent, CustomButton, ForgotPasswordModalComponent, EmailVerificationModalComponent],
 })
-export class LoginPageComponent {
+export class LoginPageComponent implements OnInit {
   public loginForm: FormGroup<{
     password: FormControl<string | null>;
     email: FormControl<string | null>
@@ -66,12 +69,25 @@ export class LoginPageComponent {
     });
 
   }
+  ngOnInit(): void {
+        this.authenticationService.isLoggedIn().then(loggedIn => {
+          if (!loggedIn) {
+            return
+          }
+          this.authenticationService.isAccountVerified().then(isAccountVerified => {
+            if (!isAccountVerified) {
+              this.modalService.showModal(Modal.EMAIL_VERIFICATION);
+            } else {
+              this.router.navigate(['/home']);
+            }
+          })
+        })
+    }
 
   public onSubmit() {
     if(this.loginForm.valid) {
       this.authenticationService.login(this.loginForm.controls.email.value!, this.loginForm.controls.password.value!).subscribe({
         next: (dto) => {
-          console.log(dto)
           if(!dto.success) {
             if (typeof dto.message === 'string') {
               this.translate.get('loginPage.errors.serverResponses.' + dto.message).subscribe((res: string) => {
@@ -88,7 +104,13 @@ export class LoginPageComponent {
             this.loginErrorMessage.hideErrorMessage();
             this.permissionService.refreshPermissions();
             this.navigationService.refreshNavigation();
-            this.router.navigate(['/home']);
+            this.authenticationService.isAccountVerified().then((isVerified) => {
+              if(isVerified) {
+                this.router.navigate(['/home']);
+              } else {
+                this.modalService.showModal(Modal.EMAIL_VERIFICATION)
+              }
+            })
             // navigate to home
 
           }

@@ -68,13 +68,13 @@ export class EmailVerificationModalComponent extends DefaultModalInformation {
     private router: Router,
   ) {
     super(Modal.EMAIL_VERIFICATION, modalService);
-    this.formControl = new FormControl("", Validators.compose([Validators.required, Validators.email]));
     this.modalService.modalVisibilityEvent.subscribe({
       next: (modalChange: ModalChange) => {
         if(modalChange.modal === Modal.EMAIL_VERIFICATION) {
           if(modalChange.status === ModalStatus.OPEN) {
+            this.refreshProfileEmail()
             this.showEmailErrorMessage = false
-            this.formControl.reset();
+            this.resetMailForm.reset();
             this.intervalId = setInterval(() => {
               this.auth.isLoggedIn().then(result => {
                 if (!result) {
@@ -98,8 +98,10 @@ export class EmailVerificationModalComponent extends DefaultModalInformation {
   }
 
   changeEmail() {
+    console.log(this.resetMailForm.valid)
     if (this.resetMailForm.valid) {
       const emailValue = this.resetMailForm.controls.email.value!;
+      console.log(emailValue);
       this.graphQL.changeEmailWhileInVerificationProcess(emailValue).then(res => {
         console.log(res)
         if (res.success) {
@@ -117,11 +119,10 @@ export class EmailVerificationModalComponent extends DefaultModalInformation {
     })
   }
 
-  formControl: FormControl<String | null>;
-
 
   cancelFunction() {
-    this.hideModal()
+    this.hideModal();
+    this.auth.logout();
   }
 
   protected readonly InputFieldWidth = InputFieldWidth;
