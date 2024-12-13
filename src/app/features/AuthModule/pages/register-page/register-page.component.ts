@@ -102,7 +102,7 @@ export class RegisterPageComponent {
             this.registerErrorMessage.hideErrorMessage();
             this.permissionService.refreshPermissions();
             this.sidebarService.refreshNavigation();
-            this.router.navigate(['/home']);
+            this.modalService.showModal(Modal.EMAIL_VERIFICATION)
           }
         }
       })
