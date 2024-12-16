@@ -678,7 +678,8 @@ export class GraphQLCommunication {
             encoded
         },
         fullName,
-        email
+        email,
+        knsaMembershipNumber
     }
   }
     }
