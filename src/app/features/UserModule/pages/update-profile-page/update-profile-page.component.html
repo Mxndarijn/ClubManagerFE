@@ -10,14 +10,14 @@
                (change)="handleChangeProfilePicture($event)">
         <fa-icon class="fa-2x " [icon]="faPencil"></fa-icon>
       </button>
-      <div class="w-56 h-56  rounded-full bg-base-300 flex items-center justify-center">
+      <div class="w-56 h-56 rounded-full bg-base-300 flex items-center justify-center">
         <img class="w-10/12 h-10/12 border-4 border-accent  rounded-full" src="{{profile?.image?.encoded}}"
              alt="Profile picture of the user"/>
       </div>
     </div>
     <!--    Name section-->
     <div class="flex flex-col">
-      <h1 class="font-bold text-2xl">{{ profile?.fullName }}</h1>
+      <h1 class="font-bold text-3xl">{{ profile?.fullName }}</h1>
       <p>{{ profile?.email }}</p>
     </div>
   </section>

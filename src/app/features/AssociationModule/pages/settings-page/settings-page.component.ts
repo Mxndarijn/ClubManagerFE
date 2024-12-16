@@ -7,9 +7,8 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {UpdateButtonComponent} from "../../../../SharedModule/components/buttons/update-button/update-button.component";
 import {SliderComponent} from "../../../../SharedModule/components/input-fields/toggle-slider/slider.component";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
-import {ErrorMessageComponent} from "../../../../SharedModule/components/error-message/error-message.component";
 import {
   DefaultTextAreaComponent
 } from "../../../../SharedModule/components/input-fields/default-text-area/default-text-area.component";
@@ -21,8 +20,27 @@ import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {ActivatedRoute} from "@angular/router";
 import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {
+  ErrorMessageComponent
+} from "../../../../SharedModule/components/error-messages/error-message/error-message.component";
+import {
+  TextareaModalComponent
+} from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
+import {
+  RoundedSocialBoxComponent
+} from "../../../../SharedModule/components/rounded-social-box/rounded-social-box.component";
 
-
+enum Tab {
+  ASSOCIATION_CONTACTDATA,
+  ASSOCIATION_EXTRAINFORMATION,
+}
 @Component({
   selector: 'app-settings-page',
   standalone: true,
@@ -36,7 +54,12 @@ import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/
     TranslateModule,
     ErrorMessageComponent,
     NgIf,
-    DefaultTextAreaComponent
+    DefaultTextAreaComponent,
+    TabComponent,
+    CustomButton,
+    ErrorMessageComponent,
+    TextareaModalComponent,
+    RoundedSocialBoxComponent
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.css'
@@ -54,7 +77,27 @@ export class SettingsPageComponent {
     associationDescription: FormControl<string | null>
   }>;
   private associationID: string;
+  activeTab: Tab = Tab.ASSOCIATION_CONTACTDATA;
+  protected readonly document = document;
+  protected readonly Tab = Tab;
 
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "Vereniging gegevens",
+        onClick: () => {
+          this.activeTab = Tab.ASSOCIATION_CONTACTDATA
+        }
+      },
+      {
+        label: "Toegevoegde informatie",
+        onClick: () => {
+          this.activeTab = Tab.ASSOCIATION_EXTRAINFORMATION
+        }
+      }
+    ]
+  }
 
 
   constructor(
@@ -130,7 +173,7 @@ export class SettingsPageComponent {
     }
   }
 
-  protected readonly document = document;
+
 
 
   resetSettingsForm() {
@@ -188,4 +231,8 @@ export class SettingsPageComponent {
 
 
   }
+
+  protected readonly InputFieldWidth = InputFieldWidth;
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 }

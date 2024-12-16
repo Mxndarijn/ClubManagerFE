@@ -22,9 +22,15 @@ module.exports = {
       width: {
         "1/7": "14,27%"
       },
+      maxWidth: {
+      "10/12":  "83.333333%"
+      },
       height:{
         "screen-mini": "82vh",
         "85%": "85%"
+      },
+      maxHeight: {
+        "10/12":  "83.333333%"
       },
       borderWidth: {
         "1": "1px",
