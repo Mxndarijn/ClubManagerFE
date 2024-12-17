@@ -140,7 +140,8 @@
             [buttonClass]="ButtonClass.SUCCESS_CLASS"
             [buttonSize]="ButtonSize.BTN_MD"
             [labelText]="'Update'"
-            [disabledStatus]="true"
+            [disabledStatus]="!emailFormControl.valid"
+            (onClick)="openSecurityModal(InputFieldTitle.CHANG_EMAIL)"
           ></app-custom-button>
         </div>
       </div>

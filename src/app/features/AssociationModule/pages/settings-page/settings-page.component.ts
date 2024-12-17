@@ -36,6 +36,7 @@ import {
 import {
   RoundedSocialBoxComponent
 } from "../../../../SharedModule/components/rounded-social-box/rounded-social-box.component";
+import {faPhone} from "@fortawesome/free-solid-svg-icons/faPhone";
 
 enum Tab {
   ASSOCIATION_CONTACTDATA,
@@ -235,4 +236,5 @@ export class SettingsPageComponent {
   protected readonly InputFieldWidth = InputFieldWidth;
   protected readonly ButtonClass = ButtonClass;
   protected readonly ButtonSize = ButtonSize;
+  protected readonly faPhone = faPhone;
 }

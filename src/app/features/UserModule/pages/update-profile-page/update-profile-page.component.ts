@@ -69,6 +69,12 @@ export class UpdateProfilePageComponent {
   protected readonly InputFieldWidth = InputFieldWidth;
   protected readonly ButtonClass = ButtonClass;
   protected readonly ButtonSize = ButtonSize;
+  protected readonly Tab = Tab;
+  protected readonly document = document;
+  protected readonly InputFieldTitle = InputFieldTitle;
+  protected readonly Modal = Modal;
+  protected currentEmail: string = "";
+
   activeTitleMessage = InputFieldTitle.CHANGE_PASSWORD;
 
   profile: User | undefined;
@@ -83,8 +89,6 @@ export class UpdateProfilePageComponent {
   }>;
   emailFormControl: FormControl;
   activeTab: Tab = Tab.MY_CONTACTDATA;
-
-  protected readonly Tab = Tab;
 
   tabDataSource: TabDataSource = {
     defaultActive: 0,
@@ -144,15 +148,16 @@ export class UpdateProfilePageComponent {
     this.reloadData();
   }
 
-
   reloadData() {
     this.graphQL.getMyFullProfile().then(p => {
       this.profile = p;
       this.emailFormControl.setValue(this.profile?.email + "");
+      this.currentEmail = this.profile?.email + "";
       this.myContactDataFormGroup.controls.fullName.setValue(this.profile?.fullName + "");
       this.myContactDataFormGroup.controls.license.setValue(this.profile?.knsaMembershipNumber + "");
     })
   }
+
 
   handleChangeProfilePicture(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -163,21 +168,9 @@ export class UpdateProfilePageComponent {
         this.graphQL.uploadProfilePicture(imageURL).then(rDTO => {
           if (rDTO.success) {
             this.navigationService.refreshNavigation();
-            this.alertService.showAlert({
-              title: "Succesvol",
-              subTitle: "De afbeelding is succesvol geupload.",
-              icon: AlertIcon.CHECK,
-              duration: 4000,
-              alertClass: AlertClass.CORRECT_CLASS
-            });
+            this.alertService.showPositiveAlert("De afbeelding is succesvol geupload.");
           } else {
-            this.alertService.showAlert({
-              title: "Fout opgetreden",
-              subTitle: "Probeer het later opnieuw.",
-              icon: AlertIcon.XMARK,
-              duration: 4000,
-              alertClass: AlertClass.INCORRECT_CLASS
-            });
+            this.alertService.showNegativeAlert("Probeer het later opnieuw.")
           }
 
         }).catch(e => {
@@ -189,7 +182,6 @@ export class UpdateProfilePageComponent {
     }
   }
 
-
   filterValue() {
     if (!this.myContactDataFormGroup || !this.myContactDataFormGroup.controls.license.value) {
       return;
@@ -199,8 +191,6 @@ export class UpdateProfilePageComponent {
       this.myContactDataFormGroup.controls.license.setValue(newValue);
     }
   }
-
-  protected readonly document = document;
 
   updateMyDataProfile() {
     if (!this.myContactDataFormGroup.valid)
@@ -212,30 +202,12 @@ export class UpdateProfilePageComponent {
     ).then(rDTO => {
       if (rDTO.success) {
         this.reloadData();
-        this.alertService.showAlert({
-          title: "Succesvol",
-          subTitle: "De wijzigingen zijn succesvol opgeslagen.",
-          icon: AlertIcon.CHECK,
-          duration: 4000,
-          alertClass: AlertClass.CORRECT_CLASS
-        });
+        this.alertService.showPositiveAlert("De wijzigingen zijn succesvol opgeslagen.");
       } else {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
+        this.alertService.showNegativeAlert("Er is een fout opgetreden bij het bijwerken van uw profiel.")
       }
     }).catch(e => {
-      this.alertService.showAlert({
-        title: "Fout opgetreden",
-        subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-        icon: AlertIcon.XMARK,
-        duration: 4000,
-        alertClass: AlertClass.INCORRECT_CLASS
-      });
+      this.alertService.showNegativeAlert("Er is een fout opgetreden bij het bijwerken van uw profiel.")
     });
   }
 
@@ -249,44 +221,48 @@ export class UpdateProfilePageComponent {
       this.passwordFormGroup.controls.password.value!).then(response => {
       if(response.success) {
         this.modalService.hideModal(Modal.SECURITY_CODE)
-        this.alertService.showAlert({
-          title: "Succesvol",
-          subTitle: "Je wachtwoord is veranderd.",
-          icon: AlertIcon.CHECK,
-          duration: 4000,
-          alertClass: AlertClass.CORRECT_CLASS
-        });
+        this.alertService.showPositiveAlert( "Je wachtwoord is veranderd.");
       } else {
         if (response.message == "invalid-response-code") {
-          this.alertService.showAlert({
-            title: "Fout opgetreden",
-            subTitle: "De code die je hebt opgegeven klopt niet.",
-            icon: AlertIcon.XMARK,
-            duration: 4000,
-            alertClass: AlertClass.INCORRECT_CLASS
-          });
-
+          this.alertService.showNegativeAlert("De code die je hebt opgegeven klopt niet.")
         } else {
           this.modalService.hideModal(Modal.SECURITY_CODE)
-          this.alertService.showAlert({
-            title: "Fout opgetreden",
-            subTitle: "Er is een fout opgetreden.",
-            icon: AlertIcon.XMARK,
-            duration: 4000,
-            alertClass: AlertClass.INCORRECT_CLASS
-          });
+          this.alertService.showNegativeAlert("Er is een fout opgetreden.")
+        }
+      }
+    })
+  }
+
+  updateProfileEmail(code: string) {
+    if (!this.emailFormControl.valid)
+      return;
+
+    this.graphQL.resetEmail(
+      code,
+      this.emailFormControl.value!).then(response => {
+      if(response.success) {
+        this.modalService.hideModal(Modal.SECURITY_CODE);
+        this.alertService.showPositiveAlert("Je email is veranderd.");
+      } else {
+        if (response.message == "invalid-response-code") {
+          this.alertService.showNegativeAlert("De code die je hebt opgegeven klopt niet.");
+        } else {
+          this.modalService.hideModal(Modal.SECURITY_CODE)
+          this.alertService.showNegativeAlert("Er is een fout opgetreden.");
         }
       }
     })
   }
 
   openSecurityModal(titleMessage: InputFieldTitle) {
-    this.activeTitleMessage = titleMessage;
+    this.graphQL.requestSecurityCode(this.currentEmail).then(response => {
+      if(!(response && response.success)) {
+        this.alertService.showNegativeAlert("Kon geen verificatie code sturen.");
+      }
+    })
+      this.activeTitleMessage = titleMessage;
     this.modalService.showModal(Modal.SECURITY_CODE)
   }
-
-  protected readonly InputFieldTitle = InputFieldTitle;
-  protected readonly Modal = Modal;
 
   securityCodeReceived(code:string) {
     switch (this.activeTitleMessage) {
@@ -294,43 +270,8 @@ export class UpdateProfilePageComponent {
         this.updateProfilePassword(code);
         break;
       case InputFieldTitle.CHANG_EMAIL:
-        //code implementation when change email is prompted
+        this.updateProfileEmail(code);
         break;
     }
   }
 }
-
-
-// if (rDTO.success) {
-//   this.reloadData();
-//   this.alertService.showAlert({
-//     title: "Succesvol",
-//     subTitle: "De wijzigingen zijn succesvol opgeslagen.",
-//     icon: AlertIcon.CHECK,
-//     duration: 4000,
-//     alertClass: AlertClass.CORRECT_CLASS
-//   });
-// } else {
-//   switch (rDTO.message) {
-//     case "not-correct-password": {
-//       this.alertService.showAlert({
-//         title: "Fout opgetreden",
-//         subTitle: "Het ingevoerde wachtwoord komt niet overeen.",
-//         icon: AlertIcon.XMARK,
-//         duration: 4000,
-//         alertClass: AlertClass.INCORRECT_CLASS
-//       });
-//       break;
-//     }
-//     default: {
-//       this.alertService.showAlert({
-//         title: "Fout opgetreden",
-//         subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-//         icon: AlertIcon.XMARK,
-//         duration: 4000,
-//         alertClass: AlertClass.INCORRECT_CLASS
-//       });
-//       break;
-//     }
-//
-//   }

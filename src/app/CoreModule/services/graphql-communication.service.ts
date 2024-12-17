@@ -2402,4 +2402,22 @@ export class GraphQLCommunication {
 
 
   }
+  resetEmail(code: string, email: string) {
+    const query = {
+      query: `
+      mutation MyMutation($code: Int!, $email: String!) {
+  userMutations {
+    resetEmail(dto: {resetCode: $code, newEmail: $email}) {
+      message
+      success
+    }
+  }
+}`, variables: {
+        code: code,
+        email: email
+      }
+    }
+    return this.solvePromise(query, v => v.data.userMutations.resetEmail);
+  }
 }
+
