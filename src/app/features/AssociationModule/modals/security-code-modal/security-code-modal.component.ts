@@ -41,10 +41,11 @@ export class SecurityCodeModalComponent extends DefaultModalInformation  {
 
   protected readonly ButtonClass = ButtonClass;
   protected readonly ButtonSize = ButtonSize;
-  codeFormControl: FormControl<string | null>;
+  protected readonly InputFieldWidth = InputFieldWidth;
 
+  codeFormControl: FormControl<string | null>;
   @Input() securityModalTitle: string = "";
-  @Output() AcceptEvent = new EventEmitter<null>
+  @Output() AcceptEvent = new EventEmitter<string>
   @Output() RejectEvent = new EventEmitter<null>
 
   constructor(
@@ -62,10 +63,8 @@ export class SecurityCodeModalComponent extends DefaultModalInformation  {
     return this.codeFormControl.value.replace(/\D/g, "");
   }
 
-  protected readonly InputFieldWidth = InputFieldWidth;
-
   acceptFunction() {
-    this.AcceptEvent.emit();
+    this.AcceptEvent.emit(this.codeFormControl.value!);
   }
 
   cancelFunction() {

@@ -26,12 +26,21 @@ import {
   ButtonSize,
   CustomButton
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {
+  SecurityCodeModalComponent
+} from "../../../AssociationModule/modals/security-code-modal/security-code-modal.component";
+import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 
 
 enum Tab {
   MY_CONTACTDATA,
   SECURITY,
   PREFERENCES
+}
+
+enum InputFieldTitle {
+  CHANGE_PASSWORD = 'Verander wachtwoord',
+  CHANG_EMAIL = 'Verander email'
 }
 
 @Component({
@@ -48,7 +57,8 @@ enum Tab {
     ErrorMessageComponent,
     NgIf,
     TabComponent,
-    CustomButton
+    CustomButton,
+    SecurityCodeModalComponent
   ],
   templateUrl: './update-profile-page.component.html',
   styleUrl: './update-profile-page.component.css'
@@ -59,6 +69,7 @@ export class UpdateProfilePageComponent {
   protected readonly InputFieldWidth = InputFieldWidth;
   protected readonly ButtonClass = ButtonClass;
   protected readonly ButtonSize = ButtonSize;
+  activeTitleMessage = InputFieldTitle.CHANGE_PASSWORD;
 
   profile: User | undefined;
   protected passwordFormGroup: FormGroup<{
@@ -74,6 +85,7 @@ export class UpdateProfilePageComponent {
   activeTab: Tab = Tab.MY_CONTACTDATA;
 
   protected readonly Tab = Tab;
+
   tabDataSource: TabDataSource = {
     defaultActive: 0,
     items: [
@@ -103,6 +115,7 @@ export class UpdateProfilePageComponent {
     private translate: TranslateService,
     private graphQL: GraphQLCommunication,
     private alertService: AlertService,
+    protected modalService: ModalService,
   ) {
     navigationService.showNavigation();
     this.translate.get('profilePage.titleHeader').subscribe((res: string) => {
@@ -123,12 +136,14 @@ export class UpdateProfilePageComponent {
         ValidationUtils.containsNumber,
         ValidationUtils.containsSpecialChar
       ])),
-      confirmPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8)])),
+      confirmPassword: new FormControl<string>('', Validators.compose([
+        Validators.maxLength(255), Validators.minLength(8)])),
     }, {validators: ValidationUtils.passwordsMatchValidator});
     this.emailFormControl = new FormControl<string>('', Validators.compose([Validators.email, Validators.required]))
 
     this.reloadData();
   }
+
 
   reloadData() {
     this.graphQL.getMyFullProfile().then(p => {
@@ -138,7 +153,6 @@ export class UpdateProfilePageComponent {
       this.myContactDataFormGroup.controls.license.setValue(this.profile?.knsaMembershipNumber + "");
     })
   }
-
 
   handleChangeProfilePicture(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -175,13 +189,16 @@ export class UpdateProfilePageComponent {
     }
   }
 
+
   filterValue() {
     if (!this.myContactDataFormGroup || !this.myContactDataFormGroup.controls.license.value) {
-      return ""
+      return;
     }
-    return this.myContactDataFormGroup.controls.license.value.replace(/\D/g, "");
+    const newValue = this.myContactDataFormGroup.controls.license.value.replace(/\D/g, "");
+    if(newValue != this.myContactDataFormGroup.controls.license.value) {
+      this.myContactDataFormGroup.controls.license.setValue(newValue);
+    }
   }
-
 
   protected readonly document = document;
 
@@ -223,42 +240,63 @@ export class UpdateProfilePageComponent {
   }
 
 
-  updateProfilePassword() {
+  updateProfilePassword(code: string) {
     if (!this.passwordFormGroup.valid)
       return;
 
-    // Na model geopent
-    // this.graphQL.resetPassword(
-    //   this.myContactDataFormGroup.controls.fullName.value,
-    //   this.myContactDataFormGroup.controls.license.value,
-    // ).then(rDTO => {
-    //   if (rDTO.success) {
-    //     this.reloadData();
-    //     this.alertService.showAlert({
-    //       title: "Succesvol",
-    //       subTitle: "De wijzigingen zijn succesvol opgeslagen.",
-    //       icon: AlertIcon.CHECK,
-    //       duration: 4000,
-    //       alertClass: AlertClass.CORRECT_CLASS
-    //     });
-    //   } else {
-    //     this.alertService.showAlert({
-    //       title: "Fout opgetreden",
-    //       subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-    //       icon: AlertIcon.XMARK,
-    //       duration: 4000,
-    //       alertClass: AlertClass.INCORRECT_CLASS
-    //     });
-    //   }
-    // }).catch(e => {
-    //   this.alertService.showAlert({
-    //     title: "Fout opgetreden",
-    //     subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-    //     icon: AlertIcon.XMARK,
-    //     duration: 4000,
-    //     alertClass: AlertClass.INCORRECT_CLASS
-    //   });
-    // });
+    this.graphQL.resetPassword(
+      code,
+      this.passwordFormGroup.controls.password.value!).then(response => {
+      if(response.success) {
+        this.modalService.hideModal(Modal.SECURITY_CODE)
+        this.alertService.showAlert({
+          title: "Succesvol",
+          subTitle: "Je wachtwoord is veranderd.",
+          icon: AlertIcon.CHECK,
+          duration: 4000,
+          alertClass: AlertClass.CORRECT_CLASS
+        });
+      } else {
+        if (response.message == "invalid-response-code") {
+          this.alertService.showAlert({
+            title: "Fout opgetreden",
+            subTitle: "De code die je hebt opgegeven klopt niet.",
+            icon: AlertIcon.XMARK,
+            duration: 4000,
+            alertClass: AlertClass.INCORRECT_CLASS
+          });
+
+        } else {
+          this.modalService.hideModal(Modal.SECURITY_CODE)
+          this.alertService.showAlert({
+            title: "Fout opgetreden",
+            subTitle: "Er is een fout opgetreden.",
+            icon: AlertIcon.XMARK,
+            duration: 4000,
+            alertClass: AlertClass.INCORRECT_CLASS
+          });
+        }
+      }
+    })
+  }
+
+  openSecurityModal(titleMessage: InputFieldTitle) {
+    this.activeTitleMessage = titleMessage;
+    this.modalService.showModal(Modal.SECURITY_CODE)
+  }
+
+  protected readonly InputFieldTitle = InputFieldTitle;
+  protected readonly Modal = Modal;
+
+  securityCodeReceived(code:string) {
+    switch (this.activeTitleMessage) {
+      case InputFieldTitle.CHANGE_PASSWORD:
+        this.updateProfilePassword(code);
+        break;
+      case InputFieldTitle.CHANG_EMAIL:
+        //code implementation when change email is prompted
+        break;
+    }
   }
 }
 

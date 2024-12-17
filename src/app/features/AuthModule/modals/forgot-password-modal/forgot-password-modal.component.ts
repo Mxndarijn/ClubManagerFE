@@ -159,7 +159,6 @@ export class ForgotPasswordModalComponent extends DefaultModalInformation implem
       return
     }
     this.graphQL.resetPassword(this.resetPasswordFormGroup.controls.code.value!, this.resetPasswordFormGroup.controls.password.value!).then(response => {
-      console.log(response)
       if(response.success) {
         this.hideModal()
         this.alertService.showAlert({

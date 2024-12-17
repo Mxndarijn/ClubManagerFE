@@ -46,7 +46,7 @@
                  }]">
         </app-default-input-field>
         <app-default-input-field
-          (valueChanged)="myContactDataFormGroup.controls.license.setValue(filterValue())"
+          (valueChanged)="filterValue()"
           [_formControl]="myContactDataFormGroup.controls.license"
           [autocomplete]="'name'"
           [placeholder]="'Pas hier je licentie number naam aan'"
@@ -67,7 +67,7 @@
           [buttonSize]="ButtonSize.BTN_MD"
           [labelText]="'Update'"
           [disabledStatus]="!myContactDataFormGroup.valid"
-          (click)="updateMyDataProfile()"
+          (onClick)="updateMyDataProfile()"
         ></app-custom-button>
       </div>
     </div>
@@ -89,31 +89,32 @@
     }]"
           [visibilityCanBeToggled]="true">
         </app-default-input-field>
+        <div>
+          <app-default-input-field
+            [_formControl]="passwordFormGroup.controls.confirmPassword"
+            [autocomplete]="'new-password'"
+            [placeholder]="'Herhaal je nieuwe wachtwoord'"
+            [labelText]="'Herhaal nieuw wachtwoord'"
+            [inputId]="'repeatNewPassword'"
+            [type]="'password'"
+            [visibilityCanBeToggled]="true"
+            [inputFieldWidth]="InputFieldWidth.FULL"
+            [hideErrorsWhenEmpty]="true">
+          </app-default-input-field>
 
-        <app-default-input-field
-          [_formControl]="passwordFormGroup.controls.confirmPassword"
-          [autocomplete]="'new-password'"
-          [placeholder]="'Herhaal je nieuwe wachtwoord'"
-          [labelText]="'Herhaal nieuw wachtwoord'"
-          [inputId]="'repeatNewPassword'"
-          [type]="'password'"
-          [visibilityCanBeToggled]="true"
-          [inputFieldWidth]="InputFieldWidth.FULL"
-          [hideErrorsWhenEmpty]="true">
-        </app-default-input-field>
-
-        <app-error-message
-          [errorMessage]="'registerPage.errors.passwordMismatch' | translate"
-          [formGroup]="passwordFormGroup"
-          [specificError]="'passwordsMismatch'">
-        </app-error-message>
-
+          <app-error-message
+            [errorMessage]="'registerPage.errors.passwordMismatch' | translate"
+            [formGroup]="passwordFormGroup"
+            [specificError]="'passwordsMismatch'">
+          </app-error-message>
+        </div>
         <div class="flex justify-end mt-auto">
           <app-custom-button
             [buttonClass]="ButtonClass.SUCCESS_CLASS"
             [buttonSize]="ButtonSize.BTN_MD"
             [labelText]="'Update'"
-            [disabledStatus]="true"
+            [disabledStatus]="!passwordFormGroup.valid"
+            (onClick)="openSecurityModal(InputFieldTitle.CHANGE_PASSWORD)"
           ></app-custom-button>
         </div>
       </div>
@@ -170,4 +171,6 @@
   </section>
 </div>
 
-
+<app-security-code-modal [securityModalTitle]="activeTitleMessage"
+                         (RejectEvent)="this.modalService.hideModal(Modal.SECURITY_CODE)"
+                         (AcceptEvent)="securityCodeReceived($event)"></app-security-code-modal>
