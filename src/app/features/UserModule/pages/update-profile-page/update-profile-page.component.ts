@@ -56,21 +56,21 @@ enum Tab {
 export class UpdateProfilePageComponent {
   faPencil = faPencil
   showPassword: boolean = false;
-
+  protected readonly InputFieldWidth = InputFieldWidth;
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
 
   profile: User | undefined;
-  protected securityFormGroup: FormGroup<{
+  protected passwordFormGroup: FormGroup<{
     password: FormControl<string | null>;
     confirmPassword: FormControl<string | null>;
-    email: FormControl<string | null>
   }>;
-
 
   protected myContactDataFormGroup: FormGroup<{
     fullName: FormControl<string | null>;
     license: FormControl<string | null>;
   }>;
-  protected checkPasswordForm: FormControl;
+  emailFormControl: FormControl;
   activeTab: Tab = Tab.MY_CONTACTDATA;
 
   protected readonly Tab = Tab;
@@ -79,19 +79,19 @@ export class UpdateProfilePageComponent {
     items: [
       {
         label: "Mijn gegevens",
-        onClick : () => {
+        onClick: () => {
           this.activeTab = Tab.MY_CONTACTDATA
         }
       },
       {
         label: "Beveiliging",
-        onClick : () => {
+        onClick: () => {
           this.activeTab = Tab.SECURITY
         }
       },
       {
         label: "Voorkeuren",
-        onClick : () => {
+        onClick: () => {
           this.activeTab = Tab.PREFERENCES
         }
       }
@@ -109,13 +109,12 @@ export class UpdateProfilePageComponent {
         navigationService.setTitle(res);
       }
     )
-    this.myContactDataFormGroup = new FormGroup ({
+    this.myContactDataFormGroup = new FormGroup({
       fullName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(4), Validators.required, ValidationUtils.containsSpace])),
       license: new FormControl<string>('', Validators.compose([Validators.minLength(8), Validators.maxLength(8), Validators.required]))
     })
 
-    this.securityFormGroup = new FormGroup({
-      email: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.required, Validators.email])),
+    this.passwordFormGroup = new FormGroup({
       password: new FormControl('', Validators.compose([
         Validators.maxLength(255),
         Validators.minLength(8),
@@ -126,16 +125,17 @@ export class UpdateProfilePageComponent {
       ])),
       confirmPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8)])),
     }, {validators: ValidationUtils.passwordsMatchValidator});
-    this.checkPasswordForm = new FormControl<string>('', Validators.required);
+    this.emailFormControl = new FormControl<string>('', Validators.compose([Validators.email, Validators.required]))
+
     this.reloadData();
   }
 
   reloadData() {
     this.graphQL.getMyFullProfile().then(p => {
-        this.profile = p;
-        this.securityFormGroup.controls.email.setValue(this.profile?.email + "");
-        this.myContactDataFormGroup.controls.fullName.setValue(this.profile?.fullName + "");
-        this.myContactDataFormGroup.controls.license.setValue(this.profile?.knsaMembershipNumber + "");
+      this.profile = p;
+      this.emailFormControl.setValue(this.profile?.email + "");
+      this.myContactDataFormGroup.controls.fullName.setValue(this.profile?.fullName + "");
+      this.myContactDataFormGroup.controls.license.setValue(this.profile?.knsaMembershipNumber + "");
     })
   }
 
@@ -147,24 +147,24 @@ export class UpdateProfilePageComponent {
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const imageURL = e.target?.result as string;
         this.graphQL.uploadProfilePicture(imageURL).then(rDTO => {
-            if (rDTO.success) {
-              this.navigationService.refreshNavigation();
-              this.alertService.showAlert({
-                title: "Succesvol",
-                subTitle: "De afbeelding is succesvol geupload.",
-                icon: AlertIcon.CHECK,
-                duration: 4000,
-                alertClass: AlertClass.CORRECT_CLASS
-              });
-            } else {
-              this.alertService.showAlert({
-                title: "Fout opgetreden",
-                subTitle: "Probeer het later opnieuw.",
-                icon: AlertIcon.XMARK,
-                duration: 4000,
-                alertClass: AlertClass.INCORRECT_CLASS
-              });
-            }
+          if (rDTO.success) {
+            this.navigationService.refreshNavigation();
+            this.alertService.showAlert({
+              title: "Succesvol",
+              subTitle: "De afbeelding is succesvol geupload.",
+              icon: AlertIcon.CHECK,
+              duration: 4000,
+              alertClass: AlertClass.CORRECT_CLASS
+            });
+          } else {
+            this.alertService.showAlert({
+              title: "Fout opgetreden",
+              subTitle: "Probeer het later opnieuw.",
+              icon: AlertIcon.XMARK,
+              duration: 4000,
+              alertClass: AlertClass.INCORRECT_CLASS
+            });
+          }
 
         }).catch(e => {
           console.log(e)
@@ -174,8 +174,9 @@ export class UpdateProfilePageComponent {
       reader.readAsDataURL(input.files[0])
     }
   }
+
   filterValue() {
-    if(!this.myContactDataFormGroup || !this.myContactDataFormGroup.controls.license.value) {
+    if (!this.myContactDataFormGroup || !this.myContactDataFormGroup.controls.license.value) {
       return ""
     }
     return this.myContactDataFormGroup.controls.license.value.replace(/\D/g, "");
@@ -184,84 +185,114 @@ export class UpdateProfilePageComponent {
 
   protected readonly document = document;
 
-  // updateProfile() {
-  //   if (!this.checkPasswordForm.valid)
-  //     return;
-  //   if (!this.updateDataForm.controls.email.valid)
-  //     return;
-  //   if (!this.updateDataForm.controls.fullName.valid)
-  //     return;
-  //   if (this.updateDataForm.errors?.["passwordsMismatch"] != null)
-  //     return;
-  //
-  //   this.graphQL.updateProfile(
-  //     this.updateDataForm.controls.fullName.value,
-  //     this.updateDataForm.controls.email.value,
-  //     this.updateDataForm.controls.password.value,
-  //     this.checkPasswordForm.value
-  //   ).then(rDTO => {
-  //       if (rDTO.success) {
-  //         this.reloadData();
-  //         this.alertService.showAlert({
-  //           title: "Succesvol",
-  //           subTitle: "De wijzigingen zijn succesvol opgeslagen.",
-  //           icon: AlertIcon.CHECK,
-  //           duration: 4000,
-  //           alertClass: AlertClass.CORRECT_CLASS
-  //         });
-  //       } else {
-  //         switch (rDTO.message) {
-  //           case "not-correct-password": {
-  //             this.alertService.showAlert({
-  //               title: "Fout opgetreden",
-  //               subTitle: "Het ingevoerde wachtwoord komt niet overeen.",
-  //               icon: AlertIcon.XMARK,
-  //               duration: 4000,
-  //               alertClass: AlertClass.INCORRECT_CLASS
-  //             });
-  //             break;
-  //           }
-  //           default: {
-  //             this.alertService.showAlert({
-  //               title: "Fout opgetreden",
-  //               subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-  //               icon: AlertIcon.XMARK,
-  //               duration: 4000,
-  //               alertClass: AlertClass.INCORRECT_CLASS
-  //             });
-  //             break;
-  //           }
-  //
-  //         }
-  //       }
-  //   }).catch(e => {
-  //     this.alertService.showAlert({
-  //       title: "Fout opgetreden",
-  //       subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-  //       icon: AlertIcon.XMARK,
-  //       duration: 4000,
-  //       alertClass: AlertClass.INCORRECT_CLASS
-  //     });
-  //   });
-  // }
-  //
-  // resetUpdateForm() {
-  //   // this.updateDataForm.reset()
-  //   this.updateDataForm.controls.email.setValue(this.profile?.email + "")
-  //   this.updateDataForm.controls.fullName.setValue(this.profile?.fullName + "")
-  //   this.updateDataForm.controls.password.setValue("")
-  //   this.updateDataForm.controls.confirmPassword.setValue("")
-  //
-  //   this.alertService.showAlert({
-  //     title: "Informatie",
-  //     subTitle: "De wijzigingen zijn niet opgeslagen.",
-  //     icon: AlertIcon.INFO,
-  //     duration: 4000,
-  //     alertClass: AlertClass.INFO_CLASS
-  //   });
-  // }
+  updateMyDataProfile() {
+    if (!this.myContactDataFormGroup.valid)
+      return;
 
-  protected readonly InputFieldWidth = InputFieldWidth;
-  protected readonly ButtonClass = ButtonClass;
-  protected readonly ButtonSize = ButtonSize;
+    this.graphQL.updateMyDataProfile(
+      this.myContactDataFormGroup.controls.fullName.value,
+      this.myContactDataFormGroup.controls.license.value,
+    ).then(rDTO => {
+      if (rDTO.success) {
+        this.reloadData();
+        this.alertService.showAlert({
+          title: "Succesvol",
+          subTitle: "De wijzigingen zijn succesvol opgeslagen.",
+          icon: AlertIcon.CHECK,
+          duration: 4000,
+          alertClass: AlertClass.CORRECT_CLASS
+        });
+      } else {
+        this.alertService.showAlert({
+          title: "Fout opgetreden",
+          subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
+          icon: AlertIcon.XMARK,
+          duration: 4000,
+          alertClass: AlertClass.INCORRECT_CLASS
+        });
+      }
+    }).catch(e => {
+      this.alertService.showAlert({
+        title: "Fout opgetreden",
+        subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
+        icon: AlertIcon.XMARK,
+        duration: 4000,
+        alertClass: AlertClass.INCORRECT_CLASS
+      });
+    });
+  }
+
+
+  updateProfilePassword() {
+    if (!this.passwordFormGroup.valid)
+      return;
+
+    // Na model geopent
+    // this.graphQL.resetPassword(
+    //   this.myContactDataFormGroup.controls.fullName.value,
+    //   this.myContactDataFormGroup.controls.license.value,
+    // ).then(rDTO => {
+    //   if (rDTO.success) {
+    //     this.reloadData();
+    //     this.alertService.showAlert({
+    //       title: "Succesvol",
+    //       subTitle: "De wijzigingen zijn succesvol opgeslagen.",
+    //       icon: AlertIcon.CHECK,
+    //       duration: 4000,
+    //       alertClass: AlertClass.CORRECT_CLASS
+    //     });
+    //   } else {
+    //     this.alertService.showAlert({
+    //       title: "Fout opgetreden",
+    //       subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
+    //       icon: AlertIcon.XMARK,
+    //       duration: 4000,
+    //       alertClass: AlertClass.INCORRECT_CLASS
+    //     });
+    //   }
+    // }).catch(e => {
+    //   this.alertService.showAlert({
+    //     title: "Fout opgetreden",
+    //     subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
+    //     icon: AlertIcon.XMARK,
+    //     duration: 4000,
+    //     alertClass: AlertClass.INCORRECT_CLASS
+    //   });
+    // });
+  }
 }
+
+
+// if (rDTO.success) {
+//   this.reloadData();
+//   this.alertService.showAlert({
+//     title: "Succesvol",
+//     subTitle: "De wijzigingen zijn succesvol opgeslagen.",
+//     icon: AlertIcon.CHECK,
+//     duration: 4000,
+//     alertClass: AlertClass.CORRECT_CLASS
+//   });
+// } else {
+//   switch (rDTO.message) {
+//     case "not-correct-password": {
+//       this.alertService.showAlert({
+//         title: "Fout opgetreden",
+//         subTitle: "Het ingevoerde wachtwoord komt niet overeen.",
+//         icon: AlertIcon.XMARK,
+//         duration: 4000,
+//         alertClass: AlertClass.INCORRECT_CLASS
+//       });
+//       break;
+//     }
+//     default: {
+//       this.alertService.showAlert({
+//         title: "Fout opgetreden",
+//         subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
+//         icon: AlertIcon.XMARK,
+//         duration: 4000,
+//         alertClass: AlertClass.INCORRECT_CLASS
+//       });
+//       break;
+//     }
+//
+//   }

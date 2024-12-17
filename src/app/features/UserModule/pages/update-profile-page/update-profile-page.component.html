@@ -66,7 +66,8 @@
           [buttonClass]="ButtonClass.SUCCESS_CLASS"
           [buttonSize]="ButtonSize.BTN_MD"
           [labelText]="'Update'"
-          [disabledStatus]="true"
+          [disabledStatus]="!myContactDataFormGroup.valid"
+          (click)="updateMyDataProfile()"
         ></app-custom-button>
       </div>
     </div>
@@ -75,7 +76,7 @@
       <!--      Input fields-->
       <div class="flex flex-col h-full gap-y-6 w-5/12">
         <app-default-input-field
-          [_formControl]="securityFormGroup.controls.password"
+          [_formControl]="passwordFormGroup.controls.password"
           [autocomplete]="'new-password'"
           [placeholder]="'Vul hier je nieuwe wachtwoord in'"
           [labelText]="'Nieuw wachtwoord'"
@@ -90,7 +91,7 @@
         </app-default-input-field>
 
         <app-default-input-field
-          [_formControl]="securityFormGroup.controls.confirmPassword"
+          [_formControl]="passwordFormGroup.controls.confirmPassword"
           [autocomplete]="'new-password'"
           [placeholder]="'Herhaal je nieuwe wachtwoord'"
           [labelText]="'Herhaal nieuw wachtwoord'"
@@ -103,7 +104,7 @@
 
         <app-error-message
           [errorMessage]="'registerPage.errors.passwordMismatch' | translate"
-          [formGroup]="securityFormGroup"
+          [formGroup]="passwordFormGroup"
           [specificError]="'passwordsMismatch'">
         </app-error-message>
 
@@ -121,7 +122,7 @@
       <!--   email   -->
       <div class="flex flex-col w-5/12  ">
         <app-default-input-field
-          [_formControl]="securityFormGroup.controls.email"
+          [_formControl]="emailFormControl"
           [autocomplete]="'email'"
           [placeholder]="'Pas hier je e-mail aan'"
           [labelText]="'Email'"

@@ -28,7 +28,8 @@ export enum Modal {
     GUEST_CANCEL_GUEST,
     GUEST_CHANGE_GUEST,
   FORGOT_PASSWORD,
-  EMAIL_VERIFICATION
+  EMAIL_VERIFICATION,
+  SECURITY_CODE
 }
 
 export enum ModalStatus {

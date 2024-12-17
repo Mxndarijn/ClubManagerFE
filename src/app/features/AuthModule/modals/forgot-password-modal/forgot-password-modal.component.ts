@@ -74,7 +74,7 @@ export class ForgotPasswordModalComponent extends DefaultModalInformation implem
 
 
   constructor(
-    private modalService: ModalService,
+    modalService: ModalService,
     private graphQL: GraphQLCommunication,
     private alertService: AlertService
   ) {
@@ -95,7 +95,7 @@ export class ForgotPasswordModalComponent extends DefaultModalInformation implem
     this.resetPasswordFormGroup.controls.confirmPassword.setValue("")
   }
 
-  formControl: FormControl<String | null>;
+  formControl: FormControl<string | null>;
   resetPasswordFormGroup: FormGroup<{
     password: FormControl<string | null>;
     confirmPassword: FormControl<string | null>;
@@ -106,7 +106,7 @@ export class ForgotPasswordModalComponent extends DefaultModalInformation implem
   acceptFunction() {
     if (this.formControl.valid) {
       this.showEmailErrorMessage = false
-      this.graphQL.forgotPassword(this.formControl.value!).then(response => {
+      this.graphQL.requestSecurityCode(this.formControl.value!).then(response => {
         console.log(response)
         if (!response) {
           this.alertService.showAlert({

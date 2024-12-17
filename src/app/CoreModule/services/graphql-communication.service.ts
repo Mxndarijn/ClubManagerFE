@@ -689,7 +689,7 @@ export class GraphQLCommunication {
 
   }
 
-  updateProfile(name: string | null, email: string | null, newPassword: string | null, currentPassword: string | null) {
+  updateMyDataProfile(name: string | null, license: string | null) {
     const query = {
       query: `
       mutation updateMyProfile($dto: UpdateMyProfileDTO!) {
@@ -704,9 +704,7 @@ export class GraphQLCommunication {
       variables: {
         dto: {
           fullName: name,
-          email: email,
-          oldPassword: currentPassword,
-          newPassword: newPassword,
+          license: license,
         }
       }
     };
@@ -2365,12 +2363,12 @@ export class GraphQLCommunication {
 
   }
 
-  forgotPassword(email: String) {
+  requestSecurityCode(email: String) {
     const query = {
       query: `
       mutation MyMutation($email: String!) {
   userMutations {
-    forgotPassword(email: $email) {
+    requestSecurityCode(email: $email) {
       message
       success
     }
@@ -2380,7 +2378,7 @@ export class GraphQLCommunication {
       }
     }
 
-    return this.solvePromise(query, v => v.data.userMutations.forgotPassword);
+    return this.solvePromise(query, v => v.data.userMutations.requestSecurityCode);
 
   }
 
