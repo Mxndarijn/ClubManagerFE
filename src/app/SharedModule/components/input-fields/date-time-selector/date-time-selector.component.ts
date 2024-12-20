@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
 import {SingleErrorMessageComponent} from "../../error-messages/single-error-message/single-error-message.component";
-import {ErrorSetting} from "../default-input-field/default-input-field.component";
+import {ErrorSetting, InputFieldWidth} from "../default-input-field/default-input-field.component";
 
 /**
  * Component for selecting a date and time.
@@ -27,4 +27,5 @@ export class DateTimeSelectorComponent {
   @Input() errorSettings: ErrorSetting[] = [];
   @Input() minDate: string | null = "";
   @Input() type = "datetime-local"
+
 }

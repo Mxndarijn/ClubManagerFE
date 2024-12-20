@@ -42,6 +42,7 @@ enum Tab {
   ASSOCIATION_CONTACTDATA,
   ASSOCIATION_EXTRAINFORMATION,
 }
+
 @Component({
   selector: 'app-settings-page',
   standalone: true,
@@ -123,13 +124,13 @@ export class SettingsPageComponent {
   }
 
   reloadData() {
-    this.graphQL.getAssociationSettings(this.associationID).then(r =>{
-        this.associationDetails = r;
-        this.setValuesInControls()
+    this.graphQL.getAssociationSettings(this.associationID).then(r => {
+      this.associationDetails = r;
+      this.setValuesInControls()
     })
 
-    this.graphQL.getAssociationStatistics(this.associationID).then(r =>{
-        this.associationStatistics = r;
+    this.graphQL.getAssociationStatistics(this.associationID).then(r => {
+      this.associationStatistics = r;
     })
   }
 
@@ -147,53 +148,25 @@ export class SettingsPageComponent {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const imageURL = e.target?.result as string;
-        this.graphQL.updateAssociationPicture(this.associationID, imageURL).then( (rDTO: DefaultBooleanResponseDTO) => {
-            if (rDTO.success) {
-              this.navigationService.refreshNavigation();
-              this.alertService.showAlert({
-                title: "Succesvol",
-                subTitle: "De afbeelding is succesvol geupload.",
-                icon: AlertIcon.CHECK,
-                duration: 4000,
-                alertClass: AlertClass.CORRECT_CLASS
-              });
-            } else {
-              this.alertService.showAlert({
-                title: "Fout opgetreden",
-                subTitle: "Probeer het later opnieuw.",
-                icon: AlertIcon.XMARK,
-                duration: 4000,
-                alertClass: AlertClass.INCORRECT_CLASS
-              });
-            }
-            console.log(rDTO);
-        }).catch(e => {console.log(e)});
+        this.graphQL.updateAssociationPicture(this.associationID, imageURL).then((rDTO: DefaultBooleanResponseDTO) => {
+          if (rDTO.success) {
+            this.navigationService.refreshNavigation();
+            this.alertService.showPositiveAlert("De afbeelding is succesvol geupload.")
+          } else {
+            this.alertService.showNegativeAlert("Probeer het later opnieuw.")
+          }
+          console.log(rDTO);
+        }).catch(e => {
+          console.log(e)
+        });
         this.associationDetails!.image!.encoded = imageURL;
       };
       reader.readAsDataURL(input.files[0])
     }
   }
 
-
-
-
-  resetSettingsForm() {
-    this.setValuesInControls()
-    this.alertService.showAlert({
-      title: "Informatie",
-      subTitle: "De wijzigingen zijn niet opgeslagen.",
-      icon: AlertIcon.INFO,
-      duration: 4000,
-      alertClass: AlertClass.INFO_CLASS
-    });
-  }
-
   updateSettings() {
-    if (!this.updateAssociationDataForm.controls.email.valid)
-      return;
-    if (!this.updateAssociationDataForm.controls.associationName.valid)
-      return;
-    if (!this.updateAssociationDataForm.controls.associationDescription.valid)
+    if (!this.updateAssociationDataForm.valid)
       return;
 
     this.graphQL.updateAssociationSettings(
@@ -201,34 +174,16 @@ export class SettingsPageComponent {
       this.updateAssociationDataForm.controls.associationDescription.value!,
       this.updateAssociationDataForm.controls.email.value!,
       this.associationID
-    ).then( (rDTO: DefaultBooleanResponseDTO) => {
-        if(rDTO.success) {
-          this.reloadData()
-          this.alertService.showAlert({
-            title: "Succesvol",
-            subTitle: "De instellingen zijn succesvol bijgewerkt.",
-            icon: AlertIcon.CHECK,
-            duration: 4000,
-            alertClass: AlertClass.CORRECT_CLASS
-          });
-        } else {
-          this.alertService.showAlert({
-            title: "Fout opgetreden",
-            subTitle: "Er is een fout opgetreden bij het bijwerken van de instellingen.",
-            icon: AlertIcon.XMARK,
-            duration: 4000,
-            alertClass: AlertClass.INCORRECT_CLASS
-          });
-        }
+    ).then((rDTO: DefaultBooleanResponseDTO) => {
+      if (rDTO.success) {
+        this.reloadData()
+        this.alertService.showPositiveAlert("De instellingen zijn succesvol bijgewerkt.")
+      } else {
+        this.alertService.showNegativeAlert("Er is een fout opgetreden bij het bijwerken van de instellingen.")
+      }
     }).catch(e => {
-      this.alertService.showAlert({
-        title: "Fout opgetreden",
-        subTitle: "Er is een fout opgetreden bij het bijwerken van de instellingen.",
-        icon: AlertIcon.XMARK,
-        duration: 4000,
-        alertClass: AlertClass.INCORRECT_CLASS
-      });
-  })
+      this.alertService.showNegativeAlert("Er is een fout opgetreden bij het bijwerken van de instellingen.")
+    })
 
 
   }

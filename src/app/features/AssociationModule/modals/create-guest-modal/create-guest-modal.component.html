@@ -1,12 +1,13 @@
 <dialog id="my_modal_4" class="modal modal-bottom sm:modal-middle"
         [ngClass]="{ 'modal-open': showModal}">
-  <div class="modal-box">
+  <div class="modal-box flex flex-col gap-y-2">
     <h3 class="font-bold text-lg">{{ title }}</h3>
 
     <app-default-input-field
       [_formControl]="createGuestForm.controls.guestName"
       [placeholder]="'Vul de naam van de Introducee in'"
       [labelText]="'Volledige naam van introducee'"
+      [inputFieldWidth]="InputFieldWidth.FULL"
       [errorSettings]="[{
           errorMessage: 'Je moet een geldige naam invullen.',
           errorName: ''
@@ -17,6 +18,7 @@
       [_formControl]="createGuestForm.controls.guestResidence"
       [placeholder]="'Vul het adres in van de Introducee.'"
       [labelText]="'Adres van introducee'"
+      [inputFieldWidth]="InputFieldWidth.FULL"
       [errorSettings]="[{
           errorMessage: 'Je moet een geldig adres invullen.',
           errorName: ''
@@ -27,6 +29,7 @@
       [_formControl]="createGuestForm.controls.guestVerificationCode"
       [placeholder]="'Vul het document-id in van de Introducee.'"
       [labelText]="'Document-id van introducee'"
+      [inputFieldWidth]="InputFieldWidth.FULL"
       [errorSettings]="[{
           errorMessage: 'Je moet een geldig adres invullen.',
           errorName: ''
@@ -39,34 +42,29 @@
     [errorSettings]="[{
       errorMessage: 'Selecteer toekomstige datum.',
       errorName: ''
-    }]"
-    class="w-96">
-
+    }]">
     </app-date-time-selector>
 
-    <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceVerificationType">
-    </app-input-field-single-select>
+    <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceVerificationType"></app-input-field-single-select>
 
-    <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceAssociation">
-    </app-input-field-single-select>
+    <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceAssociation"></app-input-field-single-select>
   <div class="modal-action">
     <form method="dialog" class="w-full flex justify-between" >
-
       <app-custom-button
         [buttonClass]="ButtonClass.ERROR_CLASS"
         [buttonSize]="ButtonSize.BTN_MD"
         [labelText]="'Sluit'"
         [disabledStatus]="false"
-        (onClick)="hideModal()"
-      ></app-custom-button>
+        (onClick)="hideModal()">
+      </app-custom-button>
 
       <app-custom-button
         [buttonClass]="ButtonClass.SUCCESS_CLASS"
         [buttonSize]="ButtonSize.BTN_MD"
         [labelText]="'Aanvragen'"
         [disabledStatus]="!createGuestForm.valid"
-        (onClick)="createGuest()"
-      ></app-custom-button>
+        (onClick)="createGuest()">
+      </app-custom-button>
     </form>
   </div>
   </div>

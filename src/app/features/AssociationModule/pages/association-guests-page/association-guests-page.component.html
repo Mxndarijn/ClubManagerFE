@@ -39,16 +39,6 @@
   Behandeld door
 </ng-template>
 
-<ng-template #topHeaderRowInvitations>
-<!--  <app-custom-button class="mr-10"-->
-<!--                     [buttonClass]="ButtonClass.ACCENT_CLASS"-->
-<!--                     [buttonSize]="ButtonSize.BTN_MD"-->
-<!--                     [labelText]="'Behandel Aanvraag'"-->
-<!--                     [icon]="faEnvelope"-->
-<!--                     [disabledStatus]="false"-->
-<!--  ></app-custom-button>-->
-</ng-template>
-
 <!--Rows-->
 
 <ng-template #GuestNameRow let-associationGuest="data">
@@ -56,7 +46,7 @@
 </ng-template>
 
 <ng-template #DateRow let-associationGuest="data">
-  {{ associationGuest.eventTime }}
+  {{ util.formatDateTimeAsString(associationGuest.eventTime) | async }}
 </ng-template>
 
 <ng-template #RequesterRow let-associationGuest="data">
@@ -68,7 +58,7 @@
 </ng-template>
 
 <ng-template #RequestDateRow let-associationGuest="data">
-  {{ associationGuest.requestTime }}
+  {{ util.formatDateTimeAsString(associationGuest.requestTime) | async}}
 </ng-template>
 
 <ng-template #ReviewerRow let-associationGuest="data">

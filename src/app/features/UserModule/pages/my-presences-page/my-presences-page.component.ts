@@ -114,8 +114,8 @@ export class MyPresencesPageComponent implements OnInit {
     initialRowCount: 0,
     isDataLoading: true,
     canSearch: true,
-    emptyMessage: "LEEG",
-    searchPlaceholder: "zoek",
+    emptyMessage: "Je hebt nog geen presenties",
+    searchPlaceholder: "Zoek presenties",
     isInSearch: (dataRow : UserPresence, searchValue : string) => {
       return dataRow.association.name.toLowerCase().includes(searchValue);
     },

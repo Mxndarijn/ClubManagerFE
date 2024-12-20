@@ -25,7 +25,7 @@ import {
   InputFieldSingleSelectComponent
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
 import {
@@ -178,4 +178,6 @@ export class CreateGuestModalComponent extends DefaultModalInformation {
     }
 
   }
+
+  protected readonly InputFieldWidth = InputFieldWidth;
 }
