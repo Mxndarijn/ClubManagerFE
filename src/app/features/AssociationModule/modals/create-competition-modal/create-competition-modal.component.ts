@@ -8,7 +8,7 @@ import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {UtilityFunctions} from "../../../../SharedModule/utilities/utility-functions";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 import {CompetitionDTO,} from "../../../../CoreModule/models/competition.model";
 import {ValidationUtils} from "../../../../SharedModule/utilities/validation-utils";
@@ -24,10 +24,22 @@ import {
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select.component";
 import {ActivatedRoute} from "@angular/router";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
-import {CompetitionRanking, CompetitionScoreType} from '../../../../CoreModule/models/association-competition';
+import {
+  CompetitionRanking,
+  CompetitionScoreType,
+  CompetitionSequenceRanking
+} from '../../../../CoreModule/models/association-competition';
 import {
   InputFieldSingleSelectDataSource
 } from "../../../../SharedModule/components/input-fields/input-field-single-select/input-field-single-select-datasource";
+import {
+  DefaultCheckboxInputFieldComponent
+} from "../../../../SharedModule/components/input-fields/default-checkbox-input-field/default-checkbox-input-field.component";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 
 @Component({
   selector: 'create-competition-modal',
@@ -41,7 +53,9 @@ import {
     ErrorMessageComponent,
     NgIf,
     NgForOf,
-    InputFieldSingleSelectComponent
+    InputFieldSingleSelectComponent,
+    DefaultCheckboxInputFieldComponent,
+    CustomButton
   ],
   templateUrl: './create-competition-modal.component.html',
   styleUrl: './create-competition-modal.component.css'
@@ -60,6 +74,22 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
     hideErrorsWhenEmpty: false,
     items: new BehaviorSubject<any[]>([]),
     label: "Selecteer de competitie ranking.",
+    processItem(input: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+        resolve(input);
+      });
+    }
+  }
+
+  singleSelectInputFieldDataSourceSequenceRanking: InputFieldSingleSelectDataSource = {
+    errorSetting: {
+      errorMessage: 'Je moet een waarde selecteren.',
+      errorName: ''
+    },
+    formControl: new FormControl(null, Validators.required),
+    hideErrorsWhenEmpty: false,
+    items: new BehaviorSubject<any[]>([]),
+    label: "Selecteer de competitie reeks.",
     processItem(input: any): Promise<any> {
       return new Promise((resolve, reject) => {
         resolve(input);
@@ -90,6 +120,7 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
     endDate: FormControl<string | null>;
     compScoreType: FormControl<CompetitionScoreType | null>;
     compRankingType: FormControl<CompetitionRanking | null>;
+    competitionSequence: FormControl<boolean | null>;
   }>;
 
 
@@ -102,6 +133,7 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
   ) {
     super(Modal.ASSOCIATION_CREATE_COMPETITION, modalService);
 
+    this.singleSelectInputFieldDataSourceSequenceRanking.items.next(Object.values(CompetitionSequenceRanking))
     this.singleSelectInputFieldDataSource.items.next(Object.values(CompetitionRanking))
     this.singleSelectInputFieldDataSourceType.items.next(Object.values(CompetitionScoreType))
     this.associationID = route.snapshot.params['associationID'];
@@ -118,6 +150,7 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
       endDate: new FormControl("", Validators.compose([Validators.required, ValidationUtils.isDatePresentOrFuture])),
       compScoreType: this.singleSelectInputFieldDataSourceType.formControl,
       compRankingType: this.singleSelectInputFieldDataSource.formControl,
+      competitionSequence: new FormControl(false, Validators.required),
     });
   }
 
@@ -149,61 +182,49 @@ export class CreateCompetitionModalComponent extends DefaultModalInformation imp
   protected readonly CompetitionScoreType = CompetitionScoreType;
   protected readonly CompetitionRanking = CompetitionRanking;
 
+  protected isFormValid() {
+    if(this.createCompetitionForm.valid) {
+      if(this.createCompetitionForm.controls.competitionSequence.value) {
+        return this.singleSelectInputFieldDataSourceSequenceRanking.formControl.valid
+      }
+      return true
+    }
+
+    return false
+  }
+
 
   createCompetition(): void {
-    if (this.createCompetitionForm.valid) {
-      const name = this.createCompetitionForm.controls.name.value;
-      const description = this.createCompetitionForm.controls.description.value;
-      const startDate = this.createCompetitionForm.controls.startDate.value;
-      const endDate = this.createCompetitionForm.controls.endDate.value;
-      const compScoreType = this.createCompetitionForm.controls.compScoreType.value;
-      const compRankingType = this.createCompetitionForm.controls.compRankingType.value;
-
-      if (
-        name && name.length <= 255 &&
-        description && description.length <= 255 &&
-        startDate && endDate &&
-        compScoreType && compRankingType
-      ) {
-        const comp: CompetitionDTO = {
-          name,
-          description,
-          startDate,
-          endDate,
-          competitionScoreType: compScoreType,
-          competitionRanking: compRankingType
-        };
-        this.graphQLService.createCompetition(comp, this.associationID).then(response => {
-          if(response.success) {
-            const competition : CompetitionDTO = response.competition!
-            this.alertService.showAlert({
-              title: "Succesvol",
-              subTitle: "De competitie is succesvol aangemaakt.",
-              icon: AlertIcon.CHECK,
-              duration: 4000,
-              alertClass: AlertClass.CORRECT_CLASS
-            });
-            this.CompetitionCreatedEvent.emit(competition)
-            this.hideModal()
-          } else {
-            this.alertService.showAlert({
-              title: "Fout opgetreden",
-              subTitle: "Er is een fout opgetreden bij het aanmaken van de competitie.",
-              icon: AlertIcon.XMARK,
-              duration: 4000,
-              alertClass: AlertClass.INCORRECT_CLASS
-            });
-            this.hideModal()
-          }
-        })
-
-        // Use the comp object for further processing here
-
-      } else {
-        console.warn('Form fields do not meet the required conditions.');
-      }
+    if (this.isFormValid()) {
+      const comp: CompetitionDTO = {
+        name: this.createCompetitionForm.controls.name.value!,
+        description: this.createCompetitionForm.controls.description.value!,
+        startDate: this.createCompetitionForm.controls.startDate.value!,
+        endDate: this.createCompetitionForm.controls.endDate.value!,
+        competitionScoreType: this.createCompetitionForm.controls.compScoreType.value!,
+        competitionRanking: this.createCompetitionForm.controls.compRankingType.value!,
+        useSequences: this.createCompetitionForm.controls.competitionSequence.value!,
+        sequenceRanking: this.createCompetitionForm.controls.competitionSequence.value! ? this.singleSelectInputFieldDataSourceSequenceRanking.formControl.value! : null
+      };
+      console.log(comp);
+      this.graphQLService.createCompetition(comp, this.associationID).then(response => {
+        console.log(response)
+        if(response.success) {
+          const competition : CompetitionDTO = response.competition!
+          this.alertService.showPositiveAlert("De competitie is succesvol aangemaakt.")
+          this.CompetitionCreatedEvent.emit(competition)
+          this.hideModal()
+        } else {
+          this.alertService.showNegativeAlert("Er is een fout opgetreden bij het aanmaken van de competitie.")
+          this.hideModal()
+        }
+      })
     } else {
       console.warn("Could press button while invalid create competition");
     }
   }
+
+  protected readonly InputFieldWidth = InputFieldWidth;
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly ButtonClass = ButtonClass;
 }

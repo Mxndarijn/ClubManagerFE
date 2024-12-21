@@ -31,6 +31,12 @@ export enum CompetitionRanking {
   AVERAGE_TOP_3 = "AVERAGE_TOP_3"
 }
 
+export enum CompetitionSequenceRanking {
+  BEST = "BEST",
+  AVERAGE = "AVERAGE",
+  AVERAGE_TOP_3 = "AVERAGE_TOP_3"
+}
+
 export interface CompetitionUser {
   id: CompetitionUserId;
   user: User;
@@ -60,6 +66,7 @@ export interface CompetitionDTO {
   competitionScoreType: CompetitionScoreType;
   startDate: string; // Assuming LocalDateTime is represented as a string
   endDate: string; // Assuming LocalDateTime is represented as a string
+  competitionSequence: boolean;
 }
 
 export interface CompetitionResponseDTO {

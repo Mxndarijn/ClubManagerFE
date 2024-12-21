@@ -1474,7 +1474,7 @@ export class GraphQLCommunication {
         query MyQuery($id: ID!) {
   associationQueries {
     getAssociationDetails(associationID: $id) {
-      competitions {
+     competitions {
         active
         description
         endDate
@@ -1482,7 +1482,9 @@ export class GraphQLCommunication {
         name
         ranking
         scoreType
+        sequenceRanking
         startDate
+        useSequences
       }
     }
   }
@@ -1503,39 +1505,52 @@ export class GraphQLCommunication {
   associationMutations {
     associationCompetitionMutations {
       createCompetition(associationID: $associationID, dto: $dto) {
-        message
-        success
         competition {
-        active
-        description
-        endDate
-        id
-        name
-        ranking
-        scoreType
-        startDate
-        competitionUsers {
-          competitionRank
-          id {
-            competitionId
-            userId
-          }
-          scores {
+          active
+          description
+          endDate
+          id
+          name
+          ranking
+          scoreType
+          sequenceRanking
+          startDate
+          useSequences
+          competitionUsers {
+            calculatedScore
             competitionRank
-            id
-            score
-            scoreDate
-          }
-          user {
-            id
-            fullName
-            image {
-              encoded
+            id {
+              competitionId
+              userId
             }
-            email
-          }
+            scores {
+              id
+              score
+              scoreDate
+            }
+            sequences {
+              calculatedScore
+              createdDate
+              id
+              scores {
+                competitionRank
+                id
+                score
+                scoreDate
+              }
+            }
+            user {
+              fullName
+              id
+              image {
+                id
+                encoded
+              }
+            }
           }
         }
+        message
+        success
       }
     }
   }
