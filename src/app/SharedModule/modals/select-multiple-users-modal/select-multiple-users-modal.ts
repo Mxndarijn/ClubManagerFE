@@ -20,6 +20,7 @@ import {TranslateModule} from "@ngx-translate/core";
 import {
   AutoUpdateSearchBoxComponent
 } from "../../components/input-fields/auto-update-search-box/auto-update-search-box.component";
+import {SelectMultipleUsersDatasource} from "./select-multiple-users-datasource";
 
 @Component({
   selector: 'app-select-multiple-users-modal',
@@ -40,13 +41,11 @@ import {
   templateUrl: './select-multiple-users-modal.html',
   styleUrl: './select-multiple-users-modal.css'
 })
-export class SelectMultipleUsersModal extends DefaultModalInformation implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class SelectMultipleUsersModal extends DefaultModalInformation implements OnInit {
   protected users: UserAssociation[] = [];
+  @Input() dataSource!: SelectMultipleUsersDatasource
   private latestSearchParam: string = "";
 
-  @Input() NewUsersEvent!: EventEmitter <UserAssociation[]>;
-  @Output() UsersSelected = new EventEmitter<UserAssociation[]>();
   filteredUserAssociations: UserAssociation[] = [];
   protected checkboxMap: Map<UserAssociation, boolean> = new Map;
 
@@ -55,49 +54,44 @@ export class SelectMultipleUsersModal extends DefaultModalInformation implements
 
 
 ) {
-  super(Modal.ASSOCIATION_COMPETITION_MEMBERS_OVERVIEW, modalService);
-  this.OnModalShowEvent.subscribe({
-    next: () => {
-    }
-  })
+  super(Modal.SELECT_MULTIPLE_USERS, modalService);
 }
   ngOnInit(): void {
-    this.subscriptions.push(this.NewUsersEvent.subscribe({
-      next: (u :UserAssociation[])=> {
-        this.users = u;
-
-        this.checkboxMap = new Map<UserAssociation, boolean>();
-
-        this.users.forEach(userAssociation => {
-          this.checkboxMap.set(userAssociation, false);
-        });
-        console.log(this.users);
-        this.searchUser(this.latestSearchParam);
-      }
-    }))
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(s => {
-      s.unsubscribe();
+    this.users = []
+    this.dataSource.loadUsers().then(users => {
+      this.users.push(...users.filter(newUser => !this.users.some(existingUser => existingUser.user.id === newUser.user.id)));
+      this.filterUsers()
     })
   }
 
   searchUser(searchValue: string) {
-    this.latestSearchParam = searchValue.toLowerCase();
-    this.filteredUserAssociations = this.users.filter(userAssociation => {
-      console.log(userAssociation)
-      return userAssociation.user.fullName.toLowerCase().includes(this.latestSearchParam);
-    });
+    this.latestSearchParam = searchValue
+    this.dataSource.searchUsers(searchValue).then(users => {
+      this.users.push(...users.filter(newUser => !this.users.some(existingUser => existingUser.user.id === newUser.user.id)));
+      this.filterUsers()
+    })
+  }
 
+  filterUsers() {
+    if(this.latestSearchParam.length > 0) {
+      this.filteredUserAssociations = this.users.filter(userAssociation => userAssociation.user.fullName.includes(this.latestSearchParam) || userAssociation.user.email.includes(this.latestSearchParam))
 
+      const nonFilteredUsers = this.users.filter(user =>
+        !this.filteredUserAssociations.some(filteredUser => filteredUser.user.id === user.user.id)
+      );
+      nonFilteredUsers.forEach(userAssociation => {
+        this.checkboxMap.set(userAssociation, false);
+      })
+    } else {
+      this.filteredUserAssociations = [...this.users]
+    }
   }
 
   configChoices() {
     const selectedUsers = Array.from(this.checkboxMap.entries())
       .filter(([userAssociation, isSelected]) => isSelected)
       .map(([userAssociation, isSelected]) => userAssociation);
-    this.UsersSelected.emit(selectedUsers)
+    this.dataSource.onSelect(selectedUsers)
     this.hideModal()
   }
 }

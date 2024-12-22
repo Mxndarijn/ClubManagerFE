@@ -25,6 +25,9 @@ import {SearchBoxComponent} from "../../../../../SharedModule/components/input-f
 import {UpdateUserModalComponent} from "../../../modals/update-user-modal/update-user-modal.component";
 import {faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {ReactiveFormsModule} from "@angular/forms";
+import {
+  SelectMultipleUsersDatasource
+} from "../../../../../SharedModule/modals/select-multiple-users-modal/select-multiple-users-datasource";
 
 @Component({
   selector: 'app-view-competition-page',
@@ -49,9 +52,7 @@ export class CompetitionDetailsPage {
   private associationID: string;
   private readonly competitionID: string;
   protected competition?: AssociationCompetition;
-  private associationUsers: UserAssociation[] = [];
   protected filteredCompetitionUsers: CompetitionUser[] = [];
-  NewUsersEvent: EventEmitter<UserAssociation[]> = new EventEmitter;
 
   constructor(
     route: ActivatedRoute,
@@ -74,23 +75,64 @@ export class CompetitionDetailsPage {
     this.translate.get('associationViewCompetitionPage.titleHeader').subscribe((res: string) => {
       navigationService.setTitle(res);
     });
-
-    this.graphQLCommunication.getAllAssociationMembers(this.associationID).then(res=>{
-      if(res != null && res.users != null) {
-        this.associationUsers = res.users;
-        this.searchUser("")
-      } else {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een fout opgetreden bij het ophalen van de members.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
-    })
-
     this.updateCompetition()
+  }
+
+  dataSource : SelectMultipleUsersDatasource = {
+    hasMoreRows: true,
+    searchUsers: (search: string): Promise<UserAssociation[]> => {
+      return this.graphQLCommunication.getAssociationMembers(this.associationID, this.dataSource.first, this.dataSource.searchEndCursor, search)
+        .then(r => {
+          this.dataSource.searchHasMoreRows = r.users.pageInfo.hasNextPage;
+          this.dataSource.searchEndCursor = r.users.pageInfo.endCursor;
+          return r.users.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    },
+    first: 20,
+    loadUsers: (): Promise<UserAssociation[]> => {
+      return this.graphQLCommunication.getAssociationMembers(this.associationID, this.dataSource.first, this.dataSource.endCursor)
+        .then(r => {
+          this.dataSource.hasMoreRows = r.users.pageInfo.hasNextPage;
+          this.dataSource.endCursor = r.users.pageInfo.endCursor;
+          return r.users.edges.map((edge: any) => edge.node);
+        })
+        .catch(error => {
+          console.error(error);
+          return null;
+        });
+    },
+    onSelect: (users: UserAssociation[]): void => {
+      Promise.all(
+        users.map(user =>
+          this.graphQLCommunication.addUserToCompetition(this.associationID, this.competitionID, user.user.id)
+        )
+      ).then(responses => {
+        const allSucceeded = responses.every(response => response.success);
+        if (allSucceeded) {
+          this.updateCompetition()
+          this.alertService.showAlert({
+            title: "Succesvol",
+            subTitle: "De gekozen leden zijn succesvol toegevoegd.",
+            icon: AlertIcon.CHECK,
+            duration: 4000,
+            alertClass: AlertClass.CORRECT_CLASS
+          });
+        } else {
+          this.alertService.showAlert({
+            title: "Fout opgetreden",
+            subTitle: "Er is een fout opgetreden bij het toevoegen van leden.",
+            icon: AlertIcon.XMARK,
+            duration: 4000,
+            alertClass: AlertClass.INCORRECT_CLASS
+          });
+        }
+      });
+    }
+
   }
 
   updateCompetition() {
@@ -111,13 +153,13 @@ export class CompetitionDetailsPage {
   }
 
 
-  addMemberToCompetition() {
-    const usersNotInCompetition = this.associationUsers.filter(user =>
-      !this.competition?.competitionUsers?.some(compUser => compUser.user.id === user.user.id)
-    );
-    this.NewUsersEvent.emit(usersNotInCompetition);
-    this.modalService.showModal(Modal.ASSOCIATION_COMPETITION_MEMBERS_OVERVIEW)
-  }
+  // addMemberToCompetition() {
+  //   const usersNotInCompetition = this.associationUsers.filter(user =>
+  //     !this.competition?.competitionUsers?.some(compUser => compUser.user.id === user.user.id)
+  //   );
+  //   this.NewUsersEvent.emit(usersNotInCompetition);
+  //   this.modalService.showModal(Modal.ASSOCIATION_COMPETITION_MEMBERS_OVERVIEW)
+  // }
 
   addUsers(usersToAdd: UserAssociation[]) {
     Promise.all(
@@ -166,4 +208,5 @@ export class CompetitionDetailsPage {
   protected readonly parseFloat = parseFloat;
 
 
+  protected readonly Modal = Modal;
 }

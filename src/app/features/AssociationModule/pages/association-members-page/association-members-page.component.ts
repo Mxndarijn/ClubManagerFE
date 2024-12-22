@@ -227,7 +227,6 @@ export class AssociationMembersPageComponent implements OnInit{
     searchForAdditionalItems: async (search : string) => {
       return this.graphQLCommunication.getAssociationMembers(this.associationID, 20, this.dataSourceMembers.searchEndCursor, search)
         .then(r => {
-          console.log(r)
           this.dataSourceMembers.searchHasMoreRows = r.users.pageInfo.hasNextPage;
           this.dataSourceMembers.searchEndCursor = r.users.pageInfo.endCursor;
           return r.users.edges.map((edge: any) => edge.node);

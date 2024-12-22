@@ -1,5 +1,5 @@
-<app-select-multiple-users-modal [NewUsersEvent]="NewUsersEvent" (UsersSelected)="addUsers($event)"></app-select-multiple-users-modal>
-<button class="btn border-accent border-2 btn-sm bg-base-100" (click)="addMemberToCompetition()">Leden toevoegen</button>
+<app-select-multiple-users-modal [dataSource]="dataSource"></app-select-multiple-users-modal>
+<button class="btn border-accent border-2 btn-sm bg-base-100" (click)="modalService.showModal(Modal.SELECT_MULTIPLE_USERS)">Leden toevoegen</button>
 <div class="overflow-x-auto">
   <app-search-box [placeholder]="'associationMembers.searchPlaceholder' | translate" (SearchEvent)="searchUser($event)"></app-search-box>
   <table class="table">

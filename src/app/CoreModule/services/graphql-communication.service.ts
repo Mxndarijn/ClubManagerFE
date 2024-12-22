@@ -243,8 +243,6 @@ export class GraphQLCommunication {
   }
 
   public getAssociationMembers(associationID: string, first: number = 20, after?: string, search = ""): Promise<any> {
-    console.log(search)
-    console.log("getting members")
     const query = {
       query: `
       query GetAssociationMembers($associationID: ID!, $first: Int, $after: ID, $search: String) {
