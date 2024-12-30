@@ -85,7 +85,13 @@ export class CompetitionDetailsPage {
         .then(r => {
           this.dataSource.searchHasMoreRows = r.users.pageInfo.hasNextPage;
           this.dataSource.searchEndCursor = r.users.pageInfo.endCursor;
-          return r.users.edges.map((edge: any) => edge.node);
+          let users = r.users.edges.map((edge: any) => edge.node);
+          if(this.competition) {
+            users = users.filter((user: CompetitionUser) => {
+              return !this.competition?.competitionUsers?.find(competitionUser => competitionUser.user.id === user.user.id)
+            })
+          }
+          return users;
         })
         .catch(error => {
           console.error(error);
@@ -98,7 +104,13 @@ export class CompetitionDetailsPage {
         .then(r => {
           this.dataSource.hasMoreRows = r.users.pageInfo.hasNextPage;
           this.dataSource.endCursor = r.users.pageInfo.endCursor;
-          return r.users.edges.map((edge: any) => edge.node);
+          let users = r.users.edges.map((edge: any) => edge.node);
+          if(this.competition) {
+            users = users.filter((user: CompetitionUser) => {
+              return !this.competition?.competitionUsers?.find(competitionUser => competitionUser.user.id === user.user.id)
+            })
+          }
+          return users;
         })
         .catch(error => {
           console.error(error);
@@ -106,13 +118,8 @@ export class CompetitionDetailsPage {
         });
     },
     onSelect: (users: UserAssociation[]): void => {
-      Promise.all(
-        users.map(user =>
-          this.graphQLCommunication.addUserToCompetition(this.associationID, this.competitionID, user.user.id)
-        )
-      ).then(responses => {
-        const allSucceeded = responses.every(response => response.success);
-        if (allSucceeded) {
+      this.graphQLCommunication.addUsersToCompetition(this.associationID, this.competitionID, users.map(u => u.user.id)).then(response => {
+        if (response && response.success) {
           this.updateCompetition()
           this.alertService.showAlert({
             title: "Succesvol",
@@ -139,6 +146,7 @@ export class CompetitionDetailsPage {
     this.graphQLCommunication.getCompetitionDetails(this.associationID, this.competitionID).then(res=>{
       if(res.success){
         this.competition = res.competition;
+        console.log(this.competition)
         this.searchUser("")
       } else {
         this.alertService.showAlert({
@@ -150,44 +158,6 @@ export class CompetitionDetailsPage {
         });
       }
     })
-  }
-
-
-  // addMemberToCompetition() {
-  //   const usersNotInCompetition = this.associationUsers.filter(user =>
-  //     !this.competition?.competitionUsers?.some(compUser => compUser.user.id === user.user.id)
-  //   );
-  //   this.NewUsersEvent.emit(usersNotInCompetition);
-  //   this.modalService.showModal(Modal.ASSOCIATION_COMPETITION_MEMBERS_OVERVIEW)
-  // }
-
-  addUsers(usersToAdd: UserAssociation[]) {
-    Promise.all(
-      usersToAdd.map(user =>
-        this.graphQLCommunication.addUserToCompetition(this.associationID, this.competitionID, user.user.id)
-      )
-    ).then(responses => {
-      const allSucceeded = responses.every(response => response.success);
-      if (allSucceeded) {
-        this.updateCompetition()
-        this.alertService.showAlert({
-          title: "Succesvol",
-          subTitle: "De gekozen leden zijn succesvol toegevoegd.",
-          icon: AlertIcon.CHECK,
-          duration: 4000,
-          alertClass: AlertClass.CORRECT_CLASS
-        });
-      } else {
-        this.alertService.showAlert({
-          title: "Fout opgetreden",
-          subTitle: "Er is een fout opgetreden bij het toevoegen van leden.",
-          icon: AlertIcon.XMARK,
-          duration: 4000,
-          alertClass: AlertClass.INCORRECT_CLASS
-        });
-      }
-    });
-
   }
 
 

@@ -1588,7 +1588,6 @@ export class GraphQLCommunication {
               userId
             }
             scores {
-              competitionRank
               id
               score
               scoreDate
@@ -1667,6 +1666,31 @@ export class GraphQLCommunication {
       }
     }
     return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.addUser);
+
+
+  }
+
+  addUsersToCompetition(associationID: string, competitionID: string, userIDs: string[]) {
+    const query = {
+      query: `
+     mutation MyMutation($associationID: ID!, $dto: CompetitionUsersDTO!) {
+  associationMutations {
+    associationCompetitionMutations {
+      addUsers(associationID: $associationID, dto: $dto) {
+        success
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        dto: {
+          users: userIDs,
+          competitionID: competitionID,
+        }
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.addUsers);
 
 
   }
