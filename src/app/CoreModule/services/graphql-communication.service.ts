@@ -243,8 +243,6 @@ export class GraphQLCommunication {
   }
 
   public getAssociationMembers(associationID: string, first: number = 20, after?: string, search = ""): Promise<any> {
-    console.log(search)
-    console.log("getting members")
     const query = {
       query: `
       query GetAssociationMembers($associationID: ID!, $first: Int, $after: ID, $search: String) {
@@ -678,7 +676,8 @@ export class GraphQLCommunication {
             encoded
         },
         fullName,
-        email
+        email,
+        knsaMembershipNumber
     }
   }
     }
@@ -688,7 +687,7 @@ export class GraphQLCommunication {
 
   }
 
-  updateProfile(name: string | null, email: string | null, newPassword: string | null, currentPassword: string | null) {
+  updateMyDataProfile(name: string | null, license: string | null) {
     const query = {
       query: `
       mutation updateMyProfile($dto: UpdateMyProfileDTO!) {
@@ -703,9 +702,7 @@ export class GraphQLCommunication {
       variables: {
         dto: {
           fullName: name,
-          email: email,
-          oldPassword: currentPassword,
-          newPassword: newPassword,
+          license: license,
         }
       }
     };
@@ -851,7 +848,7 @@ export class GraphQLCommunication {
 
   }
 
-  createWeapon(associationID: string, weaponName: string, weaponStatusInterface: WeaponStatus, weaponType: WeaponType) {
+  createWeapon(associationID: string, weaponName: string, weaponStatusInterface: string, weaponType: WeaponType) {
     const query = {
       query: `
          mutation createWeapon($dto: CreateWeaponDTO!, $associationID: ID!) {
@@ -1414,7 +1411,7 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationMutations.associationReservationMutations.createReservations);
   }
 
-  changeWeapon(associationID: string, weaponID: string, weaponName: string, weaponStatusInterface: WeaponStatus, weaponType: WeaponType) {
+    changeWeapon(associationID: string, weaponID: string, weaponName: string, weaponStatusInterface: string, weaponType: WeaponType) {
     const query = {
       query: `
          mutation changeWeapon($dto: ChangeWeaponDTO!, $associationID: ID!) {
@@ -1475,7 +1472,7 @@ export class GraphQLCommunication {
         query MyQuery($id: ID!) {
   associationQueries {
     getAssociationDetails(associationID: $id) {
-      competitions {
+     competitions {
         active
         description
         endDate
@@ -1483,7 +1480,9 @@ export class GraphQLCommunication {
         name
         ranking
         scoreType
+        sequenceRanking
         startDate
+        useSequences
       }
     }
   }
@@ -1504,39 +1503,52 @@ export class GraphQLCommunication {
   associationMutations {
     associationCompetitionMutations {
       createCompetition(associationID: $associationID, dto: $dto) {
-        message
-        success
         competition {
-        active
-        description
-        endDate
-        id
-        name
-        ranking
-        scoreType
-        startDate
-        competitionUsers {
-          competitionRank
-          id {
-            competitionId
-            userId
-          }
-          scores {
+          active
+          description
+          endDate
+          id
+          name
+          ranking
+          scoreType
+          sequenceRanking
+          startDate
+          useSequences
+          competitionUsers {
+            calculatedScore
             competitionRank
-            id
-            score
-            scoreDate
-          }
-          user {
-            id
-            fullName
-            image {
-              encoded
+            id {
+              competitionId
+              userId
             }
-            email
-          }
+            scores {
+              id
+              score
+              scoreDate
+            }
+            sequences {
+              calculatedScore
+              createdDate
+              id
+              scores {
+                competitionRank
+                id
+                score
+                scoreDate
+              }
+            }
+            user {
+              fullName
+              id
+              image {
+                id
+                encoded
+              }
+            }
           }
         }
+        message
+        success
       }
     }
   }
@@ -1576,7 +1588,6 @@ export class GraphQLCommunication {
               userId
             }
             scores {
-              competitionRank
               id
               score
               scoreDate
@@ -1655,6 +1666,31 @@ export class GraphQLCommunication {
       }
     }
     return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.addUser);
+
+
+  }
+
+  addUsersToCompetition(associationID: string, competitionID: string, userIDs: string[]) {
+    const query = {
+      query: `
+     mutation MyMutation($associationID: ID!, $dto: CompetitionUsersDTO!) {
+  associationMutations {
+    associationCompetitionMutations {
+      addUsers(associationID: $associationID, dto: $dto) {
+        success
+      }
+    }
+  }
+}`,
+      variables: {
+        associationID: associationID,
+        dto: {
+          users: userIDs,
+          competitionID: competitionID,
+        }
+      }
+    }
+    return this.solvePromise(query, v => v.data.associationMutations.associationCompetitionMutations.addUsers);
 
 
   }
@@ -2363,4 +2399,62 @@ export class GraphQLCommunication {
     return this.solvePromise(query, v => v.data.associationMutations.associationGuestMutations.reviewAssociationGuest);
 
   }
+
+  requestSecurityCode(email: String) {
+    const query = {
+      query: `
+      mutation MyMutation($email: String!) {
+  userMutations {
+    requestSecurityCode(email: $email) {
+      message
+      success
+    }
+  }
+}`, variables: {
+        email: email
+      }
+    }
+
+    return this.solvePromise(query, v => v.data.userMutations.requestSecurityCode);
+
+  }
+
+  resetPassword(code: string, password: string) {
+    const query = {
+      query: `
+      mutation MyMutation($code: Int!, $password: String!) {
+  userMutations {
+    resetPassword(dto: {resetCode: $code, newPassword: $password}) {
+      message
+      success
+    }
+  }
+}`, variables: {
+        code: code,
+        password: password
+      }
+    }
+
+    return this.solvePromise(query, v => v.data.userMutations.resetPassword);
+
+
+  }
+  resetEmail(code: string, email: string) {
+    const query = {
+      query: `
+      mutation MyMutation($code: Int!, $email: String!) {
+  userMutations {
+    resetEmail(dto: {resetCode: $code, newEmail: $email}) {
+      message
+      success
+    }
+  }
+}`, variables: {
+        code: code,
+        email: email
+      }
+    }
+    return this.solvePromise(query, v => v.data.userMutations.resetEmail);
+  }
 }
+

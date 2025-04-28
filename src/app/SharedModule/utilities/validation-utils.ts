@@ -13,9 +13,12 @@ export class ValidationUtils {
   }
 
   static passwordsMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
-    const password = group.get('password')?.value;
-    const confirmPassword = group.get('confirmPassword')?.value;
-    if (confirmPassword.length === 0 || password.length === 0) {
+    const password: any | null = group.get('password')?.value || null;
+    const confirmPassword : any | null = group.get('confirmPassword')?.value || null;
+    if((!password && confirmPassword) || (password && !confirmPassword)) {
+      return { 'passwordsMismatch': true }
+    }
+    if (!password || !confirmPassword || confirmPassword!.length === 0 || password!.length === 0) {
       return null;
     }
     return password === confirmPassword ? null : { 'passwordsMismatch': true };

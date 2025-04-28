@@ -28,7 +28,7 @@ import {Modal, ModalService} from "../../../../CoreModule/services/modal.service
 import {ActivatedRoute} from "@angular/router";
 import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
 import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
-import {NgIf} from "@angular/common";
+import {AsyncPipe, NgIf} from "@angular/common";
 import {
   ReviewAssociationGuestModalComponent
 } from "../../modals/review-association-guest-modal/review-association-guest-modal.component";
@@ -50,7 +50,8 @@ enum Tab {
     MultiColumnList,
     TabComponent,
     NgIf,
-    ReviewAssociationGuestModalComponent
+    ReviewAssociationGuestModalComponent,
+    AsyncPipe
   ],
   templateUrl: './association-guests-page.component.html',
   styleUrl: './association-guests-page.component.css'
@@ -191,6 +192,7 @@ export class AssociationGuestsPageComponent implements OnInit {
     navigationService: NavigationService,
     private translate: TranslateService,
     protected modalService: ModalService,
+    protected util: UtilityFunctions
   ) {
     this.associationID = route.snapshot.params['associationID'];
     this.graphQLCommunication.getAssociationName(this.associationID).then(r =>{

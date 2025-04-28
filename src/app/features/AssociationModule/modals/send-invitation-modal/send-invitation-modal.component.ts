@@ -22,7 +22,7 @@ import {
 } from "../../../../SharedModule/components/buttons/custom-button/custom-button";
 import {faPencil} from "@fortawesome/free-solid-svg-icons";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 import {CompetitionScoreType} from "../../../../CoreModule/models/association-competition";
 import {
@@ -214,4 +214,5 @@ export class SendInvitationModalComponent {
       });
     }
   };
+  protected readonly InputFieldWidth = InputFieldWidth;
 }

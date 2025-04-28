@@ -1,13 +1,15 @@
 <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
         [ngClass]="{ 'modal-open': showModal}">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">{{ title }}</h3>
+    <h3 *ngIf="currentTrack?.id" class="font-bold text-lg"> Wijzig baan</h3>
+    <h3 *ngIf="!currentTrack?.id" class="font-bold text-lg">Baan aanmaken</h3>
     <app-default-input-field
       [inputId]="'inputID'"
       [placeholder]="'Vul hier de baan naam in.'"
       [_formControl]="createTrackForm.controls.trackTitle"
       [labelText]="'Baan naam'"
       [hideErrorsWhenEmpty]="true"
+      [inputFieldWidth]="InputFieldWidth.FULL"
       [type]="'text'"
       [errorSettings]="[
       {
@@ -16,6 +18,7 @@
       }]">
 
     </app-default-input-field>
+    <app-input-field-multi-select [dataSource]="weaponTypeDataSource"></app-input-field-multi-select>
     <app-textarea-modal
       [placeholder]="'Vul hier de beschrijving van de baan in.'"
       [labelText]="'Beschrijving voor baan'"
@@ -23,16 +26,6 @@
       [_formControl]="createTrackForm.controls.trackDescription">
 
     </app-textarea-modal>
-    <div class="flex flex-col w-full items-start justify-evenly mt-5">
-      <p class="dropdown-button">Selecteer Wapen Types</p>
-      <div class="flex flex-row flex-wrap w-full gap-x-5  ">
-        <div *ngFor="let weaponType of weaponTypeList" >
-          <input type="checkbox" id="checkboxList" class="align-middle border-2  border-accent checkbox checkbox-accent checkbox-md" [checked]="containsWeaponTypeInList(weaponType)"
-                 [value]="weaponType" (change)="onWeaponTypeChange(weaponType, $event)">
-          {{ weaponType.name }}
-        </div>
-      </div>
-    </div>
     <div class="modal-action">
       <form method="dialog" class="w-full flex justify-between">
         <ng-container *ngIf="!currentTrack?.id">

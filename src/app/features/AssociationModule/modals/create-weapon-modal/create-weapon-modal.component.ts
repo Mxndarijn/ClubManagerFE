@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
 import {
   SingleErrorMessageComponent
@@ -58,7 +58,7 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
   showModal: boolean = false;
   createWeaponForm: FormGroup<{
     name: FormControl<string | null>;
-    status: FormControl<WeaponStatus | null>;
+    status: FormControl<string | null>;
     type: FormControl<WeaponType | null>;
   }>;
   private associationID: string = '';
@@ -133,7 +133,8 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
         this.currentWeapon = value;
         this.createWeaponForm.controls.name.setValue(value.name);
         if(value.status.length > 0) {
-          this.createWeaponForm.controls.status.setValue(WeaponStatus[value.status as keyof typeof WeaponStatus]!);
+          console.log('value status length: ' + value.status)
+          this.createWeaponForm.controls.status.setValue(value.status);
         }
         if(value.type.id != null) {
           this.createWeaponForm.controls.type.setValue(this.singleSelectInputFieldDataSourceType.items.value.find(f => {
@@ -243,4 +244,5 @@ export class CreateWeaponModalComponent implements OnInit, OnDestroy {
 
   protected readonly ButtonClass = ButtonClass;
   protected readonly ButtonSize = ButtonSize;
+  protected readonly InputFieldWidth = InputFieldWidth;
 }

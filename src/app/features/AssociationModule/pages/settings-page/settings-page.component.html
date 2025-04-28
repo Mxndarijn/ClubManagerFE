@@ -1,85 +1,219 @@
-<div class="flex flex-row w-full justify-between">
-  <div class="flex flex-col ml-5 w-full lg:flex-row justify-start">
-    <div class="avatar indicator mr-5">
+<div class="flex flex-col justify-between h-screen-mini mx-10">
+  <!--  Profile icon-->
+  <section class="flex items-center h-[36vh] flex-row w-full">
+    <!--  Profile icon-->
+    <div class="indicator mr-5">
       <button
-        class="indicator-item indicator-bottom mb-5 mr-5 w-16 h-16 rounded-full badge border-accent border-2 hover:bg-accent"
+        class="indicator-item indicator-center indicator-bottom mb-5 w-14 h-14 rounded-full badge border-accent border-2 text-accent hover:text-base-content hover:bg-accent"
         (click)="document.getElementById('fileUpload')?.click()">
         <input type="file" id="fileUpload" class="hidden" accept=".png, .jpg, .jpeg"
                (change)="handleChangeAssociationProfilePicture($event)">
-        <fa-icon class="fa-2x" [icon]="faPencil"></fa-icon>
+        <fa-icon class="fa-2x " [icon]="faPencil"></fa-icon>
       </button>
-      <div class="w-96 h-56 rounded-lg">
-        <img class="object-scale-down" src="{{associationDetails?.image?.encoded}}" alt="Profile picture of the user"/>
+      <div class="w-56 h-56 bg-base-300 flex items-center rounded-2xl justify-center">
+        <!--        TODO Kies welke object-contain,cover,scaledown we willen-->
+        <img class="w-10/12 h-10/12 max-w-10/12 max-h-10/12 object-contain rounded-2xl border-4 border-accent"
+             src="{{associationDetails?.image?.encoded}}"
+             alt="Profile picture of the user"/>
       </div>
     </div>
-    <div class="flex flex-col justify-between ml-10 w-full">
-      <div class="">
-        <h1 class=" text-left text-4xl font-bold">{{ associationDetails?.name }}</h1>
-        <p class="">{{ associationDetails?.contactEmail }}</p>
-      </div>
+    <!--    Name section-->
+    <div class="flex justify-start flex-col gap-y-6 h-full">
+      <!--      Association Name+email-->
       <div>
-      <h3 class="text-xl font-bold">Statistieken</h3>
-      <div class="flex flex-row gap-x-8">
-        <div class="flex flex-col">
-          <p>Aantal Leden:</p>
-          <p>Aantal banen:</p>
-          <p>Aantal wapens:</p>
-        </div>
-        <div class="flex flex-col">
-          <p>{{ associationStatistics?.totalMembers }}</p>
-          <p>{{ associationStatistics?.totalTracks }}</p>
-          <p>{{ associationStatistics?.totalWeapons }}</p>
+        <h1 class="font-bold text-3xl">{{ associationDetails?.name }}</h1>
+        <p>{{ associationDetails?.contactEmail }}</p>
+      </div>
+      <!--      Association statistics-->
+      <div>
+        <h3 class="text-xl font-bold">Statistieken</h3>
+        <div class="flex flex-row gap-x-8">
+          <div class="flex flex-col">
+            <p>Aantal leden:</p>
+            <p>Aantal banen:</p>
+            <p>Aantal wapens:</p>
+          </div>
+          <div class="flex flex-col">
+            <p>{{ associationStatistics?.totalMembers }}</p>
+            <p>{{ associationStatistics?.totalTracks }}</p>
+            <p>{{ associationStatistics?.totalWeapons }}</p>
+          </div>
         </div>
       </div>
+    </div>
+  </section>
+<!--  Tab row-->
+  <section class="flex  h-[10vh] justify-start">
+    <app-tab [dataSource]="tabDataSource"></app-tab>
+  </section>
+  <section class="h-[36vh]">
+    <!--    Associtation data -->
+    <div class="flex flex-row w-full justify-between h-full" *ngIf="activeTab === Tab.ASSOCIATION_CONTACTDATA">
+      <!--      Input fields-->
+      <div class="flex flex-col gap-y-6 w-5/12  ">
+        <app-default-input-field
+          [_formControl]="updateAssociationDataForm.controls.associationName"
+          [autocomplete]="'name'"
+          [placeholder]="'Pas hier de verenining naam aan'"
+          [labelText]="'Vereniging naam'"
+          [inputFieldWidth]="InputFieldWidth.FULL"
+
+          [inputId]="'fullName'"
+          [type]="'text'"
+          [errorSettings]="[{
+                  errorMessage: 'Je moet een geldige naam invullen.',
+                  errorName: ''
+                 }]">
+        </app-default-input-field>
+        <app-default-input-field
+          [_formControl]="updateAssociationDataForm.controls.email"
+          [autocomplete]="'name'"
+          [placeholder]="'Pas hier de email van de vereninign aan'"
+          [labelText]="'Vereniging email'"
+          [inputId]="'associationMail'"
+          [inputFieldWidth]="InputFieldWidth.FULL"
+
+          [type]="'text'"
+          [errorSettings]="[{
+                  errorMessage: 'Je moet een geldig email adres invullen.',
+                  errorName: ''
+                 }]">
+        </app-default-input-field>
+      </div>
+      <div class="w-5/12">
+      <app-textarea-modal
+        [placeholder]="'Vul hier de beschrijving van de nieuwe competitie in.'"
+        [labelText]="'Beschrijving'"
+        [textAreaID]="'competitionDescription'"
+        [_formControl]="updateAssociationDataForm.controls.associationDescription">
+      </app-textarea-modal>
+
+        </div>
+      <div class="flex justify-end mt-auto">
+        <app-custom-button
+          [buttonClass]="ButtonClass.SUCCESS_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Update'"
+          [disabledStatus]="!updateAssociationDataForm.valid"
+          (onClick)="updateSettings()"
+        ></app-custom-button>
       </div>
     </div>
-  </div>
+    <!--    Extra information-->
+    <div class="flex flex-row justify-between h-full" *ngIf="activeTab === Tab.ASSOCIATION_EXTRAINFORMATION">
+      <!--      Input fields-->
+      <div class="flex flex-col h-full gap-y-6 w-5/12">
+        <div class="flex flex-col gap-x-2">
+          <app-rounded-social-box [icon]="faPhone" [title]="'Telefoon nummer'"></app-rounded-social-box>
+          <app-rounded-social-box [icon]="faPhone" [title]="'Facebook'"></app-rounded-social-box>
+          <app-rounded-social-box [icon]="faPhone" [title]="'Adres'"></app-rounded-social-box>
+          <app-rounded-social-box [icon]="faPhone" [title]="'Website'"></app-rounded-social-box>
+        </div>
+      </div>
+      <!--  Divider    -->
+      <div class="w-2 h-full rounded-2xl bg-accent"></div>
+      <!-- Preferences -->
+      <div class="flex flex-col h-full w-5/12 justify-start">
+        <app-toggle-slider
+          id="multipleReservations"
+          [sliderLabel]="'Aanmelden meerdere reserveringen'"
+          [status]="false">
+        </app-toggle-slider>
+      </div>
+        <div class="flex justify-end mt-auto">
+          <app-custom-button
+            [buttonClass]="ButtonClass.SUCCESS_CLASS"
+            [buttonSize]="ButtonSize.BTN_MD"
+            [labelText]="'Update'"
+            [disabledStatus]="true"
+          ></app-custom-button>
+        </div>
+      </div>
+  </section>
 </div>
-<div class="divider"></div>
-<div class="flex flex-col w-full justify-center items-center">
-  <form autocomplete="off" class="flex flex-row justify-evenly w-10/12 items-start flex-wrap gap-y-3 mb-6"
-        [formGroup]="updateAssociationDataForm">
-    <app-default-input-field
-      [_formControl]="updateAssociationDataForm.controls.associationName"
-      [placeholder]="'Pas hier je vereniging naam aan'"
-      [labelText]="'Vereniging naam'"
-      [inputId]="'associationName'"
-      [type]="'text'"
-      [errorSettings]="[{
-          errorMessage: 'Je moet een geldige vereniging naam invullen.',
-          errorName: ''
-         }]">
-    </app-default-input-field>
-    <app-default-input-field
-      [_formControl]="updateAssociationDataForm.controls.email"
-      [placeholder]="'Pas hier de e-mail van de vereniging aan'"
-      [labelText]="'Vereniging email'"
-      [inputId]="'Email'"
-      [type]="'text'"
-      [errorSettings]="[{
-      errorMessage: 'Je moet een geldige email invullen.',
-      errorName: ''
-      }]">
-    </app-default-input-field>
-    <app-default-text-area class="w-10/12"
-                           [_formControl]="updateAssociationDataForm.controls.associationDescription"
-                           [placeholder]="'Pas hier het welkoms bericht van uw vereniging aan.'"
-                           [labelText]="'Vereniging welkoms bericht'"
-                           [textAreaID]="'associationDescription'">
 
-    </app-default-text-area>
-    <div class="flex flex-row w-10/12 mt-3 gap-x-10 justify-end">
-      <app-update-button
-        [borderClass]="'border-error'"
-        [label]="'Reset'"
-        (click)="resetSettingsForm()">
+<!--<div class="flex flex-row w-full justify-between">-->
+<!--  <div class="flex flex-col ml-5 w-full lg:flex-row justify-start">-->
+<!--    <div class="avatar indicator mr-5">-->
+<!--      <button-->
+<!--        class="indicator-item indicator-bottom mb-5 mr-5 w-16 h-16 rounded-full badge border-accent border-2 hover:bg-accent"-->
+<!--        (click)="document.getElementById('fileUpload')?.click()">-->
+<!--        <input type="file" id="fileUpload" class="hidden" accept=".png, .jpg, .jpeg"-->
+<!--               (change)="handleChangeAssociationProfilePicture($event)">-->
+<!--        <fa-icon class="fa-2x" [icon]="faPencil"></fa-icon>-->
+<!--      </button>-->
+<!--      <div class="w-96 h-56 rounded-lg">-->
+<!--        <img class="object-scale-down" src="{{associationDetails?.image?.encoded}}" alt="Profile picture of the user"/>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="flex flex-col justify-between ml-10 w-full">-->
+<!--      <div class="">-->
+<!--        <h1 class=" text-left text-4xl font-bold">{{ associationDetails?.name }}</h1>-->
+<!--        <p class="">{{ associationDetails?.contactEmail }}</p>-->
+<!--      </div>-->
+<!--      <div>-->
+<!--      <h3 class="text-xl font-bold">Statistieken</h3>-->
+<!--      <div class="flex flex-row gap-x-8">-->
+<!--        <div class="flex flex-col">-->
+<!--          <p>Aantal Leden:</p>-->
+<!--          <p>Aantal banen:</p>-->
+<!--          <p>Aantal wapens:</p>-->
+<!--        </div>-->
+<!--        <div class="flex flex-col">-->
+<!--          <p>{{ associationStatistics?.totalMembers }}</p>-->
+<!--          <p>{{ associationStatistics?.totalTracks }}</p>-->
+<!--          <p>{{ associationStatistics?.totalWeapons }}</p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<!--<div class="divider"></div>-->
+<!--<div class="flex flex-col w-full justify-center items-center">-->
+<!--  <form autocomplete="off" class="flex flex-row justify-evenly w-10/12 items-start flex-wrap gap-y-3 mb-6"-->
+<!--        [formGroup]="updateAssociationDataForm">-->
+<!--    <app-default-input-field-->
+<!--      [_formControl]="updateAssociationDataForm.controls.associationName"-->
+<!--      [placeholder]="'Pas hier je vereniging naam aan'"-->
+<!--      [labelText]="'Vereniging naam'"-->
+<!--      [inputId]="'associationName'"-->
+<!--      [type]="'text'"-->
+<!--      [errorSettings]="[{-->
+<!--          errorMessage: 'Je moet een geldige vereniging naam invullen.',-->
+<!--          errorName: ''-->
+<!--         }]">-->
+<!--    </app-default-input-field>-->
+<!--    <app-default-input-field-->
+<!--      [_formControl]="updateAssociationDataForm.controls.email"-->
+<!--      [placeholder]="'Pas hier de e-mail van de vereniging aan'"-->
+<!--      [labelText]="'Vereniging email'"-->
+<!--      [inputId]="'Email'"-->
+<!--      [type]="'text'"-->
+<!--      [errorSettings]="[{-->
+<!--      errorMessage: 'Je moet een geldige email invullen.',-->
+<!--      errorName: ''-->
+<!--      }]">-->
+<!--    </app-default-input-field>-->
+<!--    <app-default-text-area class="w-10/12"-->
+<!--                           [_formControl]="updateAssociationDataForm.controls.associationDescription"-->
+<!--                           [placeholder]="'Pas hier het welkoms bericht van uw vereniging aan.'"-->
+<!--                           [labelText]="'Vereniging welkoms bericht'"-->
+<!--                           [textAreaID]="'associationDescription'">-->
 
-      </app-update-button>
-      <app-update-button
-        [borderClass]="'border-success'"
-        [label]="'Update'"
-        (click)="updateSettings()">
-      </app-update-button>
-    </div>
-  </form>
-</div>
+<!--    </app-default-text-area>-->
+<!--    <div class="flex flex-row w-10/12 mt-3 gap-x-10 justify-end">-->
+<!--      <app-update-button-->
+<!--        [borderClass]="'border-error'"-->
+<!--        [label]="'Reset'"-->
+<!--        (click)="resetSettingsForm()">-->
+
+<!--      </app-update-button>-->
+<!--      <app-update-button-->
+<!--        [borderClass]="'border-success'"-->
+<!--        [label]="'Update'"-->
+<!--        (click)="updateSettings()">-->
+<!--      </app-update-button>-->
+<!--    </div>-->
+<!--  </form>-->
+<!--</div>-->

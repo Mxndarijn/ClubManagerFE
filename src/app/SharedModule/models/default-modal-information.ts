@@ -12,9 +12,9 @@ export class DefaultModalInformation {
 
   constructor(
     modal: Modal,
-    modalService: ModalService) {
+    private defaultModalService: ModalService) {
     this.modal = modal;
-    modalService.modalVisibilityEvent.subscribe({
+    defaultModalService.modalVisibilityEvent.subscribe({
       next: (modalChange : ModalChange) => {
         if (modalChange.modal === this.modal) {
           this.showModal = modalChange.status === ModalStatus.OPEN;
@@ -27,6 +27,7 @@ export class DefaultModalInformation {
 
 
   public hideModal() {
-    this.showModal = false;
+    // this.showModal = false;
+    this.defaultModalService.hideModal(this.modal)
   }
 }

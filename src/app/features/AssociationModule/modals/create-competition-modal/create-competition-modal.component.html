@@ -1,15 +1,16 @@
-<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle"
+<dialog id="my_modal_3" class="modal modal-bottom sm:modal-middle "
         [ngClass]="{ 'modal-open': showModal}">
-  <div class="modal-box">
+  <div class="modal-box h-[90vh] flex flex-col ">
     <h3 class="font-bold text-lg">Nieuwe Competitie</h3>
     <div class="flex flex-row gap-x-1 mt-5">
-      <div class="flex flex-col">
+      <div class="flex flex-col w-full">
         <app-default-input-field
           [inputId]="'inputID'"
           [placeholder]="'Vul hier de competitie naam in.'"
           [_formControl]="createCompetitionForm.controls.name"
           [labelText]="'Competite naam'"
           [hideErrorsWhenEmpty]="true"
+          [inputFieldWidth]="InputFieldWidth.FULL"
           [type]="'text'"
           [errorSettings]="[
       {
@@ -17,6 +18,40 @@
       errorName: ''
       }]">
         </app-default-input-field>
+        <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceType">
+        </app-input-field-single-select>
+
+        <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSource">
+        </app-input-field-single-select>
+
+        <div class="flex flex-row justify-between">
+          <app-date-time-selector class="w-[47%]"
+                                  [labelText]="'Startdatum'"
+                                  [_formControl]="createCompetitionForm.controls.startDate"
+                                  [errorSettings]="[
+            {
+              errorMessage: 'Je moet geldige start datum instellen.',
+              errorName: ''
+            }]"
+                                  [minDate]="util.toLocalIsoDateTime(this.util.getCurrentDate())">
+          </app-date-time-selector>
+          <app-date-time-selector class="w-[47%]"
+            [labelText]="'Einddatum'"
+            [_formControl]="createCompetitionForm.controls.endDate"
+            [errorSettings]="[
+            {
+              errorMessage: 'Je moet geldige eind datum instellen.',
+              errorName: ''
+            }]"
+            [minDate]="createCompetitionForm.controls.startDate.value">
+          </app-date-time-selector>
+          <app-error-message
+            *ngIf="createCompetitionForm.controls.startDate.valid && createCompetitionForm.controls.endDate.valid"
+            [errorMessage]="'De einddatum moet na de startdatum.'"
+            [formGroup]="createCompetitionForm"
+            [specificError]="'dateNotAfterOther'">
+          </app-error-message>
+        </div>
 
         <app-textarea-modal
           [placeholder]="'Vul hier de beschrijving van de nieuwe competitie in.'"
@@ -25,52 +60,28 @@
           [_formControl]="createCompetitionForm.controls.description">
         </app-textarea-modal>
 
-        <div class="flex flex-row w-full space-x-2">
-          <app-date-time-selector class="w-3/6"
-            [labelText]="'Startdatum'"
-            [_formControl]="createCompetitionForm.controls.startDate"
-            [errorSettings]="[
-            {
-              errorMessage: 'Je moet geldige start datum instellen.',
-              errorName: ''
-            }]"
-                                  [minDate]="util.toLocalIsoDateTime(this.util.getCurrentDate())">
-          </app-date-time-selector>
-          <app-date-time-selector class="w-3/6"
-            [labelText]="'Einddatum'"
-            [_formControl]="createCompetitionForm.controls.endDate"
-            [errorSettings]="[
-            {
-              errorMessage: 'Je moet geldige eind datum instellen.',
-              errorName: ''
-            }]"
-                                  [minDate]="createCompetitionForm.controls.startDate.value">
-          </app-date-time-selector>
-        </div>
-        <app-error-message
-          *ngIf="createCompetitionForm.controls.startDate.valid && createCompetitionForm.controls.endDate.valid"
-          [errorMessage]="'De einddatum moet na de startdatum.'"
-          [formGroup]="createCompetitionForm"
-          [specificError]="'dateNotAfterOther'">
-        </app-error-message>
+        <app-default-checkbox-input-field [labelText]="'Competitie gebruikt  reeksen'" [_formControl]="createCompetitionForm.controls.competitionSequence"></app-default-checkbox-input-field>
 
-        <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSourceType">
-        </app-input-field-single-select>
-
-        <app-input-field-single-select [dataSource]="singleSelectInputFieldDataSource">
+        <app-input-field-single-select *ngIf="createCompetitionForm.controls.competitionSequence.value" [dataSource]="singleSelectInputFieldDataSourceSequenceRanking">
         </app-input-field-single-select>
       </div>
     </div>
-    <div class="modal-action">
+    <div class="modal-action mt-auto">
       <form method="dialog" class="w-full flex justify-between">
-        <button class="btn border-error border-2 bg-base-100" (click)="hideModal()"
-        >Sluit
-        </button>
-        <button class="btn border-accent border-2 bg-base-100"
-                [disabled]="!createCompetitionForm.valid"
-                (click)="createCompetition()"
-        >Bevestig
-        </button>
+        <app-custom-button
+          [buttonClass]="ButtonClass.ERROR_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Sluit'"
+          (onClick)="hideModal()"
+        ></app-custom-button>
+
+        <app-custom-button
+          [buttonClass]="ButtonClass.SUCCESS_CLASS"
+          [buttonSize]="ButtonSize.BTN_MD"
+          [labelText]="'Bevestig'"
+          [disabledStatus]="!isFormValid()"
+          (onClick)="createCompetition()"
+        ></app-custom-button>
       </form>
     </div>
   </div>

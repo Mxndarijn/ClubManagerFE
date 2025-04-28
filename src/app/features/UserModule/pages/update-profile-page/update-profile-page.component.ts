@@ -17,9 +17,31 @@ import {
 } from "../../../../SharedModule/components/error-messages/error-message/error-message.component";
 import {SliderComponent} from "../../../../SharedModule/components/input-fields/toggle-slider/slider.component";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {
+  SecurityCodeModalComponent
+} from "../../../AssociationModule/modals/security-code-modal/security-code-modal.component";
+import {Modal, ModalService} from "../../../../CoreModule/services/modal.service";
 
+
+enum Tab {
+  MY_CONTACTDATA,
+  SECURITY,
+  PREFERENCES
+}
+
+enum InputFieldTitle {
+  CHANGE_PASSWORD = 'Verander wachtwoord',
+  CHANG_EMAIL = 'Verander email'
+}
 
 @Component({
   selector: 'app-update-profile-page',
@@ -33,7 +55,10 @@ import {
     ReactiveFormsModule,
     TranslateModule,
     ErrorMessageComponent,
-    NgIf
+    NgIf,
+    TabComponent,
+    CustomButton,
+    SecurityCodeModalComponent
   ],
   templateUrl: './update-profile-page.component.html',
   styleUrl: './update-profile-page.component.css'
@@ -41,31 +66,72 @@ import {
 export class UpdateProfilePageComponent {
   faPencil = faPencil
   showPassword: boolean = false;
+  protected readonly InputFieldWidth = InputFieldWidth;
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly Tab = Tab;
+  protected readonly document = document;
+  protected readonly InputFieldTitle = InputFieldTitle;
+  protected readonly Modal = Modal;
+  protected currentEmail: string = "";
 
+  activeTitleMessage = InputFieldTitle.CHANGE_PASSWORD;
 
   profile: User | undefined;
-  protected updateDataForm: FormGroup<{
+  protected passwordFormGroup: FormGroup<{
     password: FormControl<string | null>;
     confirmPassword: FormControl<string | null>;
-    fullName: FormControl<string | null>;
-    email: FormControl<string | null>
   }>;
-  protected checkPasswordForm: FormControl;
 
+  protected myContactDataFormGroup: FormGroup<{
+    fullName: FormControl<string | null>;
+    license: FormControl<string | null>;
+  }>;
+  emailFormControl: FormControl;
+  activeTab: Tab = Tab.MY_CONTACTDATA;
+
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "Mijn gegevens",
+        onClick: () => {
+          this.activeTab = Tab.MY_CONTACTDATA
+        }
+      },
+      {
+        label: "Beveiliging",
+        onClick: () => {
+          this.activeTab = Tab.SECURITY
+        }
+      },
+      {
+        label: "Voorkeuren",
+        onClick: () => {
+          this.activeTab = Tab.PREFERENCES
+        }
+      }
+    ]
+  };
 
   constructor(
     private navigationService: NavigationService,
     private translate: TranslateService,
     private graphQL: GraphQLCommunication,
     private alertService: AlertService,
+    protected modalService: ModalService,
   ) {
     navigationService.showNavigation();
     this.translate.get('profilePage.titleHeader').subscribe((res: string) => {
         navigationService.setTitle(res);
       }
     )
-    this.updateDataForm = new FormGroup({
-      email: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.required, Validators.email])),
+    this.myContactDataFormGroup = new FormGroup({
+      fullName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(4), Validators.required, ValidationUtils.containsSpace])),
+      license: new FormControl<string>('', Validators.compose([Validators.minLength(8), Validators.maxLength(8), Validators.required]))
+    })
+
+    this.passwordFormGroup = new FormGroup({
       password: new FormControl('', Validators.compose([
         Validators.maxLength(255),
         Validators.minLength(8),
@@ -74,18 +140,21 @@ export class UpdateProfilePageComponent {
         ValidationUtils.containsNumber,
         ValidationUtils.containsSpecialChar
       ])),
-      confirmPassword: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(8)])),
-      fullName: new FormControl<string>('', Validators.compose([Validators.maxLength(255), Validators.minLength(4), Validators.required, ValidationUtils.containsSpace])),
+      confirmPassword: new FormControl<string>('', Validators.compose([
+        Validators.maxLength(255), Validators.minLength(8)])),
     }, {validators: ValidationUtils.passwordsMatchValidator});
-    this.checkPasswordForm = new FormControl<string>('', Validators.required);
+    this.emailFormControl = new FormControl<string>('', Validators.compose([Validators.email, Validators.required]))
+
     this.reloadData();
   }
 
   reloadData() {
     this.graphQL.getMyFullProfile().then(p => {
-        this.profile = p;
-        this.updateDataForm.controls.email.setValue(this.profile?.email + "");
-        this.updateDataForm.controls.fullName.setValue(this.profile?.fullName + "");
+      this.profile = p;
+      this.emailFormControl.setValue(this.profile?.email + "");
+      this.currentEmail = this.profile?.email + "";
+      this.myContactDataFormGroup.controls.fullName.setValue(this.profile?.fullName + "");
+      this.myContactDataFormGroup.controls.license.setValue(this.profile?.knsaMembershipNumber + "");
     })
   }
 
@@ -97,24 +166,12 @@ export class UpdateProfilePageComponent {
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const imageURL = e.target?.result as string;
         this.graphQL.uploadProfilePicture(imageURL).then(rDTO => {
-            if (rDTO.success) {
-              this.navigationService.refreshNavigation();
-              this.alertService.showAlert({
-                title: "Succesvol",
-                subTitle: "De afbeelding is succesvol geupload.",
-                icon: AlertIcon.CHECK,
-                duration: 4000,
-                alertClass: AlertClass.CORRECT_CLASS
-              });
-            } else {
-              this.alertService.showAlert({
-                title: "Fout opgetreden",
-                subTitle: "Probeer het later opnieuw.",
-                icon: AlertIcon.XMARK,
-                duration: 4000,
-                alertClass: AlertClass.INCORRECT_CLASS
-              });
-            }
+          if (rDTO.success) {
+            this.navigationService.refreshNavigation();
+            this.alertService.showPositiveAlert("De afbeelding is succesvol geupload.");
+          } else {
+            this.alertService.showNegativeAlert("Probeer het later opnieuw.")
+          }
 
         }).catch(e => {
           console.log(e)
@@ -125,82 +182,96 @@ export class UpdateProfilePageComponent {
     }
   }
 
-  protected readonly document = document;
+  filterValue() {
+    if (!this.myContactDataFormGroup || !this.myContactDataFormGroup.controls.license.value) {
+      return;
+    }
+    const newValue = this.myContactDataFormGroup.controls.license.value.replace(/\D/g, "");
+    if(newValue != this.myContactDataFormGroup.controls.license.value) {
+      this.myContactDataFormGroup.controls.license.setValue(newValue);
+    }
+  }
 
-  updateProfile() {
-    if (!this.checkPasswordForm.valid)
-      return;
-    if (!this.updateDataForm.controls.email.valid)
-      return;
-    if (!this.updateDataForm.controls.fullName.valid)
-      return;
-    if (this.updateDataForm.errors?.["passwordsMismatch"] != null)
+  updateMyDataProfile() {
+    if (!this.myContactDataFormGroup.valid)
       return;
 
-    this.graphQL.updateProfile(
-      this.updateDataForm.controls.fullName.value,
-      this.updateDataForm.controls.email.value,
-      this.updateDataForm.controls.password.value,
-      this.checkPasswordForm.value
+    this.graphQL.updateMyDataProfile(
+      this.myContactDataFormGroup.controls.fullName.value,
+      this.myContactDataFormGroup.controls.license.value,
     ).then(rDTO => {
-        if (rDTO.success) {
-          this.reloadData();
-          this.alertService.showAlert({
-            title: "Succesvol",
-            subTitle: "De wijzigingen zijn succesvol opgeslagen.",
-            icon: AlertIcon.CHECK,
-            duration: 4000,
-            alertClass: AlertClass.CORRECT_CLASS
-          });
-        } else {
-          switch (rDTO.message) {
-            case "not-correct-password": {
-              this.alertService.showAlert({
-                title: "Fout opgetreden",
-                subTitle: "Het ingevoerde wachtwoord komt niet overeen.",
-                icon: AlertIcon.XMARK,
-                duration: 4000,
-                alertClass: AlertClass.INCORRECT_CLASS
-              });
-              break;
-            }
-            default: {
-              this.alertService.showAlert({
-                title: "Fout opgetreden",
-                subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-                icon: AlertIcon.XMARK,
-                duration: 4000,
-                alertClass: AlertClass.INCORRECT_CLASS
-              });
-              break;
-            }
-
-          }
-        }
+      if (rDTO.success) {
+        this.reloadData();
+        this.alertService.showPositiveAlert("De wijzigingen zijn succesvol opgeslagen.");
+      } else {
+        this.alertService.showNegativeAlert("Er is een fout opgetreden bij het bijwerken van uw profiel.")
+      }
     }).catch(e => {
-      this.alertService.showAlert({
-        title: "Fout opgetreden",
-        subTitle: "Er is een fout opgetreden bij het bijwerken van uw profiel.",
-        icon: AlertIcon.XMARK,
-        duration: 4000,
-        alertClass: AlertClass.INCORRECT_CLASS
-      });
+      this.alertService.showNegativeAlert("Er is een fout opgetreden bij het bijwerken van uw profiel.")
     });
   }
 
-  resetUpdateForm() {
-    // this.updateDataForm.reset()
-    this.updateDataForm.controls.email.setValue(this.profile?.email + "")
-    this.updateDataForm.controls.fullName.setValue(this.profile?.fullName + "")
-    this.updateDataForm.controls.password.setValue("")
-    this.updateDataForm.controls.confirmPassword.setValue("")
 
-    this.alertService.showAlert({
-      title: "Informatie",
-      subTitle: "De wijzigingen zijn niet opgeslagen.",
-      icon: AlertIcon.INFO,
-      duration: 4000,
-      alertClass: AlertClass.INFO_CLASS
-    });
+  updateProfilePassword(code: string) {
+    if (!this.passwordFormGroup.valid)
+      return;
+
+    this.graphQL.resetPassword(
+      code,
+      this.passwordFormGroup.controls.password.value!).then(response => {
+      if(response.success) {
+        this.modalService.hideModal(Modal.SECURITY_CODE)
+        this.alertService.showPositiveAlert( "Je wachtwoord is veranderd.");
+      } else {
+        if (response.message == "invalid-response-code") {
+          this.alertService.showNegativeAlert("De code die je hebt opgegeven klopt niet.")
+        } else {
+          this.modalService.hideModal(Modal.SECURITY_CODE)
+          this.alertService.showNegativeAlert("Er is een fout opgetreden.")
+        }
+      }
+    })
+  }
+
+  updateProfileEmail(code: string) {
+    if (!this.emailFormControl.valid)
+      return;
+
+    this.graphQL.resetEmail(
+      code,
+      this.emailFormControl.value!).then(response => {
+      if(response.success) {
+        this.modalService.hideModal(Modal.SECURITY_CODE);
+        this.alertService.showPositiveAlert("Je email is veranderd.");
+      } else {
+        if (response.message == "invalid-response-code") {
+          this.alertService.showNegativeAlert("De code die je hebt opgegeven klopt niet.");
+        } else {
+          this.modalService.hideModal(Modal.SECURITY_CODE)
+          this.alertService.showNegativeAlert("Er is een fout opgetreden.");
+        }
+      }
+    })
+  }
+
+  openSecurityModal(titleMessage: InputFieldTitle) {
+    this.graphQL.requestSecurityCode(this.currentEmail).then(response => {
+      if(!(response && response.success)) {
+        this.alertService.showNegativeAlert("Kon geen verificatie code sturen.");
+      }
+    })
+      this.activeTitleMessage = titleMessage;
+    this.modalService.showModal(Modal.SECURITY_CODE)
+  }
+
+  securityCodeReceived(code:string) {
+    switch (this.activeTitleMessage) {
+      case InputFieldTitle.CHANGE_PASSWORD:
+        this.updateProfilePassword(code);
+        break;
+      case InputFieldTitle.CHANG_EMAIL:
+        this.updateProfileEmail(code);
+        break;
+    }
   }
 }

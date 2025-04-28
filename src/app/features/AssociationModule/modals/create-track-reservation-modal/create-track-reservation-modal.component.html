@@ -1,9 +1,8 @@
-<dialog id="my_modal_5" class="modal modal-bottom  sm:modal-middle"
+<dialog id="my_modal_6" class="modal modal-bottom  sm:modal-middle"
         [ngClass]="{ 'modal-open': showModal}">
-  <div class="modal-box flex flex-col justify-between">
+  <div class="modal-box flex flex-col justify-between" [ngStyle]="{'height' : '80%'}">
     <ng-container [ngSwitch]="step">
-      <div>
-
+      <div class="flex-grow">
         <div class="flex flex-row justify-between">
           <div>
             <h3 class="font-bold text-lg">{{ title }}</h3>
@@ -13,8 +12,6 @@
           >X
           </button>
         </div>
-
-
         <ul class="steps w-full mt-2 mb-3">
           <li *ngFor="let s of steps" class="step" [ngClass]="getClassForStep(s.step)"> {{ s.label | translate }}</li>
         </ul>
@@ -26,6 +23,7 @@
             [_formControl]="step1ReservationForm.controls.title"
             [labelText]="'Titel'"
             [hideErrorsWhenEmpty]="true"
+            [inputFieldWidth]="InputFieldWidth.FULL"
             [type]="'text'"
             [errorSettings]="[
             {
@@ -34,19 +32,15 @@
             }]">
 
           </app-default-input-field>
-          <app-textarea-modal
-            [placeholder]="'Vul hier de beschrijving van de reservering in.'"
-            [labelText]="'Beschrijving'"
-            [textAreaID]="'trackDescription'"
-            [_formControl]="step1ReservationForm.controls.description">
-          </app-textarea-modal>
 
-          <div class="flex flex-row  items-start w-full space-x-2 mt-2">
+
+          <div class="flex flex-row items-start w-full space-x-2 mt-2">
             <app-default-input-field
                                          [inputId]="'inputID'"
                                          [placeholder]="'Vul hier het max aantal deelnemers in.'"
                                          [_formControl]="step1ReservationForm.controls.maxSize"
                                          [labelText]="'Max aantal aanmeldingen'"
+                                         [inputFieldWidth]="InputFieldWidth.FULL"
                                          [hideErrorsWhenEmpty]="true"
                                          [type]="'number'"
                                          [errorSettings]="[
@@ -55,99 +49,31 @@
           errorName: ''
           }]">
             </app-default-input-field>
-            <div class="flex flex-col w-3/6">
-              <label for="select-color" class="">Visualisatie kleur </label>
-              <select id="select-color" class="select select-accent max-w-xs border-2"
-                      [formControl]="step1ReservationForm.controls.color">
-                <option [ngValue]="preset" *ngFor="let preset of colorPresets"> {{ preset.colorName }}</option>
-              </select>
-              <div *ngIf="(step1ReservationForm.controls.color.value == null)">
-                <app-single-error-message *ngFor="let errorSetting of [{
-          errorMessage: 'Je moet een kleur selecteren.',
-          errorName: ''
-          }]"
+            <app-input-field-single-select class="w-6/12" [dataSource]="singleSelectInputFieldDataSourceColor"></app-input-field-single-select>
 
-                                          [errorMessage]="errorSetting.errorMessage"
-                                          [specificError]="errorSetting.errorName"
-                                          [specificFormControl]="step1ReservationForm.controls.color">
-
-                </app-single-error-message>
-              </div>
-            </div>
 
           </div>
-          <div class="flex flex-col w-full  items-start justify-evenly mt-2">
-            <div class="dropdown-button">Selecteer Wapen Types</div>
-            <div class="flex flex-row flex-wrap w-full gap-x-5  ">
-              <div *ngFor="let weaponType of weaponTypeList">
-                <input type="checkbox" id="checkboxList"
-                       class=" align-middle border-2 border-accent  checkbox checkbox-md"
-                       [checked]="containsWeaponTypeInList(weaponType)"
-                       [value]="weaponType" (change)="onWeaponTypeChange(weaponType, $event)">
-                {{ weaponType.name }}
-              </div>
-            </div>
-          </div>
+          <app-input-field-multi-select [dataSource]="weaponTypeDataSource"></app-input-field-multi-select>
           <app-default-checkbox-input-field
             [_formControl]="step1ReservationForm.controls.chooseTime"
             [labelText]="'Zelf positie kiezen'">
           </app-default-checkbox-input-field>
+          <app-textarea-modal
+            [placeholder]="'Vul hier de beschrijving van de reservering in.'"
+            [labelText]="'Beschrijving'"
+            [textAreaID]="'trackDescription'"
+            [_formControl]="step1ReservationForm.controls.description">
+          </app-textarea-modal>
+
         </div>
 
         <div *ngSwitchCase="Step.STEP_2">
-          <table class="table">
-            <thead>
-            <tr>
-              <th></th>
-              <th>Baan naam</th>
-              <th>Omschrijving</th>
-              <th>Beschikbare wapentypes</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!--          <td></td>Voor als het leeg is-->
-            <tr *ngFor="let track of getTrackList(true)">
-              <td>
-                <input type="checkbox" class="align-middle border-2 border-accent  checkbox checkbox-md"
-                       [checked]="containsTrackInList(track)"
-                       [value]="track" (change)="onTrackChange(track, $event)"/>
-              </td>
-              <td> {{ track.name }}</td>
-              <td class="max-w-36 break-words"> {{ track.description }}</td>
-              <td>
-                <div class="flex flex-row max-w-36 items-center flex-wrap">
-                  <ng-container *ngFor="let value of track.allowedWeaponTypes; let last = last">
-                    <p>{{ value.name }}{{ !last ? ', &nbsp;' : '' }}</p>
-                  </ng-container>
-                </div>
-              </td>
-            </tr>
-
-            <tr *ngFor="let track of getTrackList(false)">
-              <td>
-                <input type="checkbox" class="align-middle border-2 border-accent  checkbox checkbox-md"
-                       [checked]="containsTrackInList(track)"
-                       [disabled]="true"
-                       [value]="track" (change)="onTrackChange(track, $event)"/>
-              </td>
-              <td> {{ track.name }}</td>
-              <td class="max-w-36 break-words"> {{ track.description }}</td>
-              <td>
-                <div class="flex flex-row max-w-36 items-center flex-wrap">
-                  <ng-container *ngFor="let value of track.allowedWeaponTypes; let last = last">
-                    <p>{{ value.name }}{{ !last ? ', &nbsp;' : '' }}</p>
-                  </ng-container>
-                </div>
-              </td>
-            </tr>
-
-            </tbody>
-          </table>
+          <app-multi-column-list [dataSource]="dataSourceTracks"></app-multi-column-list>
         </div>
 
         <div *ngSwitchCase="Step.STEP_3">
-          <div class="flex flex-row w-full space-x-2">
-            <app-date-time-selector class="w-3/6"
+          <div class="flex flex-col w-full ">
+            <app-date-time-selector
                                     [labelText]="'Startdatum'"
                                     [_formControl]="step3ReservationForm.controls.startDate"
                                     [errorSettings]="[
@@ -157,7 +83,7 @@
       }]"
                                     [minDate]="util.toLocalIsoDateTime(currentDay)">
             </app-date-time-selector>
-            <app-date-time-selector class="w-3/6"
+            <app-date-time-selector
                                     [labelText]="'Einddatum'"
                                     [_formControl]="step3ReservationForm.controls.endDate"
                                     [errorSettings]="[
@@ -176,13 +102,11 @@
           </app-error-message>
 
           <ng-container *ngIf="!currentReservation?.id || currentReservation!.id.length == 0">
-            <div class="flex flex-row">
               <app-default-checkbox-input-field
                 [_formControl]="step3ReservationForm.controls.repeats"
                 [labelText]="'Herhaalt zich'">
               </app-default-checkbox-input-field>
 
-            </div>
             <ng-container *ngIf="step3ReservationForm.controls.repeats.value">
               <app-date-time-selector
                 [inputID]="'id'"
@@ -197,53 +121,19 @@
                   [labelText]="'Herhaalt elke'"
                   [_formControl]="createSeriesForm.controls.repeatDaysBetween"
                   [hideErrorsWhenEmpty]="true"
+                  [inputFieldWidth]="InputFieldWidth.FULL"
                   [type]="'number'"
                   [errorSettings]="[]">
                 </app-default-input-field>
-
-                <select class="select select-accent border-2 "
-                        [formControl]="createSeriesForm.controls.repeatType">
-                  <option [ngValue]="repeat.key"
-                          *ngFor="let repeat of ReservationRepeat | keyvalue">{{ ReservationRepeatLabels[repeat.key].label | translate }}
-                  </option>
-                </select>
+                <app-input-field-single-select class="w-6/12" [dataSource]="singleSelectInputFieldDataSourceCalendarRepeat"></app-input-field-single-select>
               </div>
-
             </ng-container>
           </ng-container>
         </div>
 
-        <div *ngSwitchCase="Step.STEP_4">
-          <div>
-            <h1 class="font-bold italic text-2xl">Informatie</h1>
-            <div class="flex flex-col">
-              <h2 class="text-lg font-semibold">{{ step1ReservationForm.controls.title.value }}</h2>
-              <p> {{ step1ReservationForm.controls.description.value }}</p>
-            </div>
-          </div>
-
-          <div>
-            <h1 class="font-bold italic text-2xl">Geselecteerde banen</h1>
-            <div class="flex flex-row">
-              <p *ngFor="let track of step2ReservationForm.controls.tracks.value; let isLast = last">{{ track.name }}{{ isLast ? "" : ",&nbsp;" }}</p>
-            </div>
-          </div>
-
-          <div>
-            <h1 class="font-bold italic text-2xl">Datum gegevens</h1>
-            <div class="flex flex-col">
-              <p>Evenement duurt {{ util.calculateDuration(step3ReservationForm.controls.startDate.value!, step3ReservationForm.controls.endDate.value!) }}</p>
-              <div class="flex flex-row space-x-2">
-                <p>Begint op {{startTime}}</p>
-                <p> - </p>
-                <p>Eindigt op {{endTime}}</p>
-              </div>
-              <p *ngIf="step3ReservationForm.controls.repeats.value">Herhaalt elke {{createSeriesForm.controls.repeatDaysBetween.value}} {{ReservationRepeatLabels[createSeriesForm.controls.repeatType.value!].label | translate}} tot {{repeatTime}}</p>
-            </div>
-          </div>
-        </div>
       </div>
-      <div class="flex flex-row justify-between mt-5">
+    </ng-container>
+        <div class="modal-action  flex justify-between">
         <button *ngIf="step == Step.STEP_1" class="btn border-error border-2 bg-base-100" (click)="resetReservationModal()"
         >Annuleer
         </button>
@@ -252,19 +142,53 @@
         </button>
 
 
-        <button *ngIf="step != Step.STEP_4" class="btn border-success border-2 bg-base-100"
+        <button *ngIf="step != Step.STEP_3" class="btn border-success border-2 bg-base-100"
                 (click)="increaseStep()"
                 [disabled]="isDisabled()"
         >Volgende
         </button>
-        <button *ngIf="step == Step.STEP_4" class="btn border-success border-2 bg-base-100"
+        <button *ngIf="step == Step.STEP_3" class="btn border-success border-2 bg-base-100"
                 (click)="createReservation()"
                 [disabled]="!canSubmit()"
         >Opslaan
         </button>
-
       </div>
-
-    </ng-container>
   </div>
 </dialog>
+
+<ng-template #actionHeaderTemplate>
+</ng-template>
+<ng-template #trackNameHeaderTemplate>
+  <p>Baan naam</p>
+</ng-template>
+
+<ng-template #trackDescriptionHeaderTemplate>
+  <p>Omschrijving</p>
+</ng-template>
+
+<ng-template #availableWeaponTypesHeaderTemplate>
+  <p>Beschikbare wapentypes</p>
+</ng-template>
+
+<ng-template #actionRowTemplate let-track="data">
+  <input type="checkbox" class="checkbox checkbox-accent"
+         [checked]="containsTrackInList(track)"
+         [value]="track" (change)="onTrackChange(track, $event)"/>
+</ng-template>
+
+<ng-template #trackNameRowTemplate let-track="data">
+  <p>{{ track.name }}</p>
+</ng-template>
+
+<ng-template #trackDescriptionRowTemplate let-track="data">
+  <p class="max-w-36 break-words">{{ track.description }}</p>
+</ng-template>
+
+<ng-template  #availableWeaponTypesRowTemplate let-track="data">
+  <div class="flex flex-row">
+    <ng-container  *ngFor="let value of track.allowedWeaponTypes; let last = last">
+      <p class="">{{ value.name }}{{ !last ? ', &nbsp;' : '' }}</p>
+    </ng-container>
+  </div>
+</ng-template>
+

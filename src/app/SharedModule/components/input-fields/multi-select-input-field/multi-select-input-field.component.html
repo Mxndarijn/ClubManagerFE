@@ -1,13 +1,13 @@
-<div class="flex flex-col w-96 items-start justify-evenly mt-5">
+<div class="flex flex-col w-full items-start justify-evenly mt-5">
   <label for="{{_id}}" class="mb-2">{{ dataSource.label }}</label>
   <div class="dropdown w-full">
-    <div tabindex="0" class="select select-accent w-full border-2">
+    <div tabindex="0" class="select select-accent w-full items-center border-2">
       {{ getSelectedItemsDisplay() || 'Select items' }}
     </div>
-    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full max-h-60 overflow-auto">
+    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full border-2 border-accent max-h-60 overflow-auto">
       <li *ngFor="let listItem of processedItems" class="flex items-center">
         <label class="flex items-center gap-2 w-full cursor-pointer">
-          <input type="checkbox"
+          <input type="checkbox" class="checkbox checkbox-accent"
                  [checked]="isItemSelected(listItem.original)"
                  (change)="toggleItemSelection(listItem.original)" />
           <span>{{ listItem.processed }}</span>

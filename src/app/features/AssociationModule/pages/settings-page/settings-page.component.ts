@@ -7,9 +7,8 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {UpdateButtonComponent} from "../../../../SharedModule/components/buttons/update-button/update-button.component";
 import {SliderComponent} from "../../../../SharedModule/components/input-fields/toggle-slider/slider.component";
 import {
-  DefaultInputFieldComponent
+  DefaultInputFieldComponent, InputFieldWidth
 } from "../../../../SharedModule/components/input-fields/default-input-field/default-input-field.component";
-import {ErrorMessageComponent} from "../../../../SharedModule/components/error-message/error-message.component";
 import {
   DefaultTextAreaComponent
 } from "../../../../SharedModule/components/input-fields/default-text-area/default-text-area.component";
@@ -21,7 +20,28 @@ import {AlertService} from "../../../../CoreModule/services/alert.service";
 import {ActivatedRoute} from "@angular/router";
 import {DefaultBooleanResponseDTO} from "../../../../CoreModule/models/dto/default-boolean-response-dto";
 import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/alert-info/alert-info.component";
+import {TabComponent} from "../../../../SharedModule/components/tab/tab.component";
+import {TabDataSource} from "../../../../SharedModule/components/tab/tab-datasource";
+import {
+  ButtonClass,
+  ButtonSize,
+  CustomButton
+} from "../../../../SharedModule/components/buttons/custom-button/custom-button";
+import {
+  ErrorMessageComponent
+} from "../../../../SharedModule/components/error-messages/error-message/error-message.component";
+import {
+  TextareaModalComponent
+} from "../../../../SharedModule/components/input-fields/textarea-modal/textarea-modal.component";
+import {
+  RoundedSocialBoxComponent
+} from "../../../../SharedModule/components/rounded-social-box/rounded-social-box.component";
+import {faPhone} from "@fortawesome/free-solid-svg-icons/faPhone";
 
+enum Tab {
+  ASSOCIATION_CONTACTDATA,
+  ASSOCIATION_EXTRAINFORMATION,
+}
 
 @Component({
   selector: 'app-settings-page',
@@ -36,7 +56,12 @@ import {AlertClass, AlertIcon} from "../../../../SharedModule/components/alerts/
     TranslateModule,
     ErrorMessageComponent,
     NgIf,
-    DefaultTextAreaComponent
+    DefaultTextAreaComponent,
+    TabComponent,
+    CustomButton,
+    ErrorMessageComponent,
+    TextareaModalComponent,
+    RoundedSocialBoxComponent
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.css'
@@ -54,7 +79,27 @@ export class SettingsPageComponent {
     associationDescription: FormControl<string | null>
   }>;
   private associationID: string;
+  activeTab: Tab = Tab.ASSOCIATION_CONTACTDATA;
+  protected readonly document = document;
+  protected readonly Tab = Tab;
 
+  tabDataSource: TabDataSource = {
+    defaultActive: 0,
+    items: [
+      {
+        label: "Vereniging gegevens",
+        onClick: () => {
+          this.activeTab = Tab.ASSOCIATION_CONTACTDATA
+        }
+      },
+      {
+        label: "Toegevoegde informatie",
+        onClick: () => {
+          this.activeTab = Tab.ASSOCIATION_EXTRAINFORMATION
+        }
+      }
+    ]
+  }
 
 
   constructor(
@@ -79,13 +124,13 @@ export class SettingsPageComponent {
   }
 
   reloadData() {
-    this.graphQL.getAssociationSettings(this.associationID).then(r =>{
-        this.associationDetails = r;
-        this.setValuesInControls()
+    this.graphQL.getAssociationSettings(this.associationID).then(r => {
+      this.associationDetails = r;
+      this.setValuesInControls()
     })
 
-    this.graphQL.getAssociationStatistics(this.associationID).then(r =>{
-        this.associationStatistics = r;
+    this.graphQL.getAssociationStatistics(this.associationID).then(r => {
+      this.associationStatistics = r;
     })
   }
 
@@ -103,53 +148,25 @@ export class SettingsPageComponent {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const imageURL = e.target?.result as string;
-        this.graphQL.updateAssociationPicture(this.associationID, imageURL).then( (rDTO: DefaultBooleanResponseDTO) => {
-            if (rDTO.success) {
-              this.navigationService.refreshNavigation();
-              this.alertService.showAlert({
-                title: "Succesvol",
-                subTitle: "De afbeelding is succesvol geupload.",
-                icon: AlertIcon.CHECK,
-                duration: 4000,
-                alertClass: AlertClass.CORRECT_CLASS
-              });
-            } else {
-              this.alertService.showAlert({
-                title: "Fout opgetreden",
-                subTitle: "Probeer het later opnieuw.",
-                icon: AlertIcon.XMARK,
-                duration: 4000,
-                alertClass: AlertClass.INCORRECT_CLASS
-              });
-            }
-            console.log(rDTO);
-        }).catch(e => {console.log(e)});
+        this.graphQL.updateAssociationPicture(this.associationID, imageURL).then((rDTO: DefaultBooleanResponseDTO) => {
+          if (rDTO.success) {
+            this.navigationService.refreshNavigation();
+            this.alertService.showPositiveAlert("De afbeelding is succesvol geupload.")
+          } else {
+            this.alertService.showNegativeAlert("Probeer het later opnieuw.")
+          }
+          console.log(rDTO);
+        }).catch(e => {
+          console.log(e)
+        });
         this.associationDetails!.image!.encoded = imageURL;
       };
       reader.readAsDataURL(input.files[0])
     }
   }
 
-  protected readonly document = document;
-
-
-  resetSettingsForm() {
-    this.setValuesInControls()
-    this.alertService.showAlert({
-      title: "Informatie",
-      subTitle: "De wijzigingen zijn niet opgeslagen.",
-      icon: AlertIcon.INFO,
-      duration: 4000,
-      alertClass: AlertClass.INFO_CLASS
-    });
-  }
-
   updateSettings() {
-    if (!this.updateAssociationDataForm.controls.email.valid)
-      return;
-    if (!this.updateAssociationDataForm.controls.associationName.valid)
-      return;
-    if (!this.updateAssociationDataForm.controls.associationDescription.valid)
+    if (!this.updateAssociationDataForm.valid)
       return;
 
     this.graphQL.updateAssociationSettings(
@@ -157,35 +174,22 @@ export class SettingsPageComponent {
       this.updateAssociationDataForm.controls.associationDescription.value!,
       this.updateAssociationDataForm.controls.email.value!,
       this.associationID
-    ).then( (rDTO: DefaultBooleanResponseDTO) => {
-        if(rDTO.success) {
-          this.reloadData()
-          this.alertService.showAlert({
-            title: "Succesvol",
-            subTitle: "De instellingen zijn succesvol bijgewerkt.",
-            icon: AlertIcon.CHECK,
-            duration: 4000,
-            alertClass: AlertClass.CORRECT_CLASS
-          });
-        } else {
-          this.alertService.showAlert({
-            title: "Fout opgetreden",
-            subTitle: "Er is een fout opgetreden bij het bijwerken van de instellingen.",
-            icon: AlertIcon.XMARK,
-            duration: 4000,
-            alertClass: AlertClass.INCORRECT_CLASS
-          });
-        }
+    ).then((rDTO: DefaultBooleanResponseDTO) => {
+      if (rDTO.success) {
+        this.reloadData()
+        this.alertService.showPositiveAlert("De instellingen zijn succesvol bijgewerkt.")
+      } else {
+        this.alertService.showNegativeAlert("Er is een fout opgetreden bij het bijwerken van de instellingen.")
+      }
     }).catch(e => {
-      this.alertService.showAlert({
-        title: "Fout opgetreden",
-        subTitle: "Er is een fout opgetreden bij het bijwerken van de instellingen.",
-        icon: AlertIcon.XMARK,
-        duration: 4000,
-        alertClass: AlertClass.INCORRECT_CLASS
-      });
-  })
+      this.alertService.showNegativeAlert("Er is een fout opgetreden bij het bijwerken van de instellingen.")
+    })
 
 
   }
+
+  protected readonly InputFieldWidth = InputFieldWidth;
+  protected readonly ButtonClass = ButtonClass;
+  protected readonly ButtonSize = ButtonSize;
+  protected readonly faPhone = faPhone;
 }
